@@ -6,6 +6,14 @@ export default {
         requestUrl: "http://localhost:8089",
         // prd
         // request_url:"http://111.231.19.137:8089"
+
+        colors:{
+            primary: '#2676f7',
+            success: '#67C23A',
+            warning: '#E6A23C',
+            danger: '#F56C6C',
+            info: '#909399',
+        }
     },
     onLaunch() {
         wx.getSystemInfo({
@@ -22,4 +30,11 @@ export default {
 </script>
 
 <style>
+.uni-page-head .uni-page-head__title{
+    font-size: 10rpx !important;
+}
+.uni-tabbar .uni-tabbar__icon {
+    width: 25rpx !important;
+    height: 25rpx !important;
+}
 </style>

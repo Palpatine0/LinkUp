@@ -1,5 +1,5 @@
 {
-    "name": "hazelgrove-vue-client",
+    "name": "linkup-vue-client",
     "appid": "wxdbc6d6a058de05f7",
     "description": "",
     "versionName": "1.0.0",
@@ -47,8 +47,7 @@
             "urlCheck": false,
             "es6": true
         },
-        "usingComponents": true,
-        "cloudfunctionRoot": "cloudfunctions/"
+        "usingComponents": true
     },
     "mp-alipay": {
         "usingComponents": true
