@@ -1,19 +1,78 @@
 {
-	"pages": [
-		{
-			"path":"pages/index/index",
-			"style":{
-				"navigationBarTitleText":"Index",
-				"navigationBarBackgroundColor":"#fefefe",
-				"navigationStyle":"custom"
-			}
-		}
-
-	],
-	"globalStyle": {
-		"navigationBarTextStyle": "black",
-		"navigationBarTitleText": "uni-app",
-		"navigationBarBackgroundColor": "#F8F8F8",
-		"backgroundColor": "#F8F8F8"
-	}
+    "pages": [
+        // order
+        {
+            "path": "pages/order/order",
+            "style": {
+                "navigationBarTitleText": "",
+                "navigationBarBackgroundColor": "#fefefe"
+            }
+        },
+        {
+            "path": "pages/order/order-initiate/order-initiate",
+            "style": {
+                "navigationBarTitleText": "",
+                "navigationBarBackgroundColor": "#fefefe"
+            }
+        },
+        {
+            "path": "pages/order/order-detail/order-detail",
+            "style": {
+                "navigationBarTitleText": "",
+                "navigationBarBackgroundColor":"#f3f2f6"
+            }
+        },
+        // chat
+        {
+            "path": "pages/chat/chat",
+            "style": {
+                "navigationBarTitleText": "我的消息",
+                "navigationBarBackgroundColor": "#fefefe"
+            }
+        },
+        // setting
+        {
+            "path": "pages/setting/setting",
+            "style": {
+                "navigationBarTitleText": "",
+                "navigationBarBackgroundColor": "#fefefe"
+            }
+        }
+    ],
+    "globalStyle": {
+        "navigationBarTextStyle": "black",
+        "navigationBarTitleText": "uni-app",
+        "navigationBarBackgroundColor": "#F8F8F8",
+        "backgroundColor": "#F8F8F8"
+    },
+    "tabBar": {
+        "color": "#909399",
+        "selectedColor": "#2676f7",
+        "borderStyle": "white",
+        "fontSize": "10px",
+        "spacing": "3px",
+        "list": [
+            {
+                "iconPath": "static/tab-bar/order.png",
+                "selectedIconPath": "static/tab-bar/order-active.png",
+                "pagePath": "pages/order/order",
+                // "text": "我的订单"
+                "text": ""
+            },
+            {
+                "iconPath": "static/tab-bar/chat.png",
+                "selectedIconPath": "static/tab-bar/chat-active.png",
+                "pagePath": "pages/chat/chat",
+                // "text": "我的消息"
+                "text": ""
+            },
+            {
+                "iconPath": "static/tab-bar/setting.png",
+                "selectedIconPath": "static/tab-bar/setting-active.png",
+                "pagePath": "pages/setting/setting",
+                // "text": "设置"
+                "text": ""
+            }
+        ]
+    }
 }
