@@ -30,6 +30,13 @@
                 "navigationBarBackgroundColor": "#fefefe"
             }
         },
+        {
+            "path": "pages/chat/chat-user-chat/chat-user-chat",
+            "style": {
+                "navigationBarTitleText": "",
+                "navigationBarBackgroundColor": "#fefefe"
+            }
+        },
         // setting
         {
             "path": "pages/setting/setting",
