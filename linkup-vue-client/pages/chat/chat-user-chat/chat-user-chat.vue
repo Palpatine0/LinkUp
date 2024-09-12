@@ -31,8 +31,8 @@ export default {
         return {
             currentUser: 'me', // This would dynamically update with the logged-in user
             chatUser: {
-                username: 'XXXX',
-                avatar: '/static/default-avatar.png'
+                username: 'Percival',
+                avatar: '/static/chat/profile-circled-test.png'
             },
             messages: [
                 {id: 1, text: 'Hello', sender: 'me'},

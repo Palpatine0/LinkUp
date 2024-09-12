@@ -1,5 +1,6 @@
 <template>
 <div class="chat-header">
+<!--    <img :src="avatar" class="avatar" />-->
     <img :src="avatar" class="avatar" />
     <span class="username">{{ username }}</span>
     <button class="select-button" @click="selectUser">选择</button>
@@ -10,7 +11,7 @@
 export default {
     props: {
         username: { type: String, default: 'Unknown' },
-        avatar: { type: String, default: '/static/chat/profile-circled-test' },
+        avatar: { type: String, default: '/static/chat/profile-circled-test.png' },
     },
     methods: {
         selectUser() {
@@ -24,9 +25,8 @@ export default {
 .chat-header {
     display: flex;
     align-items: center;
-    padding: 10px;
+    padding: 10px 20px 10px 21px;
     background-color: #f3f2f6;
-    border-bottom: 1px solid #ddd;
 }
 
 .avatar {
@@ -45,7 +45,7 @@ export default {
     background-color: #007bff;
     color: white;
     border: none;
-    padding: 6px 12px;
+    padding: 0px 14px;
     border-radius: 15px;
     font-size: 12px;
 }

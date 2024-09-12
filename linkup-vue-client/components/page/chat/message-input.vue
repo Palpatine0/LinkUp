@@ -33,14 +33,13 @@ export default {
             }
         },
         autoResize() {
-            // Immediately adjust the height based on the content without resetting to minHeight first.
+            // As an alternative to manipulating the DOM, use Vue to reactively control the size
+            this.currentHeight = this.minHeight; // Reset to min height to calculate properly
             this.$nextTick(() => {
-                // Estimate the new height based on the content directly.
                 const estimatedSize = this.estimateHeight(this.message);
                 this.currentHeight = Math.max(this.minHeight, estimatedSize);
             });
         },
-
         estimateHeight(text) {
             // Simple estimation based on character count, you can adjust this method as needed
             const lines = text.split('\n').length + (text.length / 50); // Approx chars per line
@@ -70,7 +69,7 @@ export default {
     overflow-y: hidden; // Hide scrollbar to maintain design
 }
 
-.send-button, .upload-button {
+.send-button {
     background-color: transparent;
     border: none;
     border-radius: 50%;
@@ -80,5 +79,18 @@ export default {
     justify-content: center;
     align-items: center;
     cursor: pointer;
+}
+
+.upload-button {
+    background-color: transparent;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    padding: 5px 10px 5px 0px;
 }
 </style>

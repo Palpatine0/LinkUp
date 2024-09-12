@@ -19,14 +19,14 @@
             "path": "pages/order/order-detail/order-detail",
             "style": {
                 "navigationBarTitleText": "",
-                "navigationBarBackgroundColor":"#f3f2f6"
+                "navigationBarBackgroundColor": "#f3f2f6"
             }
         },
         // chat
         {
             "path": "pages/chat/chat",
             "style": {
-                "navigationBarTitleText": "我的消息",
+                "navigationBarTitleText": "",
                 "navigationBarBackgroundColor": "#fefefe"
             }
         },
@@ -42,7 +42,7 @@
             "path": "pages/setting/setting",
             "style": {
                 "navigationBarTitleText": "",
-                "navigationBarBackgroundColor": "#fefefe"
+                "navigationBarBackgroundColor": "#f3f2f6"
             }
         }
     ],
