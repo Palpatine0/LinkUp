@@ -9,6 +9,13 @@
             }
         },
         {
+            "path": "pages/order/order-servant-selection/order-servant-selection",
+            "style": {
+                "navigationBarTitleText": "",
+                "navigationBarBackgroundColor": "#fefefe"
+            }
+        },
+        {
             "path": "pages/order/order-initiate/order-initiate",
             "style": {
                 "navigationBarTitleText": "",

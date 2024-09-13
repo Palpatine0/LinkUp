@@ -1,10 +1,10 @@
 <template>
-<div style="padding: 18px;background-color: #f3f2f6;height: 100vh">
+<div class="page" style="background-color: #f3f2f6">
     <!-- Title -->
     <app-title type="h1" bold="true">{{ order.title }}</app-title>
 
     <!-- Price and Respondent Container -->
-    <app-container color="#fff" col="12">
+    <div class="container"  style="background-color: white !important;">
         <div class="price-respondent-container">
             <!-- Price Section -->
             <div class="price-section">
@@ -21,14 +21,14 @@
                 <p>{{ order.respondentCount }} 人</p>
             </div>
         </div>
-    </app-container>
+    </div>
 
     <!-- Respondent Users Title -->
     <app-title bold="true" style="margin-top: 20px;">已抢单用户</app-title>
 
     <!-- Respondent User List -->
     <app-container color="#fff" col="12">
-        <div v-for="(user, index) in users" :key="index" class="user-item">
+        <div v-for="(user, index) in users" :key="index" class="user-item" :class="{ 'no-border': index === users.length - 1 }">
             <div class="user-avatar" :style="{ backgroundColor: user.color }"></div>
             <p>{{ user.name }}</p>
         </div>
@@ -89,6 +89,10 @@ export default {
     align-items: center;
     padding: 10px 0;
     border-bottom: 1px solid #ddd;
+}
+
+.user-item.no-border {
+    border-bottom: none;
 }
 
 .user-avatar {

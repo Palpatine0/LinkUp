@@ -1,5 +1,5 @@
 <template>
-<div class="settings-page">
+<div class="page" style="background-color: #f3f2f6;">
     <!-- Profile Section -->
     <div class="profile-section">
         <div class="profile-header center_h">
@@ -13,12 +13,13 @@
     </div>
 
     <!-- Other Options with Icons -->
-    <div class="settings-links">
+    <app-container color="#fff" col="12"  >
         <div v-for="(item, index) in linkItems" :key="index" class="link-item" :class="{ 'no-border': index === linkItems.length - 1 }">
             <img :src="item.icon" alt="" class="link-icon">
             <span>{{ item.label }}</span>
         </div>
-    </div>
+    </app-container>
+
 </div>
 </template>
 
@@ -44,15 +45,8 @@ export default {
 </script>
 
 <style scoped>
-.settings-page {
-    padding: 18px;
-    background-color: #f3f2f6;
-    height: 100vh;
-}
-
 .profile-section {
-    padding: 18px;
-    margin-bottom: 20px;
+    margin-bottom: 40px;
 }
 
 .profile-header {

@@ -1,5 +1,5 @@
 <template>
-<div style="padding: 18px">
+<div class="page">
     <!-- Heading section -->
     <div style="display: flex; align-items: center; justify-content: space-between;">
         <app-title type="h1" bold="true">我的消息</app-title>

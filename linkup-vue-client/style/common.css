@@ -53,6 +53,11 @@
     margin-right: auto;
 }
 
+.page{
+    padding: 18px;
+    height: 100vh;
+}
+
 .container {
     padding: 15px;
     border-radius: 15px;

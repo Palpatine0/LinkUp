@@ -1,9 +1,9 @@
 <template>
-<div style="padding: 18px;">
+<div class="page">
     <!-- Heading section -->
     <div style="display: flex; align-items: center; justify-content: space-between;">
         <app-title type="h1" bold="true">我的订单</app-title>
-        <img src="/static/order/add.svg" style="width: 24px; height: 24px;" @click="orderInitiateRedirect"/>
+        <img src="/static/order/add.svg" style="width: 28px; height: 28px;" @click="orderInitiateRedirect"/>
     </div>
 
     <!-- Search input -->
@@ -55,8 +55,11 @@ export default {
     },
     methods: {
         orderInitiateRedirect() {
-            uni.navigateTo({
+            /*uni.navigateTo({
                 url: '/pages/order/order-initiate/order-initiate'
+            });*/
+            uni.navigateTo({
+                url: '/pages/order/order-servant-selection/order-servant-selection'
             });
         },
         orderDetailRedirect(oid) {
