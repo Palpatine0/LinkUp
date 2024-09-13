@@ -1,0 +1,36 @@
+server:
+  port: 8090
+  servlet:
+    context-path: /
+
+spring:
+  datasource:
+    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # >dev
+    url: jdbc:mysql://localhost:3310/linkup?Timezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8
+    # >prd
+    #    url: jdbc:mysql://111.231.19.137:3310/linkup?Timezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8
+    username: root
+    password: root
+
+mybatis-plus:
+  global-config:
+    db-config:
+      id-type: auto
+  configuration:
+    map-underscore-to-camel-case: false
+    auto-mapping-behavior: full
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  mapper-locations: classpath:mybatis/mapper/*.xml
+
+wechat:
+  accessTokenUrl: https://api.weixin.qq.com/cgi-bin/token
+  appid: wxdbc6d6a058de05f7
+  secret: a0507d8a8f1e6bf2c4acce9ebc3a383a
+
+
+
+
+
+
