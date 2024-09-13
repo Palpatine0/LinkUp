@@ -17,7 +17,6 @@ public class ServantController {
     @Autowired
     private IServantService servantService;
 
-    // 1. Save a new servant
     @PostMapping("/save")
     public R save(@RequestBody Servant servant) {
         boolean isSaved = servantService.save(servant);
@@ -28,7 +27,6 @@ public class ServantController {
         }
     }
 
-    // 2. Find a servant by ID
     @PostMapping("/find")
     public R find(@RequestBody Map<String, Object> requestData) {
         Long id = Long.parseLong(requestData.get("id").toString());
@@ -40,36 +38,25 @@ public class ServantController {
         }
     }
 
-    // 3. Find all servants
     @GetMapping("/findAll")
     public R findAll() {
         List<Servant> servants = servantService.findAll();
         return R.ok().put("servants", servants);
     }
 
-    // 4. Update servant (partial updates allowed)
-    @PutMapping("/update")
+    @PostMapping("/update")
     public R update(@RequestBody Map<String, Object> requestData) {
         Long id = Long.parseLong(requestData.get("id").toString());
-        Servant servant = servantService.find(id);
+        requestData.remove("id");
 
-        if (servant != null) {
-            if (requestData.containsKey("nickname")) {
-                servant.setNickname(requestData.get("nickname").toString());
-            }
-            if (requestData.containsKey("current_location")) {
-                servant.setCurrentLocation(requestData.get("current_location").toString());
-            }
-
-            boolean isUpdated = servantService.update(servant);
-            if (isUpdated) {
-                return R.ok("更新成功");
-            }
+        boolean isUpdated = servantService.update(id, requestData);
+        if (isUpdated) {
+            return R.ok("更新成功");
+        } else {
+            return R.error("更新失败");
         }
-        return R.error("更新失败");
     }
 
-    // 5. Delete servant by ID
     @PostMapping("/delete")
     public R delete(@RequestBody Map<String, Object> requestData) {
         Long id = Long.parseLong(requestData.get("id").toString());

@@ -44,7 +44,7 @@ public class ServantTypeController {
         return R.ok().put("servantTypes", servantTypes);
     }
 
-    @PutMapping("/update")
+    @PostMapping("/update")
     public R update(@RequestBody Map<String, Object> requestData) {
         Long id = Long.parseLong(requestData.get("id").toString());
         ServantType servantType = servantTypeService.find(id);

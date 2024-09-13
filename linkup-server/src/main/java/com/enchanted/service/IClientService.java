@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.enchanted.entity.Client;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IClientService extends IService<Client> {
 
@@ -13,7 +14,7 @@ public interface IClientService extends IService<Client> {
 
     List<Client> findAll();
 
-    boolean update(Client client);
+    boolean update(Long id, Map<String, Object> changes);
 
     boolean delete(Long id);
 }

@@ -16,7 +16,6 @@ public class ClientController {
     @Autowired
     private IClientService clientService;
 
-    // Save a new client (Accepting full Client entity)
     @PostMapping("/save")
     public R save(@RequestBody Client client) {
         boolean isSaved = clientService.save(client);
@@ -27,7 +26,6 @@ public class ClientController {
         }
     }
 
-    // Find a client by ID (Accepting ID as part of a JSON request, without assuming it's a full Client entity)
     @PostMapping("/find")
     public R find(@RequestBody Map<String, Object> requestData) {
         Long id = Long.parseLong(requestData.get("id").toString());  // Extract the 'id' from request
@@ -39,36 +37,25 @@ public class ClientController {
         }
     }
 
-    // Find all clients (No parameters required)
     @GetMapping("/findAll")
     public R findAll() {
         return R.ok().put("clients", clientService.findAll());
     }
 
-    // Update client (Can accept partial data, for example just ID and some fields to update)
-    @PutMapping("/update")
+    @PostMapping("/update")
     public R update(@RequestBody Map<String, Object> requestData) {
-        Long id = Long.parseLong(requestData.get("id").toString());  // Extract the 'id' from request
-        Client client = clientService.find(id);
+        Long id = Long.parseLong(requestData.get("id").toString());
+        requestData.remove("id");
 
-        if (client != null) {
-            // Update only the fields passed in requestData, for example nickname and avatar
-            if (requestData.containsKey("nickname")) {
-                client.setNickname(requestData.get("nickname").toString());
-            }
-            if (requestData.containsKey("avatar")) {
-                client.setAvatar(requestData.get("avatar").toString());
-            }
-
-            boolean isUpdated = clientService.update(client);
-            if (isUpdated) {
-                return R.ok("更新成功");
-            }
+        boolean isUpdated = clientService.update(id, requestData);
+        if (isUpdated) {
+            return R.ok("更新成功");
+        } else {
+            return R.error("更新失败");
         }
-        return R.error("更新失败");
     }
 
-    // Delete client by ID (Accepting just the ID in JSON)
+
     @PostMapping("/delete")
     public R delete(@RequestBody Map<String, Object> requestData) {
         Long id = Long.parseLong(requestData.get("id").toString());

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.enchanted.entity.Order;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IOrderService extends IService<Order> {
 
@@ -13,7 +14,7 @@ public interface IOrderService extends IService<Order> {
 
     List<Order> findAll();
 
-    boolean update(Order order);
+    boolean update(Long id, Map<String, Object> changes);
 
     boolean delete(Long id);
 }

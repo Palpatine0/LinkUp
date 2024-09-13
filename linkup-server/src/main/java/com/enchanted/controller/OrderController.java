@@ -38,26 +38,23 @@ public class OrderController {
         }
     }
 
-    // 3. Find all orders
     @GetMapping("/findAll")
     public R findAll() {
         List<Order> orders = orderService.findAll();
         return R.ok().put("orders", orders);
     }
 
-    // 4. Update order
-    @PutMapping("/update")
+    @PostMapping("/update")
     public R update(@RequestBody Map<String, Object> requestData) {
         Long id = Long.parseLong(requestData.get("id").toString());
-        Order order = orderService.find(id);
+        requestData.remove("id");
 
-        if (order != null) {
-            boolean isUpdated = orderService.update(order);
-            if (isUpdated) {
-                return R.ok("更新成功");
-            }
+        boolean isUpdated = orderService.update(id, requestData);
+        if (isUpdated) {
+            return R.ok("更新成功");
+        } else {
+            return R.error("更新失败");
         }
-        return R.error("更新失败");
     }
 
     @PostMapping("/delete")

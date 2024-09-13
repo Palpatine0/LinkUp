@@ -17,7 +17,6 @@ public class OrderCandidateController {
     @Autowired
     private IOrderCandidateService orderCandidateService;
 
-    // 1. Save a new order candidate
     @PostMapping("/save")
     public R save(@RequestBody OrderCandidate orderCandidate) {
         boolean isSaved = orderCandidateService.save(orderCandidate);
@@ -28,7 +27,6 @@ public class OrderCandidateController {
         }
     }
 
-    // 2. Find an order candidate by ID
     @PostMapping("/find")
     public R find(@RequestBody Map<String, Object> requestData) {
         Long id = Long.parseLong(requestData.get("id").toString());
@@ -40,33 +38,25 @@ public class OrderCandidateController {
         }
     }
 
-    // 3. Find all order candidates
     @GetMapping("/findAll")
     public R findAll() {
         List<OrderCandidate> orderCandidates = orderCandidateService.findAll();
         return R.ok().put("orderCandidates", orderCandidates);
     }
 
-    // 4. Update order candidate
-    @PutMapping("/update")
+    @PostMapping("/update")
     public R update(@RequestBody Map<String, Object> requestData) {
         Long id = Long.parseLong(requestData.get("id").toString());
-        OrderCandidate orderCandidate = orderCandidateService.find(id);
+        requestData.remove("id");
 
-        if (orderCandidate != null) {
-            if (requestData.containsKey("is_closed")) {
-                orderCandidate.setIsClosed(Long.parseLong(requestData.get("is_closed").toString()));
-            }
-
-            boolean isUpdated = orderCandidateService.update(orderCandidate);
-            if (isUpdated) {
-                return R.ok("更新成功");
-            }
+        boolean isUpdated = orderCandidateService.update(id, requestData);
+        if (isUpdated) {
+            return R.ok("更新成功");
+        } else {
+            return R.error("更新失败");
         }
-        return R.error("更新失败");
     }
 
-    // 5. Delete order candidate by ID
     @PostMapping("/delete")
     public R delete(@RequestBody Map<String, Object> requestData) {
         Long id = Long.parseLong(requestData.get("id").toString());

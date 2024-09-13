@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.enchanted.entity.OrderCandidate;
 
 import java.util.List;
+import java.util.Map;
 
 public interface IOrderCandidateService extends IService<OrderCandidate> {
 
@@ -13,7 +14,7 @@ public interface IOrderCandidateService extends IService<OrderCandidate> {
 
     List<OrderCandidate> findAll();
 
-    boolean update(OrderCandidate orderCandidate);
+    boolean update(Long id, Map<String, Object> changes);
 
     boolean delete(Long id);
 }
