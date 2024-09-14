@@ -25,12 +25,12 @@ public class OrderCandidateServiceImpl extends ServiceImpl<OrderCandidateMapper,
     }
 
     @Override
-    public OrderCandidate select(Long id) {
+    public OrderCandidate get(Long id) {
         return orderCandidateMapper.selectById(id);
     }
 
     @Override
-    public List<OrderCandidate> selectAll() {
+    public List<OrderCandidate> getAll() {
         return orderCandidateMapper.selectList(null); // Retrieve all order candidates
     }
 

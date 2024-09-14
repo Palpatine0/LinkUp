@@ -11,7 +11,7 @@ import java.util.Map;
 
 @CrossOrigin
 @RestController
-@RequestMapping("/servantType")
+@RequestMapping("/servant-type")
 public class ServantTypeController {
 
     @Autowired
@@ -27,10 +27,10 @@ public class ServantTypeController {
         }
     }
 
-    @PostMapping("/select")
-    public R select(@RequestBody Map<String, Object> requestData) {
+    @PostMapping("/get")
+    public R get(@RequestBody Map<String, Object> requestData) {
         Long id = Long.parseLong(requestData.get("id").toString());
-        ServantType servantType = servantTypeService.select(id);
+        ServantType servantType = servantTypeService.get(id);
         if (servantType != null) {
             return R.ok().put("servantType", servantType);
         } else {
@@ -38,9 +38,9 @@ public class ServantTypeController {
         }
     }
 
-    @GetMapping("/selectAll")
-    public R selectAll() {
-        List<ServantType> servantTypes = servantTypeService.selectAll();
+    @GetMapping("/get-all")
+    public R getAll() {
+        List<ServantType> servantTypes = servantTypeService.getAll();
         return R.ok().put("servantTypeList", servantTypes);
     }
 

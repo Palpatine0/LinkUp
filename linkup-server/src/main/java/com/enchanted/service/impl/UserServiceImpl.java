@@ -60,12 +60,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     }
 
     @Override
-    public User select(Long id) {
+    public User get(Long id) {
         return userMapper.selectById(id);
     }
 
     @Override
-    public List<User> selectAll() {
+    public List<User> getAll() {
         return userMapper.selectList(null);
     }
 

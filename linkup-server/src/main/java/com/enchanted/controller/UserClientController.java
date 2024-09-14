@@ -10,7 +10,7 @@ import java.util.Map;
 
 @CrossOrigin
 @RestController
-@RequestMapping("/userClient")
+@RequestMapping("/user-client")
 public class UserClientController {
 
     @Autowired
@@ -26,10 +26,10 @@ public class UserClientController {
         }
     }
 
-    @PostMapping("/select")
-    public R find(@RequestBody Map<String, Object> requestData) {
+    @PostMapping("/get")
+    public R get(@RequestBody Map<String, Object> requestData) {
         Long id = Long.parseLong(requestData.get("id").toString());
-        UserClient userClient = userClientService.selectUserClient(id);
+        UserClient userClient = userClientService.get(id);
         if (userClient != null) {
             return R.ok().put("userClient", userClient);
         } else {
@@ -37,9 +37,9 @@ public class UserClientController {
         }
     }
 
-    @GetMapping("/selectAll")
-    public R findAll() {
-        return R.ok().put("userClientList", userClientService.selectAllUserClients());
+    @GetMapping("/get-all")
+    public R getAll() {
+        return R.ok().put("userClientList", userClientService.getAll());
     }
 
     @PostMapping("/update")

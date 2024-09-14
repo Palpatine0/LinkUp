@@ -10,9 +10,9 @@ public interface IOrderCandidateService extends IService<OrderCandidate> {
 
     boolean save(OrderCandidate orderCandidate);
 
-    OrderCandidate select(Long id);
+    OrderCandidate get(Long id);
 
-    List<OrderCandidate> selectAll();
+    List<OrderCandidate> getAll();
 
     boolean update(Long id, Map<String, Object> changes);
 

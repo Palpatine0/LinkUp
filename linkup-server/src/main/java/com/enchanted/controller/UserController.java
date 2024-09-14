@@ -36,10 +36,10 @@ public class UserController {
         }
     }
 
-    @PostMapping("/select")
-    public R find(@RequestBody Map<String, Object> requestData) {
-        Long id = Long.parseLong(requestData.get("id").toString());  // Extract the 'id' from request
-        User user = userService.select(id);
+    @PostMapping("/get")
+    public R get(@RequestBody Map<String, Object> requestData) {
+        Long id = Long.parseLong(requestData.get("id").toString());
+        User user = userService.get(id);
         if (user != null) {
             return R.ok().put("client", user);
         } else {
@@ -47,9 +47,9 @@ public class UserController {
         }
     }
 
-    @GetMapping("/selectAll")
-    public R findAll() {
-        return R.ok().put("clientList", userService.selectAll());
+    @GetMapping("/get-all")
+    public R getAll() {
+        return R.ok().put("clientList", userService.getAll());
     }
 
     @PostMapping("/update")

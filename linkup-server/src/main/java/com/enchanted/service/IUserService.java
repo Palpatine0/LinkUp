@@ -12,9 +12,9 @@ public interface IUserService extends IService<User> {
 
     boolean save(User user);
 
-    User select(Long id);
+    User get(Long id);
 
-    List<User> selectAll();
+    List<User> getAll();
 
     boolean update(Long id, Map<String, Object> changes);
 

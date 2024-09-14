@@ -26,12 +26,12 @@ public class UserServantServiceImpl extends ServiceImpl<UserServantMapper, UserS
     }
 
     @Override
-    public UserServant selectUserServant(Long id) {
+    public UserServant get(Long id) {
         return userServantMapper.selectById(id);
     }
 
     @Override
-    public List<UserServant> selectAllUserServants() {
+    public List<UserServant> getAll() {
         return userServantMapper.selectList(null);
     }
 

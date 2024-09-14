@@ -10,9 +10,9 @@ public interface IUserClientService extends IService<UserClient> {
 
     boolean saveUserClient(UserClient userClient);
 
-    UserClient selectUserClient(Long id);
+    UserClient get(Long id);
 
-    List<UserClient> selectAllUserClients();
+    List<UserClient> getAll();
 
     boolean updateUserClient(Long id, Map<String, Object> changes);
 

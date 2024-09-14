@@ -27,10 +27,10 @@ public class OrderController {
         }
     }
 
-    @PostMapping("/select")
-    public R select(@RequestBody Map<String, Object> requestData) {
+    @PostMapping("/get")
+    public R get(@RequestBody Map<String, Object> requestData) {
         Long id = Long.parseLong(requestData.get("id").toString());
-        Order order = orderService.select(id);
+        Order order = orderService.get(id);
         if (order != null) {
             return R.ok().put("order", order);
         } else {
@@ -38,9 +38,15 @@ public class OrderController {
         }
     }
 
-    @GetMapping("/selectAll")
-    public R select() {
-        List<Order> orders = orderService.selectAll();
+    @GetMapping("/get-all")
+    public R getAll() {
+        List<Order> orders = orderService.getAll();
+        return R.ok().put("orderList", orders);
+    }
+
+    @GetMapping("/get-all-by-user-id")
+    public R getAllByUserId() {
+        List<Order> orders = orderService.getAll();
         return R.ok().put("orderList", orders);
     }
 

@@ -11,7 +11,7 @@ import java.util.Map;
 
 @CrossOrigin
 @RestController
-@RequestMapping("/orderCandidate")
+@RequestMapping("/order-candidate")
 public class OrderCandidateController {
 
     @Autowired
@@ -27,10 +27,10 @@ public class OrderCandidateController {
         }
     }
 
-    @PostMapping("/select")
-    public R find(@RequestBody Map<String, Object> requestData) {
+    @PostMapping("/get")
+    public R get(@RequestBody Map<String, Object> requestData) {
         Long id = Long.parseLong(requestData.get("id").toString());
-        OrderCandidate orderCandidate = orderCandidateService.select(id);
+        OrderCandidate orderCandidate = orderCandidateService.get(id);
         if (orderCandidate != null) {
             return R.ok().put("orderCandidate", orderCandidate);
         } else {
@@ -38,9 +38,9 @@ public class OrderCandidateController {
         }
     }
 
-    @GetMapping("/selectAll")
-    public R findAll() {
-        List<OrderCandidate> orderCandidates = orderCandidateService.selectAll();
+    @GetMapping("/get-all")
+    public R getAll() {
+        List<OrderCandidate> orderCandidates = orderCandidateService.getAll();
         return R.ok().put("orderCandidateList", orderCandidates);
     }
 
