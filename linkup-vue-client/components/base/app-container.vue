@@ -1,5 +1,5 @@
 <template>
-<div :style="{ width: colPercentage, backgroundColor: color, padding: computedPadding }" class="container-common">
+<div :style="{ width: colPercentage, backgroundColor: color, padding: computedPadding }" class="container-common" @click="$emit('click')">
     <slot />
 </div>
 </template>

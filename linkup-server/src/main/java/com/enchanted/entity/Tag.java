@@ -6,7 +6,7 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-@TableName("tag")
+@TableName("`tag`")
 public class Tag {
 
     private Long id;

@@ -4,7 +4,7 @@ import com.enchanted.entity.Order;
 import com.enchanted.service.IOrderService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
-import com.enchanted.entity.R;
+import com.enchanted.vo.R;
 
 import java.util.List;
 import java.util.Map;

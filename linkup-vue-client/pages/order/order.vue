@@ -7,12 +7,11 @@
     </div>
 
     <!-- Search input -->
-    <app-input mode="text" placeholder="搜索" col="12" class="mb-2" />
-    <button @click="test">TEST</button>
+    <app-input mode="text" placeholder="搜索" col="12" class="mb-2"/>
 
     <!-- Orders Container using app-container -->
     <scroll-view :scroll-top="0" scroll-y="true" style="height: 80vh" class="mt-4">
-        <div class="container" v-for="order in orders" :key="order.id" @click="orderDetailRedirect(order.id)">
+        <div class="app-container" v-for="order in orders" :key="order.id" @click="orderDetailRedirect(order.id)">
             <div class="order-content">
                 <div style="width: 100%;">
                     <div style="display: flex; align-items: center; justify-content: space-between;">
@@ -34,6 +33,7 @@
 
 <script>
 import orderDetail from "./order-detail/order-detail.vue";
+import common from "../../utils/common";
 
 export default {
     data() {
@@ -59,63 +59,114 @@ export default {
         }
     },
     methods: {
-        getUserInfo(e) {
-            var openid = "";
-            uni.login({
-                provider: 'weixin',
-                success: (loginRes) => {
-                    const {code} = loginRes;
-                    uni.request({
-                        url: getApp().globalData.requestUrl + '/user/saveUserAuthInfo',
-                        method: 'POST',
-                        data: {
-                            code: code
-                        },
-                        success: (res) => {
-                            const dataSet = res.data.userInfo;
-                            if (dataSet.openid == null) {
-                                uni.showToast({title: '授权失败', icon: 'none'});
-                            } else {
-                                uni.setStorageSync('openid', dataSet.openid);
-                                uni.setStorageSync('sessionKey', dataSet.openid.session_key);
-                                uni.setStorageSync('unionid', dataSet.unionid);
-                                uni.setStorageSync('uid', dataSet.id);
-                                uni.getUserInfo({
-                                    success: function (res) {
-                                        var userInfo = res.userInfo
-                                        var nickname = userInfo.nickName
-                                        var avatar = userInfo.avatarUrl
-                                        uni.request({
-                                            url: getApp().globalData.requestUrl + '/client/saveUserInfo',
-                                            method: 'POST',
-                                            data: {
-                                                openid: dataSet.openid,
-                                                nickname: nickname,
-                                                avatar: avatar
-                                            },
-                                            success: (res) => {
-                                                uni.setStorageSync('nickname', nickname);
-                                                uni.setStorageSync('avatar', avatar);
-                                                const storageInfo = uni.getStorageInfoSync();
-                                                this.hasUserInfo = true
-                                            },
-                                        });
-                                    }
-                                })
-                                this.userProfileAvailable = true
-                                uni.showToast({title: '授权成功', icon: 'none'});
-                            }
-                        },
-                        fail: () => {
-                            uni.showToast({title: '请求失败', icon: 'none'});
+        checkUserInfo() {
+            const openid = uni.getStorageSync('openid');
+            if (common.isEmpty(openid)) {
+                this.userProfileAvailable = false
+                uni.showModal({
+                    title: '授权',
+                    content: '请授权您的个人信息以使用完整服务',
+                    showCancel: true,
+                    confirmText: '授权',
+                    success: (res) => {
+                        if (res.confirm) {
+                            this.getUserInfo();
                         }
-                    });
+                    }
+                });
+            } else {
+                this.userProfileAvailable = true
+            }
+        },
+        async getUserInfo(e) {
+            uni.showLoading({title: '加载中'});
+            const getUserLoginCode = () => {
+                return new Promise(
+                    (resolve, reject) => (
+                        uni.login({
+                            provider: 'weixin',
+                            success: (res) => {
+                                resolve(res.code)
+                            },
+                            fail: (err) => {
+                                uni.showToast({title: '用户Code获取失败', icon: 'none'});
+                            }
+                        })
+                    )
+                )
+            }
+            const userInfoCode = await getUserLoginCode()
+            const getUserAccountData = () => {
+                return new Promise(
+                    (resolve, reject) => {
+                        uni.request({
+                            url: getApp().globalData.requestUrl + '/client/saveAuth',
+                            method: 'POST',
+                            data: {
+                                code: userInfoCode
+                            },
+                            success: (res) => {
+                                if (res.data.auth == null) {
+                                    uni.showToast({title: '授权失败', icon: 'none'});
+                                } else {
+                                    resolve(res.data.auth)
+                                }
+                            },
+                            fail: () => {
+                                uni.showToast({title: '授权请求失败', icon: 'none'});
+                            }
+                        })
+                    }
+                )
+            }
+
+            const userAccountData = await getUserAccountData()
+            const getUserData = () => {
+                return new Promise(
+                    (resolve, reject) => {
+                        uni.getUserInfo({
+                            success: function (res) {
+                                resolve(res.userInfo)
+                            }
+                        })
+                    }
+                )
+            }
+
+            const userData = await getUserData()
+            uni.request({
+                url: getApp().globalData.requestUrl + '/client/update',
+                method: 'POST',
+                data: {
+                    // userAccountData
+                    id: userAccountData.id,
+                    openid: userAccountData.openid,
+                    sessionKey: userAccountData.openid.sessionKey,
+                    unionid: userAccountData.unionid,
+                    // userData
+                    role: 1,
+                    nickname: userData.nickName,
+                    gender: userData.gender,
+                    avatar: userData.avatarUrl,
+                },
+                success: (res) => {
+                    // userAccountData
+                    uni.setStorageSync('userId', userAccountData.id);
+                    uni.setStorageSync('openid', userAccountData.openid);
+                    uni.setStorageSync('sessionKey', userAccountData.openid.session_key);
+                    uni.setStorageSync('unionid', userAccountData.unionid);
+                    // userAccountData
+                    uni.setStorageSync('nickname', userData.nickName);
+                    uni.setStorageSync('avatar', userData.avatarUrl);
+                    uni.setStorageSync('gender', userData.gender);
+                    this.userProfileAvailable = true
+                    uni.hideLoading();
+                    uni.showToast({title: '授权成功', icon: 'none'});
                 },
                 fail: (err) => {
-                    uni.showToast({title: '登录失败', icon: 'none'});
+                    uni.showToast({title: '授权失败', icon: 'none'});
                 }
             });
-
         },
 
         orderInitiateRedirect() {
@@ -129,22 +180,6 @@ export default {
             });
         },
 
-        test() {
-            uni.request({
-                url: getApp().globalData.requestUrl + '/client/save',
-                method: 'POST',
-                data: {
-                    openid: "openid",
-                    nickname: "nickname"
-                },
-                success: (res) => {
-
-                },
-                fail: () => {
-                    uni.showToast({title: '请求失败', icon: 'none'});
-                }
-            });
-        }
     }
 };
 </script>

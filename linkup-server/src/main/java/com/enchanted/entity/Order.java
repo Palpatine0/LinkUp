@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
-@TableName("order")
+@TableName("`order`")
 public class Order {
 
     private Long id;

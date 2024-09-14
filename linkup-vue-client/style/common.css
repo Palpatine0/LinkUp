@@ -58,11 +58,36 @@
     height: 100vh;
 }
 
-.container {
+.app-container {
     padding: 15px;
     border-radius: 15px;
     background-color: #f3f2f6; /* Shared background for containers */
     box-sizing: border-box; /* Ensure padding and border are included in width */
     margin-top: 10px;
     margin-bottom: 10px;
+}
+
+
+.app-input {
+    padding: 10px;
+    border-radius: 10px;
+    background-color: #f3f2f6;
+    box-sizing: border-box;
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.app-button{
+    background-color: #007BFF;
+    color: white;
+    text-align: center;
+    display: inline-block; /* Makes it behave like a button */
+    box-sizing: border-box;
+    cursor: pointer; /* Makes it feel like a button */
+    margin: 10px 0;
+    width: 100%; /* Default width is 100% but can be overridden */
+    padding: 12px 24px;
+    font-size: 18px;
+    height: 45px;
+    border-radius: 5px;
 }

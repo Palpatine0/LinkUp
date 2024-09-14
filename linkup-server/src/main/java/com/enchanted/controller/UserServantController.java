@@ -2,7 +2,7 @@ package com.enchanted.controller;
 
 import com.enchanted.entity.UserServant;
 import com.enchanted.service.IUserServantService;
-import com.enchanted.entity.R;
+import com.enchanted.vo.R;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 

@@ -1,4 +1,4 @@
-package com.enchanted.entity;
+package com.enchanted.vo;
 
 import java.util.HashMap;
 import java.util.Map;

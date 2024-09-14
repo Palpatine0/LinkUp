@@ -4,7 +4,7 @@
     <app-title type="h1" bold="true">{{ order.title }}</app-title>
 
     <!-- Price and Respondent Container -->
-    <div class="container"  style="background-color: white !important;">
+    <div class="app-container" style="background-color: white !important;">
         <div class="price-respondent-container">
             <!-- Price Section -->
             <div class="price-section">

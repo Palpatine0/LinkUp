@@ -7,7 +7,7 @@ import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
-@TableName("user")
+@TableName("`user`")
 public class User {
 
     private Long id;

@@ -1,11 +1,11 @@
 <template>
 <div class="page">
     <app-title type="h1" bold="true">选择你的服务者类型</app-title>
-    <span @click="orderInitiateRedirect(1)">
-    <app-container color="#f3f2f6" col="12">
-        导游
-    </app-container>
-    </span>
+    <div v-for="item in servantTypeList" :key="item.id">
+        <app-container color="#f3f2f6" col="12" @click="orderInitiateRedirect(item.id)">
+            <app-title type="h1">{{ item.name }}</app-title>
+        </app-container>
+    </div>
 </div>
 </template>
 
@@ -13,11 +13,25 @@
 export default {
     name: "order-servant-selection",
     data() {
-        return {}
+        return {
+            servantTypeList: {},
+        }
+    },
+    onLoad() {
+        this.getServantTypeList()
     },
     methods: {
+        getServantTypeList() {
+            uni.request({
+                url: getApp().globalData.requestUrl + '/servantType/selectAll',
+                method: 'GET',
+                data: {},
+                success: (res) => {
+                    this.servantTypeList = res.data.servantTypeList
+                },
+            });
+        },
         orderInitiateRedirect(servantType) {
-            console.log("orderInitiateRedirect(servantType) {")
             uni.navigateTo({
                 url: '/pages/order/order-initiate/order-initiate?servantType=' + servantType
             });
