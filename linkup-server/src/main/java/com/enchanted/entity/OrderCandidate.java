@@ -14,14 +14,11 @@ public class OrderCandidate {
     @TableField("order_id")
     private Long orderId;
 
-    @TableField("client_id")
-    private Long clientId;
-
     @TableField("servant_id")
     private Long servantId;
 
     @TableField("is_closed")
-    private Long isClosed;
+    private Boolean isClosed;
 
     @TableField("is_deleted")
     private Boolean isDeleted;

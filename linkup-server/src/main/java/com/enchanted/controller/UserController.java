@@ -1,7 +1,7 @@
 package com.enchanted.controller;
 
-import com.enchanted.entity.Client;
-import com.enchanted.service.IClientService;
+import com.enchanted.entity.User;
+import com.enchanted.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.enchanted.entity.R;
@@ -12,23 +12,23 @@ import java.util.Map;
 @CrossOrigin
 @RestController
 @RequestMapping("/client")
-public class ClientController {
+public class UserController {
 
     @Autowired
-    private IClientService clientService;
+    private IUserService userService;
 
     @PostMapping("saveAuth")
     public R saveUserAuthInfo(@RequestBody Map<String, String> dto) {
         String code = dto.get("code");
-        Client clientAuth = clientService.saveUserAuthInfo(code);
+        User userAuth = userService.saveUserAuthInfo(code);
         Map<String, Object> map = new HashMap<>();
-        map.put("auth", clientAuth);
+        map.put("auth", userAuth);
         return R.ok(map);
     }
 
     @PostMapping("/save")
-    public R save(@RequestBody Client client) {
-        boolean isSaved = clientService.save(client);
+    public R save(@RequestBody User user) {
+        boolean isSaved = userService.save(user);
         if (isSaved) {
             return R.ok("添加成功");
         } else {
@@ -39,9 +39,9 @@ public class ClientController {
     @PostMapping("/select")
     public R find(@RequestBody Map<String, Object> requestData) {
         Long id = Long.parseLong(requestData.get("id").toString());  // Extract the 'id' from request
-        Client client = clientService.select(id);
-        if (client != null) {
-            return R.ok().put("client", client);
+        User user = userService.select(id);
+        if (user != null) {
+            return R.ok().put("client", user);
         } else {
             return R.error("查找失败");
         }
@@ -49,7 +49,7 @@ public class ClientController {
 
     @GetMapping("/selectAll")
     public R findAll() {
-        return R.ok().put("clientList", clientService.selectAll());
+        return R.ok().put("clientList", userService.selectAll());
     }
 
     @PostMapping("/update")
@@ -57,7 +57,7 @@ public class ClientController {
         Long id = Long.parseLong(requestData.get("id").toString());
         requestData.remove("id");
 
-        boolean isUpdated = clientService.update(id, requestData);
+        boolean isUpdated = userService.update(id, requestData);
         if (isUpdated) {
             return R.ok("更新成功");
         } else {
@@ -69,7 +69,7 @@ public class ClientController {
     @PostMapping("/delete")
     public R delete(@RequestBody Map<String, Object> requestData) {
         Long id = Long.parseLong(requestData.get("id").toString());
-        boolean isDeleted = clientService.delete(id);
+        boolean isDeleted = userService.delete(id);
         if (isDeleted) {
             return R.ok("删除成功");
         } else {

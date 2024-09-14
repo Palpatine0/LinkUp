@@ -1,18 +1,20 @@
 package com.enchanted.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.enchanted.entity.Servant;
+import com.enchanted.entity.User;
 
 import java.util.List;
 import java.util.Map;
 
-public interface IServantService extends IService<Servant> {
+public interface IUserService extends IService<User> {
 
-    boolean save(Servant servant);
+    User saveUserAuthInfo(String code);
 
-    Servant select(Long id);
+    boolean save(User user);
 
-    List<Servant> selectAll();
+    User select(Long id);
+
+    List<User> selectAll();
 
     boolean update(Long id, Map<String, Object> changes);
 

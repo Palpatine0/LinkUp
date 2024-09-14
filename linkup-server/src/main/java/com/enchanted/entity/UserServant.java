@@ -6,15 +6,15 @@ import lombok.Data;
 import java.util.Date;
 
 @Data
-@TableName("servant_type")
-public class ServantType {
+@TableName("user_servant")
+public class UserServant {
 
     private Long id;
 
-    private String name;
+    @TableField("user_id")
+    private Long userId;
 
-    @TableField("servant_id")
-    private Long servantId;
+    private String bio;
 
     @TableField("is_deleted")
     private Boolean isDeleted;

@@ -1,7 +1,6 @@
 package com.enchanted.service.impl;
 
-import com.enchanted.entity.Client;
-import com.enchanted.entity.Order;
+import com.enchanted.entity.User;
 import com.enchanted.mapper.ServantTypeMapper;
 import com.enchanted.entity.ServantType;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -43,7 +42,7 @@ public class ServantTypeServiceImpl extends ServiceImpl<ServantTypeMapper, Serva
         }
 
         changes.forEach((field, value) -> {
-            Field classField = ReflectionUtils.findField(Client.class, field);
+            Field classField = ReflectionUtils.findField(User.class, field);
             if (classField != null) {
                 classField.setAccessible(true);
                 // Check for type mismatch and convert if necessary

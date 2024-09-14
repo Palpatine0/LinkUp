@@ -2,10 +2,10 @@ package com.enchanted.service.impl;
 
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.enchanted.mapper.ClientMapper;
-import com.enchanted.entity.Client;
+import com.enchanted.entity.User;
+import com.enchanted.mapper.UserMapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.enchanted.service.IClientService;
+import com.enchanted.service.IUserService;
 import com.enchanted.util.WeChatUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,14 +17,14 @@ import java.util.List;
 import java.util.Map;
 
 @Service
-public class ClientServiceImpl extends ServiceImpl<ClientMapper, Client> implements IClientService {
+public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserService {
 
     @Autowired
-    private ClientMapper clientMapper;
+    private UserMapper userMapper;
 
     @Override
-    public Client saveUserAuthInfo(String code) {
-        Client user = new Client();
+    public User saveUserAuthInfo(String code) {
+        User user = new User();
 
         JSONObject object = WeChatUtil.getOpenId(code);
         String openid = object.get("openid").toString();
@@ -40,57 +40,57 @@ public class ClientServiceImpl extends ServiceImpl<ClientMapper, Client> impleme
         user.setUnionid(unionId);
         user.setCreatedAt(new Date());
 
-        Client existingClient = clientMapper.selectOne(new QueryWrapper<Client>().eq("openid", openid));
-        if (existingClient != null) {
-            existingClient.setSessionKey(sessionkey);
-            existingClient.setUnionid(unionId);
-            clientMapper.updateById(existingClient);
-            user.setId(existingClient.getId());
+        User existingUser = userMapper.selectOne(new QueryWrapper<User>().eq("openid", openid));
+        if (existingUser != null) {
+            existingUser.setSessionKey(sessionkey);
+            existingUser.setUnionid(unionId);
+            userMapper.updateById(existingUser);
+            user.setId(existingUser.getId());
         } else {
-            clientMapper.insert(user);
+            userMapper.insert(user);
             user.setId(user.getId());
         }
         return user;
     }
 
     @Override
-    public boolean save(Client client) {
-        int insert = clientMapper.insert(client);
+    public boolean save(User user) {
+        int insert = userMapper.insert(user);
         return retBool(insert);
     }
 
     @Override
-    public Client select(Long id) {
-        return clientMapper.selectById(id);
+    public User select(Long id) {
+        return userMapper.selectById(id);
     }
 
     @Override
-    public List<Client> selectAll() {
-        return clientMapper.selectList(null);
+    public List<User> selectAll() {
+        return userMapper.selectList(null);
     }
 
     @Override
     public boolean update(Long id, Map<String, Object> changes) {
-        Client client = clientMapper.selectById(id);
-        if (client == null) {
+        User user = userMapper.selectById(id);
+        if (user == null) {
             return false;
         }
 
         changes.forEach((field, value) -> {
-            Field classField = ReflectionUtils.findField(Client.class, field);
+            Field classField = ReflectionUtils.findField(User.class, field);
             if (classField != null) {
                 classField.setAccessible(true);
                 // Check for type mismatch and convert if necessary
                 if (!classField.getType().isAssignableFrom(value.getClass())) {
                     Object convertedValue = convertValueToRequiredType(value, classField.getType());
-                    ReflectionUtils.setField(classField, client, convertedValue);
+                    ReflectionUtils.setField(classField, user, convertedValue);
                 } else {
-                    ReflectionUtils.setField(classField, client, value);
+                    ReflectionUtils.setField(classField, user, value);
                 }
             }
         });
 
-        int updated = clientMapper.updateById(client);
+        int updated = userMapper.updateById(user);
         return retBool(updated);
     }
 
@@ -105,7 +105,7 @@ public class ClientServiceImpl extends ServiceImpl<ClientMapper, Client> impleme
 
     @Override
     public boolean delete(Long id) {
-        int deleted = clientMapper.deleteById(id);
+        int deleted = userMapper.deleteById(id);
         return retBool(deleted);
     }
 }
