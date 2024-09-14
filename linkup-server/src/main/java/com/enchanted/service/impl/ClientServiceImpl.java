@@ -1,14 +1,18 @@
 package com.enchanted.service.impl;
 
+import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.enchanted.mapper.ClientMapper;
 import com.enchanted.entity.Client;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.enchanted.service.IClientService;
+import com.enchanted.util.WeChatUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -19,18 +23,49 @@ public class ClientServiceImpl extends ServiceImpl<ClientMapper, Client> impleme
     private ClientMapper clientMapper;
 
     @Override
+    public Client saveUserAuthInfo(String code) {
+        Client user = new Client();
+
+        JSONObject object = WeChatUtil.getOpenId(code);
+        String openid = object.get("openid").toString();
+        String sessionkey = object.get("session_key").toString();
+        String unionId = "";
+        String id = "";
+        if (object.get("unionid") != null) {
+            unionId = object.get("unionid").toString();
+        }
+
+        user.setOpenid(openid);
+        user.setSessionKey(sessionkey);
+        user.setUnionid(unionId);
+        user.setCreatedAt(new Date());
+
+        Client existingClient = clientMapper.selectOne(new QueryWrapper<Client>().eq("openid", openid));
+        if (existingClient != null) {
+            existingClient.setSessionKey(sessionkey);
+            existingClient.setUnionid(unionId);
+            clientMapper.updateById(existingClient);
+            user.setId(existingClient.getId());
+        } else {
+            clientMapper.insert(user);
+            user.setId(user.getId());
+        }
+        return user;
+    }
+
+    @Override
     public boolean save(Client client) {
         int insert = clientMapper.insert(client);
         return retBool(insert);
     }
 
     @Override
-    public Client find(Long id) {
+    public Client select(Long id) {
         return clientMapper.selectById(id);
     }
 
     @Override
-    public List<Client> findAll() {
+    public List<Client> selectAll() {
         return clientMapper.selectList(null);
     }
 

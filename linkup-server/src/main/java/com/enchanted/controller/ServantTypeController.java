@@ -27,10 +27,10 @@ public class ServantTypeController {
         }
     }
 
-    @PostMapping("/find")
-    public R find(@RequestBody Map<String, Object> requestData) {
+    @PostMapping("/select")
+    public R select(@RequestBody Map<String, Object> requestData) {
         Long id = Long.parseLong(requestData.get("id").toString());
-        ServantType servantType = servantTypeService.find(id);
+        ServantType servantType = servantTypeService.select(id);
         if (servantType != null) {
             return R.ok().put("servantType", servantType);
         } else {
@@ -38,28 +38,23 @@ public class ServantTypeController {
         }
     }
 
-    @GetMapping("/findAll")
-    public R findAll() {
-        List<ServantType> servantTypes = servantTypeService.findAll();
-        return R.ok().put("servantTypes", servantTypes);
+    @GetMapping("/selectAll")
+    public R selectAll() {
+        List<ServantType> servantTypes = servantTypeService.selectAll();
+        return R.ok().put("servantTypeList", servantTypes);
     }
 
     @PostMapping("/update")
     public R update(@RequestBody Map<String, Object> requestData) {
         Long id = Long.parseLong(requestData.get("id").toString());
-        ServantType servantType = servantTypeService.find(id);
+        requestData.remove("id");
 
-        if (servantType != null) {
-            if (requestData.containsKey("type_name")) {
-                servantType.setTypeName(requestData.get("type_name").toString());
-            }
-
-            boolean isUpdated = servantTypeService.update(servantType);
-            if (isUpdated) {
-                return R.ok("更新成功");
-            }
+        boolean isUpdated = servantTypeService.update(id, requestData);
+        if (isUpdated) {
+            return R.ok("更新成功");
+        } else {
+            return R.error("更新失败");
         }
-        return R.error("更新失败");
     }
 
     @PostMapping("/delete")

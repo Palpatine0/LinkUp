@@ -25,12 +25,12 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     }
 
     @Override
-    public Order find(Long id) {
+    public Order select(Long id) {
         return orderMapper.selectById(id);
     }
 
     @Override
-    public List<Order> findAll() {
+    public List<Order> selectAll() {
         return orderMapper.selectList(null); // Retrieve all orders
     }
 

@@ -14,9 +14,6 @@ public class ServantType {
     @TableField("type_name")
     private String typeName;
 
-    @TableField("servant_id")
-    private Long servantId;
-
     @TableField("is_deleted")
     private Boolean isDeleted;
 

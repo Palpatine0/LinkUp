@@ -27,10 +27,10 @@ public class OrderCandidateController {
         }
     }
 
-    @PostMapping("/find")
+    @PostMapping("/select")
     public R find(@RequestBody Map<String, Object> requestData) {
         Long id = Long.parseLong(requestData.get("id").toString());
-        OrderCandidate orderCandidate = orderCandidateService.find(id);
+        OrderCandidate orderCandidate = orderCandidateService.select(id);
         if (orderCandidate != null) {
             return R.ok().put("orderCandidate", orderCandidate);
         } else {
@@ -38,10 +38,10 @@ public class OrderCandidateController {
         }
     }
 
-    @GetMapping("/findAll")
+    @GetMapping("/selectAll")
     public R findAll() {
-        List<OrderCandidate> orderCandidates = orderCandidateService.findAll();
-        return R.ok().put("orderCandidates", orderCandidates);
+        List<OrderCandidate> orderCandidates = orderCandidateService.selectAll();
+        return R.ok().put("orderCandidateList", orderCandidates);
     }
 
     @PostMapping("/update")

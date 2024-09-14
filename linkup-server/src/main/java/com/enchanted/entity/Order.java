@@ -47,8 +47,17 @@ public class Order {
     @TableField("candidate_count")
     private Integer candidateCount;
 
-    private Integer status;
+    @TableField("done_status")
+    private Integer doneStatus;
 
+    @TableField("processing_status")
+    private Integer processingStatus;
+
+    @TableField("effective_at")
+    private Date effectiveAt;
+
+    @TableField("expire_at")
+    private Date expireAt;
 
     @TableField("completed_at")
     private Date completedAt;

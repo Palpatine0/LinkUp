@@ -8,11 +8,13 @@ import java.util.Map;
 
 public interface IClientService extends IService<Client> {
 
+    Client saveUserAuthInfo(String code);
+
     boolean save(Client client);
 
-    Client find(Long id);
+    Client select(Long id);
 
-    List<Client> findAll();
+    List<Client> selectAll();
 
     boolean update(Long id, Map<String, Object> changes);
 

@@ -27,10 +27,10 @@ public class ServantController {
         }
     }
 
-    @PostMapping("/find")
-    public R find(@RequestBody Map<String, Object> requestData) {
+    @PostMapping("/select")
+    public R select(@RequestBody Map<String, Object> requestData) {
         Long id = Long.parseLong(requestData.get("id").toString());
-        Servant servant = servantService.find(id);
+        Servant servant = servantService.select(id);
         if (servant != null) {
             return R.ok().put("servant", servant);
         } else {
@@ -38,10 +38,10 @@ public class ServantController {
         }
     }
 
-    @GetMapping("/findAll")
-    public R findAll() {
-        List<Servant> servants = servantService.findAll();
-        return R.ok().put("servants", servants);
+    @GetMapping("/selectAll")
+    public R selectAll() {
+        List<Servant> servants = servantService.selectAll();
+        return R.ok().put("servantList", servants);
     }
 
     @PostMapping("/update")

@@ -6,6 +6,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.enchanted.entity.R;
 
+import java.util.HashMap;
 import java.util.Map;
 
 @CrossOrigin
@@ -15,6 +16,15 @@ public class ClientController {
 
     @Autowired
     private IClientService clientService;
+
+    @PostMapping("saveAuth")
+    public R saveUserAuthInfo(@RequestBody Map<String, String> dto) {
+        String code = dto.get("code");
+        Client clientAuth = clientService.saveUserAuthInfo(code);
+        Map<String, Object> map = new HashMap<>();
+        map.put("auth", clientAuth);
+        return R.ok(map);
+    }
 
     @PostMapping("/save")
     public R save(@RequestBody Client client) {
@@ -26,10 +36,10 @@ public class ClientController {
         }
     }
 
-    @PostMapping("/find")
+    @PostMapping("/select")
     public R find(@RequestBody Map<String, Object> requestData) {
         Long id = Long.parseLong(requestData.get("id").toString());  // Extract the 'id' from request
-        Client client = clientService.find(id);
+        Client client = clientService.select(id);
         if (client != null) {
             return R.ok().put("client", client);
         } else {
@@ -37,9 +47,9 @@ public class ClientController {
         }
     }
 
-    @GetMapping("/findAll")
+    @GetMapping("/selectAll")
     public R findAll() {
-        return R.ok().put("clients", clientService.findAll());
+        return R.ok().put("clientList", clientService.selectAll());
     }
 
     @PostMapping("/update")

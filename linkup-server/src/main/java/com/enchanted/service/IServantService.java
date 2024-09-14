@@ -10,9 +10,9 @@ public interface IServantService extends IService<Servant> {
 
     boolean save(Servant servant);
 
-    Servant find(Long id);
+    Servant select(Long id);
 
-    List<Servant> findAll();
+    List<Servant> selectAll();
 
     boolean update(Long id, Map<String, Object> changes);
 

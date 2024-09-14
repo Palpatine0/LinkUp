@@ -26,12 +26,12 @@ public class ServantServiceImpl extends ServiceImpl<ServantMapper, Servant> impl
     }
 
     @Override
-    public Servant find(Long id) {
+    public Servant select(Long id) {
         return servantMapper.selectById(id);
     }
 
     @Override
-    public List<Servant> findAll() {
+    public List<Servant> selectAll() {
         return servantMapper.selectList(null); // Retrieve all servants
     }
 

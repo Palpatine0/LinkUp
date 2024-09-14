@@ -10,9 +10,9 @@ public interface IOrderService extends IService<Order> {
 
     boolean save(Order order);
 
-    Order find(Long id);
+    Order select(Long id);
 
-    List<Order> findAll();
+    List<Order> selectAll();
 
     boolean update(Long id, Map<String, Object> changes);
 
