@@ -3,66 +3,85 @@
     <!-- Heading section -->
     <div style="display: flex; align-items: center; justify-content: space-between;">
         <app-title type="h1" bold="true">我的订单</app-title>
-        <img src="/static/order/add.svg" style="width: 28px; height: 28px;" @click="orderInitiateRedirect"/>
+        <img src="/static/order/add.svg" style="width: 28px; height: 28px;" @click="orderInitiateRedirect" />
     </div>
 
     <!-- Search input -->
-    <app-input mode="text" placeholder="搜索" col="12" class="mb-2"/>
+    <app-input
+        mode="text"
+        placeholder="搜索"
+        col="12"
+        class="mb-2"
+        v-model="searchKeyword"
+        @input="onSearchInput"
+    />
 
     <!-- Orders Container using app-container -->
-    <scroll-view :scroll-top="0" scroll-y="true" style="height: 80vh" class="mt-4">
-        <div class="app-container" v-for="order in orders" :key="order.id" @click="orderDetailRedirect(order.id)">
+    <scroll-view
+        :scroll-top="0"
+        scroll-y="true"
+        style="height: 80vh"
+        class="mt-4"
+        @scrolltolower="onReachBottom"
+    >
+        <div
+            class="app-container"
+            v-for="order in orderList"
+            :key="order.id"
+            @click="orderDetailRedirect(order.id)"
+        >
             <div class="order-content">
                 <div style="width: 100%;">
                     <div style="display: flex; align-items: center; justify-content: space-between;">
                         <app-title bold="true" type="h3">{{ order.title }}</app-title>
-                        <span :class="['status-dot', order.completeStatus === 1 ? 'green-dot' : 'red-dot']"></span>
+                        <span :class="['status-dot', order.status === 1 ? 'green-dot' : 'red-dot']"></span>
                     </div>
                     <div class="order-info">
                         <div class="respondent-count">
-                            抢单人数: {{ order.respondentCount }}
+                            抢单人数: {{ order.candidateCount }}
                         </div>
-                        <span style="font-size: 14px;color: gray;">{{ order.createTime }}</span>
+                        <span style="font-size: 14px; color: gray;">{{ order.createdAt }}</span>
                     </div>
                 </div>
             </div>
         </div>
+        <div v-if="loading" style="color: gainsboro; margin-left: 10px;">加载中...</div>
+        <!-- No More Data Message -->
+        <div v-else-if="!hasMore" style="color: gainsboro; margin-left: 10px;">已加载全部数据</div>
     </scroll-view>
 </div>
 </template>
 
 <script>
-import orderDetail from "./order-detail/order-detail.vue";
-import common from "../../utils/common";
+import orderDetail from './order-detail/order-detail.vue';
+import common from '../../utils/common';
+import paginationMixin from '../../utils/paginationMixin'; // Adjust the path as necessary
 
 export default {
+    mixins: [paginationMixin],
     data() {
         return {
             userProfileAvailable: false,
-            orders: [
-                {id: 1, title: 'VDqef', respondentCount: 143, createTime: '2024-10-10', completeStatus: 0},
-                {id: 2, title: 'Gqef', respondentCount: 89, createTime: '2024-06-19', completeStatus: 1},
-                {id: 3, title: 'JGwefew', respondentCount: 89, createTime: '2024-06-19', completeStatus: 1},
-                {id: 4, title: 'Fwdw', respondentCount: 89, createTime: '2024-06-19', completeStatus: 0},
-                {id: 5, title: 'Bwqeaefcdc', respondentCount: 89, createTime: '2024-06-19', completeStatus: 1},
-                {id: 6, title: 'Jrrbhv', respondentCount: 89, createTime: '2024-06-19', completeStatus: 0},
-                {id: 7, title: 'Vhncxb', respondentCount: 89, createTime: '2024-06-19', completeStatus: 0},
-            ]
+            orderList: [],
+            searchKeyword: '',
         };
     },
     onLoad() {
-        this.checkUserInfo()
+        this.checkUserInfo();
+        this.resetPagination();
+        this.getOrderList();
     },
     computed: {
         orderDetail() {
-            return orderDetail
-        }
+            return orderDetail;
+        },
     },
     methods: {
+        // User handling
         checkUserInfo() {
             const openid = uni.getStorageSync('openid');
             if (common.isEmpty(openid)) {
-                this.userProfileAvailable = false
+                this.userProfileAvailable = false;
                 uni.showModal({
                     title: '授权',
                     content: '请授权您的个人信息以使用完整服务',
@@ -72,70 +91,64 @@ export default {
                         if (res.confirm) {
                             this.getUserInfo();
                         }
-                    }
+                    },
                 });
             } else {
-                this.userProfileAvailable = true
+                this.userProfileAvailable = true;
             }
         },
         async getUserInfo(e) {
-            uni.showLoading({title: '加载中'});
+            uni.showLoading({ title: '加载中' });
             const getUserLoginCode = () => {
-                return new Promise(
-                    (resolve, reject) => (
-                        uni.login({
-                            provider: 'weixin',
-                            success: (res) => {
-                                resolve(res.code)
-                            },
-                            fail: (err) => {
-                                uni.showToast({title: '用户Code获取失败', icon: 'none'});
-                            }
-                        })
-                    )
-                )
-            }
-            const userInfoCode = await getUserLoginCode()
+                return new Promise((resolve) =>
+                    uni.login({
+                        provider: 'weixin',
+                        success: (res) => {
+                            resolve(res.code);
+                        },
+                        fail: () => {
+                            uni.showToast({ title: '用户Code获取失败', icon: 'none' });
+                        },
+                    })
+                );
+            };
+            const userInfoCode = await getUserLoginCode();
             const getUserAccountData = () => {
-                return new Promise(
-                    (resolve, reject) => {
-                        uni.request({
-                            url: getApp().globalData.requestUrl + '/client/saveAuth',
-                            method: 'POST',
-                            data: {
-                                code: userInfoCode
-                            },
-                            success: (res) => {
-                                if (res.data.auth == null) {
-                                    uni.showToast({title: '授权失败', icon: 'none'});
-                                } else {
-                                    resolve(res.data.auth)
-                                }
-                            },
-                            fail: () => {
-                                uni.showToast({title: '授权请求失败', icon: 'none'});
+                return new Promise((resolve) => {
+                    uni.request({
+                        url: getApp().globalData.requestUrl + '/user/save-auth-info',
+                        method: 'POST',
+                        data: {
+                            code: userInfoCode,
+                        },
+                        success: (res) => {
+                            if (res.data.auth == null) {
+                                uni.showToast({ title: '授权失败', icon: 'none' });
+                            } else {
+                                resolve(res.data.auth);
                             }
-                        })
-                    }
-                )
-            }
+                        },
+                        fail: () => {
+                            uni.showToast({ title: '授权请求失败', icon: 'none' });
+                        },
+                    });
+                });
+            };
 
-            const userAccountData = await getUserAccountData()
+            const userAccountData = await getUserAccountData();
             const getUserData = () => {
-                return new Promise(
-                    (resolve, reject) => {
-                        uni.getUserInfo({
-                            success: function (res) {
-                                resolve(res.userInfo)
-                            }
-                        })
-                    }
-                )
-            }
+                return new Promise((resolve) => {
+                    uni.getUserInfo({
+                        success: function (res) {
+                            resolve(res.userInfo);
+                        },
+                    });
+                });
+            };
 
-            const userData = await getUserData()
+            const userData = await getUserData();
             uni.request({
-                url: getApp().globalData.requestUrl + '/client/update',
+                url: getApp().globalData.requestUrl + '/user/update',
                 method: 'POST',
                 data: {
                     // userAccountData
@@ -149,38 +162,107 @@ export default {
                     gender: userData.gender,
                     avatar: userData.avatarUrl,
                 },
-                success: (res) => {
+                success: () => {
                     // userAccountData
                     uni.setStorageSync('userId', userAccountData.id);
                     uni.setStorageSync('openid', userAccountData.openid);
                     uni.setStorageSync('sessionKey', userAccountData.openid.session_key);
                     uni.setStorageSync('unionid', userAccountData.unionid);
-                    // userAccountData
+                    // userData
                     uni.setStorageSync('nickname', userData.nickName);
                     uni.setStorageSync('avatar', userData.avatarUrl);
                     uni.setStorageSync('gender', userData.gender);
-                    this.userProfileAvailable = true
+                    this.userProfileAvailable = true;
                     uni.hideLoading();
-                    uni.showToast({title: '授权成功', icon: 'none'});
+                    uni.showToast({ title: '授权成功', icon: 'none' });
                 },
-                fail: (err) => {
-                    uni.showToast({title: '授权失败', icon: 'none'});
-                }
+                fail: () => {
+                    uni.showToast({ title: '授权失败', icon: 'none' });
+                },
             });
         },
 
+        // Fetch order list
+        getOrderList() {
+            if (this.loading || !this.hasMore) return;
+
+            this.loading = true;
+
+            const { url, method, data } = this.buildApiParams();
+
+            uni.request({
+                url: url,
+                method: method,
+                data: data,
+                success: (res) => {
+                    const orders = res.data.orderList;
+                    if (this.page === 1) {
+                        this.orderList = [];
+                    }
+                    if (orders.length < this.size) {
+                        this.hasMore = false;
+                    }
+                    // Append new orders to the list
+                    this.orderList = this.orderList.concat(orders);
+                    // Process 'createdAt' fields
+                    this.orderList.forEach((order) => {
+                        order.createdAt = order.createdAt ? this.$common.stampToTime(order.createdAt) : '';
+                    });
+                    this.page += 1;
+                },
+                complete: () => {
+                    this.loading = false;
+                },
+            });
+        },
+
+        // Build API parameters based on search keyword
+        buildApiParams() {
+            let url = '';
+            let method = 'GET';
+            let data = {};
+
+            if (this.searchKeyword && this.searchKeyword.trim() !== '') {
+                // Use the search endpoint
+                url = getApp().globalData.requestUrl + '/order/search';
+                data = {
+                    keyword: this.searchKeyword,
+                    page: this.page,
+                    size: this.size,
+                };
+            } else {
+                // Use the get-all-by-user-id endpoint
+                url = getApp().globalData.requestUrl + '/order/get-all-by-user-id';
+                method = 'POST';
+                data = {
+                    userId: uni.getStorageSync('userId'),
+                    page: this.page,
+                    size: this.size,
+                };
+            }
+
+            return { url, method, data };
+        },
+
+        // Handle search input changes
+        onSearchInput() {
+            console.log("onSearchInput() {onSearchInput() {onSearchInput() {")
+            this.resetPagination();
+            this.getOrderList();
+        },
+
+        // Redirects
         orderInitiateRedirect() {
             uni.navigateTo({
-                url: '/pages/order/order-servant-selection/order-servant-selection'
+                url: '/pages/order/order-servant-selection/order-servant-selection',
             });
         },
         orderDetailRedirect(oid) {
             uni.navigateTo({
-                url: '/pages/order/order-detail/order-detail?oid=' + oid
+                url: '/pages/order/order-detail/order-detail?oid=' + oid,
             });
         },
-
-    }
+    },
 };
 </script>
 

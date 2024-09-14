@@ -1,5 +1,6 @@
 package com.enchanted.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.enchanted.entity.Order;
 
@@ -8,12 +9,15 @@ import java.util.Map;
 
 public interface IOrderService extends IService<Order> {
 
+    Page<Order> search(String keyword, int page, int size);
+
     boolean save(Order order);
 
     Order get(Long id);
 
-    List<Order> getAll();
-    List<Order> selectAllByUserId();
+    Page<Order> getAll(int page, int size);
+
+    Page<Order> getAllByUserId(Long userId, int page, int size);
 
     boolean update(Long id, Map<String, Object> changes);
 

@@ -23,7 +23,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     private UserMapper userMapper;
 
     @Override
-    public User saveUserAuthInfo(String code) {
+    public User saveAuthInfo(String code) {
         User user = new User();
 
         JSONObject object = WeChatUtil.getOpenId(code);

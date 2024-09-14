@@ -23,7 +23,7 @@ export default {
     methods: {
         getServantTypeList() {
             uni.request({
-                url: getApp().globalData.requestUrl + '/servant-type/select-all',
+                url: getApp().globalData.requestUrl + '/servant-type/get-all',
                 method: 'GET',
                 data: {},
                 success: (res) => {
@@ -36,6 +36,7 @@ export default {
                 url: '/pages/order/order-initiate/order-initiate?servantType=' + servantType
             });
         },
+
     }
 }
 </script>

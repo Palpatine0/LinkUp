@@ -1,5 +1,7 @@
 package com.enchanted.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.enchanted.entity.User;
 import com.enchanted.mapper.OrderMapper;
 import com.enchanted.entity.Order;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -18,6 +21,16 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
     @Autowired
     private OrderMapper orderMapper;
+
+    @Override
+    public Page<Order> search(String keyword, int page, int size) {
+        QueryWrapper<Order> queryWrapper = new QueryWrapper<>();
+        queryWrapper
+            .eq("is_deleted", 0)
+            .like("title", keyword)
+            .orderByDesc("created_at");
+        return getOrderPage(queryWrapper, page, size);
+    }
 
     @Override
     public boolean save(Order order) {
@@ -30,8 +43,22 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     }
 
     @Override
-    public List<Order> getAll() {
-        return orderMapper.selectList(null); // Retrieve all orders
+    public Page<Order> getAll(int page, int size) {
+        QueryWrapper<Order> queryWrapper = new QueryWrapper<>();
+        queryWrapper
+            .eq("is_deleted", 0)
+            .orderByDesc("created_at");
+        return getOrderPage(queryWrapper, page, size);
+    }
+
+    @Override
+    public Page<Order> getAllByUserId(Long userId, int page, int size) {
+        QueryWrapper<Order> queryWrapper = new QueryWrapper<>();
+        queryWrapper
+            .eq("is_deleted", 0)
+            .eq("client_id", userId)
+            .orderByDesc("created_at");
+        return getOrderPage(queryWrapper, page, size);
     }
 
     @Override
@@ -59,6 +86,11 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         return retBool(updated);
     }
 
+    @Override
+    public boolean delete(Long id) {
+        return orderMapper.deleteById(id) > 0;
+    }
+
     private Object convertValueToRequiredType(Object value, Class<?> targetType) {
         // Add more cases as needed
         if (targetType.equals(String.class) && value instanceof Integer) {
@@ -67,8 +99,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         return value;
     }
 
-    @Override
-    public boolean delete(Long id) {
-        return orderMapper.deleteById(id) > 0;
+    private Page<Order> getOrderPage(QueryWrapper<Order> queryWrapper, int page, int size) {
+        Page<Order> orderPage = new Page<>(page, size);
+        return this.page(orderPage, queryWrapper);
     }
 }

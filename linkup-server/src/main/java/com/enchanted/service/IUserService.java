@@ -8,7 +8,7 @@ import java.util.Map;
 
 public interface IUserService extends IService<User> {
 
-    User saveUserAuthInfo(String code);
+    User saveAuthInfo(String code);
 
     boolean save(User user);
 

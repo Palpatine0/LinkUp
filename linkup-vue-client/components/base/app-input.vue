@@ -2,25 +2,26 @@
 <div :style="{ width: colPercentage + '%' }" class="input-container">
     <input
         v-if="mode === 'text'"
-        v-model="inputValue"
+        :value="value"
         :class="{'input-focused': isFocused}"
         @focus="isFocused = true"
         @blur="isFocused = false"
+        @input="onInput"
         class="input-common input-text"
         placeholder=" "
     />
-    <!-- Adding textarea support -->
     <textarea
         v-else-if="mode === 'textarea'"
-        v-model="inputValue"
+        :value="value"
         :class="{'input-focused': isFocused}"
         @focus="isFocused = true"
         @blur="isFocused = false"
+        @input="onInput"
         class="input-common textarea"
         placeholder=" "
     ></textarea>
 
-    <label :class="{ 'placeholder-move': isFocused || inputValue }" class="placeholder">{{ placeholder }}</label>
+    <label :class="{ 'placeholder-move': isFocused || value }" class="placeholder">{{ placeholder }}</label>
 </div>
 </template>
 
@@ -33,6 +34,7 @@ export default {
         };
     },
     props: {
+        value: {type: [String, Number], default: ''},
         mode: { type: String, default: 'text' }, // Mode can be either 'text' or 'textarea'
         col: { type: String, default: '12' },
         placeholder: { type: String, default: 'Search...' }
@@ -40,6 +42,11 @@ export default {
     computed: {
         colPercentage() {
             return (this.col / 12) * 100;
+        }
+    },
+    methods:{
+        onInput(event) {
+            this.$emit('input', event.target.value);
         }
     }
 };

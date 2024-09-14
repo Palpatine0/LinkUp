@@ -11,16 +11,16 @@ import java.util.Map;
 
 @CrossOrigin
 @RestController
-@RequestMapping("/client")
+@RequestMapping("/user")
 public class UserController {
 
     @Autowired
     private IUserService userService;
 
-    @PostMapping("saveAuth")
-    public R saveUserAuthInfo(@RequestBody Map<String, String> dto) {
+    @PostMapping("save-auth-info")
+    public R saveAuthInfo(@RequestBody Map<String, String> dto) {
         String code = dto.get("code");
-        User userAuth = userService.saveUserAuthInfo(code);
+        User userAuth = userService.saveAuthInfo(code);
         Map<String, Object> map = new HashMap<>();
         map.put("auth", userAuth);
         return R.ok(map);
