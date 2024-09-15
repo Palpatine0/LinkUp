@@ -17,4 +17,6 @@ public interface IUserClientService extends IService<UserClient> {
     boolean updateUserClient(Long id, Map<String, Object> changes);
 
     boolean deleteUserClient(Long id);
+
+    List<UserClient> search(Map<String, Object> criteria);  // New search method
 }

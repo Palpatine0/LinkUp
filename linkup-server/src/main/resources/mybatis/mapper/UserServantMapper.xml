@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+
+<mapper namespace="com.enchanted.mapper.UserServantMapper">
+
+    <resultMap type="com.enchanted.entity.UserServant" id="UserServantResultMap">
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="bio" column="bio"/>
+        <result property="servantTypeId" column="servant_type_id"/>
+        <result property="isDeleted" column="is_deleted"/>
+        <result property="createdAt" column="created_at"/>
+    </resultMap>
+
+    <select id="search" resultType="com.enchanted.entity.UserServant" resultMap="UserServantResultMap">
+        SELECT * FROM `user_servant`
+        <where>
+            is_deleted = 0
+            <if test="params.id != null and params.id != ''">
+                AND id = #{params.id}
+            </if>
+            <if test="params.userId != null and params.userId != ''">
+                AND user_id = #{params.userId}
+            </if>
+            <if test="params.keyword != null and params.keyword != ''">
+                AND (bio LIKE CONCAT('%', #{params.keyword}, '%'))
+            </if>
+        </where>
+        ORDER BY created_at DESC
+    </select>
+
+</mapper>

@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
+import java.util.List;
 
 @CrossOrigin
 @RestController
@@ -64,5 +65,11 @@ public class UserClientController {
         } else {
             return R.error("删除失败");
         }
+    }
+
+    @PostMapping("/search")
+    public R search(@RequestBody Map<String, Object> criteria) {
+        List<UserClient> results = userClientService.search(criteria);
+        return R.ok().put("results", results);
     }
 }

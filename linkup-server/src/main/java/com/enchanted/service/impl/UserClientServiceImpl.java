@@ -46,7 +46,6 @@ public class UserClientServiceImpl extends ServiceImpl<UserClientMapper, UserCli
             Field classField = ReflectionUtils.findField(UserClient.class, field);
             if (classField != null) {
                 classField.setAccessible(true);
-                // Handle type conversion if necessary
                 if (!classField.getType().isAssignableFrom(value.getClass())) {
                     Object convertedValue = convertValueToRequiredType(value, classField.getType());
                     ReflectionUtils.setField(classField, userClient, convertedValue);
@@ -60,17 +59,23 @@ public class UserClientServiceImpl extends ServiceImpl<UserClientMapper, UserCli
         return retBool(updated);
     }
 
-    private Object convertValueToRequiredType(Object value, Class<?> targetType) {
-        // Implement conversion logic if needed
-        if (targetType.equals(Boolean.class) && value instanceof Integer) {
-            return ((Integer) value) != 0;
-        }
-        return value;
-    }
-
     @Override
     public boolean deleteUserClient(Long id) {
         int deleted = userClientMapper.deleteById(id);
         return retBool(deleted);
+    }
+
+    @Override
+    public List<UserClient> search(Map<String, Object> criteria) {
+        QueryWrapper<UserClient> queryWrapper = new QueryWrapper<>();
+        criteria.forEach((key, value) -> queryWrapper.eq(key, value));
+        return userClientMapper.selectList(queryWrapper);
+    }
+
+    private Object convertValueToRequiredType(Object value, Class<?> targetType) {
+        if (targetType.equals(Boolean.class) && value instanceof Integer) {
+            return ((Integer) value) != 0;
+        }
+        return value;
     }
 }

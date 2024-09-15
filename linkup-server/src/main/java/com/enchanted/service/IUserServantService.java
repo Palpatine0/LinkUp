@@ -1,20 +1,18 @@
 package com.enchanted.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.enchanted.entity.UserServant;
 
-import java.util.List;
 import java.util.Map;
 
 public interface IUserServantService extends IService<UserServant> {
 
-    boolean saveUserServant(UserServant userServant);
+    Page<UserServant> search(Map<String, Object> params, int page, int size);
 
-    UserServant get(Long id);
+    boolean save(UserServant userServant);
 
-    List<UserServant> getAll();
+    boolean update(Long id, Map<String, Object> changes);
 
-    boolean updateUserServant(Long id, Map<String, Object> changes);
-
-    boolean deleteUserServant(Long id);
+    boolean delete(Long id);
 }

@@ -1,6 +1,8 @@
 package com.enchanted.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.enchanted.entity.UserServant;
 import com.enchanted.mapper.UserServantMapper;
 import com.enchanted.service.IUserServantService;
@@ -20,23 +22,20 @@ public class UserServantServiceImpl extends ServiceImpl<UserServantMapper, UserS
     private UserServantMapper userServantMapper;
 
     @Override
-    public boolean saveUserServant(UserServant userServant) {
+    public Page<UserServant> search(Map<String, Object> params, int page, int size) {
+        IPage<UserServant> userServantPage = new Page<>(page, size);
+        userServantPage = userServantMapper.search(userServantPage, params);
+        return (Page<UserServant>) userServantPage;
+    }
+
+    @Override
+    public boolean save(UserServant userServant) {
         int insert = userServantMapper.insert(userServant);
         return retBool(insert);
     }
 
     @Override
-    public UserServant get(Long id) {
-        return userServantMapper.selectById(id);
-    }
-
-    @Override
-    public List<UserServant> getAll() {
-        return userServantMapper.selectList(null);
-    }
-
-    @Override
-    public boolean updateUserServant(Long id, Map<String, Object> changes) {
+    public boolean update(Long id, Map<String, Object> changes) {
         UserServant userServant = userServantMapper.selectById(id);
         if (userServant == null) {
             return false;
@@ -61,7 +60,6 @@ public class UserServantServiceImpl extends ServiceImpl<UserServantMapper, UserS
     }
 
     private Object convertValueToRequiredType(Object value, Class<?> targetType) {
-        // Implement conversion logic if needed
         if (targetType.equals(Boolean.class) && value instanceof Integer) {
             return ((Integer) value) != 0;
         }
@@ -69,7 +67,7 @@ public class UserServantServiceImpl extends ServiceImpl<UserServantMapper, UserS
     }
 
     @Override
-    public boolean deleteUserServant(Long id) {
+    public boolean delete(Long id) {
         int deleted = userServantMapper.deleteById(id);
         return retBool(deleted);
     }

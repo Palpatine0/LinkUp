@@ -23,27 +23,64 @@
         </div>
     </div>
 
-    <!-- Respondent Users Title -->
-    <app-title bold="true" style="margin-top: 20px;">已抢单用户</app-title>
 
-    <!-- Respondent User List -->
-    <app-container color="#fff" col="12">
-        <div v-for="(user, index) in servantList" :key="index" class="user-item" :class="{ 'no-border': index === servantList.length - 1 }">
-            <div class="user-avatar" :style="{ backgroundColor: user.color }"></div>
-            <p>{{ user.nickname }}</p>
+    <!-- Respondent Users Title -->
+    <div class="mt-4">
+        <app-title bold="true" >已抢单用户</app-title>
+        <div v-if="servantList.length>0">
+            <z-swiper v-model="servantList" :options="{slidesPerView : 'auto',centeredSlides: true,spaceBetween: 14}" style="width: 100%">
+                <z-swiper-item v-for="(user,index) in servantList" :key="index" :custom-style="{width:'500rpx'}">
+                    <demo-item :item="user">
+                        <app-container color="#fff" col="12" >
+                            <div class="center_h" >
+                                <image style="width: 160px; height: 160px;border-radius: 50%;margin: 30px 0 30px 0" :src="user.avatar" mode="aspectFill"></image>
+                            </div>
+                            <app-title type="h3" bold="true">{{ user.nickname }}</app-title>
+                            <div class="flex" style="margin: 3px 0 30px -6px">
+                                <div v-if="user.gender==0">
+                                    <img class="gender-icon" src="/static/order/male.png">
+                                </div>
+                                <div v-else>
+                                    <img class="gender-icon" src="/static/order/female.png">
+                                </div>
+                                <app-title type="h3" bold="true">{{ user.age }}</app-title>
+                            </div>
+                            <p style="margin-bottom: 10px"> {{ user.servantData.bio }}</p>
+                        </app-container>
+                    </demo-item>
+                </z-swiper-item>
+            </z-swiper>
         </div>
-    </app-container>
+        <div v-else>
+            <div class="info">
+                暂时无人抢单
+            </div>
+        </div>
+    </div>
+
+
+
 </div>
 </template>
 
 <script>
 export default {
+    components: {},
     data() {
         return {
             orderId: '',
             order: {},
-            servantList: [
-            ]
+            servantList: [],
+
+            slideCustomStyle: {
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                borderRadius: '36rpx'
+            },
+            options: {
+                effect: 'cards'
+            },
         };
     },
     onLoad(params) {
@@ -64,7 +101,7 @@ export default {
                 },
             });
         },
-        getServantList(){
+        getServantList() {
             uni.request({
                 url: getApp().globalData.requestUrl + '/order-candidate/get-servants',
                 method: 'POST',
@@ -72,11 +109,36 @@ export default {
                     orderId: this.orderId
                 },
                 success: (res) => {
-                    this.servantList = res.data.servantList
+                    this.servantList = res.data.servantList;
+
+                    // Fetch servantData for all users in parallel
+                    const promises = this.servantList.map((user) => {
+                        return new Promise((resolve) => {
+                            uni.request({
+                                url: getApp().globalData.requestUrl + '/user-servant/search',
+                                method: 'POST',
+                                data: {
+                                    userId: user.id
+                                },
+                                success: (res) => {
+                                    user.servantData = res.data.userServantList[0];
+                                    resolve();
+                                }
+                            });
+                        });
+                    });
+
+                    // Wait for all servantData to be fetched
+                    Promise.all(promises).then(() => {
+                        console.log("All servantData fetched", this.servantList);
+                        // Trigger Vue to re-render with updated servantData
+                        this.$forceUpdate();
+                    });
                 },
             });
         }
     }
+
 };
 </script>
 
@@ -114,10 +176,11 @@ export default {
     border-bottom: none;
 }
 
-.user-avatar {
-    width: 30px;
-    height: 30px;
-    border-radius: 50%;
-    margin-right: 10px;
+
+.gender-icon {
+    width: 20px;
+    height: 20px;
+    margin: 4px 8px 0px 6px;
 }
+
 </style>

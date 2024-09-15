@@ -219,7 +219,7 @@ export default {
         // Build API parameters based on search keyword
         buildApiParams() {
             let url = '';
-            let method = 'GET';
+            let method = 'POST';
             let data = {};
 
             if (this.searchKeyword && this.searchKeyword.trim() !== '') {
@@ -247,7 +247,6 @@ export default {
 
         // Handle search input changes
         onSearchInput() {
-            console.log("onSearchInput() {onSearchInput() {onSearchInput() {")
             this.resetPagination();
             this.getOrderList();
         },
