@@ -42,17 +42,27 @@ public class OrderCandidateController {
         return buildPaginatedResponse(orderCandidatePage);
     }
 
-    @PostMapping("/get-servants-by-order-id")
-    public R getServantsByOrderId(@RequestParam("orderId") Long orderId,
-                                    @RequestParam(defaultValue = "1") int page,
-                                    @RequestParam(defaultValue = "10") int size) {
-        Page<User> userPage = orderCandidateService.getAllServantByOrderId(orderId, page, size);
+    @PostMapping("/get-servants")
+    public R getServantsBy(@RequestBody Map<String, Object> requestData) {
+        int page = requestData.get("page") != null ? Integer.parseInt(requestData.get("page").toString()) : 1;
+        int size = requestData.get("size") != null ? Integer.parseInt(requestData.get("size").toString()) : 10;
+        requestData.remove("page");
+        requestData.remove("size");
+        Long orderId = Long.parseLong(requestData.get("orderId").toString());
+        // Fetch paginated list of users (servants) based on order ID
+        Page<User> userPage = orderCandidateService.getAllServants(orderId, page, size);
+
+        if (userPage.getRecords().isEmpty()) {
+            return R.error("No servants found for the given order.");
+        }
+
         return R.ok()
-            .put("servantList", userPage.getRecords())
-            .put("total", userPage.getTotal())
-            .put("pages", userPage.getPages())
-            .put("current", userPage.getCurrent());
+            .put("servantList", userPage.getRecords()) // List of servant users
+            .put("total", userPage.getTotal())         // Total number of users
+            .put("pages", userPage.getPages())         // Total pages
+            .put("current", userPage.getCurrent());    // Current page
     }
+
 
     @PostMapping("/update")
     public R update(@RequestBody Map<String, Object> requestData) {

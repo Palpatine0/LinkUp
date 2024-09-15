@@ -30,7 +30,7 @@
     <app-container color="#fff" col="12">
         <div v-for="(user, index) in servantList" :key="index" class="user-item" :class="{ 'no-border': index === servantList.length - 1 }">
             <div class="user-avatar" :style="{ backgroundColor: user.color }"></div>
-            <p>{{ user.name }}</p>
+            <p>{{ user.nickname }}</p>
         </div>
     </app-container>
 </div>
@@ -43,9 +43,6 @@ export default {
             orderId: '',
             order: {},
             servantList: [
-                {name: 'xxxx', color: '#c4c4c4'},
-                {name: 'xxxx', color: '#6fc2af'},
-                {name: 'xxxx', color: '#2c3e50'}
             ]
         };
     },
@@ -69,13 +66,13 @@ export default {
         },
         getServantList(){
             uni.request({
-                url: getApp().globalData.requestUrl + '/order-candidate/get',
+                url: getApp().globalData.requestUrl + '/order-candidate/get-servants',
                 method: 'POST',
                 data: {
-                    id: this.orderId
+                    orderId: this.orderId
                 },
                 success: (res) => {
-                    this.order = res.data.order
+                    this.servantList = res.data.servantList
                 },
             });
         }

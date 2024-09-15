@@ -54,7 +54,7 @@ public class OrderCandidateServiceImpl extends ServiceImpl<OrderCandidateMapper,
     }
 
     @Override
-    public Page<User> getAllServantByOrderId(Long orderId, int page, int size) {
+    public Page<User> getAllServants(Long orderId, int page, int size) {
         // Fetch OrderCandidates for the given orderId
         QueryWrapper<OrderCandidate> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("order_id", orderId);
@@ -72,11 +72,10 @@ public class OrderCandidateServiceImpl extends ServiceImpl<OrderCandidateMapper,
         // Fetch User entities using servantIds with pagination
         Page<User> userPage = new Page<>(page, size);
         QueryWrapper<User> userQueryWrapper = new QueryWrapper<>();
-        userQueryWrapper.in("id", servantIds);
+        userQueryWrapper.in("id", servantIds);  // Find users with the given servantIds
 
-        userService.page(userPage, userQueryWrapper);
-
-        return userPage;
+        // Perform paginated query for users
+        return userService.page(userPage, userQueryWrapper);
     }
 
     @Override

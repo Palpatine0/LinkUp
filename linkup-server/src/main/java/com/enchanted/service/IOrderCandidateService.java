@@ -13,7 +13,7 @@ public interface IOrderCandidateService extends IService<OrderCandidate> {
 
     Page<OrderCandidate> search(Map<String, Object> params, int page, int size);
 
-    Page<User> getAllServantByOrderId(Long orderId, int page, int size);
+    Page<User> getAllServants(Long orderId, int page, int size);
 
     boolean update(Long id, Map<String, Object> changes);
 
