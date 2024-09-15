@@ -23,9 +23,11 @@ export default {
     methods: {
         getServantTypeList() {
             uni.request({
-                url: getApp().globalData.requestUrl + '/servant-type/get-all',
-                method: 'GET',
-                data: {},
+                url: getApp().globalData.requestUrl + '/servant-type/search',
+                method: 'POST',
+                data: {
+
+                },
                 success: (res) => {
                     this.servantTypeList = res.data.servantTypeList
                 },

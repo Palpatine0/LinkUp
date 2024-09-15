@@ -347,9 +347,9 @@ export default {
                     // handel payment
                     // XXXXX
                     uni.showToast({title: '添加成功', icon: 'none'});
-                    /*uni.navigateTo({
+                    uni.navigateTo({
                         url: '/pages/order/order'
-                    });*/
+                    });
                 },
                 fail: (err) => {
                     // Handle error response

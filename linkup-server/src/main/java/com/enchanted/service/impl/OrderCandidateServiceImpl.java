@@ -1,10 +1,13 @@
 package com.enchanted.service.impl;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.enchanted.entity.OrderCandidate;
 import com.enchanted.entity.User;
 import com.enchanted.mapper.OrderCandidateMapper;
-import com.enchanted.entity.OrderCandidate;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.enchanted.service.IOrderCandidateService;
+import com.enchanted.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
@@ -12,6 +15,7 @@ import org.springframework.util.ReflectionUtils;
 import java.lang.reflect.Field;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class OrderCandidateServiceImpl extends ServiceImpl<OrderCandidateMapper, OrderCandidate> implements IOrderCandidateService {
@@ -19,19 +23,60 @@ public class OrderCandidateServiceImpl extends ServiceImpl<OrderCandidateMapper,
     @Autowired
     private OrderCandidateMapper orderCandidateMapper;
 
+    @Autowired
+    private IUserService userService;
+
     @Override
     public boolean save(OrderCandidate orderCandidate) {
         return orderCandidateMapper.insert(orderCandidate) > 0;
     }
 
     @Override
-    public OrderCandidate get(Long id) {
-        return orderCandidateMapper.selectById(id);
+    public Page<OrderCandidate> search(Map<String, Object> params, int page, int size) {
+        QueryWrapper<OrderCandidate> queryWrapper = new QueryWrapper<>();
+
+        // Dynamically add conditions based on params
+        params.forEach((key, value) -> {
+            if (value != null && !value.toString().trim().isEmpty()) {
+                if ("keyword".equals(key)) {
+                    // Implement keyword search if applicable
+                    // For example: queryWrapper.like("some_field", value.toString());
+                } else {
+                    queryWrapper.eq(key, value);
+                }
+            }
+        });
+
+        queryWrapper.orderByDesc("created_at"); // Adjust as per your requirements
+
+        Page<OrderCandidate> orderCandidatePage = new Page<>(page, size);
+        return this.page(orderCandidatePage, queryWrapper);
     }
 
     @Override
-    public List<OrderCandidate> getAll() {
-        return orderCandidateMapper.selectList(null); // Retrieve all order candidates
+    public Page<User> getAllServantByOrderId(Long orderId, int page, int size) {
+        // Fetch OrderCandidates for the given orderId
+        QueryWrapper<OrderCandidate> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("order_id", orderId);
+        List<OrderCandidate> orderCandidates = orderCandidateMapper.selectList(queryWrapper);
+
+        if (orderCandidates.isEmpty()) {
+            return new Page<>();
+        }
+
+        // Extract servantIds from OrderCandidates
+        List<Long> servantIds = orderCandidates.stream()
+            .map(OrderCandidate::getServantId)
+            .collect(Collectors.toList());
+
+        // Fetch User entities using servantIds with pagination
+        Page<User> userPage = new Page<>(page, size);
+        QueryWrapper<User> userQueryWrapper = new QueryWrapper<>();
+        userQueryWrapper.in("id", servantIds);
+
+        userService.page(userPage, userQueryWrapper);
+
+        return userPage;
     }
 
     @Override
@@ -42,7 +87,7 @@ public class OrderCandidateServiceImpl extends ServiceImpl<OrderCandidateMapper,
         }
 
         changes.forEach((field, value) -> {
-            Field classField = ReflectionUtils.findField(User.class, field);
+            Field classField = ReflectionUtils.findField(OrderCandidate.class, field);
             if (classField != null) {
                 classField.setAccessible(true);
                 // Check for type mismatch and convert if necessary

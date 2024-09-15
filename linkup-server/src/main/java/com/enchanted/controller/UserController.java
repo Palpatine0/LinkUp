@@ -1,5 +1,6 @@
 package com.enchanted.controller;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.enchanted.entity.User;
 import com.enchanted.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,18 @@ public class UserController {
 
     @Autowired
     private IUserService userService;
+
+    @PostMapping("/search")
+    public R search(@RequestBody Map<String, Object> requestData) {
+        int page = requestData.get("page") != null ? Integer.parseInt(requestData.get("page").toString()) : 1;
+        int size = requestData.get("size") != null ? Integer.parseInt(requestData.get("size").toString()) : 10;
+
+        requestData.remove("page");
+        requestData.remove("size");
+
+        Page<User> userPage = userService.search(requestData, page, size);
+        return buildPaginatedResponse(userPage);
+    }
 
     @PostMapping("save-auth-info")
     public R saveAuthInfo(@RequestBody Map<String, String> dto) {
@@ -36,21 +49,8 @@ public class UserController {
         }
     }
 
-    @PostMapping("/get")
-    public R get(@RequestBody Map<String, Object> requestData) {
-        Long id = Long.parseLong(requestData.get("id").toString());
-        User user = userService.get(id);
-        if (user != null) {
-            return R.ok().put("client", user);
-        } else {
-            return R.error("查找失败");
-        }
-    }
 
-    @GetMapping("/get-all")
-    public R getAll() {
-        return R.ok().put("clientList", userService.getAll());
-    }
+
 
     @PostMapping("/update")
     public R update(@RequestBody Map<String, Object> requestData) {
@@ -75,5 +75,13 @@ public class UserController {
         } else {
             return R.error("删除失败");
         }
+    }
+
+    private R buildPaginatedResponse(Page<User> userPage) {
+        return R.ok()
+            .put("userList", userPage.getRecords())
+            .put("total", userPage.getTotal())
+            .put("pages", userPage.getPages())
+            .put("current", userPage.getCurrent());
     }
 }

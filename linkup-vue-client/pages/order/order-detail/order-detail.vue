@@ -18,7 +18,7 @@
             <!-- Respondent Section -->
             <div class="respondent-section">
                 <app-title bold="true">已抢单</app-title>
-                <p>{{ order.respondentCount }} 人</p>
+                <p>{{ order.candidateCount }} 人</p>
             </div>
         </div>
     </div>
@@ -28,7 +28,7 @@
 
     <!-- Respondent User List -->
     <app-container color="#fff" col="12">
-        <div v-for="(user, index) in users" :key="index" class="user-item" :class="{ 'no-border': index === users.length - 1 }">
+        <div v-for="(user, index) in servantList" :key="index" class="user-item" :class="{ 'no-border': index === servantList.length - 1 }">
             <div class="user-avatar" :style="{ backgroundColor: user.color }"></div>
             <p>{{ user.name }}</p>
         </div>
@@ -40,13 +40,9 @@
 export default {
     data() {
         return {
-            oid: '',
-            order: {
-                title: '订单A',
-                respondentCount: 143,
-                price: 1200
-            },
-            users: [
+            orderId: '',
+            order: {},
+            servantList: [
                 {name: 'xxxx', color: '#c4c4c4'},
                 {name: 'xxxx', color: '#6fc2af'},
                 {name: 'xxxx', color: '#2c3e50'}
@@ -54,9 +50,35 @@ export default {
         };
     },
     onLoad(params) {
-        this.oId = params.oId;
-        console.log("this.oId")
-        console.log(this.oId)
+        this.orderId = params.orderId;
+        this.getOrder();
+        this.getServantList();
+    },
+    methods: {
+        getOrder() {
+            uni.request({
+                url: getApp().globalData.requestUrl + '/order/search',
+                method: 'POST',
+                data: {
+                    id: this.orderId
+                },
+                success: (res) => {
+                    this.order = res.data.orderList[0]
+                },
+            });
+        },
+        getServantList(){
+            uni.request({
+                url: getApp().globalData.requestUrl + '/order-candidate/get',
+                method: 'POST',
+                data: {
+                    id: this.orderId
+                },
+                success: (res) => {
+                    this.order = res.data.order
+                },
+            });
+        }
     }
 };
 </script>

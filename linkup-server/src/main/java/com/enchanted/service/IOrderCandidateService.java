@@ -1,18 +1,19 @@
 package com.enchanted.service;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.enchanted.entity.OrderCandidate;
+import com.enchanted.entity.User;
 
-import java.util.List;
 import java.util.Map;
 
 public interface IOrderCandidateService extends IService<OrderCandidate> {
 
     boolean save(OrderCandidate orderCandidate);
 
-    OrderCandidate get(Long id);
+    Page<OrderCandidate> search(Map<String, Object> params, int page, int size);
 
-    List<OrderCandidate> getAll();
+    Page<User> getAllServantByOrderId(Long orderId, int page, int size);
 
     boolean update(Long id, Map<String, Object> changes);
 

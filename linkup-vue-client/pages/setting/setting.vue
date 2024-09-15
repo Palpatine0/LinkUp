@@ -4,16 +4,16 @@
     <div class="profile-section">
         <div class="profile-header center_h">
             <div class="center_h">
-                <img :src="user.avatar" alt="Profile Photo" class="profile-photo" />
+                <img :src="user.avatar" alt="Profile Photo" class="profile-photo"/>
             </div>
             <div class="profile-info">
-                <h1 class="profile-name">{{ user.name }}</h1>
+                <h1 class="profile-name">{{ user.nickname }}</h1>
             </div>
         </div>
     </div>
 
     <!-- Other Options with Icons -->
-    <app-container color="#fff" col="12"  >
+    <app-container color="#fff" col="12" type="list">
         <div v-for="(item, index) in linkItems" :key="index" class="link-item" :class="{ 'no-border': index === linkItems.length - 1 }">
             <img :src="item.icon" alt="" class="link-icon">
             <span>{{ item.label }}</span>
@@ -27,19 +27,35 @@
 export default {
     data() {
         return {
-            user: {
-                name: "Sheev Palpatine",
-                phone: "+86 191 2438 0336",
-                username: "@PJN979380638",
-                avatar: "/static/chat/profile-circled-test.png",
-            },
+            user: {},
             linkItems: [
-                { label: "余额", icon: "/static/setting/card.svg" },
-                { label: "收藏", icon: "/static/setting/bookmark.svg" },
-                { label: "标签", icon: "/static/setting/tag.svg" },
-                { label: "数据", icon: "/static/setting/data.svg" },
+                {label: "余额", icon: "/static/setting/card.svg"},
+                {label: "收藏", icon: "/static/setting/bookmark.svg"},
+                {label: "标签", icon: "/static/setting/tag.svg"},
+                {label: "数据", icon: "/static/setting/data.svg"},
             ]
         };
+    },
+    onLoad() {
+        this.getUser();
+    },
+    methods: {
+        getUser() {
+            uni.request({
+                url: getApp().globalData.requestUrl + '/user/search',
+                method: 'POST',
+                data: {
+                    id: uni.getStorageSync('userId')
+                },
+                success: (res) => {
+                    this.user = res.data.userList[0]
+                    console.log("this.user")
+                    console.log(this.user)
+                    console.log("res.data.userList[0]")
+                    console.log(res.data.userList[0])
+                },
+            });
+        }
     }
 };
 </script>
@@ -61,7 +77,6 @@ export default {
 }
 
 .profile-info {
-    margin-left: 15px;
 }
 
 .profile-name {
@@ -81,7 +96,7 @@ export default {
 }
 
 .link-item.no-border {
-    border-bottom: none;  /* Remove the border for the last item */
+    border-bottom: none; /* Remove the border for the last item */
 }
 
 .link-icon {

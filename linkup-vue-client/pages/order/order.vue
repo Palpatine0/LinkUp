@@ -226,13 +226,14 @@ export default {
                 // Use the search endpoint
                 url = getApp().globalData.requestUrl + '/order/search';
                 data = {
+                    userId: uni.getStorageSync('userId'),
                     keyword: this.searchKeyword,
                     page: this.page,
                     size: this.size,
                 };
             } else {
                 // Use the get-all-by-user-id endpoint
-                url = getApp().globalData.requestUrl + '/order/get-all-by-user-id';
+                url = getApp().globalData.requestUrl + '/order/search';
                 method = 'POST';
                 data = {
                     userId: uni.getStorageSync('userId'),
@@ -257,9 +258,9 @@ export default {
                 url: '/pages/order/order-servant-selection/order-servant-selection',
             });
         },
-        orderDetailRedirect(oid) {
+        orderDetailRedirect(orderId) {
             uni.navigateTo({
-                url: '/pages/order/order-detail/order-detail?oid=' + oid,
+                url: '/pages/order/order-detail/order-detail?orderId=' + orderId,
             });
         },
     },

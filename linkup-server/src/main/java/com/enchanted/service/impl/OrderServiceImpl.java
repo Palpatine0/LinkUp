@@ -1,6 +1,7 @@
 package com.enchanted.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.enchanted.entity.User;
 import com.enchanted.mapper.OrderMapper;
@@ -12,8 +13,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
-import java.util.Collections;
-import java.util.List;
 import java.util.Map;
 
 @Service
@@ -23,42 +22,15 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     private OrderMapper orderMapper;
 
     @Override
-    public Page<Order> search(String keyword, int page, int size) {
-        QueryWrapper<Order> queryWrapper = new QueryWrapper<>();
-        queryWrapper
-            .eq("is_deleted", 0)
-            .like("title", keyword)
-            .orderByDesc("created_at");
-        return getOrderPage(queryWrapper, page, size);
+    public Page<Order> search(Map<String, Object> params, int page, int size) {
+        IPage<Order> orderPage = new Page<>(page, size);
+        orderPage = orderMapper.search(orderPage, params);
+        return (Page<Order>) orderPage;
     }
 
     @Override
     public boolean save(Order order) {
         return orderMapper.insert(order) > 0;
-    }
-
-    @Override
-    public Order get(Long id) {
-        return orderMapper.selectById(id);
-    }
-
-    @Override
-    public Page<Order> getAll(int page, int size) {
-        QueryWrapper<Order> queryWrapper = new QueryWrapper<>();
-        queryWrapper
-            .eq("is_deleted", 0)
-            .orderByDesc("created_at");
-        return getOrderPage(queryWrapper, page, size);
-    }
-
-    @Override
-    public Page<Order> getAllByUserId(Long userId, int page, int size) {
-        QueryWrapper<Order> queryWrapper = new QueryWrapper<>();
-        queryWrapper
-            .eq("is_deleted", 0)
-            .eq("client_id", userId)
-            .orderByDesc("created_at");
-        return getOrderPage(queryWrapper, page, size);
     }
 
     @Override

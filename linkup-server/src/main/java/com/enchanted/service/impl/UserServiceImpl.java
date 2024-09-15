@@ -10,10 +10,11 @@ import com.enchanted.util.WeChatUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 import java.lang.reflect.Field;
 import java.util.Date;
-import java.util.List;
 import java.util.Map;
 
 @Service
@@ -21,6 +22,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     @Autowired
     private UserMapper userMapper;
+
+    @Override
+    public Page<User> search(Map<String, Object> params, int page, int size) {
+        IPage<User> userPage = new Page<>(page, size);
+        userPage = userMapper.search(userPage, params);
+        return (Page<User>) userPage;
+    }
 
     @Override
     public User saveAuthInfo(String code) {
@@ -57,16 +65,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     public boolean save(User user) {
         int insert = userMapper.insert(user);
         return retBool(insert);
-    }
-
-    @Override
-    public User get(Long id) {
-        return userMapper.selectById(id);
-    }
-
-    @Override
-    public List<User> getAll() {
-        return userMapper.selectList(null);
     }
 
     @Override

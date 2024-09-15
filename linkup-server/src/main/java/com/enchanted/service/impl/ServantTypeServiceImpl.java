@@ -1,5 +1,7 @@
 package com.enchanted.service.impl;
 
+import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.enchanted.entity.User;
 import com.enchanted.mapper.ServantTypeMapper;
 import com.enchanted.entity.ServantType;
@@ -10,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
-import java.util.List;
 import java.util.Map;
 
 @Service
@@ -20,18 +21,15 @@ public class ServantTypeServiceImpl extends ServiceImpl<ServantTypeMapper, Serva
     private ServantTypeMapper servantTypeMapper;
 
     @Override
+    public Page<ServantType> search(Map<String, Object> params, int page, int size) {
+        IPage<ServantType> servantTypePage = new Page<>(page, size);
+        servantTypePage = servantTypeMapper.search(servantTypePage, params);
+        return (Page<ServantType>) servantTypePage;
+    }
+
+    @Override
     public boolean save(ServantType servantType) {
         return servantTypeMapper.insert(servantType) > 0;
-    }
-
-    @Override
-    public ServantType get(Long id) {
-        return servantTypeMapper.selectById(id);
-    }
-
-    @Override
-    public List<ServantType> getAll() {
-        return servantTypeMapper.selectList(null);
     }
 
     @Override
