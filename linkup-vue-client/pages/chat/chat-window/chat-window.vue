@@ -17,7 +17,7 @@
 </template>
 
 <script>
-import ChatHeader from '../../../components/page/chat/chat-header.vue';
+import  ChatHeader from '../../../components/page/chat/chat-header.vue';
 import MessageBubble from '../../../components/page/chat/message-bubble.vue';
 import MessageInput from '../../../components/page/chat/message-input.vue';
 

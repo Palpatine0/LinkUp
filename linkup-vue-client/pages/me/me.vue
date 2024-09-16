@@ -12,6 +12,11 @@
         </div>
     </div>
 
+    <app-container color="#fff" col="12" @click="meRedirect()" >
+        <img src="/static/tab-bar/order-active.png" alt="" class="link-icon">
+        <span>订单</span>
+    </app-container>
+
     <!-- Other Options with Icons -->
     <app-container color="#fff" col="12" type="list">
         <div v-for="(item, index) in linkItems" :key="index" class="link-item" :class="{ 'no-border': index === linkItems.length - 1 }">
@@ -19,7 +24,6 @@
             <span>{{ item.label }}</span>
         </div>
     </app-container>
-
 </div>
 </template>
 
@@ -29,10 +33,10 @@ export default {
         return {
             user: {},
             linkItems: [
-                {label: "余额", icon: "/static/setting/card.svg"},
-                {label: "收藏", icon: "/static/setting/bookmark.svg"},
-                {label: "标签", icon: "/static/setting/tag.svg"},
-                {label: "数据", icon: "/static/setting/data.svg"},
+                {label: "余额", icon: "/static/me/card.svg"},
+                {label: "收藏", icon: "/static/me/bookmark.svg"},
+                {label: "标签", icon: "/static/me/tag.svg"},
+                {label: "数据", icon: "/static/me/data.svg"},
             ]
         };
     },
@@ -54,6 +58,12 @@ export default {
                     console.log("res.data.userList[0]")
                     console.log(res.data.userList[0])
                 },
+            });
+        },
+
+        meRedirect(){
+            uni.navigateTo({
+                url: '/pages/me/order/order',
             });
         }
     }

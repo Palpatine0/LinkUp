@@ -39,7 +39,7 @@ export default {
     methods:{
         contactRedirect(cid){
             uni.navigateTo({
-                url: '/pages/chat/chat-user-chat/chat-user-chat?cid=' + cid
+                url: '/pages/chat/chat-window/chat-window?cid=' + cid
             });
         }
     }

@@ -3,7 +3,7 @@
     <!-- Heading section -->
     <div style="display: flex; align-items: center; justify-content: space-between;">
         <app-title type="h1" bold="true">我的订单</app-title>
-        <img src="/static/order/add.svg" style="width: 28px; height: 28px;" @click="orderInitiateRedirect" />
+        <img src="/static/me/order/add.svg" style="width: 28px; height: 28px;" @click="orderInitiateRedirect" />
     </div>
 
     <!-- Search input -->
@@ -54,8 +54,8 @@
 
 <script>
 import orderDetail from './order-detail/order-detail.vue';
-import common from '../../utils/common';
-import paginationMixin from '../../utils/paginationMixin'; // Adjust the path as necessary
+import common from '../../../utils/common';
+import paginationMixin from '../../../utils/paginationMixin'; // Adjust the path as necessary
 
 export default {
     mixins: [paginationMixin],
@@ -254,12 +254,12 @@ export default {
         // Redirects
         orderInitiateRedirect() {
             uni.navigateTo({
-                url: '/pages/order/order-servant-selection/order-servant-selection',
+                url: '/pages/me/order/order-servant-selection/order-servant-selection',
             });
         },
         orderDetailRedirect(orderId) {
             uni.navigateTo({
-                url: '/pages/order/order-detail/order-detail?orderId=' + orderId,
+                url: '/pages/me/order/order-detail/order-detail?orderId=' + orderId,
             });
         },
     },

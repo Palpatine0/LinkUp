@@ -38,7 +38,7 @@
                             <app-title type="h3" bold="true">{{ user.nickname }}</app-title>
                             <div class="flex" style="margin: 3px 0 30px -6px">
                                 <div v-if="user.gender==0">
-                                    <img class="gender-icon" src="/static/order/male.png">
+                                    <img class="gender-icon" src="/static/me/order/male.png">
                                 </div>
                                 <div v-else>
                                     <img class="gender-icon" src="/static/order/female.png">

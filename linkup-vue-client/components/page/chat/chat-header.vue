@@ -3,7 +3,6 @@
 <!--    <img :src="avatar" class="avatar" />-->
     <img :src="avatar" class="avatar" />
     <span class="username">{{ username }}</span>
-    <button class="select-button" @click="selectUser">选择</button>
 </div>
 </template>
 

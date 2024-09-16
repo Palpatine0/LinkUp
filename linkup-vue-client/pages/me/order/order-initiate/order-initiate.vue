@@ -348,7 +348,7 @@ export default {
                     // XXXXX
                     uni.showToast({title: '添加成功', icon: 'none'});
                     uni.navigateTo({
-                        url: '/pages/order/order'
+                        url: '/pages/me/order/order'
                     });
                 },
                 fail: (err) => {
