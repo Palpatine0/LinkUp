@@ -140,8 +140,8 @@ export default {
 
         userDetailRedirect(userId) {
             uni.navigateTo({
-                url: '/pages/home/user-detail/user-detail?userIdId=' + userId,
-            })
+                url: '/pages/components/user/user-detail/user-detail?userId=' + userId,
+            });
         }
     }
 

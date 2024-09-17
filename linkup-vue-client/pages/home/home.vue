@@ -90,7 +90,7 @@ export default {
         // Redirect to user details
         userDetailRedirect(userId) {
             uni.navigateTo({
-                url: '/pages/home/user-detail/user-detail?userId=' + userId,
+                url: '/pages/components/user/user-detail/user-detail?userId=' + userId,
             });
         }
     }

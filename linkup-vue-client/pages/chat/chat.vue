@@ -32,14 +32,13 @@ export default {
             contacts: [
                 {id: 1, name: 'John Doe', number: '123-456-7890', avatar: '/static/page/chat/profile-circled-test.png'},
                 {id: 2, name: 'Jane Smith', number: '234-567-8901', avatar: '/static/page/chat/profile-circled-test.png'},
-                // Add more contacts as needed
             ]
         }
     },
     methods:{
-        contactRedirect(cid){
+        contactRedirect(contactId){
             uni.navigateTo({
-                url: '/pages/chat/chat-window/chat-window?cid=' + cid
+                url: '/pages/components/chat/chat-window/chat-window?contactId=' + contactId
             });
         }
     }

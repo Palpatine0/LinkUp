@@ -1,16 +1,27 @@
 {
     "pages": [
-        // home
+        // components
+        // user
         {
-            "path": "pages/home/home",
+            "path": "pages/components/user/user-detail/user-detail",
             "style": {
                 "navigationBarTitleText": "",
                 "navigationBarBackgroundColor": "#fefefe"
             }
         },
-        // home > user-detail
+        // chat
         {
-            "path": "pages/home/user-detail/user-detail",
+            "path": "pages/components/chat/chat-window/chat-window",
+            "style": {
+                "navigationBarTitleText": "",
+                "navigationBarBackgroundColor": "#fefefe"
+            }
+        },
+
+
+        // home
+        {
+            "path": "pages/home/home",
             "style": {
                 "navigationBarTitleText": "",
                 "navigationBarBackgroundColor": "#fefefe"
@@ -20,14 +31,6 @@
         // chat
         {
             "path": "pages/chat/chat",
-            "style": {
-                "navigationBarTitleText": "",
-                "navigationBarBackgroundColor": "#fefefe"
-            }
-        },
-        // chat > chat-window
-        {
-            "path": "pages/chat/chat-window/chat-window",
             "style": {
                 "navigationBarTitleText": "",
                 "navigationBarBackgroundColor": "#fefefe"

@@ -1,8 +1,8 @@
 <template>
 <div class="chat-page">
     <ChatHeader
-        :username="chatUser.username"
-        :avatar="chatUser.avatar"
+        :username="contact.nickname"
+        :avatar="contact.avatar"
     />
     <div class="message-list">
         <MessageBubble
@@ -17,9 +17,9 @@
 </template>
 
 <script>
-import  ChatHeader from '../../../components/page/chat/chat-header.vue';
-import MessageBubble from '../../../components/page/chat/message-bubble.vue';
-import MessageInput from '../../../components/page/chat/message-input.vue';
+import ChatHeader from '../../../../components/page/chat/chat-header.vue';
+import MessageBubble from '../../../../components/page/chat/message-bubble.vue';
+import MessageInput from '../../../../components/page/chat/message-input.vue';
 
 export default {
     components: {
@@ -29,11 +29,9 @@ export default {
     },
     data() {
         return {
-            currentUser: 'me', // This would dynamically update with the logged-in user
-            chatUser: {
-                username: 'Percival',
-                avatar: '/static/chat/profile-circled-test.png'
-            },
+            currentUser: 'me',
+            contactId: "",
+            contact: {},
             messages: [
                 {id: 1, text: 'Hello', sender: 'me'},
                 {id: 2, text: 'Hi!', sender: 'them'},
@@ -41,7 +39,23 @@ export default {
             ]
         }
     },
+    onLoad(params) {
+        this.contactId = params.contactId;
+        this.getUser();
+    },
     methods: {
+        getUser() {
+            uni.request({
+                url: getApp().globalData.requestUrl + '/user/search',
+                method: 'POST',
+                data: {
+                    id: this.contactId
+                },
+                success: (res) => {
+                    this.contact = res.data.userList[0];
+                }
+            });
+        },
         handleSend(message) {
             this.messages.push({id: Date.now(), text: message, sender: 'me'});
         }
