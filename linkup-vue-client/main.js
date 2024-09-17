@@ -9,7 +9,7 @@ import AppContainer from './components/base/app-container.vue';
 import AppButton from './components/base/app-button.vue';
 import './style/common.css';
 
-Vue.prototype.$common = common;
+Vue.prototype.common = common;
 Vue.component('app-title', AppTitle);
 Vue.component('app-input', AppInput);
 Vue.component('app-container', AppContainer);

@@ -26,8 +26,8 @@ mybatis-plus:
 
 wechat:
   accessTokenUrl: https://api.weixin.qq.com/cgi-bin/token
-  appid: wxdbc6d6a058de05f7
-  secret: a0507d8a8f1e6bf2c4acce9ebc3a383a
+  appid: ${WECHAT_APP_ID}
+  secret: ${WECHAT_SECRET}
 
 
 

@@ -53,9 +53,115 @@ export default {
         };
     },
     onLoad() {
+        this.checkUserInfo();
         this.getUserList();
     },
     methods: {
+        // User handling
+        checkUserInfo() {
+            const openid = uni.getStorageSync('openid');
+            if (this.common.isEmpty(openid)) {
+                this.userProfileAvailable = false;
+                uni.showModal({
+                    title: '授权',
+                    content: '请授权您的个人信息以使用完整服务',
+                    showCancel: true,
+                    confirmText: '授权',
+                    success: (res) => {
+                        if (res.confirm) {
+                            this.getUserInfo();
+                        }
+                    },
+                });
+            } else {
+                this.userProfileAvailable = true;
+            }
+        },
+        async getUserInfo(e) {
+            uni.showLoading({ title: '加载中' });
+            const getUserLoginCode = () => {
+                return new Promise((resolve) =>
+                    uni.login({
+                        provider: 'weixin',
+                        success: (res) => {
+                            resolve(res.code);
+                        },
+                        fail: () => {
+                            uni.showToast({ title: '用户Code获取失败', icon: 'none' });
+                        },
+                    })
+                );
+            };
+            const userInfoCode = await getUserLoginCode();
+            const getUserAccountData = () => {
+                return new Promise((resolve) => {
+                    uni.request({
+                        url: getApp().globalData.requestUrl + '/user/save-auth-info',
+                        method: 'POST',
+                        data: {
+                            code: userInfoCode,
+                        },
+                        success: (res) => {
+                            if (res.data.auth == null) {
+                                uni.showToast({ title: '授权失败', icon: 'none' });
+                            } else {
+                                resolve(res.data.auth);
+                            }
+                        },
+                        fail: () => {
+                            uni.showToast({ title: '授权请求失败', icon: 'none' });
+                        },
+                    });
+                });
+            };
+
+            const userAccountData = await getUserAccountData();
+            const getUserData = () => {
+                return new Promise((resolve) => {
+                    uni.getUserInfo({
+                        success: function (res) {
+                            resolve(res.userInfo);
+                        },
+                    });
+                });
+            };
+
+            const userData = await getUserData();
+            uni.request({
+                url: getApp().globalData.requestUrl + '/user/update',
+                method: 'POST',
+                data: {
+                    // userAccountData
+                    id: userAccountData.id,
+                    openid: userAccountData.openid,
+                    sessionKey: userAccountData.openid.sessionKey,
+                    unionid: userAccountData.unionid,
+                    // userData
+                    role: 1,
+                    nickname: userData.nickName,
+                    gender: userData.gender,
+                    avatar: userData.avatarUrl,
+                },
+                success: () => {
+                    // userAccountData
+                    uni.setStorageSync('userId', userAccountData.id);
+                    uni.setStorageSync('openid', userAccountData.openid);
+                    uni.setStorageSync('sessionKey', userAccountData.openid.session_key);
+                    uni.setStorageSync('unionid', userAccountData.unionid);
+                    // userData
+                    uni.setStorageSync('nickname', userData.nickName);
+                    uni.setStorageSync('avatar', userData.avatarUrl);
+                    uni.setStorageSync('gender', userData.gender);
+                    this.userProfileAvailable = true;
+                    uni.hideLoading();
+                    uni.showToast({ title: '授权成功', icon: 'none' });
+                },
+                fail: () => {
+                    uni.showToast({ title: '授权失败', icon: 'none' });
+                },
+            });
+        },
+
         getUserList() {
             if (!this.hasMore || this.loading) return; // Prevent multiple requests if no more data or still loading
 
@@ -87,7 +193,7 @@ export default {
             });
         },
 
-        // Redirect to user details
+        // redirects
         userDetailRedirect(userId) {
             uni.navigateTo({
                 url: '/pages/components/user/user-detail/user-detail?userId=' + userId,

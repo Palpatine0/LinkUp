@@ -8,12 +8,14 @@ import org.springframework.stereotype.Component;
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
+import io.github.cdimascio.dotenv.Dotenv;
 
 @Slf4j(topic = "WechatUtils")
 @Component
 public class WeChatUtil {
-    private static final String appId = "wxdbc6d6a058de05f7";
-    private static final String secret = "a0507d8a8f1e6bf2c4acce9ebc3a383a";
+    private static final Dotenv dotenv = Dotenv.load();
+    private static final String appId = dotenv.get("WECHAT_APP_ID");
+    private static final String secret = dotenv.get("WECHAT_SECRET");
 
     public static JSONObject getOpenId(String code) {
         String url = "https://api.weixin.qq.com/sns/jscode2session?appid=" + appId + "&secret=" + secret + "&js_code=" + code + "&grant_type=authorization_code";
