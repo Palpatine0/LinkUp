@@ -31,17 +31,17 @@
             <z-swiper v-model="servantList" :options="{slidesPerView : 'auto',centeredSlides: true,spaceBetween: 14}" style="width: 100%">
                 <z-swiper-item v-for="(user,index) in servantList" :key="index" :custom-style="{width:'500rpx'}">
                     <demo-item :item="user">
-                        <app-container color="#fff" col="12" >
+                        <app-container color="#fff" col="12" @click="userDetailRedirect(user.id)">
                             <div class="center_h" >
                                 <image style="width: 160px; height: 160px;border-radius: 50%;margin: 30px 0 30px 0" :src="user.avatar" mode="aspectFill"></image>
                             </div>
                             <app-title type="h3" bold="true">{{ user.nickname }}</app-title>
                             <div class="flex" style="margin: 3px 0 30px -6px">
                                 <div v-if="user.gender==0">
-                                    <img class="gender-icon" src="/static/me/order/male.png">
+                                    <img class="gender-icon" src="/static/page/me/order/male.png">
                                 </div>
                                 <div v-else>
-                                    <img class="gender-icon" src="/static/order/female.png">
+                                    <img class="gender-icon" src="/static/page/me/order/female.png">
                                 </div>
                                 <app-title type="h3" bold="true">{{ user.age }}</app-title>
                             </div>
@@ -136,6 +136,12 @@ export default {
                     });
                 },
             });
+        },
+
+        userDetailRedirect(userId) {
+            uni.navigateTo({
+                url: '/pages/home/user-detail/user-detail?userIdId=' + userId,
+            })
         }
     }
 
@@ -175,12 +181,4 @@ export default {
 .user-item.no-border {
     border-bottom: none;
 }
-
-
-.gender-icon {
-    width: 20px;
-    height: 20px;
-    margin: 4px 8px 0px 6px;
-}
-
 </style>

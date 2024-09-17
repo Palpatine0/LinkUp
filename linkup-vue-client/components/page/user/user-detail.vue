@@ -1,48 +1,82 @@
 <template>
 <div class="user-card">
     <!-- Top Section with Image/Background -->
-    <div class="top-section">
-        <div class="avatar-placeholder"></div>
+    <div class="top-section" :style="{'height': topSectionHeight + 'vh', 'background-image': `url(${user.avatar})`}">
         <div class="user-info">
-            <p class="username">{{ username }}</p>
-            <p class="user-details">{{ details }}</p>
+            <p class="username">{{ user.nickname }}</p>
+            <div class="flex" style="margin: 3px 0 30px -6px">
+                <div class="gender-icon-wrapper">
+                    <div v-if="user.gender==0">
+                        <img class="gender-icon" src="/static/miscellaneous/male.svg" style="margin: 1px 0 0 10px !important;">
+                    </div>
+                    <div v-else>
+                        <img class="gender-icon" src="/static/miscellaneous/female.svg" style="margin: 1px 0 0 10px !important;">
+                    </div>
+                </div>
+                <app-title type="h3" bold="true" style="color: white;position: relative;left: 10px;top: -2px;">{{ user.age }}</app-title>
+            </div>
         </div>
-        <button class="select-button" @click="selectUser">选择达人</button>
     </div>
 
     <!-- Middle Section (Details/Description) -->
-    <div class="middle-section">
-        <div class="content-placeholder"></div>
-        <div class="detail-placeholder"></div>
-        <div class="detail-placeholder"></div>
-        <div class="detail-placeholder"></div>
-    </div>
+    <scroll-view
+        :scroll-top="0"
+        scroll-y="true"
+        @scroll="onScroll"
+        :style="{'height': scrollViewHeight + 'vh'}"
+        class="mt-4">
+        <div class="middle-section">
+            <div class="detail-placeholder" v-for="n in 50" :key="n"></div>
+        </div>
+    </scroll-view>
 
-    <!-- Bottom Section (Call to Action Button) -->
-    <div class="bottom-section">
-        <button class="action-button" @click="startChat">发起聊天</button>
-    </div>
+    <!-- Button Section (Fixed at Bottom) -->
+    <div class="action-button app-button" @click="contactRedirect">发起聊天</div>
 </div>
 </template>
 
 <script>
 export default {
+    data() {
+        return {
+            topSectionHeight: 46, // Initial height of the top section
+            scrollViewHeight: 54, // Initial height of the scroll view
+            maxScroll: 30, // Maximum amount the top section can shrink
+        };
+    },
     props: {
-        username: {
-            type: String,
+        user: {
+            type: Object,
             required: true
         },
-        details: {
-            type: String,
+        userServant: {
+            type: Object,
             required: true
         }
     },
     methods: {
-        selectUser() {
-            this.$emit("select-user");
+        onScroll(event) {
+            const scrollTop = event.target.scrollTop;
+            const maxScrollDistance = this.maxScroll; // Define how much the top section should shrink
+
+            // Calculate the new height for the top section and scroll view
+            let newTopHeight = 46 - (scrollTop / 10); // Divide by 10 to slow down the shrink speed
+            let newScrollViewHeight = 54 + (scrollTop / 10);
+
+            // Set limits for the height so they don't go beyond a certain point
+            if (newTopHeight < 14) {
+                newTopHeight = 14; // Minimum top section height
+            }
+            if (newScrollViewHeight > 76) {
+                newScrollViewHeight = 76; // Maximum scroll view height
+            }
+
+            // Update the heights
+            this.topSectionHeight = newTopHeight;
+            this.scrollViewHeight = newScrollViewHeight;
         },
-        startChat() {
-            this.$emit("start-chat");
+        contactRedirect() {
+            this.$emit("contactRedirect");
         }
     }
 }
@@ -52,54 +86,29 @@ export default {
 .user-card {
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
-    height: 100%;
-    background-color: #f5f5f5;
-}
-
-.top-section {
-    background-color: #f0eff5;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    padding: 20px;
+    height: 100vh;
     position: relative;
 }
 
-.avatar-placeholder {
-    width: 100px;
-    height: 100px;
-    background-color: #e0e0e0;
-    border-radius: 50%;
-    margin-bottom: 10px;
+.top-section {
+    position: relative;
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    display: flex;
+    transition: height 0.1s ease-out; /* Smooth transition */
 }
 
 .user-info {
-    text-align: center;
-    margin-bottom: 20px;
+    position: absolute;
+    bottom: 10px;
+    left: 20px;
 }
 
 .username {
-    font-size: 20px;
+    font-size: 30px;
     font-weight: bold;
     color: white;
-}
-
-.user-details {
-    font-size: 16px;
-    color: white;
-}
-
-.select-button {
-    position: absolute;
-    right: 20px;
-    top: 20px;
-    padding: 10px 20px;
-    background-color: #4186ff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 14px;
 }
 
 .middle-section {
@@ -108,30 +117,29 @@ export default {
     padding: 20px;
 }
 
-.content-placeholder,
 .detail-placeholder {
     background-color: #ccc;
-    height: 20px;
+    height: 16px;
     margin-bottom: 15px;
     border-radius: 4px;
 }
 
-.detail-placeholder {
-    height: 16px;
-}
-
-.bottom-section {
-    padding: 20px;
-    background-color: white;
-}
-
 .action-button {
-    width: 100%;
-    padding: 15px 0;
-    background-color: #4186ff;
-    color: white;
-    border: none;
-    border-radius: 5px;
-    font-size: 16px;
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    right: 20px;
+    padding: 10px 30px;
+    cursor: pointer;
+    text-align: center;
+    z-index: 100;
+    width: auto;
+}
+
+.gender-icon-wrapper {
+    background-color: white;
+    border-radius: 15px;
+    width: 40px;
+    height: 22px;
 }
 </style>

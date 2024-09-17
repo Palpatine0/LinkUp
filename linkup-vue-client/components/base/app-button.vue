@@ -1,16 +1,14 @@
 <template>
-<div
-    :class="['button-common', shaped ? 'button-shaped' : 'button-normal', sizeClass]"
->
-    <slot />
+<div :class="['button-common', shaped ? 'button-shaped' : 'button-normal', sizeClass]" @click="$emit('click')">
+    <slot/>
 </div>
 </template>
 
 <script>
 export default {
     props: {
-        shaped: { type: Boolean, default: false }, // Determines if the div has a "shaped" appearance
-        size: { type: String, default: 'medium' } // small, medium, large
+        shaped: {type: Boolean, default: false}, // Determines if the div has a "shaped" appearance
+        size: {type: String, default: 'medium'} // small, medium, large
     },
     computed: {
         sizeClass() {

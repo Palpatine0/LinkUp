@@ -1,6 +1,6 @@
 <template>
 <div class="message-input-container">
-    <img src="/static/chat/upload.svg" alt="Upload" class="upload-button" @click="selectFileType"/>
+    <img src="/static/page/chat/upload.svg" alt="Upload" class="upload-button" @click="selectFileType"/>
     <textarea
         v-model="message"
         :style="{height: `${currentHeight}px`}"
@@ -11,7 +11,7 @@
         rows="1"
         maxlength="2000"
     ></textarea>
-    <img src="/static/chat/send.svg" alt="Send" class="send-button" @click="sendMessage"/>
+    <img src="/static/page/chat/send.svg" alt="Send" class="send-button" @click="sendMessage"/>
 </div>
 </template>
 

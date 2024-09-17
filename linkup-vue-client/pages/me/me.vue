@@ -12,7 +12,7 @@
         </div>
     </div>
 
-    <app-container color="#fff" col="12" @click="meRedirect()" >
+    <app-container color="#fff" col="12" @click="orderRedirect()" >
         <img src="/static/tab-bar/order-active.png" alt="" class="link-icon">
         <span>订单</span>
     </app-container>
@@ -33,10 +33,10 @@ export default {
         return {
             user: {},
             linkItems: [
-                {label: "余额", icon: "/static/me/card.svg"},
-                {label: "收藏", icon: "/static/me/bookmark.svg"},
-                {label: "标签", icon: "/static/me/tag.svg"},
-                {label: "数据", icon: "/static/me/data.svg"},
+                {label: "余额", icon: "/static/page/me/card.svg"},
+                {label: "收藏", icon: "/static/page/me/bookmark.svg"},
+                {label: "标签", icon: "/static/page/me/tag.svg"},
+                {label: "数据", icon: "/static/page/me/data.svg"},
             ]
         };
     },
@@ -61,7 +61,7 @@ export default {
             });
         },
 
-        meRedirect(){
+        orderRedirect(){
             uni.navigateTo({
                 url: '/pages/me/order/order',
             });

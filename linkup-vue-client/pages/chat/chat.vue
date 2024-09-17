@@ -30,8 +30,8 @@ export default {
     data() {
         return {
             contacts: [
-                {id: 1, name: 'John Doe', number: '123-456-7890', avatar: '/static/chat/profile-circled-test.png'},
-                {id: 2, name: 'Jane Smith', number: '234-567-8901', avatar: '/static/chat/profile-circled-test.png'},
+                {id: 1, name: 'John Doe', number: '123-456-7890', avatar: '/static/page/chat/profile-circled-test.png'},
+                {id: 2, name: 'Jane Smith', number: '234-567-8901', avatar: '/static/page/chat/profile-circled-test.png'},
                 // Add more contacts as needed
             ]
         }
