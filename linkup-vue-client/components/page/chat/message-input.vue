@@ -27,7 +27,7 @@ export default {
     methods: {
         sendMessage() {
             if (this.message.trim()) {
-                this.$emit('send', this.message.trim());
+                this.$emit('handleSend', this.message.trim());
                 this.message = '';
                 this.currentHeight = this.minHeight;
             }
@@ -52,7 +52,6 @@ export default {
 <style scoped>
 .message-input-container {
     display: flex;
-    padding: 10px;
     background-color: #f3f2f6;
     border-top: 1px solid #ddd;
     align-items: center;

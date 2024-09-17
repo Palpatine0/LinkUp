@@ -1,14 +1,14 @@
 <template>
-<div :class="['message-bubble', isSender ? 'sender' : 'receiver']">
-    <p>{{ text }}</p>
+<div :class="['message-bubble', msgBelongs ? 'sender' : 'receiver']">
+    <p>{{ content }}</p>
 </div>
 </template>
 
 <script>
 export default {
     props: {
-        text: { type: String, required: true },
-        isSender: { type: Boolean, default: false }
+        content: {type: String, required: true},
+        msgBelongs: {type: Boolean, default: false}
     }
 }
 </script>

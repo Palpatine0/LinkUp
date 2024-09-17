@@ -49,9 +49,6 @@ public class UserController {
         }
     }
 
-
-
-
     @PostMapping("/update")
     public R update(@RequestBody Map<String, Object> requestData) {
         Long id = Long.parseLong(requestData.get("id").toString());
