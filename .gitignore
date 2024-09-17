@@ -5,3 +5,4 @@
 /linkup-vue-client/yarn-error.log
 /linkup-vue-client/npminstall-debug.log
 /linkup-vue-client/.idea/*
+/linkup-server/.env
