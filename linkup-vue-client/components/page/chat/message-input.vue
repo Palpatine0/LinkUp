@@ -3,13 +3,12 @@
     <img src="/static/page/chat/upload.svg" alt="Upload" class="upload-button" @click="selectFileType"/>
     <textarea
         v-model="message"
-        :style="{height: `${currentHeight}px`}"
         class="message-input"
         placeholder="Enter your message..."
-        @input="autoResize"
         @keyup.enter="sendMessage"
         rows="1"
         maxlength="2000"
+        auto-height
     ></textarea>
     <img src="/static/page/chat/send.svg" alt="Send" class="send-button" @click="sendMessage"/>
 </div>
@@ -20,8 +19,6 @@ export default {
     data() {
         return {
             message: '',
-            minHeight: 20,
-            currentHeight: 20,  // Use this reactive property to control the height
         };
     },
     methods: {
@@ -29,23 +26,12 @@ export default {
             if (this.message.trim()) {
                 this.$emit('handleSend', this.message.trim());
                 this.message = '';
-                this.currentHeight = this.minHeight;
             }
         },
-        autoResize() {
-            // As an alternative to manipulating the DOM, use Vue to reactively control the size
-            this.currentHeight = this.minHeight; // Reset to min height to calculate properly
-            this.$nextTick(() => {
-                const estimatedSize = this.estimateHeight(this.message);
-                this.currentHeight = Math.max(this.minHeight, estimatedSize);
-            });
+        selectFileType() {
+            // Your existing code for file selection
         },
-        estimateHeight(text) {
-            // Simple estimation based on character count, you can adjust this method as needed
-            const lines = text.split('\n').length + (text.length / 50); // Approx chars per line
-            return lines * 20;  // Approx line height in pixels
-        }
-    }
+    },
 };
 </script>
 
@@ -64,8 +50,9 @@ export default {
     border-radius: 10px;
     margin-right: 10px;
     background-color: white;
-    resize: none; // Prevent user resizing
-    overflow-y: hidden; // Hide scrollbar to maintain design
+    resize: none; /* Prevent user resizing */
+    overflow-y: auto; /* Allow scrolling when max height is reached */
+    max-height: 20vh; /* Set the maximum height as needed */
 }
 
 .send-button {

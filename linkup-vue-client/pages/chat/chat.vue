@@ -61,8 +61,6 @@ export default {
                 },
                 success: (resR) => {
                     const sentMessages = resR.data.messageList;
-                    console.log("sentMessages 1")
-                    console.log(resR.data.messageList)
                     // Gather all recipient IDs
                     sentMessages.forEach(message => {
                         uniqueUserIds.add(message.recipientId);
@@ -80,9 +78,6 @@ export default {
                         },
                         success: (resS) => {
                             const receivedMessages = resS.data.messageList;
-                            console.log("sentMessages 2")
-                            console.log(resS.data.messageList)
-
                             // Gather all sender IDs
                             receivedMessages.forEach(message => {
                                 uniqueUserIds.add(message.senderId);
