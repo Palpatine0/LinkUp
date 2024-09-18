@@ -41,6 +41,7 @@ export default {
     background-color: #f3f2f6;
     border-top: 1px solid #ddd;
     align-items: center;
+    padding: 10px;
 }
 
 .message-input {
@@ -48,7 +49,6 @@ export default {
     padding: 10px;
     border: 1px solid #ddd;
     border-radius: 10px;
-    margin-right: 10px;
     background-color: white;
     resize: none; /* Prevent user resizing */
     overflow-y: auto; /* Allow scrolling when max height is reached */
@@ -77,6 +77,6 @@ export default {
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    padding: 5px 10px 5px 0px;
+    padding: 5px;
 }
 </style>
