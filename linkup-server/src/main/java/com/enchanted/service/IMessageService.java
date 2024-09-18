@@ -13,6 +13,8 @@ public interface IMessageService extends IService<Message> {
 
     Page<Message> search(Map<String, Object> params, int page, int size);
 
+    Page<Message> searchContacts(Map<String, Object> params, int page, int size);
+
     boolean save(Message message);
 
     String saveMediaFile(MultipartFile file);

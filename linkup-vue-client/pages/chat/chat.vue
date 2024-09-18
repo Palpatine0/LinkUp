@@ -8,17 +8,18 @@
     <!-- Search input -->
     <app-input mode="text" placeholder="搜索" col="12" class="mb-2"/>
 
+    <!-- Contact List -->
     <scroll-view :scroll-top="0" scroll-y="true" style="height: 80vh" class="mt-4">
         <div
-            v-for="(contact, index) in contacts"
+            v-for="(contact, index) in contactList"
             :key="contact.id"
-            :class="{'contact-item': true, 'last-item': index === contacts.length - 1}"
+            :class="{'contact-item': true, 'last-item': index === contactList.length - 1}"
             @click="contactRedirect(contact.id)"
         >
             <img :src="contact.avatar" alt="contact.name" class="contact-avatar">
             <div class="contact-info">
-                <h2 class="contact-name">{{ contact.name }}</h2>
-                <p class="contact-number">{{ contact.number }}</p>
+                <h2 class="contact-name">{{ contact.nickname }}</h2>
+                <p class="contact-number">{{ contact.lastMessage }}</p> <!-- Last message time or content -->
             </div>
         </div>
     </scroll-view>
@@ -29,10 +30,107 @@
 export default {
     data() {
         return {
-            contacts: []
-        }
+            userId: uni.getStorageSync('userId'), // Current user ID
+            contactList: [], // Will hold the list of contacts
+            page: 1, // Pagination
+            size: 10, // Number of records to fetch per request
+            hasMoreContacts: true, // To control when to stop fetching
+            loading: false, // Prevent multiple requests at once
+        };
     },
-    methods:{
+    onLoad(){
+        this.getUserList(); // Initial load
+    },
+    methods: {
+        // Step 1: Fetch messages to find unique user IDs who sent/received messages
+        getUserList() {
+            if (this.loading) return; // Prevent multiple requests
+
+            this.loading = true;
+
+            const uniqueUserIds = new Set(); // To store all unique contact IDs
+
+            // Step 1: Find messages where current user is the sender
+            uni.request({
+                url: getApp().globalData.requestUrl + '/message/search-contacts',
+                method: 'POST',
+                data: {
+                    senderId: this.userId,  // Fetch messages where current user is the sender
+                    page: this.page,
+                    size: this.size,
+                },
+                success: (resR) => {
+                    const sentMessages = resR.data.messageList;
+                    console.log("sentMessages 1")
+                    console.log(resR.data.messageList)
+                    // Gather all recipient IDs
+                    sentMessages.forEach(message => {
+                        uniqueUserIds.add(message.recipientId);
+                    });
+
+
+                    // Step 2: Find messages where current user is the recipient
+                    uni.request({
+                        url: getApp().globalData.requestUrl + '/message/search-contacts',
+                        method: 'POST',
+                        data: {
+                            recipientId: this.userId,  // Fetch messages where current user is the recipient
+                            page: this.page,
+                            size: this.size,
+                        },
+                        success: (resS) => {
+                            const receivedMessages = resS.data.messageList;
+                            console.log("sentMessages 2")
+                            console.log(resS.data.messageList)
+
+                            // Gather all sender IDs
+                            receivedMessages.forEach(message => {
+                                uniqueUserIds.add(message.senderId);
+                            });
+
+                            // Fetch details for all unique contacts
+                            uniqueUserIds.forEach(id => {
+                                this.getUserDetails(id);
+                            });
+
+                            this.loading = false; // Finished loading
+                        },
+                        fail: (err) => {
+                            console.error("Error fetching received messages:", err);
+                            this.loading = false;
+                        }
+                    });
+                },
+                fail: (err) => {
+                    console.error("Error fetching sent messages:", err);
+                    this.loading = false;
+                }
+            });
+        },
+
+
+        // Step 2: Fetch user details for the unique user IDs found in the messages
+        getUserDetails(id) {
+            uni.request({
+                url: getApp().globalData.requestUrl + '/user/search', // The endpoint for fetching user details
+                method: "POST",
+                data: {
+                    id: id,  // Pass the array of unique user IDs
+                },
+                success: (res) => {
+                    this.contactList.push(res.data.userList[0])
+                },
+                complete: () => {
+                    this.loading = false; // Reset loading flag
+                },
+                fail: (err) => {
+                    console.error("Error fetching user details:", err);
+                    this.loading = false; // Reset loading flag on failure
+                }
+            });
+        },
+
+        // Redirect to chat window for the selected contact
         contactRedirect(contactId){
             uni.navigateTo({
                 url: '/pages/components/chat/chat-window/chat-window?contactId=' + contactId
@@ -40,6 +138,7 @@ export default {
         }
     }
 }
+
 </script>
 
 <style scoped>

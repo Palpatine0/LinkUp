@@ -101,11 +101,11 @@ export default {
                 this.loading = true;
 
                 uni.request({
-                    url: getApp().globalData.requestUrl + '/message/search',
+                    url: getApp().globalData.requestUrl + '/message/search', // Your API endpoint
                     method: 'POST',
                     data: {
-                        senderIds: [this.userId, this.contactId],
-                        recipientIds: [this.userId, this.contactId],
+                        senderId: this.userId,    // Current user's ID
+                        recipientId: this.contactId,  // Contact's ID
                         page: this.page,
                         size: this.size
                     },
@@ -182,7 +182,6 @@ export default {
 
 .message-list {
     flex-grow: 1;
-    padding: 10px;
     overflow-y: auto;
     display: flex;
     flex-direction: column-reverse; /* Helps keep new messages at the bottom */

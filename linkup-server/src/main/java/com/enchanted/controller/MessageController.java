@@ -40,6 +40,18 @@ public class MessageController {
         return buildPaginatedResponse(messagePage);
     }
 
+    @PostMapping("/search-contacts")
+    public R searchContacts(@RequestBody Map<String, Object> requestData) {
+        int page = requestData.get("page") != null ? Integer.parseInt(requestData.get("page").toString()) : 1;
+        int size = requestData.get("size") != null ? Integer.parseInt(requestData.get("size").toString()) : 20;
+
+        requestData.remove("page");
+        requestData.remove("size");
+
+        Page<Message> messagePage = messageService.searchContacts(requestData, page, size);
+        return buildPaginatedResponse(messagePage);
+    }
+
     @GetMapping("/files/{filename:.+}")
     public ResponseEntity<Resource> getFile(@PathVariable String filename) {
         try {

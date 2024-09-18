@@ -31,6 +31,13 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
     }
 
     @Override
+    public Page<Message> searchContacts(Map<String, Object> params, int page, int size) {
+        IPage<Message> messagePage = new Page<>(page, size);
+        messagePage = messageMapper.searchContacts(messagePage, params);
+        return (Page<Message>) messagePage;
+    }
+
+    @Override
     public boolean save(Message message) {
         return messageMapper.insert(message) > 0;
     }
