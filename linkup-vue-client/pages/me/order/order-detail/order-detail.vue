@@ -1,7 +1,7 @@
 <template>
 <div class="page" style="background-color: #f3f2f6">
     <!-- Title -->
-    <app-title type="h1" bold="true">{{ order.title }}</app-title>
+    <app-title type="h2" bold="true">{{ order.title }}</app-title>
 
     <!-- Price and Respondent Container -->
     <div class="app-container" style="background-color: white !important;">
@@ -52,7 +52,7 @@
             </z-swiper>
         </div>
         <div v-else>
-            <div class="info">
+            <div class="no-more-data-text">
                 暂时无人抢单
             </div>
         </div>

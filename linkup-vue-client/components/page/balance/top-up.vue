@@ -17,7 +17,7 @@
         </view>
 
         <!-- Display Selected Amount -->
-        <view class="info">
+        <view class="no-more-data">
             <div class="credit">充值金额: ¥{{ selectedAmount.toFixed(2) }}</div>
         </view>
 
@@ -182,7 +182,7 @@ export default {
     background-color: #f8be23;
 }
 
-.info {
+.no-more-data {
     margin: 20px 0;
 }
 

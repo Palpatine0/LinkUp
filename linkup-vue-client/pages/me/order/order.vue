@@ -3,7 +3,7 @@
     <!-- Heading section -->
     <div style="display: flex; align-items: center; justify-content: space-between;">
         <app-title type="h1" bold="true">我的订单</app-title>
-        <img src="/static/page/me/order/add.svg" style="width: 28px; height: 28px;" @click="orderInitiateRedirect" />
+        <img src="/static/page/me/order/add.svg" style="width: 28px; height: 28px;" @click="orderInitiateRedirect"/>
     </div>
 
     <!-- Search input -->
@@ -33,7 +33,7 @@
             <div class="order-content">
                 <div style="width: 100%;">
                     <div style="display: flex; align-items: center; justify-content: space-between;">
-                        <app-title bold="true" type="h3">{{ order.title }}</app-title>
+                        <app-title bold="true" type="h3" style="width: 330px;">{{ order.title }}</app-title>
                         <span :class="['status-dot', order.status === 1 ? 'green-dot' : 'red-dot']"></span>
                     </div>
                     <div class="order-info">
@@ -47,7 +47,7 @@
         </div>
         <div v-if="loading" style="color: gainsboro; margin-left: 10px;">加载中...</div>
         <!-- No More Data Message -->
-        <div v-else-if="!hasMore" style="color: gainsboro; margin-left: 10px;">已加载全部数据</div>
+        <div v-else-if="!hasMore" class="no-more-data-container-list">已加载全部数据</div>
     </scroll-view>
 </div>
 </template>
@@ -81,7 +81,7 @@ export default {
 
             this.loading = true;
 
-            const { url, method, data } = this.buildApiParams();
+            const {url, method, data} = this.buildApiParams();
 
             uni.request({
                 url: url,
@@ -99,7 +99,7 @@ export default {
                     this.orderList = this.orderList.concat(orders);
                     // Process 'createdAt' fields
                     this.orderList.forEach((order) => {
-                        order.createdAt = order.createdAt ? this.$common.stampToTime(order.createdAt) : '';
+                        order.createdAt = order.createdAt ? this.common.stampToTime(order.createdAt) : '';
                     });
                     this.page += 1;
                 },
@@ -135,7 +135,7 @@ export default {
                 };
             }
 
-            return { url, method, data };
+            return {url, method, data};
         },
 
         // Handle search input changes
@@ -205,4 +205,5 @@ export default {
     font-size: 14px;
     margin-bottom: 4px;
 }
+
 </style>

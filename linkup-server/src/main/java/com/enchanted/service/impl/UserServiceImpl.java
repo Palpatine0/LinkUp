@@ -14,6 +14,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Map;
 
@@ -100,12 +101,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     }
 
     private Object convertValueToRequiredType(Object value, Class<?> targetType) {
-        // Add more cases as needed
         if (targetType.equals(String.class) && value instanceof Integer) {
             return String.valueOf(value);
+        } else if (targetType.equals(BigDecimal.class) && value instanceof Double) {
+            return BigDecimal.valueOf((Double) value);
+        } else if (targetType.equals(BigDecimal.class) && value instanceof Integer) {
+            return BigDecimal.valueOf(((Integer) value).doubleValue());
         }
         return value;
     }
+
 
 
     @Override

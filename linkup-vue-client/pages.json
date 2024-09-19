@@ -1,40 +1,5 @@
 {
     "pages": [
-        // components
-        // user
-        {
-            "path": "pages/components/user/user-detail/user-detail",
-            "style": {
-                "navigationBarTitleText": "",
-                "navigationBarBackgroundColor": "#fefefe"
-            }
-        },
-        // service
-        {
-            "path": "pages/components/service/service-detail/service-detail",
-            "style": {
-                "navigationBarTitleText": "",
-                "navigationBarBackgroundColor": "#fefefe",
-                "navigationStyle":"custom"
-            }
-        },
-        {
-            "path": "pages/components/service/service-detail/servant-list/servant-list",
-            "style": {
-                "navigationBarTitleText": "",
-                "navigationBarBackgroundColor": "#fefefe"
-            }
-        },
-        // chat
-        {
-            "path": "pages/components/chat/chat-window/chat-window",
-            "style": {
-                "navigationBarTitleText": "",
-                "navigationBarBackgroundColor": "#fefefe"
-            }
-        },
-
-
         // home
         {
             "path": "pages/home/home",
@@ -96,6 +61,41 @@
             "style": {
                 "navigationBarTitleText": "",
                 "navigationBarBackgroundColor": "#f3f2f6"
+            }
+        },
+
+
+        // components
+        // user
+        {
+            "path": "pages/components/user/user-detail/user-detail",
+            "style": {
+                "navigationBarTitleText": "",
+                "navigationBarBackgroundColor": "#fefefe"
+            }
+        },
+        // service
+        {
+            "path": "pages/components/service/service-detail/service-detail",
+            "style": {
+                "navigationBarTitleText": "",
+                "navigationBarBackgroundColor": "#fefefe",
+                "navigationStyle":"custom"
+            }
+        },
+        {
+            "path": "pages/components/service/service-detail/servant-list/servant-list",
+            "style": {
+                "navigationBarTitleText": "",
+                "navigationBarBackgroundColor": "#fefefe"
+            }
+        },
+        // chat
+        {
+            "path": "pages/components/chat/chat-window/chat-window",
+            "style": {
+                "navigationBarTitleText": "",
+                "navigationBarBackgroundColor": "#fefefe"
             }
         }
     ],

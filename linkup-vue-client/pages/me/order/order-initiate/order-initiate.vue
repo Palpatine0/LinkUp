@@ -1,8 +1,6 @@
 <template>
 <div class="page">
     <app-title type="h1" bold="true">发布订单</app-title>
-    <app-title bold="true">标题</app-title>
-    <app-title type="h2" bold="true">{{ title }}</app-title>
 
     <!-- Open Time Pickers -->
     <app-title bold="true">开放时间</app-title>
@@ -111,8 +109,9 @@
 export default {
     data() {
         return {
-            title: "XXXX",
-            servantType: '',
+            title: "",
+            serviceType: '',
+            serviceName: '',
             genderIndex: 0,
             ageRangeIndex: [0, 0],
             serviceDurationIndex: 0,
@@ -134,7 +133,8 @@ export default {
         };
     },
     onLoad(param) {
-        this.servantType = param.servantType;
+        this.serviceType = param.serviceType;
+        this.serviceName = param.serviceName;
         const currentDate = this.getCurrentDate();
         const currentTime = this.getCurrentTime();
         // Initialize start and end date/time to current date and time
@@ -143,6 +143,7 @@ export default {
         this.dropdownOptions.endDate = currentDate;
         this.dropdownOptions.endTime = currentTime;
         this.updatePriceOptions(); // Initialize price options
+        this.generateTitle();
     },
     methods: {
         // Get current date in 'YYYY-MM-DD' format
@@ -301,8 +302,34 @@ export default {
             this.priceIndex = e.detail.value;
             console.log(`Selected price: ${this.priceOptions[this.priceIndex]}`);
         },
+        generateTitle() {
+            // Destructure values for easier access
+            const { gender, age, serviceDuration } = this.dropdownOptions;
+            const { genderIndex, ageRangeIndex, serviceDurationIndex } = this;
+
+            // Gender text
+            const genderText = gender[genderIndex] === '不限' ? '不限性别' : gender[genderIndex] === '男' ? '男' : '女';
+
+            // Age range text
+            const ageMin = age[0][ageRangeIndex[0]] === '不限' ? '不限' : `${age[0][ageRangeIndex[0]]}岁以上`;
+            const ageMax = age[1][ageRangeIndex[1]] === '不限' ? '不限' : `${age[1][ageRangeIndex[1]]}岁以下`;
+            const ageText = ageMin === '不限' && ageMax === '不限' ? '不限年龄' : `${ageMin} - ${ageMax}`;
+
+            // Service duration text
+            const durationText = serviceDuration[serviceDurationIndex];
+
+            // Price
+            const price = this.priceOptions[this.priceIndex];
+
+            // State and city text
+            const location = this.dropdownOptions.state ? `${this.dropdownOptions.state}${this.dropdownOptions.city}` : '不限地区';
+
+            // Update the title with the concatenated values
+            this.title = `${this.serviceName}服务: ${genderText} / ${ageText} / ${durationText} / ${location} / ¥${price}`;
+        },
         // Submit form data
         formSubmit() {
+            this.generateTitle();
             // Collect form data
             const selectedDuration = parseInt(
                 this.dropdownOptions.serviceDuration[this.serviceDurationIndex]
@@ -326,9 +353,9 @@ export default {
             const formData = {
                 title: this.title,
                 clientId: uni.getStorageSync('userId'),
-                effectiveAt: this.$common.timeToStamp(`${this.dropdownOptions.startDate} ${this.dropdownOptions.startTime}`),
-                expireAt: this.$common.timeToStamp(`${this.dropdownOptions.endDate} ${this.dropdownOptions.endTime}`),
-                requiredServantType: this.servantType,
+                effectiveAt: this.common.timeToStamp(`${this.dropdownOptions.startDate} ${this.dropdownOptions.startTime}`),
+                expireAt: this.common.timeToStamp(`${this.dropdownOptions.endDate} ${this.dropdownOptions.endTime}`),
+                requiredServantType: this.serviceType,
                 requiredGender: requiredGenderValue,
                 requiredAgeMin: requiredAgeMinValue,
                 requiredAgeMax: requiredAgeMaxValue,
@@ -344,8 +371,6 @@ export default {
                 method: 'POST',
                 data: formData,
                 success: (res) => {
-                    // handel payment
-                    // XXXXX
                     uni.showToast({title: '添加成功', icon: 'none'});
                     uni.navigateTo({
                         url: '/pages/me/order/order'

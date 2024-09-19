@@ -29,7 +29,7 @@
     <!-- Scroll View for User List -->
     <user-list
         :userList="userList"
-        height="72vh"
+        height="60vh"
         @user-click="userDetailRedirect"
     />
 </div>

@@ -2,7 +2,7 @@
 <div class="page">
     <app-title type="h1" bold="true">选择你的服务者类型</app-title>
     <div v-for="item in servantTypeList" :key="item.id">
-        <app-container color="#f3f2f6" col="12" @click="orderInitiateRedirect(item.id)">
+        <app-container color="#f3f2f6" col="12" @click="orderInitiateRedirect(item.id,item.name)">
             <div style="height: 100px">
                 <app-title type="h1" style="position: relative;bottom: -55px">{{ item.name }}</app-title>
             </div>
@@ -27,17 +27,15 @@ export default {
             uni.request({
                 url: getApp().globalData.requestUrl + '/service-type/search',
                 method: 'POST',
-                data: {
-
-                },
+                data: {},
                 success: (res) => {
                     this.servantTypeList = res.data.serviceTypeList
                 },
             });
         },
-        orderInitiateRedirect(servantType) {
+        orderInitiateRedirect(serviceType, serviceName) {
             uni.navigateTo({
-                url: '/pages/me/order/order-initiate/order-initiate?servantType=' + servantType
+                url: '/pages/me/order/order-initiate/order-initiate?serviceType=' + serviceType + '&serviceName=' + serviceName
             });
         },
 
