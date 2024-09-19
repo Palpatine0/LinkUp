@@ -25,13 +25,13 @@ export default {
     methods: {
         getServantTypeList() {
             uni.request({
-                url: getApp().globalData.requestUrl + '/servant-type/search',
+                url: getApp().globalData.requestUrl + '/service-type/search',
                 method: 'POST',
                 data: {
 
                 },
                 success: (res) => {
-                    this.servantTypeList = res.data.servantTypeList
+                    this.servantTypeList = res.data.serviceTypeList
                 },
             });
         },

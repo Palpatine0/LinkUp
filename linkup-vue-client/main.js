@@ -7,6 +7,7 @@ import AppTitle from './components/base/app-title.vue';
 import AppInput from './components/base/app-input.vue';
 import AppContainer from './components/base/app-container.vue';
 import AppButton from './components/base/app-button.vue';
+import UserList from './components/page/user-list/user-list.vue';
 import './style/common.css';
 
 Vue.prototype.common = common;
@@ -14,6 +15,7 @@ Vue.component('app-title', AppTitle);
 Vue.component('app-input', AppInput);
 Vue.component('app-container', AppContainer);
 Vue.component('app-button', AppButton);
+Vue.component('user-list', UserList);
 
 Vue.config.productionTip = false
 App.mpType = 'app'

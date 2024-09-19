@@ -3,10 +3,10 @@ package com.enchanted.service.impl;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.enchanted.entity.User;
-import com.enchanted.mapper.ServantTypeMapper;
-import com.enchanted.entity.ServantType;
+import com.enchanted.mapper.ServiceTypeMapper;
+import com.enchanted.entity.ServiceType;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.enchanted.service.IServantTypeService;
+import com.enchanted.service.IServiceTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
@@ -15,27 +15,27 @@ import java.lang.reflect.Field;
 import java.util.Map;
 
 @Service
-public class ServantTypeServiceImpl extends ServiceImpl<ServantTypeMapper, ServantType> implements IServantTypeService {
+public class ServiceTypeServiceImpl extends ServiceImpl<ServiceTypeMapper, ServiceType> implements IServiceTypeService {
 
     @Autowired
-    private ServantTypeMapper servantTypeMapper;
+    private ServiceTypeMapper serviceTypeMapper;
 
     @Override
-    public Page<ServantType> search(Map<String, Object> params, int page, int size) {
-        IPage<ServantType> servantTypePage = new Page<>(page, size);
-        servantTypePage = servantTypeMapper.search(servantTypePage, params);
-        return (Page<ServantType>) servantTypePage;
+    public Page<ServiceType> search(Map<String, Object> params, int page, int size) {
+        IPage<ServiceType> serviceTypePage = new Page<>(page, size);
+        serviceTypePage = serviceTypeMapper.search(serviceTypePage, params);
+        return (Page<ServiceType>) serviceTypePage;
     }
 
     @Override
-    public boolean save(ServantType servantType) {
-        return servantTypeMapper.insert(servantType) > 0;
+    public boolean save(ServiceType serviceType) {
+        return serviceTypeMapper.insert(serviceType) > 0;
     }
 
     @Override
     public boolean update(Long id, Map<String, Object> changes) {
-        ServantType servantType = servantTypeMapper.selectById(id);
-        if (servantType == null) {
+        ServiceType serviceType = serviceTypeMapper.selectById(id);
+        if (serviceType == null) {
             return false;
         }
 
@@ -46,14 +46,14 @@ public class ServantTypeServiceImpl extends ServiceImpl<ServantTypeMapper, Serva
                 // Check for type mismatch and convert if necessary
                 if (!classField.getType().isAssignableFrom(value.getClass())) {
                     Object convertedValue = convertValueToRequiredType(value, classField.getType());
-                    ReflectionUtils.setField(classField, servantType, convertedValue);
+                    ReflectionUtils.setField(classField, serviceType, convertedValue);
                 } else {
-                    ReflectionUtils.setField(classField, servantType, value);
+                    ReflectionUtils.setField(classField, serviceType, value);
                 }
             }
         });
 
-        int updated = servantTypeMapper.updateById(servantType);
+        int updated = serviceTypeMapper.updateById(serviceType);
         return retBool(updated);
     }
 
@@ -67,6 +67,6 @@ public class ServantTypeServiceImpl extends ServiceImpl<ServantTypeMapper, Serva
 
     @Override
     public boolean delete(Long id) {
-        return servantTypeMapper.deleteById(id) > 0;
+        return serviceTypeMapper.deleteById(id) > 0;
     }
 }

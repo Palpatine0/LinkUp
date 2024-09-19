@@ -3,7 +3,13 @@
     <app-title type="h1" bold="true">附近</app-title>
 
     <!-- Category Filters (Optional, can be expanded) -->
-    <div class="flex">
+    <div class="app-container service-info" style="background: url('https://i.imghippo.com/files/ml5ib1726672366.png') no-repeat center center;background-size: 135%;" @click="serviceDetailRedirect(1)">
+        <div class="gradient-overlay" style="border-bottom-right-radius: 15px;border-bottom-left-radius: 15px"></div>
+        <div class="service-info-text">
+            导游服务
+        </div>
+    </div>
+    <!--<div class="flex">
         <div class="app-container" style="width: 48%;margin: 2px;">
             导游
         </div>
@@ -18,25 +24,14 @@
         <div class="app-container" style="width: 48%;margin: 2px;">
             XX
         </div>
-    </div>
+    </div>-->
 
     <!-- Scroll View for User List -->
-    <scroll-view :scroll-top="0" scroll-y="true" style="height: 72vh" class="mt-4">
-        <div class="contact-grid">
-            <div
-                v-for="(user, index) in userList"
-                :key="user.id"
-                :class="{'contact-item': true, 'last-item': index === userList.length - 1}"
-                @click="userDetailRedirect(user.id)"
-            >
-                <img :src="user.avatar" alt="user.name" class="contact-avatar">
-                <div class="contact-info">
-                    <h2 class="contact-name">{{ user.nickname }}</h2>
-                    <p class="contact-number">{{ user.currentLocation }}</p>
-                </div>
-            </div>
-        </div>
-    </scroll-view>
+    <user-list
+        :userList="userList"
+        height="72vh"
+        @user-click="userDetailRedirect"
+    />
 </div>
 </template>
 
@@ -78,7 +73,7 @@ export default {
             }
         },
         async getUserInfo(e) {
-            uni.showLoading({ title: '加载中' });
+            uni.showLoading({title: '加载中'});
             const getUserLoginCode = () => {
                 return new Promise((resolve) =>
                     uni.login({
@@ -87,7 +82,7 @@ export default {
                             resolve(res.code);
                         },
                         fail: () => {
-                            uni.showToast({ title: '用户Code获取失败', icon: 'none' });
+                            uni.showToast({title: '用户Code获取失败', icon: 'none'});
                         },
                     })
                 );
@@ -103,13 +98,13 @@ export default {
                         },
                         success: (res) => {
                             if (res.data.auth == null) {
-                                uni.showToast({ title: '授权失败', icon: 'none' });
+                                uni.showToast({title: '授权失败', icon: 'none'});
                             } else {
                                 resolve(res.data.auth);
                             }
                         },
                         fail: () => {
-                            uni.showToast({ title: '授权请求失败', icon: 'none' });
+                            uni.showToast({title: '授权请求失败', icon: 'none'});
                         },
                     });
                 });
@@ -154,10 +149,10 @@ export default {
                     uni.setStorageSync('gender', userData.gender);
                     this.userProfileAvailable = true;
                     uni.hideLoading();
-                    uni.showToast({ title: '授权成功', icon: 'none' });
+                    uni.showToast({title: '授权成功', icon: 'none'});
                 },
                 fail: () => {
-                    uni.showToast({ title: '授权失败', icon: 'none' });
+                    uni.showToast({title: '授权失败', icon: 'none'});
                 },
             });
         },
@@ -197,6 +192,11 @@ export default {
         userDetailRedirect(userId) {
             uni.navigateTo({
                 url: '/pages/components/user/user-detail/user-detail?userId=' + userId,
+            });
+        },
+        serviceDetailRedirect(serviceTypeId) {
+            uni.navigateTo({
+                url: '/pages/components/service/service-detail/service-detail?serviceTypeId=' + serviceTypeId,
             });
         }
     }
@@ -238,4 +238,21 @@ export default {
     font-size: 14px;
     color: #666;
 }
+
+.service-info {
+    height: 200px;
+    position: relative;
+}
+
+.service-info-text {
+    position: absolute;
+    bottom: 40px;
+    width: 100%;
+    z-index: 100;
+    height: 20px;
+    color: white;
+    font-size: 35px;
+    font-weight: bold;
+}
+
 </style>

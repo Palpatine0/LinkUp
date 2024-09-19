@@ -83,13 +83,6 @@ export default {
             });
         },
 
-        // Handle contact redirect
-        contactRedirect() {
-            uni.navigateTo({
-                url: '/pages/components/chat/chat-window/chat-window?contactId=' + this.userId
-            });
-        },
-
         // Scroll event to shrink the top section dynamically
         onScroll(event) {
             const scrollTop = event.target.scrollTop;
@@ -109,7 +102,14 @@ export default {
             // Update heights
             this.topSectionHeight = newTopHeight;
             this.scrollViewHeight = newScrollViewHeight;
-        }
+        },
+
+        // Handle contact redirect
+        contactRedirect() {
+            uni.navigateTo({
+                url: '/pages/components/chat/chat-window/chat-window?contactId=' + this.userId
+            });
+        },
     },
 
 

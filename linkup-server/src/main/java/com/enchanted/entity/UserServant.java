@@ -17,7 +17,7 @@ public class UserServant {
     private String bio;
 
     @TableField("servant_type_id")
-    private String servantTypeId;
+    private String serviceTypeId;
 
     @TableField("is_deleted")
     private Boolean isDeleted;

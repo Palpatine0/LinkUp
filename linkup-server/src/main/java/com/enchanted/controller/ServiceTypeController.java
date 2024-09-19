@@ -1,22 +1,21 @@
 package com.enchanted.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.enchanted.entity.ServantType;
-import com.enchanted.service.IServantTypeService;
+import com.enchanted.entity.ServiceType;
+import com.enchanted.service.IServiceTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.enchanted.vo.R;
 
-import java.util.List;
 import java.util.Map;
 
 @CrossOrigin
 @RestController
-@RequestMapping("/servant-type")
-public class ServantTypeController {
+@RequestMapping("/service-type")
+public class ServiceTypeController {
 
     @Autowired
-    private IServantTypeService servantTypeService;
+    private IServiceTypeService serviceTypeService;
 
     @PostMapping("/search")
     public R search(@RequestBody Map<String, Object> requestData) {
@@ -26,14 +25,14 @@ public class ServantTypeController {
         requestData.remove("page");
         requestData.remove("size");
 
-        Page<ServantType> servantTypePage = servantTypeService.search(requestData, page, size);
-        return buildPaginatedResponse(servantTypePage);
+        Page<ServiceType> serviceTypePage = serviceTypeService.search(requestData, page, size);
+        return buildPaginatedResponse(serviceTypePage);
     }
 
 
     @PostMapping("/save")
-    public R save(@RequestBody ServantType servantType) {
-        boolean isSaved = servantTypeService.save(servantType);
+    public R save(@RequestBody ServiceType serviceType) {
+        boolean isSaved = serviceTypeService.save(serviceType);
         if (isSaved) {
             return R.ok("添加成功");
         } else {
@@ -47,7 +46,7 @@ public class ServantTypeController {
         Long id = Long.parseLong(requestData.get("id").toString());
         requestData.remove("id");
 
-        boolean isUpdated = servantTypeService.update(id, requestData);
+        boolean isUpdated = serviceTypeService.update(id, requestData);
         if (isUpdated) {
             return R.ok("更新成功");
         } else {
@@ -58,7 +57,7 @@ public class ServantTypeController {
     @PostMapping("/delete")
     public R delete(@RequestBody Map<String, Object> requestData) {
         Long id = Long.parseLong(requestData.get("id").toString());
-        boolean isDeleted = servantTypeService.delete(id);
+        boolean isDeleted = serviceTypeService.delete(id);
         if (isDeleted) {
             return R.ok("删除成功");
         } else {
@@ -66,11 +65,11 @@ public class ServantTypeController {
         }
     }
 
-    private R buildPaginatedResponse(Page<ServantType> servantTypePage) {
+    private R buildPaginatedResponse(Page<ServiceType> serviceTypePage) {
         return R.ok()
-            .put("servantTypeList", servantTypePage.getRecords())
-            .put("total", servantTypePage.getTotal())
-            .put("pages", servantTypePage.getPages())
-            .put("current", servantTypePage.getCurrent());
+            .put("serviceTypeList", serviceTypePage.getRecords())
+            .put("total", serviceTypePage.getTotal())
+            .put("pages", serviceTypePage.getPages())
+            .put("current", serviceTypePage.getCurrent());
     }
 }

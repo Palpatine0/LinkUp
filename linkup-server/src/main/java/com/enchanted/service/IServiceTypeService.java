@@ -2,16 +2,15 @@ package com.enchanted.service;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.enchanted.entity.ServantType;
+import com.enchanted.entity.ServiceType;
 
-import java.util.List;
 import java.util.Map;
 
-public interface IServantTypeService extends IService<ServantType> {
+public interface IServiceTypeService extends IService<ServiceType> {
 
-    Page<ServantType> search(Map<String, Object> params, int page, int size);
+    Page<ServiceType> search(Map<String, Object> params, int page, int size);
 
-    boolean save(ServantType servantType);
+    boolean save(ServiceType serviceType);
 
     boolean update(Long id, Map<String, Object> changes);
 
