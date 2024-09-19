@@ -4,7 +4,7 @@
     <div class="profile-section">
         <div class="profile-header center_h">
             <div class="center_h">
-                <img :src="user.avatar" alt="Profile Photo" class="profile-photo"/>
+                <img :src="user.avatar" alt="Profile Photo" class="profile-photo" />
             </div>
             <div class="profile-info">
                 <h1 class="profile-name">{{ user.nickname }}</h1>
@@ -12,14 +12,20 @@
         </div>
     </div>
 
-    <app-container color="#fff" col="12" @click="orderRedirect()" >
+    <app-container color="#fff" col="12" @click="orderRedirect">
         <img src="/static/tab-bar/order-active.png" alt="" class="link-icon">
         <span>订单</span>
     </app-container>
 
     <!-- Other Options with Icons -->
     <app-container color="#fff" col="12" type="list">
-        <div v-for="(item, index) in linkItems" :key="index" class="link-item" :class="{ 'no-border': index === linkItems.length - 1 }">
+        <div
+            v-for="(item, index) in linkItems"
+            :key="index"
+            class="link-item"
+            :class="{ 'no-border': index === linkItems.length - 1 }"
+            @click="handleLinkClick(item.click)"
+        >
             <img :src="item.icon" alt="" class="link-icon">
             <span>{{ item.label }}</span>
         </div>
@@ -27,19 +33,21 @@
 </div>
 </template>
 
+
 <script>
 export default {
     data() {
         return {
             user: {},
             linkItems: [
-                {label: "余额", icon: "/static/page/me/card.svg"},
-                {label: "收藏", icon: "/static/page/me/bookmark.svg"},
-                {label: "标签", icon: "/static/page/me/tag.svg"},
-                {label: "数据", icon: "/static/page/me/data.svg"},
-            ]
+                { label: "余额", icon: "/static/page/me/card.svg", click: "balanceRedirect" },
+                { label: "收藏", icon: "/static/page/me/bookmark.svg", click: "favoritesRedirect" },
+                { label: "标签", icon: "/static/page/me/tag.svg", click: "tagsRedirect" },
+                { label: "数据", icon: "/static/page/me/data.svg", click: "dataRedirect" },
+            ],
         };
     },
+
     onLoad() {
         this.getUser();
     },
@@ -61,9 +69,23 @@ export default {
             });
         },
 
+
+        handleLinkClick(methodName) {
+            if (this[methodName] && typeof this[methodName] === 'function') {
+                this[methodName]();
+            } else {
+                console.warn(`Method ${methodName} is not defined.`);
+            }
+        },
         orderRedirect(){
             uni.navigateTo({
                 url: '/pages/me/order/order',
+            });
+        },
+
+        balanceRedirect(){
+            uni.navigateTo({
+                url: '/pages/me/balance/balance',
             });
         }
     }

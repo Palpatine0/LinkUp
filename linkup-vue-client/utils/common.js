@@ -216,6 +216,21 @@ var $common = {
             return fileByte;
         }
     },
+    toNumber(value, type = 'float') {
+        if (value === undefined || value === null) return 0;
+
+        switch (type.toLowerCase()) {
+            case 'int':
+            case 'integer':
+                return parseInt(value, 10) || 0; // Converts to Integer
+            case 'float':
+                return parseFloat(value) || 0.0; // Converts to Float
+            case 'bigdecimal':
+                return parseFloat(value) || 0.0; // Simulate BigDecimal with float for JS
+            default:
+                return parseFloat(value) || 0.0; // Default to float if type not specified
+        }
+    },
 }
 
 // Date format

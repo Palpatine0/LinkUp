@@ -72,7 +72,7 @@ export default {
 
         // Change tab method
         changeTab(tab) {
-            this.activeTab = tab; // Switch between 'details' and 'order'
+            this.activeTab = tab; // Switch between 'details' and 'balance'
         },
 
         onScroll(event) {

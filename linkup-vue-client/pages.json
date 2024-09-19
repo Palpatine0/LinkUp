@@ -61,7 +61,15 @@
                 "navigationBarBackgroundColor": "#f3f2f6"
             }
         },
-        // me > order
+        // me > balance
+        {
+            "path": "pages/me/balance/balance",
+            "style": {
+                "navigationBarTitleText": "",
+                "navigationBarBackgroundColor": "#fefefe"
+            }
+        },
+        // me > balance
         {
             "path": "pages/me/order/order",
             "style": {
