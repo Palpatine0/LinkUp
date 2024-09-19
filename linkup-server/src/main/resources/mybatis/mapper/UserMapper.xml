@@ -38,4 +38,48 @@
         ORDER BY created_at DESC
     </select>
 
+    <select id="searchServant" resultMap="UserResultMap">
+        SELECT
+        u.id,
+        u.nickname,
+        u.age,
+        u.gender,
+        u.avatar,
+        us.bio,
+        GROUP_CONCAT(st.name) AS service_types
+        FROM user u
+        LEFT JOIN user_servant us ON u.id = us.user_id
+        LEFT JOIN user_servant_service_type usst ON us.id = usst.user_servant_id
+        LEFT JOIN service_type st ON usst.service_type_id = st.id
+        <where>
+            1=1
+            AND u.role = 2
+            AND u.is_deleted = 0
+            <if test="params.id != null and params.id != ''">
+                AND u.id = #{params.id}
+            </if>
+            <if test="params.nickname != null and params.nickname != ''">
+                AND u.nickname LIKE CONCAT('%', #{params.nickname}, '%')
+            </if>
+            <if test="params.gender != null and params.gender != ''">
+                AND u.gender = #{params.gender}
+            </if>
+            <if test="params.ageMin != null and params.ageMax != null">
+                AND u.age BETWEEN #{params.ageMin} AND #{params.ageMax}
+            </if>
+            <if test="params.serviceType != null and params.serviceType != ''">
+                AND usst.service_type_id = #{params.serviceType}
+            </if>
+        </where>
+        GROUP BY
+        u.id,
+        u.nickname,
+        u.age,
+        u.gender,
+        u.avatar,
+        us.bio
+        ORDER BY u.created_at DESC
+    </select>
+
+
 </mapper>

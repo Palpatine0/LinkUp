@@ -40,11 +40,14 @@ export default {
     name: "home",
     data() {
         return {
-            userList: [],  // This will store the list of users
-            page: 1,       // Page number for pagination
-            size: 20,      // Number of users to fetch per request
-            hasMore: true, // Flag to check if more users are available to load
-            loading: false // To handle the loading state
+            // ** page vars ** //
+            page: 1,
+            size: 20,
+            hasMore: true,
+            loading: false,
+            // ** /page vars ** //
+
+            userList: [],
         };
     },
     onLoad() {

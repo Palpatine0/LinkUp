@@ -15,7 +15,6 @@ public class User {
     /**
      * Role: 0: admin; 1: client; 2: servant
      */
-
     private Integer role;
 
     @TableField("openid")

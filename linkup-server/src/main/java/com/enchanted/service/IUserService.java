@@ -10,6 +10,8 @@ public interface IUserService extends IService<User> {
 
     Page<User> search(Map<String, Object> params, int page, int size); // <-- Added search method
 
+    Page<User> searchServant(Map<String, Object> params, int page, int size); // <-- Added search method
+
     User saveAuthInfo(String code);
 
     boolean save(User user);

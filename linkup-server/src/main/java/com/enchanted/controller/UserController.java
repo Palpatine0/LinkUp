@@ -30,6 +30,18 @@ public class UserController {
         return buildPaginatedResponse(userPage);
     }
 
+    @PostMapping("/search-servant")
+    public R searchServant(@RequestBody Map<String, Object> requestData) {
+        int page = requestData.get("page") != null ? Integer.parseInt(requestData.get("page").toString()) : 1;
+        int size = requestData.get("size") != null ? Integer.parseInt(requestData.get("size").toString()) : 10;
+
+        requestData.remove("page");
+        requestData.remove("size");
+
+        Page<User> userPage = userService.searchServant(requestData, page, size);
+        return buildPaginatedResponse(userPage);
+    }
+
     @PostMapping("save-auth-info")
     public R saveAuthInfo(@RequestBody Map<String, String> dto) {
         String code = dto.get("code");

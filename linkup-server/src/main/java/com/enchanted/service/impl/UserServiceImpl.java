@@ -31,6 +31,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     }
 
     @Override
+    public Page<User> searchServant(Map<String, Object> params, int page, int size) {
+        IPage<User> userPage = new Page<>(page, size);
+        userPage = userMapper.searchServant(userPage, params);
+        return (Page<User>) userPage;
+    }
+
+    @Override
     public User saveAuthInfo(String code) {
         User user = new User();
 
