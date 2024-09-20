@@ -10,17 +10,19 @@
 
     <!-- Contact List -->
     <scroll-view :scroll-top="0" scroll-y="true" style="height: 80vh" class="mt-4">
-        <div
-            v-for="(contact, index) in contactList"
-            :key="contact.id"
-            :class="{'contact-item': true, 'last-item': index === contactList.length - 1}"
-            @click="contactRedirect(contact.id)"
-        >
-            <img :src="contact.avatar" alt="contact.name" class="contact-avatar">
-            <div class="contact-info">
-                <h2 class="contact-name">{{ contact.nickname }}</h2>
-                <p class="contact-number">{{ contact.lastMessage }}</p> <!-- Last message time or content -->
+        <div v-for="(contact, index) in contactList" :key="contact.id">
+            <div
+                @click="contactRedirect(contact.id)"
+                class="contact-item"
+            >
+                <img :src="contact.avatar" alt="contact.name" class="contact-avatar">
+                <div class="contact-info">
+                    <h2 class="contact-name">{{ contact.nickname }}</h2>
+                    <p class="contact-number">{{ contact.lastMessage }}</p>
+                </div>
             </div>
+            <!-- Separator div instead of border-bottom -->
+            <div v-if="index !== contactList.length - 1" class="separator"></div>
         </div>
     </scroll-view>
 </div>
@@ -103,7 +105,6 @@ export default {
             });
         },
 
-
         // Step 2: Fetch user details for the unique user IDs found in the messages
         getUserDetails(id) {
             uni.request({
@@ -141,11 +142,13 @@ export default {
     display: flex;
     align-items: center;
     padding: 10px;
-    border-bottom: 1px solid #ccc;
 }
 
-.last-item {
-    border-bottom: none;  // No border for the last item
+.separator {
+    height: 1px;
+    background-color: #ccc;
+    margin-left: 68px;
+    width: 70vw;
 }
 
 .contact-avatar {

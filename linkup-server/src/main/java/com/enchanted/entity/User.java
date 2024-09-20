@@ -44,6 +44,15 @@ public class User {
 
     private BigDecimal balance;
 
+    @TableField("latitude_fuzzy")
+    private Double latitudeFuzzy;
+
+    @TableField("longitude_fuzzy")
+    private Double longitudeFuzzy;
+
+    @TableField("current_city")
+    private String currentCity;
+
     @TableField("current_location")
     private String currentLocation;
 

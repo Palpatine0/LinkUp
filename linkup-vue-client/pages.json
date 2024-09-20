@@ -97,6 +97,16 @@
                 "navigationBarTitleText": "",
                 "navigationBarBackgroundColor": "#fefefe"
             }
+        },
+
+        // registry
+        {
+            "path": "pages/registry/registry",
+            "style": {
+                "navigationBarTitleText": "",
+                "navigationBarBackgroundColor": "#fefefe",
+                "navigationStyle":"custom"
+            }
         }
     ],
     "globalStyle": {
