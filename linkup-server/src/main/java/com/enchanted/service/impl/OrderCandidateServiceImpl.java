@@ -7,6 +7,7 @@ import com.enchanted.entity.OrderCandidate;
 import com.enchanted.entity.User;
 import com.enchanted.mapper.OrderCandidateMapper;
 import com.enchanted.service.IOrderCandidateService;
+import com.enchanted.service.IOrderService;
 import com.enchanted.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,10 +27,28 @@ public class OrderCandidateServiceImpl extends ServiceImpl<OrderCandidateMapper,
     @Autowired
     private IUserService userService;
 
+    @Autowired
+    private IOrderService orderService;
+
     @Override
     public boolean save(OrderCandidate orderCandidate) {
-        return orderCandidateMapper.insert(orderCandidate) > 0;
+        boolean isFirstPick = isFirstPickForOrder(orderCandidate.getOrderId());
+        boolean isSaved = orderCandidateMapper.insert(orderCandidate) > 0;
+
+        // If it's the first pick, start monitoring the order
+        if (isSaved && isFirstPick) {
+            orderService.monitorOrder(orderCandidate.getOrderId());
+        }
+        return isSaved;
     }
+
+    private boolean isFirstPickForOrder(Long orderId) {
+        QueryWrapper<OrderCandidate> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("order_id", orderId);
+        queryWrapper.eq("is_deleted", 0);
+        return orderCandidateMapper.selectCount(queryWrapper) == 0;
+    }
+
 
     @Override
     public Page<OrderCandidate> search(Map<String, Object> params, int page, int size) {

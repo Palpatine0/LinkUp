@@ -88,7 +88,7 @@
     cursor: pointer; /* Makes it feel like a button */
     margin: 10px 0;
     width: 100%; /* Default width is 100% but can be overridden */
-    padding: 12px 24px;
+    padding: 10px 24px;
     font-size: 18px;
     height: 45px;
     border-radius: 15px;

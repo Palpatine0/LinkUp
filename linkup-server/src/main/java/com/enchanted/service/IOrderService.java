@@ -16,4 +16,6 @@ public interface IOrderService extends IService<Order> {
     boolean update(Long id, Map<String, Object> changes);
 
     boolean delete(Long id);
+
+    void monitorOrder(Long orderId);
 }

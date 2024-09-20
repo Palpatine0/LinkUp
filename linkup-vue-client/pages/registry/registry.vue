@@ -286,13 +286,19 @@ export default {
                     uni.getFuzzyLocation({
                         type: 'wgs84',
                         success(res) {
-                            console.log("this.userData before loc")
-                            console.log(that.userData)
                             that.userData = {
                                 ...that.userData,
                                 latitudeFuzzy: res.latitude,
                                 longitudeFuzzy: res.longitude,
                             }
+                            const tencentMapKey = process.env.VUE_APP_TENCENT_MAPS_API_KEY;
+                            console.log("Tencent Maps API Key:", tencentMapKey);
+                            /*uni.request({
+                                url:`https://apis.map.qq.com/ws/geocoder/v1/?location=${res.latitude},${res.longitude}&key=${process.env.TENCENT_MAPS_API_KEY}`,
+                                success: (res) => {
+                                    console.log(res,'res'); //位置信息
+                                }
+                            })*/
                             that.step++
                         },
                     });

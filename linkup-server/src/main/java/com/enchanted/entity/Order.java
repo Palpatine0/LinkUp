@@ -50,6 +50,9 @@ public class Order {
 
     private Integer status; // 0: pending; 1: processing; 2: completed
 
+    @TableField("payment_method")
+    private String paymentMethod;
+
     @TableField("effective_at")
     private Date effectiveAt;
 
