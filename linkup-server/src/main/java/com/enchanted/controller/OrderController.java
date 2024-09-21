@@ -7,7 +7,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.enchanted.vo.R;
 
-import java.util.List;
 import java.util.Map;
 
 @CrossOrigin
@@ -64,6 +63,28 @@ public class OrderController {
         }
     }
 
+    @PostMapping("/cancel-order")
+    public R cancelOrder(@RequestBody Map<String, Object> requestData) {
+        Long orderId = Long.parseLong(requestData.get("orderId").toString());
+
+        Order order = orderService.getById(orderId);
+        if (order == null) {
+            return R.error("Order not found");
+        }
+
+        // Stop monitoring the order and handle failure
+        orderService.stopMonitoring(orderId); // Implement this method to stop the monitoring
+        orderService.cancelOrder(order);
+
+        return R.ok("Order failure handled successfully");
+    }
+
+    @PostMapping("/remaining-free-posting-quota")
+    public R getRemainingFreePostingQuota(@RequestBody Map<String, Object> requestData) {
+        Long userId = Long.parseLong(requestData.get("userId").toString());
+        int freeOrderPostingQuota = orderService.getRemainingFreePostingQuota(userId);
+        return R.ok().put("freeOrderPostingQuota", freeOrderPostingQuota);
+    }
 
     private R buildPaginatedResponse(Page<Order> orderPage) {
         return R.ok()

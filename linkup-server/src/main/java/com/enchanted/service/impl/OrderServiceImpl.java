@@ -9,6 +9,7 @@ import com.enchanted.entity.Order;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.enchanted.service.IOrderService;
 import com.enchanted.service.IUserService;
+import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
@@ -21,6 +22,9 @@ import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Map;
 import java.util.Random;
+import java.util.concurrent.ConcurrentHashMap;
+
+import static java.lang.Integer.*;
 
 @Service
 public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements IOrderService {
@@ -30,6 +34,12 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
     @Autowired
     private IUserService userService;
+
+    private final Map<Long, Thread> monitoringThreads = new ConcurrentHashMap<>();
+
+    private static final Dotenv dotenv = Dotenv.load();
+
+    private static int FREE_POSTING_QUOTA = parseInt(dotenv.get("ORDER_FREE_POSTING_QUOTA"));
 
     @Override
     public Page<Order> search(Map<String, Object> params, int page, int size) {
@@ -110,32 +120,39 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         return orderMapper.deleteById(id) > 0;
     }
 
+    @Override
     public void monitorOrder(Long orderId) {
-        new Thread(() -> {
+        Thread monitoringThread = new Thread(() -> {
             try {
-                System.out.println("Monitoring order with ID: " + orderId + " has started at " + new Date());
-
                 Thread.sleep(600000); // Sleep for 10 minutes
-
-                // Re-fetch the order from the database to get the most recent state
                 Order order = this.getById(orderId);
                 if (order != null && order.getServantId() == null) {
-                    System.out.println("Order with ID: " + orderId + " failed due to no servant assignment.");
-                    handleFailedOrder(order);
+                    cancelOrder(order);
                 } else {
-                    System.out.println("Order with ID: " + orderId + " has been assigned a servant or already completed.");
                 }
 
             } catch (InterruptedException e) {
-                System.err.println("Monitoring thread interrupted for order with ID: " + orderId + " at " + new Date());
                 e.printStackTrace();
             }
-        }).start();
+        });
+
+        monitoringThreads.put(orderId, monitoringThread);
+        monitoringThread.start();
     }
 
 
+    @Override
+    public void stopMonitoring(Long orderId) {
+        Thread monitoringThread = monitoringThreads.get(orderId);
+        if (monitoringThread != null && monitoringThread.isAlive()) {
+            monitoringThread.interrupt(); // Interrupt the thread to stop monitoring
+            monitoringThreads.remove(orderId); // Remove from active monitoring map
+            System.out.println("Stopped monitoring order with ID: " + orderId);
+        }
+    }
 
-    private void handleFailedOrder(Order order) {
+    @Override
+    public void cancelOrder(Order order) {
         // Fetch the user who posted the order
         User user = userService.getById(order.getClientId());
         if (user == null) {
@@ -146,9 +163,10 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         int freeAttemptsToday = countFreeAttemptsToday(order.getClientId());
 
         BigDecimal refundAmount = order.getPrice();
-        if (freeAttemptsToday < 2) {
+
+        if (freeAttemptsToday < FREE_POSTING_QUOTA + 1) {
             refundAmount = order.getPrice(); // 100% refund
-        } else if (freeAttemptsToday == 2) {
+        } else {
             refundAmount = order.getPrice().multiply(BigDecimal.valueOf(0.8)); // 80% refund
         }
 
@@ -159,6 +177,11 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         // Mark the order as completed and failed
         order.setStatus(3);
         this.updateById(order);
+    }
+
+    public int getRemainingFreePostingQuota(Long userId) {
+        int freeAttemptsToday = countFreeAttemptsToday(userId);
+        return Math.max(0, FREE_POSTING_QUOTA - freeAttemptsToday);
     }
 
     private int countFreeAttemptsToday(Long userId) {
@@ -172,12 +195,10 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         queryWrapper.eq("client_id", userId);
         queryWrapper.isNull("servant_id"); // No servant matched
         queryWrapper.between("created_at", startOfDay, endOfDay); // Only orders from today
-        queryWrapper.eq("is_completed", 1); // Ensure the order is completed (failed or succeeded)
-
+        Long cnt = orderMapper.selectCount(queryWrapper);
         // Return the count of such orders
-        return Math.toIntExact(orderMapper.selectCount(queryWrapper));
+        return Math.toIntExact(cnt);
     }
-
 
     private Object convertValueToRequiredType(Object value, Class<?> targetType) {
         // Add more cases as needed
@@ -185,10 +206,5 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             return String.valueOf(value);
         }
         return value;
-    }
-
-    private Page<Order> getOrderPage(QueryWrapper<Order> queryWrapper, int page, int size) {
-        Page<Order> orderPage = new Page<>(page, size);
-        return this.page(orderPage, queryWrapper);
     }
 }

@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.enchanted.entity.Order;
 
-import java.util.List;
 import java.util.Map;
 
 public interface IOrderService extends IService<Order> {
@@ -18,5 +17,11 @@ public interface IOrderService extends IService<Order> {
     boolean delete(Long id);
 
     void monitorOrder(Long orderId);
+
+    void cancelOrder(Order order);
+
+    void stopMonitoring(Long orderId);
+
+    int getRemainingFreePostingQuota(Long userId);
 
 }

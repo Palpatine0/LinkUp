@@ -25,9 +25,14 @@
 
     <!-- Countdown Timer -->
     <div v-if="order.countdownStartAt">
-        <div v-if="countdown > 0" class="app-container" style="background-color: #feb327 !important;">
-            <app-title type="h3" bold="true">请在剩余时间内选择一个达人</app-title>
-            <p>{{ formatTime(countdown) }}</p>
+        <div v-if="countdown > 0" class="app-container" style="background-color: #feb327 !important;display: flex;justify-content: space-between">
+            <div>
+                <app-title type="h3" bold="true">请在剩余时间内选择一个达人</app-title>
+                <p>{{ formatTime(countdown) }}</p>
+            </div>
+            <app-button type="small" color="red" shaped size="small" @click="cancelOrder">
+                取消订单
+            </app-button>
         </div>
         <div v-if="!countdown > 0" class="app-container" style="background-color: white !important;">
             <app-title type="h3" bold="true">订单已失效</app-title>
@@ -85,13 +90,15 @@ export default {
             order: {},
             servantList: [],
             countdown: 0, // Countdown in seconds
-            countdownInterval: null
+            countdownInterval: null,
+            freeOrderPostRemainingCount: 0
         };
     },
     onLoad(params) {
         this.orderId = params.orderId;
         this.getOrder();
         this.getServantList();
+        this.getRemainingFreePostingQuota();
     },
     onUnLoad() {
         // Clear the countdown interval when the component is destroyed
@@ -112,6 +119,19 @@ export default {
                     if (this.order.countdownStartAt) {
                         this.startCountdown();
                     }
+                },
+            });
+        },
+
+        getRemainingFreePostingQuota() {
+            uni.request({
+                url: getApp().globalData.requestUrl + '/order/remaining-free-posting-quota',
+                method: 'POST',
+                data: {
+                    userId: this.order.clientId
+                },
+                success: (res) => {
+                    this.freeOrderPostingQuota = res.data.freeOrderPostingQuota;
                 },
             });
         },
@@ -203,6 +223,27 @@ export default {
                 confirmText: '确定',
                 success: (res) => {
                     // Handle confirmation
+                },
+            });
+        },
+
+        cancelOrder() {
+            uni.showModal({
+                title: '确认取消订单',
+                content: `是否确定要取消订单？您今日的免费发单额度还剩${this.freeOrderPostRemainingCount}次。超出额度本订单只能回退定价的80%`,
+                showCancel: true,
+                confirmText: '确定',
+                success: (res) => {
+                    uni.request({
+                        url: getApp().globalData.requestUrl + '/order/cancel-order',
+                        method: 'POST',
+                        data: {
+                            orderId: this.order.id
+                        },
+                        success: (res) => {
+                            this.freeOrderPostingQuota = res.data.freeOrderPostingQuota;
+                        },
+                    });
                 },
             });
         },

@@ -37,9 +37,6 @@ public class OrderCandidateServiceImpl extends ServiceImpl<OrderCandidateMapper,
         boolean isFirstPick = isFirstPickForOrder(orderCandidate.getOrderId());
         boolean isSaved = orderCandidateMapper.insert(orderCandidate) > 0;
 
-
-
-
         // If it's the first pick, start monitoring the order and set countdown_start_at
         if (isSaved && isFirstPick) {
             // Start the countdown
@@ -145,16 +142,16 @@ public class OrderCandidateServiceImpl extends ServiceImpl<OrderCandidateMapper,
         return retBool(updated);
     }
 
+    @Override
+    public boolean delete(Long id) {
+        return orderCandidateMapper.deleteById(id) > 0;
+    }
+
     private Object convertValueToRequiredType(Object value, Class<?> targetType) {
         // Add more cases as needed
         if (targetType.equals(String.class) && value instanceof Integer) {
             return String.valueOf(value);
         }
         return value;
-    }
-
-    @Override
-    public boolean delete(Long id) {
-        return orderCandidateMapper.deleteById(id) > 0;
     }
 }

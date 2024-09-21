@@ -59,7 +59,7 @@ public class Order {
      * 0: pending: waiting for servants to respond or reviewing servants
      * 1: processing: order is being processed
      * 2: completed: order is done
-     * 3: expired: order canceled because no servant is chosen in the designated time
+     * 3: canceled: order canceled because no servant is chosen in the designated time
      */
     private Integer status;
 
