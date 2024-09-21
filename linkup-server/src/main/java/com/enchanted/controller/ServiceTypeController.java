@@ -26,7 +26,7 @@ public class ServiceTypeController {
         requestData.remove("size");
 
         Page<ServiceType> serviceTypePage = serviceTypeService.search(requestData, page, size);
-        return buildPaginatedResponse(serviceTypePage);
+        return R.paginate(serviceTypePage);
     }
 
 
@@ -65,11 +65,4 @@ public class ServiceTypeController {
         }
     }
 
-    private R buildPaginatedResponse(Page<ServiceType> serviceTypePage) {
-        return R.ok()
-            .put("serviceTypeList", serviceTypePage.getRecords())
-            .put("total", serviceTypePage.getTotal())
-            .put("pages", serviceTypePage.getPages())
-            .put("current", serviceTypePage.getCurrent());
-    }
 }

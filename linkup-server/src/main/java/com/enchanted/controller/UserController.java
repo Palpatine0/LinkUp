@@ -27,7 +27,7 @@ public class UserController {
         requestData.remove("size");
 
         Page<User> userPage = userService.search(requestData, page, size);
-        return buildPaginatedResponse(userPage);
+        return R.paginate(userPage);
     }
 
     @PostMapping("/search-servant")
@@ -39,7 +39,7 @@ public class UserController {
         requestData.remove("size");
 
         Page<User> userPage = userService.searchServant(requestData, page, size);
-        return buildPaginatedResponse(userPage);
+        return R.paginate(userPage);
     }
 
     @PostMapping("save-auth-info")

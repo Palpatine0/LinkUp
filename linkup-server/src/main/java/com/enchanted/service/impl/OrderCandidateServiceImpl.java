@@ -10,6 +10,7 @@ import com.enchanted.mapper.OrderCandidateMapper;
 import com.enchanted.service.IOrderCandidateService;
 import com.enchanted.service.IOrderService;
 import com.enchanted.service.IUserService;
+import com.enchanted.util.ConversionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
@@ -130,7 +131,7 @@ public class OrderCandidateServiceImpl extends ServiceImpl<OrderCandidateMapper,
                 classField.setAccessible(true);
                 // Check for type mismatch and convert if necessary
                 if (!classField.getType().isAssignableFrom(value.getClass())) {
-                    Object convertedValue = convertValueToRequiredType(value, classField.getType());
+                    Object convertedValue = ConversionUtils.convertValueToRequiredType(value, classField.getType());
                     ReflectionUtils.setField(classField, orderCandidate, convertedValue);
                 } else {
                     ReflectionUtils.setField(classField, orderCandidate, value);
@@ -145,13 +146,5 @@ public class OrderCandidateServiceImpl extends ServiceImpl<OrderCandidateMapper,
     @Override
     public boolean delete(Long id) {
         return orderCandidateMapper.deleteById(id) > 0;
-    }
-
-    private Object convertValueToRequiredType(Object value, Class<?> targetType) {
-        // Add more cases as needed
-        if (targetType.equals(String.class) && value instanceof Integer) {
-            return String.valueOf(value);
-        }
-        return value;
     }
 }

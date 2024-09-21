@@ -26,7 +26,7 @@ public class UserServantController {
         requestData.remove("size");
 
         Page<UserServant> userServantPage = userServantService.search(requestData, page, size);
-        return buildPaginatedResponse(userServantPage);
+        return R.paginate(userServantPage);
     }
 
     @PostMapping("/save")
@@ -49,13 +49,5 @@ public class UserServantController {
         Long id = Long.parseLong(requestData.get("id").toString());
         boolean isDeleted = userServantService.delete(id);
         return isDeleted ? R.ok("删除成功") : R.error("删除失败");
-    }
-
-    private R buildPaginatedResponse(Page<UserServant> userServantPage) {
-        return R.ok()
-            .put("userServantList", userServantPage.getRecords())
-            .put("total", userServantPage.getTotal())
-            .put("pages", userServantPage.getPages())
-            .put("current", userServantPage.getCurrent());
     }
 }

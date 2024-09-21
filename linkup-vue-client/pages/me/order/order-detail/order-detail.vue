@@ -91,14 +91,13 @@ export default {
             servantList: [],
             countdown: 0, // Countdown in seconds
             countdownInterval: null,
-            freeOrderPostRemainingCount: 0
+            freeOrderPostingQuota: 0
         };
     },
     onLoad(params) {
         this.orderId = params.orderId;
         this.getOrder();
         this.getServantList();
-        this.getRemainingFreePostingQuota();
     },
     onUnLoad() {
         // Clear the countdown interval when the component is destroyed
@@ -115,15 +114,16 @@ export default {
                     id: this.orderId
                 },
                 success: (res) => {
-                    this.order = res.data.orderList[0];
+                    this.order = res.data.list[0];
                     if (this.order.countdownStartAt) {
                         this.startCountdown();
                     }
+                    this.getRemainingFreeOrderPostingQuota();
                 },
             });
         },
 
-        getRemainingFreePostingQuota() {
+        getRemainingFreeOrderPostingQuota() {
             uni.request({
                 url: getApp().globalData.requestUrl + '/order/remaining-free-posting-quota',
                 method: 'POST',
@@ -201,7 +201,7 @@ export default {
                                     userId: user.id
                                 },
                                 success: (res) => {
-                                    user.servantData = res.data.userServantList[0];
+                                    user.servantData = res.data.list[0];
                                     resolve();
                                 }
                             });
@@ -230,7 +230,7 @@ export default {
         cancelOrder() {
             uni.showModal({
                 title: '确认取消订单',
-                content: `是否确定要取消订单？您今日的免费发单额度还剩${this.freeOrderPostRemainingCount}次。超出额度本订单只能回退定价的80%`,
+                content: `是否确定要取消订单？您今日的免费发单额度还剩${this.freeOrderPostingQuota}次。超出额度本订单只能回退定价的80%`,
                 showCancel: true,
                 confirmText: '确定',
                 success: (res) => {
@@ -241,7 +241,7 @@ export default {
                             orderId: this.order.id
                         },
                         success: (res) => {
-                            this.freeOrderPostingQuota = res.data.freeOrderPostingQuota;
+
                         },
                     });
                 },

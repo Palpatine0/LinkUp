@@ -1,5 +1,7 @@
 package com.enchanted.vo;
 
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+
 import java.util.HashMap;
 import java.util.Map;
 
@@ -45,5 +47,13 @@ public class R extends HashMap<String, Object> {
     public R put(String key, Object value) {
         super.put(key, value);
         return this;
+    }
+
+    public static <T> R paginate(Page<T> page) {
+        return R.ok()
+            .put("list", page.getRecords())
+            .put("total", page.getTotal())
+            .put("pages", page.getPages())
+            .put("current", page.getCurrent());
     }
 }

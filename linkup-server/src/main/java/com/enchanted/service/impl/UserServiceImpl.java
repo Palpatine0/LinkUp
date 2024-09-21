@@ -6,6 +6,7 @@ import com.enchanted.entity.User;
 import com.enchanted.mapper.UserMapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.enchanted.service.IUserService;
+import com.enchanted.util.ConversionUtils;
 import com.enchanted.util.WeChatUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -88,7 +89,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
                 classField.setAccessible(true);
                 // Check for type mismatch and convert if necessary
                 if (!classField.getType().isAssignableFrom(value.getClass())) {
-                    Object convertedValue = convertValueToRequiredType(value, classField.getType());
+                    Object convertedValue = ConversionUtils.convertValueToRequiredType(value, classField.getType());
                     ReflectionUtils.setField(classField, user, convertedValue);
                 } else {
                     ReflectionUtils.setField(classField, user, value);
@@ -99,19 +100,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         int updated = userMapper.updateById(user);
         return retBool(updated);
     }
-
-    private Object convertValueToRequiredType(Object value, Class<?> targetType) {
-        if (targetType.equals(String.class) && value instanceof Integer) {
-            return String.valueOf(value);
-        } else if (targetType.equals(BigDecimal.class) && value instanceof Double) {
-            return BigDecimal.valueOf((Double) value);
-        } else if (targetType.equals(BigDecimal.class) && value instanceof Integer) {
-            return BigDecimal.valueOf(((Integer) value).doubleValue());
-        }
-        return value;
-    }
-
-
 
     @Override
     public boolean delete(Long id) {

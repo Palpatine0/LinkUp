@@ -7,6 +7,7 @@ import com.enchanted.entity.UserServant;
 import com.enchanted.mapper.UserServantMapper;
 import com.enchanted.service.IUserServantService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.enchanted.util.ConversionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
@@ -47,7 +48,7 @@ public class UserServantServiceImpl extends ServiceImpl<UserServantMapper, UserS
                 classField.setAccessible(true);
                 // Handle type conversion if necessary
                 if (!classField.getType().isAssignableFrom(value.getClass())) {
-                    Object convertedValue = convertValueToRequiredType(value, classField.getType());
+                    Object convertedValue = ConversionUtils.convertValueToRequiredType(value, classField.getType());
                     ReflectionUtils.setField(classField, userServant, convertedValue);
                 } else {
                     ReflectionUtils.setField(classField, userServant, value);
@@ -57,13 +58,6 @@ public class UserServantServiceImpl extends ServiceImpl<UserServantMapper, UserS
 
         int updated = userServantMapper.updateById(userServant);
         return retBool(updated);
-    }
-
-    private Object convertValueToRequiredType(Object value, Class<?> targetType) {
-        if (targetType.equals(Boolean.class) && value instanceof Integer) {
-            return ((Integer) value) != 0;
-        }
-        return value;
     }
 
     @Override

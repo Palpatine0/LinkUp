@@ -67,7 +67,7 @@ export default {
                         id: this.userId
                     },
                     success: (res) => {
-                        this.user = res.data.userList[0];
+                        this.user = res.data.list[0];
                         resolve();
                     },
                     fail: (err) => {
@@ -85,7 +85,7 @@ export default {
                         id: this.contactId,
                     },
                     success: (res) => {
-                        this.contact = res.data.userList[0];
+                        this.contact = res.data.list[0];
                         resolve();
                     },
                     fail: (err) => {
@@ -110,7 +110,7 @@ export default {
                         size: this.size
                     },
                     success: (res) => {
-                        const fetchedMessages = res.data.messageList;
+                        const fetchedMessages = res.data.list;
 
                         // If fewer messages are returned than requested, assume no more to load
                         if (fetchedMessages.length < this.size) {

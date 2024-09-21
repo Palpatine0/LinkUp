@@ -12,7 +12,6 @@ import org.springframework.http.MediaTypeFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.MalformedURLException;
 import java.nio.file.Path;
@@ -37,7 +36,7 @@ public class MessageController {
         requestData.remove("size");
 
         Page<Message> messagePage = messageService.search(requestData, page, size);
-        return buildPaginatedResponse(messagePage);
+        return R.paginate(messagePage);
     }
 
     @PostMapping("/search-contacts")
@@ -49,7 +48,7 @@ public class MessageController {
         requestData.remove("size");
 
         Page<Message> messagePage = messageService.searchContacts(requestData, page, size);
-        return buildPaginatedResponse(messagePage);
+        return R.paginate(messagePage);
     }
 
     @GetMapping("/files/{filename:.+}")

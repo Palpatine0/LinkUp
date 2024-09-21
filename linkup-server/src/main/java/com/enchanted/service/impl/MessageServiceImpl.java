@@ -6,6 +6,7 @@ import com.enchanted.entity.Message;
 import com.enchanted.mapper.MessageMapper;
 import com.enchanted.service.IMessageService;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.enchanted.util.ConversionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
@@ -89,7 +90,7 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
             if (classField != null) {
                 classField.setAccessible(true);
                 if (!classField.getType().isAssignableFrom(value.getClass())) {
-                    Object convertedValue = convertValueToRequiredType(value, classField.getType());
+                    Object convertedValue = ConversionUtils.convertValueToRequiredType(value, classField.getType());
                     ReflectionUtils.setField(classField, message, convertedValue);
                 } else {
                     ReflectionUtils.setField(classField, message, value);
@@ -104,16 +105,5 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
     @Override
     public boolean delete(Long id) {
         return messageMapper.deleteById(id) > 0;
-    }
-
-    private Object convertValueToRequiredType(Object value, Class<?> targetType) {
-        if (targetType.equals(Boolean.class) && value instanceof Integer) {
-            return ((Integer) value) != 0;
-        }
-        if (targetType.equals(Integer.class) && value instanceof String) {
-            return Integer.parseInt((String) value);
-        }
-        // Add more cases as needed
-        return value;
     }
 }

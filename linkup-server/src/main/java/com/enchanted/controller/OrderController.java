@@ -26,7 +26,7 @@ public class OrderController {
         requestData.remove("size");
 
         Page<Order> orderPage = orderService.search(requestData, page, size);
-        return buildPaginatedResponse(orderPage);
+        return R.paginate(orderPage);
     }
 
     @PostMapping("/save")
@@ -84,13 +84,5 @@ public class OrderController {
         Long userId = Long.parseLong(requestData.get("userId").toString());
         int freeOrderPostingQuota = orderService.getRemainingFreePostingQuota(userId);
         return R.ok().put("freeOrderPostingQuota", freeOrderPostingQuota);
-    }
-
-    private R buildPaginatedResponse(Page<Order> orderPage) {
-        return R.ok()
-            .put("orderList", orderPage.getRecords())
-            .put("total", orderPage.getTotal())
-            .put("pages", orderPage.getPages())
-            .put("current", orderPage.getCurrent());
     }
 }

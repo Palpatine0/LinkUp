@@ -9,6 +9,7 @@ import com.enchanted.entity.Order;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.enchanted.service.IOrderService;
 import com.enchanted.service.IUserService;
+import com.enchanted.util.ConversionUtils;
 import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -102,7 +103,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
                 classField.setAccessible(true);
                 // Check for type mismatch and convert if necessary
                 if (!classField.getType().isAssignableFrom(value.getClass())) {
-                    Object convertedValue = convertValueToRequiredType(value, classField.getType());
+                    Object convertedValue = ConversionUtils.convertValueToRequiredType(value, classField.getType());
                     ReflectionUtils.setField(classField, order, convertedValue);
                 } else {
                     ReflectionUtils.setField(classField, order, value);
@@ -200,11 +201,4 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         return Math.toIntExact(cnt);
     }
 
-    private Object convertValueToRequiredType(Object value, Class<?> targetType) {
-        // Add more cases as needed
-        if (targetType.equals(String.class) && value instanceof Integer) {
-            return String.valueOf(value);
-        }
-        return value;
-    }
 }

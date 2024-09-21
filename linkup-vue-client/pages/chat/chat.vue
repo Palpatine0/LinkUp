@@ -62,7 +62,9 @@ export default {
                     size: this.size,
                 },
                 success: (resR) => {
-                    const sentMessages = resR.data.messageList;
+                    const sentMessages = resR.data.list;
+                    console.log("sentMessages")
+                    console.log(sentMessages)
                     // Gather all recipient IDs
                     sentMessages.forEach(message => {
                         uniqueUserIds.add(message.recipientId);
@@ -79,7 +81,7 @@ export default {
                             size: this.size,
                         },
                         success: (resS) => {
-                            const receivedMessages = resS.data.messageList;
+                            const receivedMessages = resS.data.list;
                             // Gather all sender IDs
                             receivedMessages.forEach(message => {
                                 uniqueUserIds.add(message.senderId);
@@ -114,7 +116,7 @@ export default {
                     id: id,  // Pass the array of unique user IDs
                 },
                 success: (res) => {
-                    this.contactList.push(res.data.userList[0])
+                    this.contactList.push(res.data.list[0])
                 },
                 complete: () => {
                     this.loading = false; // Reset loading flag

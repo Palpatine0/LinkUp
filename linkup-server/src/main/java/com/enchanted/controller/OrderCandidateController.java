@@ -39,7 +39,7 @@ public class OrderCandidateController {
 
         // Call the service search method
         Page<OrderCandidate> orderCandidatePage = orderCandidateService.search(requestData, page, size);
-        return buildPaginatedResponse(orderCandidatePage);
+        return R.paginate(orderCandidatePage);
     }
 
     @PostMapping("/get-servants")
@@ -86,13 +86,5 @@ public class OrderCandidateController {
         } else {
             return R.error("删除失败");
         }
-    }
-
-    private R buildPaginatedResponse(Page<OrderCandidate> orderCandidatePage) {
-        return R.ok()
-            .put("orderCandidateList", orderCandidatePage.getRecords())
-            .put("total", orderCandidatePage.getTotal())
-            .put("pages", orderCandidatePage.getPages())
-            .put("current", orderCandidatePage.getCurrent());
     }
 }
