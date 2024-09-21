@@ -4,13 +4,15 @@ server:
     context-path: /
 
 spring:
+  jackson:
+    time-zone: Asia/Shanghai
   datasource:
     type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
     # >dev
-    url: jdbc:mysql://localhost:3310/linkup?Timezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8
+    url: jdbc:mysql://localhost:3310/linkup?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8
     # >prd
-    #    url: jdbc:mysql://111.231.19.137:3310/linkup?Timezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8
+    #    url: jdbc:mysql://111.231.19.137:3310/linkup?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8
     username: root
     password: root
 

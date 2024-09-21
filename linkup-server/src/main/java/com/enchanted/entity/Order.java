@@ -12,6 +12,8 @@ public class Order {
 
     private Long id;
 
+    private String identifier;
+
     private String title;
 
     @TableField("client_id")
@@ -57,21 +59,15 @@ public class Order {
      * 0: pending: waiting for servants to respond or reviewing servants
      * 1: processing: order is being processed
      * 2: completed: order is done
-     * 3: canceled: order canceled because no servant is chosen in the designated time
+     * 3: expired: order canceled because no servant is chosen in the designated time
      */
     private Integer status;
 
     @TableField("payment_method")
     private String paymentMethod;
 
-    @TableField("effective_at")
-    private Date effectiveAt;
-
-    @TableField("expire_at")
-    private Date expireAt;
-
-    @TableField("close_at")
-    private Date closeAt;
+    @TableField("countdown_start_at")
+    private Date countdownStartAt;
 
     @TableField("completed_at")
     private Date completedAt;

@@ -2,29 +2,6 @@
 <div class="page">
     <app-title type="h1" bold="true">发布订单</app-title>
 
-    <!-- Open Time Pickers -->
-    <app-title bold="true">开放时间</app-title>
-    <div style="display: flex; width: 100%; justify-content: space-between">
-        <!-- Open Start Date and Time -->
-        <div class="app-container" style="width: 48%;">
-            <picker mode="date" :value="dropdownOptions.startDate" @change="bindStartDateChange">
-                <view>{{ dropdownOptions.startDate }}</view>
-            </picker>
-            <picker mode="time" :value="dropdownOptions.startTime" @change="bindStartTimeChange">
-                <view>{{ dropdownOptions.startTime }}</view>
-            </picker>
-        </div>
-        <!-- Open End Date and Time -->
-        <div class="app-container" style="width: 48%;">
-            <picker mode="date" :value="dropdownOptions.endDate" @change="bindEndDateChange">
-                <view>{{ dropdownOptions.endDate }}</view>
-            </picker>
-            <picker mode="time" :value="dropdownOptions.endTime" @change="bindEndTimeChange">
-                <view>{{ dropdownOptions.endTime }}</view>
-            </picker>
-        </div>
-    </div>
-
     <!-- Gender Picker -->
     <app-title bold="true">服务者性别</app-title>
     <view class="app-input">
@@ -409,8 +386,6 @@ export default {
             const formData = {
                 title: this.title,
                 clientId: uni.getStorageSync('userId'),
-                effectiveAt: this.common.timeToStamp(`${this.dropdownOptions.startDate} ${this.dropdownOptions.startTime}`),
-                expireAt: this.common.timeToStamp(`${this.dropdownOptions.endDate} ${this.dropdownOptions.endTime}`),
                 requiredServantType: this.serviceType,
                 requiredGender: requiredGenderValue,
                 requiredAgeMin: requiredAgeMinValue,

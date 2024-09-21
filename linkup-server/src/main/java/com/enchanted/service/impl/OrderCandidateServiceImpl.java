@@ -15,6 +15,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -37,19 +38,32 @@ public class OrderCandidateServiceImpl extends ServiceImpl<OrderCandidateMapper,
         boolean isSaved = orderCandidateMapper.insert(orderCandidate) > 0;
 
 
-        Order order = orderService.getById(orderCandidate.getOrderId());
-        order.setStatus(0);
-        Integer candidateCount = order.getCandidateCount();
-        candidateCount++;
-        order.setCandidateCount(candidateCount);
-        orderService.updateById(order);
 
-        // If it's the first pick, start monitoring the order
+
+        // If it's the first pick, start monitoring the order and set countdown_start_at
         if (isSaved && isFirstPick) {
+            // Start the countdown
+            Order order = orderService.getById(orderCandidate.getOrderId());
+            if (order != null) {
+                order.setStatus(0);
+                Integer candidateCount = order.getCandidateCount();
+                candidateCount++;
+                order.setCandidateCount(candidateCount);
+                order.setCountdownStartAt(new Date());
+                orderService.updateById(order);
+            }
             orderService.monitorOrder(orderCandidate.getOrderId());
+        }else {
+            Order order = orderService.getById(orderCandidate.getOrderId());
+            order.setStatus(0);
+            Integer candidateCount = order.getCandidateCount();
+            candidateCount++;
+            order.setCandidateCount(candidateCount);
+            orderService.updateById(order);
         }
         return isSaved;
     }
+
 
     private boolean isFirstPickForOrder(Long orderId) {
         QueryWrapper<OrderCandidate> queryWrapper = new QueryWrapper<>();

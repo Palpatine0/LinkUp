@@ -15,10 +15,12 @@ import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.Map;
+import java.util.Random;
 
 @Service
 public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements IOrderService {
@@ -38,6 +40,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
     @Override
     public boolean save(Order order) {
+        order.setIdentifier(generateOrderIdentifier());
+
         // Get the user who posted the order
         User user = userService.getById(order.getClientId());
         if (user == null) {
@@ -59,6 +63,19 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         // Save the order
         order.setCreatedAt(new Date());
         return orderMapper.insert(order) > 0;
+    }
+
+    private String generateOrderIdentifier() {
+        // Date format for the identifier
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMddHHmmss");
+        String currentTime = dateFormat.format(new Date());
+
+        // Generate a random 6-digit number
+        Random random = new Random();
+        int randomNumber = 100000 + random.nextInt(900000); // Ensures a 6-digit number
+
+        // Combine all parts to create the identifier
+        return "LK-ORD-" + currentTime + "-" + randomNumber;
     }
 
 
@@ -93,34 +110,29 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         return orderMapper.deleteById(id) > 0;
     }
 
-    @Override
     public void monitorOrder(Long orderId) {
-        // Start a new thread to monitor the order for 10 minutes
         new Thread(() -> {
             try {
-                System.out.println("Monitoring order with ID: " + orderId + " has started.");
+                System.out.println("Monitoring order with ID: " + orderId + " has started at " + new Date());
 
-                // Sleep for 10 minutes (600,000 milliseconds) - use this in production
-                Thread.sleep(600000);
-
-                // For testing, you can use a shorter time (e.g., 1000 ms)
-                // Thread.sleep(10000); // Change to 1000 for 1 second during testing
+                Thread.sleep(600000); // Sleep for 10 minutes
 
                 // Re-fetch the order from the database to get the most recent state
                 Order order = this.getById(orderId);
                 if (order != null && order.getServantId() == null) {
-                    // Order is considered failed if no servant has picked it within the time window
                     System.out.println("Order with ID: " + orderId + " failed due to no servant assignment.");
-                    handleFailedOrder(order); // Implement refund logic here
+                    handleFailedOrder(order);
                 } else {
                     System.out.println("Order with ID: " + orderId + " has been assigned a servant or already completed.");
                 }
+
             } catch (InterruptedException e) {
-                System.err.println("Monitoring thread interrupted for order with ID: " + orderId);
+                System.err.println("Monitoring thread interrupted for order with ID: " + orderId + " at " + new Date());
                 e.printStackTrace();
             }
         }).start();
     }
+
 
 
     private void handleFailedOrder(Order order) {
