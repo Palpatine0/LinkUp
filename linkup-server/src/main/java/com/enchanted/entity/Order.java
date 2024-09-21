@@ -43,12 +43,23 @@ public class Order {
 
     private BigDecimal price;
 
+    /**
+     * 0: limited;
+     * 1: fair;
+     * 2: good
+     */
     private BigDecimal rating;
 
     @TableField("candidate_count")
     private Integer candidateCount;
 
-    private Integer status; // 0: pending; 1: processing; 2: completed
+    /**
+     * 0: pending: waiting for servants to respond or reviewing servants
+     * 1: processing: order is being processed
+     * 2: completed: order is done
+     * 3: canceled: order canceled because no servant is chosen in the designated time
+     */
+    private Integer status;
 
     @TableField("payment_method")
     private String paymentMethod;

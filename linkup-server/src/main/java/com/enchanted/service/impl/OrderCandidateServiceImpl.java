@@ -3,6 +3,7 @@ package com.enchanted.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.enchanted.entity.Order;
 import com.enchanted.entity.OrderCandidate;
 import com.enchanted.entity.User;
 import com.enchanted.mapper.OrderCandidateMapper;
@@ -34,6 +35,14 @@ public class OrderCandidateServiceImpl extends ServiceImpl<OrderCandidateMapper,
     public boolean save(OrderCandidate orderCandidate) {
         boolean isFirstPick = isFirstPickForOrder(orderCandidate.getOrderId());
         boolean isSaved = orderCandidateMapper.insert(orderCandidate) > 0;
+
+
+        Order order = orderService.getById(orderCandidate.getOrderId());
+        order.setStatus(0);
+        Integer candidateCount = order.getCandidateCount();
+        candidateCount++;
+        order.setCandidateCount(candidateCount);
+        orderService.updateById(order);
 
         // If it's the first pick, start monitoring the order
         if (isSaved && isFirstPick) {

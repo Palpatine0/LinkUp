@@ -87,6 +87,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         return retBool(updated);
     }
 
+
     @Override
     public boolean delete(Long id) {
         return orderMapper.deleteById(id) > 0;
@@ -144,8 +145,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         userService.updateById(user);
 
         // Mark the order as completed and failed
-        order.setState("failed");
-        order.setIsCompleted(true);
+        order.setStatus(3);
         this.updateById(order);
     }
 
