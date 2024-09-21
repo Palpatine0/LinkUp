@@ -34,7 +34,10 @@
                 <div style="width: 100%;">
                     <div style="display: flex; align-items: center; justify-content: space-between;">
                         <app-title bold="true" type="h3" style="width: 330px;">{{ order.title }}</app-title>
-                        <span :class="['status-dot', order.status === 1 ? 'green-dot' : 'red-dot']"></span>
+                        <span v-if="order.status==0" class="status-dot yellow-dot"></span>
+                        <span v-if="order.status==1" class="status-dot green-dot"></span>
+                        <span v-if="order.status==2" class="status-dot red-dot"></span>
+                        <span v-if="order.status==3" class="status-dot gray-dot"></span>
                     </div>
                     <div class="order-info">
                         <div class="respondent-count">
@@ -181,6 +184,11 @@ export default {
     height: 10px;
     border-radius: 50%;
     margin-left: 10px;
+    margin-top: -38px;
+}
+
+.yellow-dot {
+    background-color: #feb327;
 }
 
 .green-dot {
@@ -189,6 +197,10 @@ export default {
 
 .red-dot {
     background-color: red;
+}
+
+.gray-dot {
+    background-color: #8c8c8c;
 }
 
 .order-status {

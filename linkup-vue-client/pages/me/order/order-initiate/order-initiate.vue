@@ -100,13 +100,19 @@
 
     <!-- Submit Button -->
     <div name="submit form" class="center_h">
-        <div class="app-button" @click="formSubmit">发布</div>
+        <div class="app-button" @click="paymentMethodSelectionToggle">发布</div>
     </div>
+
+    <PaymentMethodSelection v-if="paymentMethodSelectionVisible" :user="user" :balanceAdequate="balanceAdequate"></PaymentMethodSelection>
+
 </div>
 </template>
 
 <script>
+import PaymentMethodSelection from "../../../../components/page/payment/payment-method-selection.vue";
+
 export default {
+    components: {PaymentMethodSelection},
     data() {
         return {
             title: "",
@@ -130,6 +136,10 @@ export default {
                 endDate: '',
                 endTime: '',
             },
+
+            user: {},
+            paymentMethodSelectionVisible: false,
+            balanceAdequate: false,
         };
     },
     onLoad(param) {
@@ -304,8 +314,8 @@ export default {
         },
         generateTitle() {
             // Destructure values for easier access
-            const { gender, age, serviceDuration } = this.dropdownOptions;
-            const { genderIndex, ageRangeIndex, serviceDurationIndex } = this;
+            const {gender, age, serviceDuration} = this.dropdownOptions;
+            const {genderIndex, ageRangeIndex, serviceDurationIndex} = this;
 
             // Gender text
             const genderText = gender[genderIndex] === '不限' ? '不限性别' : gender[genderIndex] === '男' ? '男' : '女';
@@ -327,8 +337,54 @@ export default {
             // Update the title with the concatenated values
             this.title = `${this.serviceName}服务: ${genderText} / ${ageText} / ${durationText} / ${location} / ¥${price}`;
         },
-        // Submit form data
-        formSubmit() {
+
+
+        paymentMethodSelectionToggle() {
+            this.getUser().then(() => {
+                // Then toggle the visibility after user data has been fetched
+                this.paymentMethodSelectionVisible = !this.paymentMethodSelectionVisible;
+            });
+        },
+
+        getUser() {
+            return new Promise((resolve, reject) => {
+                uni.request({
+                    url: getApp().globalData.requestUrl + '/user/search',
+                    method: 'POST',
+                    data: {
+                        id: uni.getStorageSync("userId")
+                    },
+                    success: (res) => {
+                        this.user = res.data.userList[0]
+                        this.balanceAdequateValidation();
+                        resolve();
+                    },
+                    fail: (err) => {
+                        reject(err);
+                    }
+                });
+            });
+        },
+        balanceAdequateValidation() {
+            // Convert the amount and balance to floats to ensure accurate comparison
+            const selectedPrice = parseInt(this.priceOptions[this.priceIndex]);
+            const balance = parseFloat(this.user.balance);
+
+            // Ensure both amount and balance are valid numbers (not NaN)
+            if (this.common.isEmpty(selectedPrice) || this.common.isEmpty(balance)) {
+                this.balanceAdequate = false;
+                return;
+            }
+            // Check if the user's balance is sufficient to cover the required amount
+            if (balance >= selectedPrice) {
+                this.balanceAdequate = true;
+            } else {
+                this.balanceAdequate = false;
+            }
+        },
+
+        // submit
+        formSubmit(paymentMethod) {
             this.generateTitle();
             // Collect form data
             const selectedDuration = parseInt(
@@ -362,6 +418,7 @@ export default {
                 serviceDuration: selectedDuration,
                 price: selectedPrice,
                 status: 0,
+                paymentMethod: paymentMethod
             };
 
             console.log('Form Data:', formData);

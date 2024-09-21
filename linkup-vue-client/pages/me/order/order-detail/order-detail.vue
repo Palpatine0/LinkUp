@@ -38,15 +38,24 @@
                             <app-title type="h3" bold="true">{{ user.nickname }}</app-title>
                             <div class="flex" style="margin: 3px 0 30px -6px">
                                 <div v-if="user.gender==0">
-                                    <img class="gender-icon" src="/static/page/me/order/male.png">
+                                    <span style="font-size: 27px;margin: 0 10px 0 2px;position: relative;top: -8px;left: 2px;">
+                                        👨‍💻
+                                    </span>
                                 </div>
                                 <div v-else>
-                                    <img class="gender-icon" src="/static/page/me/order/female.png">
+                                    <span style="font-size: 27px;margin: 0 10px 0 2px;position: relative;top: -8px;left: 2px;">
+                                        👩‍💻
+                                    </span>
                                 </div>
                                 <app-title type="h3" bold="true">{{ user.age }}</app-title>
                             </div>
                             <p style="margin-bottom: 10px"> {{ user.servantData.bio }}</p>
                         </app-container>
+                        <div style="width: 70%;" class="center_h">
+                            <app-button type="small" @click="selectServant(user.nickname)" shaped>
+                                选择达人
+                            </app-button>
+                        </div>
                     </demo-item>
                 </z-swiper-item>
             </z-swiper>
@@ -134,6 +143,17 @@ export default {
                         // Trigger Vue to re-render with updated servantData
                         this.$forceUpdate();
                     });
+                },
+            });
+        },
+        selectServant(servantName){
+            uni.showModal({
+                title: '选择达人',
+                content: `确定选择${servantName}?`,
+                showCancel: true,
+                confirmText: '确定',
+                success: (res) => {
+
                 },
             });
         },

@@ -6,14 +6,24 @@
 
         <!-- Predefined Amount Buttons -->
         <view class="charge-options">
-            <button class="charge-button" @click="setAmount(50)">¥50</button>
-            <button class="charge-button" @click="setAmount(100)">¥100</button>
-            <button class="charge-button" @click="setAmount(150)">¥150</button>
-        </view>
-
-        <!-- Custom Amount Input -->
-        <view class="custom-charge">
-            <input v-model="balance" type="number" placeholder="自定义金额" @input="validateAmount"/>
+            <div class="app-button-outlined" @click="setAmount(100)">
+                ¥100
+            </div>
+            <div class="app-button-outlined" @click="setAmount(500)">
+                ¥500
+            </div>
+            <div class="app-button-outlined" @click="setAmount(1000)">
+                ¥1000
+            </div>
+            <div class="app-button-outlined" @click="setAmount(3000)">
+                ¥3000
+            </div>
+            <div class="app-button-outlined" @click="setAmount(5000)">
+                ¥5000
+            </div>
+            <div class="app-button-outlined" @click="setAmount(10000)">
+                ¥10000
+            </div>
         </view>
 
         <!-- Display Selected Amount -->
@@ -22,7 +32,9 @@
         </view>
 
         <!-- Confirm Button -->
-        <button class="confirm-button" @click="confirmCharge">确认充值</button>
+        <div class="center_h" style="width: 60%;">
+            <app-button @click="confirmCharge" shaped>确认充值</app-button>
+        </div>
     </view>
 </view>
 </template>
@@ -134,7 +146,6 @@ export default {
 }
 
 .charge-options {
-    display: flex;
     justify-content: space-between;
     margin-bottom: 30rpx;
 }
