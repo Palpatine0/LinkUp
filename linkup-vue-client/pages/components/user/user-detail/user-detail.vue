@@ -64,7 +64,7 @@ export default {
                     id: this.userId
                 },
                 success: (res) => {
-                    this.user = res.data.userList[0];
+                    this.user = res.data.list[0];
                 }
             });
         },
@@ -78,7 +78,7 @@ export default {
                     userId: this.userId
                 },
                 success: (res) => {
-                    this.userServant = res.data.userServantList[0];
+                    this.userServant = res.data.list[0];
                 }
             });
         },

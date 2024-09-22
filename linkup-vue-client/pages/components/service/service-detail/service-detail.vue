@@ -65,7 +65,7 @@ export default {
                 method: 'POST',
                 data: {id: this.serviceTypeId},
                 success: (res) => {
-                    this.serviceType = res.data.serviceTypeList[0];
+                    this.serviceType = res.data.list[0];
                 }
             });
         },

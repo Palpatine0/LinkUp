@@ -79,7 +79,7 @@ export default {
                     size: this.size,
                 },
                 success: (res) => {
-                    const users = res.data.userList;  // Assuming the API returns userList in the response
+                    const users = res.data.list;  // Assuming the API returns userList in the response
 
                     if (this.page === 1) {
                         this.userList = []; // Reset user list on the first page

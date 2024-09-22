@@ -39,7 +39,7 @@ export default {
                     serviceType: this.serviceTypeId
                 },
                 success: (res) => {
-                    const users = res.data.userList;
+                    const users = res.data.list;
 
                     if (this.page === 1) {
                         this.servantList = [];

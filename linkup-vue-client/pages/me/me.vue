@@ -60,11 +60,11 @@ export default {
                     id: uni.getStorageSync('userId')
                 },
                 success: (res) => {
-                    this.user = res.data.userList[0]
+                    this.user = res.data.list[0]
                     console.log("this.user")
                     console.log(this.user)
-                    console.log("res.data.userList[0]")
-                    console.log(res.data.userList[0])
+                    console.log("res.data.list[0]")
+                    console.log(res.data.list[0])
                 },
             });
         },

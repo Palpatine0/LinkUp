@@ -29,7 +29,7 @@ export default {
                 method: 'POST',
                 data: {},
                 success: (res) => {
-                    this.servantTypeList = res.data.serviceTypeList
+                    this.servantTypeList = res.data.list
                 },
             });
         },
