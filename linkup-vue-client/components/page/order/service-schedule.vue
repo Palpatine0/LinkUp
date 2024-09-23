@@ -252,9 +252,11 @@ export default {
                 time: time.time,
                 startHour: time.start,
                 endHour: time.end,
-                value: `${this.selectedDay.day} ${time.time}`,
+                startDateTime: `${this.selectedDay.day} ${time.start}:00`, // Include seconds for complete timestamp
+                endDateTime: `${this.selectedDay.day} ${time.end}:00`,
             });
-        },
+        }
+
     },
 };
 </script>

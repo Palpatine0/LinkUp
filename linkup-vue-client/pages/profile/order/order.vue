@@ -3,7 +3,7 @@
     <!-- Heading section -->
     <div style="display: flex; align-items: center; justify-content: space-between;">
         <app-title type="h1" bold="true">我的订单</app-title>
-        <img src="/page/profile/order/add.svg" style="width: 28px; height: 28px;" @click="orderInitiateRedirect"/>
+        <img src="/static/page/profile/order/add.svg" style="width: 28px; height: 28px;" @click="orderInitiateRedirect"/>
     </div>
 
     <!-- Search input -->
@@ -102,7 +102,7 @@ export default {
                     this.orderList = this.orderList.concat(orders);
                     // Process 'createdAt' fields
                     this.orderList.forEach((order) => {
-                        order.createdAt = order.createdAt ? this.common.stampToTime(order.createdAt) : '';
+                        order.createdAt = order.createdAt ? this.$common.stampToTime(order.createdAt) : '';
                     });
                     this.page += 1;
                 },

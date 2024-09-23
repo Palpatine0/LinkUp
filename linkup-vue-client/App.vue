@@ -45,7 +45,7 @@ export default {
     methods: {
         checkUserInfo() {
             const openid = uni.getStorageSync('openid');
-            if (this.common.isEmpty(openid)) {
+            if (this.$common.isEmpty(openid)) {
                 uni.navigateTo({
                     url: '/pages/registry/registry',
                 });

@@ -9,22 +9,6 @@
             导游服务
         </div>
     </div>
-    <!--<div class="flex">
-        <div class="app-container" style="width: 48%;margin: 2px;">
-            导游
-        </div>
-        <div class="app-container" style="width: 48%;margin: 2px;">
-            XX
-        </div>
-    </div>
-    <div class="flex">
-        <div class="app-container" style="width: 48%;margin: 2px;">
-            XX
-        </div>
-        <div class="app-container" style="width: 48%;margin: 2px;">
-            XX
-        </div>
-    </div>-->
 
     <!-- Scroll View for User List -->
     <user-list
@@ -36,6 +20,7 @@
 </template>
 
 <script>
+
 export default {
     name: "home",
     data() {
@@ -58,7 +43,7 @@ export default {
         // User handling
         checkUserInfo() {
             const openid = uni.getStorageSync('openid');
-            if (this.common.isEmpty(openid)) {
+            if (this.$common.isEmpty(openid)) {
                 uni.navigateTo({
                     url: '/pages/registry/registry',
                 });

@@ -65,14 +65,8 @@
 <script>
 // import QrShare from "../../components/qrShare.vue";
 import TopUp from "../../../components/page/balance/top-up.vue";
-import $common from "../../../utils/common";
 
 export default {
-    computed: {
-        $common() {
-            return $common
-        }
-    },
     components: {
         TopUp,
         // QrShare,

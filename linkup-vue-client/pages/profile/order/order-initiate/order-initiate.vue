@@ -27,12 +27,7 @@
                 @columnchange="bindAgeRangeColumnChange"
             >
                 <view class="uni-input">
-                    <template
-                        v-if="
-              dropdownOptions.age[0][ageRangeIndex[0]] === '不限' &&
-              dropdownOptions.age[1][ageRangeIndex[1]] === '不限'
-            "
-                    >
+                    <template v-if="dropdownOptions.age[0][ageRangeIndex[0]] === '不限' &&dropdownOptions.age[1][ageRangeIndex[1]] === '不限'">
                         不限
                     </template>
                     <template v-else-if="dropdownOptions.age[0][ageRangeIndex[0]] === '不限'">
@@ -42,11 +37,7 @@
                         {{ dropdownOptions.age[0][ageRangeIndex[0]] + '岁以上' }}
                     </template>
                     <template v-else>
-                        {{
-                            dropdownOptions.age[0][ageRangeIndex[0]] +
-                            ' - ' +
-                            dropdownOptions.age[1][ageRangeIndex[1]]
-                        }}
+                        {{ dropdownOptions.age[0][ageRangeIndex[0]] + ' - ' + dropdownOptions.age[1][ageRangeIndex[1]] }}
                     </template>
                 </view>
             </picker>
@@ -76,9 +67,18 @@
         </div>
         <app-title bold="true">服务时间</app-title>
         <div class="app-input">
-            <div v-if="common.isEmpty(serviceTime)" @click="open">请选择服务时间</div>
-            <div v-else @click="open">{{ serviceTime }}</div>
+            <div v-if="!serviceScheduleStart || !serviceScheduleEnd" @click="open">请选择服务时间</div>
+            <div v-else @click="open">
+                {{
+                    common.stampToTime(serviceScheduleStart, {yyyy: false, ss: false})
+                }}
+                -
+                {{
+                    common.stampToTime(serviceScheduleEnd, {yyyy: false, ss: false, MM: false, dd: false})
+                }}
+            </div>
         </div>
+
         <!-- Price -->
         <app-title type="h2" bold="true">价格</app-title>
         <view class="app-input">
@@ -115,7 +115,7 @@ export default {
             return common
         }
     },
-    components: {PaymentMethodSelection,ServiceSchedule},
+    components: {PaymentMethodSelection, ServiceSchedule},
     data() {
         return {
             // basic info
@@ -140,7 +140,8 @@ export default {
             location: {},
 
             // service time
-            serviceTime: "",
+            serviceScheduleStart: null,
+            serviceScheduleEnd: null,
 
             dropdownOptions: {
                 gender: ['不限', '男', '女'],
@@ -237,7 +238,7 @@ export default {
             const selectedDuration = this.dropdownOptions.serviceDuration[this.serviceDurationIndex];
             console.log(`Selected service duration: ${selectedDuration}`);
             this.updatePriceOptions(); // Update price options based on the selected duration
-            this.serviceTime = null
+            this.serviceSchedule = null
         },
 
         // price
@@ -308,8 +309,10 @@ export default {
             this.$refs.chooseTime.open()
         },
         bindServiceTimeChange(e) {
-            this.serviceTime = e.value
+            this.serviceScheduleStart = this.$common.timeToStamp(`${e.day} ${e.startHour}`);
+            this.serviceScheduleEnd = this.$common.timeToStamp(`${e.day} ${e.endHour}`);
         },
+
 
         // payment
         paymentMethodSelectionToggle() {
@@ -323,8 +326,10 @@ export default {
             const selectedPrice = parseInt(this.priceOptions[this.priceIndex]);
             const balance = parseFloat(this.user.balance);
 
+
+
             // Ensure both amount and balance are valid numbers (not NaN)
-            if (this.common.isEmpty(selectedPrice) || this.common.isEmpty(balance)) {
+            if (this.$common.isEmpty(selectedPrice) || this.$common.isEmpty(balance)) {
                 this.balanceAdequate = false;
                 return;
             }
@@ -364,11 +369,11 @@ export default {
         },
         formSubmit(paymentMethod) {
             this.generateTitle();
-            // Collect form data
-            const selectedDuration = parseInt(
-                this.dropdownOptions.serviceDuration[this.serviceDurationIndex]
-            );
-            const selectedPrice = parseInt(this.priceOptions[this.priceIndex]);
+
+            // Convert serviceScheduleStart and serviceScheduleEnd to timestamps
+            const serviceScheduleStartTimestamp = this.$common.timeToStamp(this.serviceScheduleStart);
+            const serviceScheduleEndTimestamp = this.$common.timeToStamp(this.serviceScheduleEnd);
+
 
             // Process requiredGender
             let requiredGenderValue = null;
@@ -378,12 +383,12 @@ export default {
                 requiredGenderValue = 2;
             }
 
-            // Process requiredAgeMin and requiredAgeMax
             const ageMinStr = this.dropdownOptions.age[0][this.ageRangeIndex[0]];
             const ageMaxStr = this.dropdownOptions.age[1][this.ageRangeIndex[1]];
             const requiredAgeMinValue = ageMinStr === '不限' ? null : parseInt(ageMinStr);
             const requiredAgeMaxValue = ageMaxStr === '不限' ? null : parseInt(ageMaxStr);
 
+            // Prepare form data
             const formData = {
                 title: this.title,
                 clientId: uni.getStorageSync('userId'),
@@ -391,14 +396,16 @@ export default {
                 requiredGender: requiredGenderValue,
                 requiredAgeMin: requiredAgeMinValue,
                 requiredAgeMax: requiredAgeMaxValue,
-                serviceDuration: selectedDuration,
-                price: selectedPrice,
+                serviceDuration: parseInt(this.dropdownOptions.serviceDuration[this.serviceDurationIndex]),
+                price: parseInt(this.priceOptions[this.priceIndex]),
                 status: 0,
+                paymentMethod: paymentMethod,
+                serviceScheduleStart: serviceScheduleStartTimestamp,  // Use converted timestamp
+                serviceScheduleEnd: serviceScheduleEndTimestamp,      // Use converted timestamp
                 location: this.location.address,
                 locationName: this.location.name,
                 latitude: this.location.latitude,
-                longitude: this.location.longitude,
-                paymentMethod: paymentMethod
+                longitude: this.location.longitude
             };
 
             console.log('Form Data:', formData);
@@ -417,7 +424,8 @@ export default {
                     // Handle error response
                 }
             });
-        },
+        }
+
 
     },
 };

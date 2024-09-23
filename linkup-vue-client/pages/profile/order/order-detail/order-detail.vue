@@ -81,7 +81,6 @@
 </template>
 
 <script>
-import common from "../../../../utils/common";
 
 export default {
     data() {

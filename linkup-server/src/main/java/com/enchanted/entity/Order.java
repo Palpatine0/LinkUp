@@ -37,6 +37,12 @@ public class Order {
     @TableField("service_duration")
     private Integer serviceDuration;
 
+    @TableField("service_schedule_start")
+    private Date serviceScheduleStart;
+
+    @TableField("service_schedule_end")
+    private Date serviceScheduleEnd;
+
     private String location;
 
     @TableField("location_name")

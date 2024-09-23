@@ -13,23 +13,47 @@ var $common = {
         var date = new Date(dateTime);
         return date.getTime();
     },
-    stampToTime: function (stamp) {
+    /**
+     * Converts a timestamp to a formatted time string.
+     * @param {number} stamp - The timestamp to be converted.
+     * @param {boolean} removeYear - If true, removes the year from the formatted string. Default is false.
+     * @returns {string} - The formatted time string.
+     */
+    stampToTime: function (stamp, options = {}) {
+        // Default options for exclusion (exclude nothing by default)
+        const { yyyy = true, MM = true, dd = true, HH = true, mm = true, ss = true } = options;
+
         stamp = stamp || new Date().getTime();
         stamp = (stamp + "").length <= 10 ? Number(stamp) * 1000 : stamp;
         let date = new Date(stamp);
+
+        // Get components
         let Y = date.getFullYear();
-        let M =
-            date.getMonth() + 1 < 10
-                ? "0" + (date.getMonth() + 1)
-                : date.getMonth() + 1;
-        let D = date.getDate() < 10 ? "0" + date.getDate() : date.getDate();
-        let h = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
-        let m =
-            date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
-        let s =
-            date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds();
-        return `${Y}-${M}-${D} ${h}:${m}:${s}`;
+        let M = (date.getMonth() + 1).toString().padStart(2, '0'); // Month (01-12)
+        let D = date.getDate().toString().padStart(2, '0'); // Day (01-31)
+        let h = date.getHours().toString().padStart(2, '0'); // Hours (00-23)
+        let m = date.getMinutes().toString().padStart(2, '0'); // Minutes (00-59)
+        let s = date.getSeconds().toString().padStart(2, '0'); // Seconds (00-59)
+
+        // Build the output string based on excluded components
+        let parts = [];
+        if (yyyy) parts.push(Y);
+        if (MM) parts.push(M);
+        if (dd) parts.push(D);
+
+        let datePart = parts.join('-'); // Date portion
+
+        // Time portion (only if none of these are excluded)
+        parts = [];
+        if (HH) parts.push(h);
+        if (mm) parts.push(m);
+        if (ss) parts.push(s);
+
+        let timePart = parts.join(':'); // Time portion
+
+        return timePart ? `${datePart} ${timePart}` : datePart;
     },
+
     unDefined(v) {
         return v === undefined ? true : false;
     },
@@ -194,7 +218,7 @@ var $common = {
         }
         return result;
     },
-    getFileSize: function(fileByte) {
+    getFileSize: function (fileByte) {
         var fileSizeByte = Number(fileByte);
         if (fileSizeByte >= 0) {
             var fileSizeMsg = "";

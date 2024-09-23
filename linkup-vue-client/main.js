@@ -11,7 +11,7 @@ import AppContainer from './components/common/app-container.vue';
 import AppButton from './components/common/app-button.vue';
 import UserList from './components/page/user-list/user-list.vue';
 
-Vue.prototype.common = common;
+Vue.prototype.$common = common;
 // common
 Vue.component('app-title', AppTitle);
 Vue.component('app-input', AppInput);
