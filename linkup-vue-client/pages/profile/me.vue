@@ -40,10 +40,10 @@ export default {
         return {
             user: {},
             linkItems: [
-                { label: "余额", icon: "/static/page/me/card.svg", click: "balanceRedirect" },
-                { label: "收藏", icon: "/static/page/me/bookmark.svg", click: "favoritesRedirect" },
-                { label: "标签", icon: "/static/page/me/tag.svg", click: "tagsRedirect" },
-                { label: "数据", icon: "/static/page/me/data.svg", click: "dataRedirect" },
+                { label: "余额", icon: "/static/page/profile/card.svg", click: "balanceRedirect" },
+                { label: "收藏", icon: "/static/page/profile/bookmark.svg", click: "favoritesRedirect" },
+                { label: "标签", icon: "/static/page/profile/tag.svg", click: "tagsRedirect" },
+                { label: "数据", icon: "/static/page/profile/data.svg", click: "dataRedirect" },
             ],
         };
     },
@@ -79,13 +79,13 @@ export default {
         },
         orderRedirect(){
             uni.navigateTo({
-                url: '/pages/me/order/order',
+                url: '/pages/profile/order/order',
             });
         },
 
         balanceRedirect(){
             uni.navigateTo({
-                url: '/pages/me/balance/balance',
+                url: '/pages/profile/balance/balance',
             });
         }
     }

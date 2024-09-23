@@ -100,12 +100,13 @@
 
 
     </div>
-    <delivery-time @change="bindServiceTimeChange" ref="chooseTime" title="请选择预约时间" isMask :hour="parseInt(this.dropdownOptions.serviceDuration[this.serviceDurationIndex])"></delivery-time>
+    <ServiceSchedule @change="bindServiceTimeChange" ref="chooseTime" title="请选择预约时间" isMask :hour="parseInt(this.dropdownOptions.serviceDuration[this.serviceDurationIndex])"></ServiceSchedule>
 </div>
 </template>
 
 <script>
 import PaymentMethodSelection from "../../../../components/page/payment/payment-method-selection.vue";
+import ServiceSchedule from "../../../../components/page/order/service-schedule.vue";
 import common from "../../../../utils/common";
 
 export default {
@@ -114,7 +115,7 @@ export default {
             return common
         }
     },
-    components: {PaymentMethodSelection},
+    components: {PaymentMethodSelection,ServiceSchedule},
     data() {
         return {
             // basic info
@@ -409,7 +410,7 @@ export default {
                 success: (res) => {
                     uni.showToast({title: '添加成功', icon: 'none'});
                     uni.navigateTo({
-                        url: '/pages/me/order/order'
+                        url: '/pages/profile/order/order'
                     });
                 },
                 fail: (err) => {

@@ -3,7 +3,7 @@
     <!-- Heading section -->
     <div style="display: flex; align-items: center; justify-content: space-between;">
         <app-title type="h1" bold="true">我的订单</app-title>
-        <img src="/static/page/me/order/add.svg" style="width: 28px; height: 28px;" @click="orderInitiateRedirect"/>
+        <img src="/page/profile/order/add.svg" style="width: 28px; height: 28px;" @click="orderInitiateRedirect"/>
     </div>
 
     <!-- Search input -->
@@ -150,12 +150,12 @@ export default {
         // Redirects
         orderInitiateRedirect() {
             uni.navigateTo({
-                url: '/pages/me/order/order-servant-selection/order-servant-selection',
+                url: '/pages/profile/order/order-servant-selection/order-servant-selection',
             });
         },
         orderDetailRedirect(orderId) {
             uni.navigateTo({
-                url: '/pages/me/order/order-detail/order-detail?orderId=' + orderId,
+                url: '/pages/profile/order/order-detail/order-detail?orderId=' + orderId,
             });
         },
     },
