@@ -48,13 +48,19 @@
             "es6": true
         },
         "permission": {
-            "scope.userFuzzyLocation": {
+            "scope.userLocation": {
+                "desc": "为了给您提供完整的服务，请授权您的地理位置信息"
+            },
+            "scope.userFuzzyLocation" : {
+                "desc" : "为了给您提供完整的服务，请授权您的地理位置信息"
+            },
+            "scope.chooseLocation": {
                 "desc": "为了给您提供完整的服务，请授权您的地理位置信息"
             }
         },
         "requiredPrivateInfos": [
-            "getFuzzyLocation",
-            "chooseLocation"
+            "chooseLocation",
+            "getFuzzyLocation"
         ],
         "usingComponents": true
     },

@@ -44,17 +44,20 @@ public class User {
 
     private BigDecimal balance;
 
+    @TableField("location")
+    private String location;
+
+    @TableField("location_name")
+    private String locationName;
+
+    @TableField("city")
+    private String city;
+
     @TableField("latitude_fuzzy")
     private Double latitudeFuzzy;
 
     @TableField("longitude_fuzzy")
     private Double longitudeFuzzy;
-
-    @TableField("current_city")
-    private String currentCity;
-
-    @TableField("current_location")
-    private String currentLocation;
 
     @TableField("is_deleted")
     private Boolean isDeleted;

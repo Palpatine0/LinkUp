@@ -5,17 +5,19 @@ import './style/shadow.css';
 import './style/animat.css'
 
 import common from "./utils/common";
-import AppTitle from './components/base/app-title.vue';
-import AppInput from './components/base/app-input.vue';
-import AppContainer from './components/base/app-container.vue';
-import AppButton from './components/base/app-button.vue';
+import AppTitle from './components/common/app-title.vue';
+import AppInput from './components/common/app-input.vue';
+import AppContainer from './components/common/app-container.vue';
+import AppButton from './components/common/app-button.vue';
 import UserList from './components/page/user-list/user-list.vue';
 
 Vue.prototype.common = common;
+// common
 Vue.component('app-title', AppTitle);
 Vue.component('app-input', AppInput);
 Vue.component('app-container', AppContainer);
 Vue.component('app-button', AppButton);
+// page
 Vue.component('user-list', UserList);
 
 

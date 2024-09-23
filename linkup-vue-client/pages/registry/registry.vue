@@ -289,16 +289,10 @@ export default {
                             that.userData = {
                                 ...that.userData,
                                 latitudeFuzzy: res.latitude,
-                                longitudeFuzzy: res.longitude,
+                                longitudeFuzzy: res.longitude
                             }
-                            const tencentMapKey = process.env.VUE_APP_TENCENT_MAPS_API_KEY;
-                            console.log("Tencent Maps API Key:", tencentMapKey);
-                            /*uni.request({
-                                url:`https://apis.map.qq.com/ws/geocoder/v1/?location=${res.latitude},${res.longitude}&key=${process.env.TENCENT_MAPS_API_KEY}`,
-                                success: (res) => {
-                                    console.log(res,'res'); //位置信息
-                                }
-                            })*/
+                            uni.setStorageSync('latitudeFuzzy', res.latitude);
+                            uni.setStorageSync('longitudeFuzzy', res.longitude);
                             that.step++
                         },
                     });

@@ -15,9 +15,12 @@
         <result property="requiredAgeMin" column="required_age_min"/>
         <result property="requiredAgeMax" column="required_age_max"/>
         <result property="serviceDuration" column="service_duration"/>
+        <result property="location" column="location"/>
+        <result property="locationName" column="location_name"/>
         <result property="state" column="state"/>
         <result property="city" column="city"/>
-        <result property="address" column="address"/>
+        <result property="latitude" column="latitude"/>
+        <result property="longitude" column="longitude"/>
         <result property="price" column="price"/>
         <result property="rating" column="rating"/>
         <result property="candidateCount" column="candidate_count"/>

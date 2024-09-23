@@ -37,11 +37,19 @@ public class Order {
     @TableField("service_duration")
     private Integer serviceDuration;
 
+    private String location;
+
+    @TableField("location_name")
+    private String locationName;
+
     private String state;
 
     private String city;
 
-    private String address;
+    private Double latitude;
+
+    private Double longitude;
+
 
     private BigDecimal price;
 

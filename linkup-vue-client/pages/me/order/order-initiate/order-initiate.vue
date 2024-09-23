@@ -1,105 +1,146 @@
 <template>
-<div class="page">
-    <app-title type="h1" bold="true">发布订单</app-title>
+<div>
+    <div class="page">
+        <app-title type="h1" bold="true">发布订单</app-title>
 
-    <!-- Gender Picker -->
-    <app-title bold="true">服务者性别</app-title>
-    <view class="app-input">
-        <picker
-            @change="bindGenderPickerChange"
-            :value="genderIndex"
-            :range="dropdownOptions.gender"
-        >
-            <view>{{ dropdownOptions.gender[genderIndex] }}</view>
-        </picker>
-    </view>
+        <!-- Gender -->
+        <app-title bold="true">服务者性别</app-title>
+        <view class="app-input">
+            <picker
+                @change="bindGenderPickerChange"
+                :value="genderIndex"
+                :range="dropdownOptions.gender"
+            >
+                <view>{{ dropdownOptions.gender[genderIndex] }}</view>
+            </picker>
+        </view>
 
-    <!-- Age Range Picker -->
-    <app-title bold="true">服务者年龄</app-title>
-    <view class="app-input">
-        <picker
-            :key="dropdownOptions.age[0][ageRangeIndex[0]] + '-' + dropdownOptions.age[1][0]"
-            mode="multiSelector"
-            :range="dropdownOptions.age"
-            :value="ageRangeIndex"
-            @change="bindAgeRangePickerChange"
-            @columnchange="bindAgeRangeColumnChange"
-        >
-            <view class="uni-input">
-                <template
-                    v-if="
+        <!-- Age Range -->
+        <app-title bold="true">服务者年龄</app-title>
+        <view class="app-input">
+            <picker
+                :key="dropdownOptions.age[0][ageRangeIndex[0]] + '-' + dropdownOptions.age[1][0]"
+                mode="multiSelector"
+                :range="dropdownOptions.age"
+                :value="ageRangeIndex"
+                @change="bindAgeRangePickerChange"
+                @columnchange="bindAgeRangeColumnChange"
+            >
+                <view class="uni-input">
+                    <template
+                        v-if="
               dropdownOptions.age[0][ageRangeIndex[0]] === '不限' &&
               dropdownOptions.age[1][ageRangeIndex[1]] === '不限'
             "
-                >
-                    不限
-                </template>
-                <template v-else-if="dropdownOptions.age[0][ageRangeIndex[0]] === '不限'">
-                    {{ '不限 - ' + dropdownOptions.age[1][ageRangeIndex[1]] }}
-                </template>
-                <template v-else-if="dropdownOptions.age[1][ageRangeIndex[1]] === '不限'">
-                    {{ dropdownOptions.age[0][ageRangeIndex[0]] + '岁以上' }}
-                </template>
-                <template v-else>
-                    {{
-                        dropdownOptions.age[0][ageRangeIndex[0]] +
-                        ' - ' +
-                        dropdownOptions.age[1][ageRangeIndex[1]]
-                    }}
-                </template>
-            </view>
-        </picker>
-    </view>
+                    >
+                        不限
+                    </template>
+                    <template v-else-if="dropdownOptions.age[0][ageRangeIndex[0]] === '不限'">
+                        {{ '不限 - ' + dropdownOptions.age[1][ageRangeIndex[1]] }}
+                    </template>
+                    <template v-else-if="dropdownOptions.age[1][ageRangeIndex[1]] === '不限'">
+                        {{ dropdownOptions.age[0][ageRangeIndex[0]] + '岁以上' }}
+                    </template>
+                    <template v-else>
+                        {{
+                            dropdownOptions.age[0][ageRangeIndex[0]] +
+                            ' - ' +
+                            dropdownOptions.age[1][ageRangeIndex[1]]
+                        }}
+                    </template>
+                </view>
+            </picker>
+        </view>
 
-    <!-- Service Duration Picker -->
-    <app-title bold="true">服务时长</app-title>
-    <view class="app-input">
-        <picker
-            @change="bindServiceDurationPickerChange"
-            :value="serviceDurationIndex"
-            :range="dropdownOptions.serviceDuration"
-        >
-            <view>{{ dropdownOptions.serviceDuration[serviceDurationIndex] }}</view>
-        </picker>
-    </view>
+        <!-- location -->
+        <app-title bold="true">服务地点</app-title>
+        <view class="app-input">
+            <div v-if="location.address" @tap="authVerification">
+                {{ location.name }}
+            </div>
+            <div v-else @tap="authVerification">
+                请选择服务地点
+            </div>
+        </view>
 
-    <!-- Price Picker -->
-    <app-title type="h2" bold="true">价格</app-title>
-    <view class="app-input">
-        <picker
-            @change="bindPricePickerChange"
-            :value="priceIndex"
-            :range="priceOptions"
-        >
-            <view>{{ priceOptions[priceIndex] }}</view>
-        </picker>
-    </view>
+        <!-- Service Duration -->
+        <app-title bold="true">服务时长</app-title>
+        <div class="app-input">
+            <picker
+                @change="bindServiceDurationPickerChange"
+                :value="serviceDurationIndex"
+                :range="dropdownOptions.serviceDuration"
+            >
+                <view>{{ dropdownOptions.serviceDuration[serviceDurationIndex] }}</view>
+            </picker>
+        </div>
+        <app-title bold="true">服务时间</app-title>
+        <div class="app-input">
+            <div v-if="common.isEmpty(serviceTime)" @click="open">请选择服务时间</div>
+            <div v-else @click="open">{{ serviceTime }}</div>
+        </div>
+        <!-- Price -->
+        <app-title type="h2" bold="true">价格</app-title>
+        <view class="app-input">
+            <picker
+                @change="bindPricePickerChange"
+                :value="priceIndex"
+                :range="priceOptions"
+            >
+                <view>{{ priceOptions[priceIndex] }}</view>
+            </picker>
+        </view>
 
-    <!-- Submit Button -->
-    <div name="submit form" class="center_h">
-        <div class="app-button" @click="paymentMethodSelectionToggle">发布</div>
+        <!-- Submit Button -->
+        <div name="submit form" class="center_h">
+            <div class="app-button" @click="paymentMethodSelectionToggle">发布</div>
+        </div>
+
+        <PaymentMethodSelection v-if="paymentMethodSelectionVisible" :user="user" :balanceAdequate="balanceAdequate"></PaymentMethodSelection>
+
+
     </div>
-
-    <PaymentMethodSelection v-if="paymentMethodSelectionVisible" :user="user" :balanceAdequate="balanceAdequate"></PaymentMethodSelection>
-
+    <delivery-time @change="bindServiceTimeChange" ref="chooseTime" title="请选择预约时间" isMask :hour="parseInt(this.dropdownOptions.serviceDuration[this.serviceDurationIndex])"></delivery-time>
 </div>
 </template>
 
 <script>
 import PaymentMethodSelection from "../../../../components/page/payment/payment-method-selection.vue";
+import common from "../../../../utils/common";
 
 export default {
+    computed: {
+        common() {
+            return common
+        }
+    },
     components: {PaymentMethodSelection},
     data() {
         return {
+            // basic info
             title: "",
             serviceType: '',
             serviceName: '',
+
+            // gender
             genderIndex: 0,
+
+            // age
             ageRangeIndex: [0, 0],
+
+            // service duration
             serviceDurationIndex: 0,
+
+            // price
             priceIndex: 0,
             priceOptions: [],
+
+            // location
+            location: {},
+
+            // service time
+            serviceTime: "",
+
             dropdownOptions: {
                 gender: ['不限', '男', '女'],
                 age: [
@@ -108,12 +149,9 @@ export default {
                 ],
                 serviceDuration: Array.from({length: 24}, (_, i) => `${i + 1}小时`),
                 price: [],
-                startDate: '',
-                startTime: '',
-                endDate: '',
-                endTime: '',
             },
 
+            // payment
             user: {},
             paymentMethodSelectionVisible: false,
             balanceAdequate: false,
@@ -122,101 +160,37 @@ export default {
     onLoad(param) {
         this.serviceType = param.serviceType;
         this.serviceName = param.serviceName;
-        const currentDate = this.getCurrentDate();
-        const currentTime = this.getCurrentTime();
-        // Initialize start and end date/time to current date and time
-        this.dropdownOptions.startDate = currentDate;
-        this.dropdownOptions.startTime = currentTime;
-        this.dropdownOptions.endDate = currentDate;
-        this.dropdownOptions.endTime = currentTime;
-        this.updatePriceOptions(); // Initialize price options
+        this.updatePriceOptions();
         this.generateTitle();
     },
     methods: {
-        // Get current date in 'YYYY-MM-DD' format
-        getCurrentDate() {
-            const date = new Date();
-            const year = date.getFullYear();
-            const month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are 0-based
-            const day = date.getDate().toString().padStart(2, '0');
-            return `${year}-${month}-${day}`;
-        },
-        // Get current time in 'HH:mm' format
-        getCurrentTime() {
-            const date = new Date();
-            const hours = date.getHours().toString().padStart(2, '0');
-            const minutes = date.getMinutes().toString().padStart(2, '0');
-            return `${hours}:${minutes}`;
-        },
-        // Combine date and time into a Date object
-        combineDateTime(dateStr, timeStr) {
-            return new Date(`${dateStr}T${timeStr}:00`);
-        },
-        // Handle start date change
-        bindStartDateChange(e) {
-            this.dropdownOptions.startDate = e.detail.value;
-            this.adjustEndDateTime();
-        },
-        // Handle start time change
-        bindStartTimeChange(e) {
-            this.dropdownOptions.startTime = e.detail.value;
-            this.adjustEndDateTime();
-        },
-        // Handle end date change
-        bindEndDateChange(e) {
-            this.dropdownOptions.endDate = e.detail.value;
-            this.validateEndDateTime();
-        },
-        // Handle end time change
-        bindEndTimeChange(e) {
-            this.dropdownOptions.endTime = e.detail.value;
-            this.validateEndDateTime();
-        },
-        // Adjust end date and time based on start date and time
-        adjustEndDateTime() {
-            const startDateTime = this.combineDateTime(
-                this.dropdownOptions.startDate,
-                this.dropdownOptions.startTime
-            );
-            const endDateTime = this.combineDateTime(
-                this.dropdownOptions.endDate,
-                this.dropdownOptions.endTime
-            );
-
-            // If end datetime is before start datetime, adjust end datetime
-            if (endDateTime < startDateTime) {
-                // Set end datetime to start datetime
-                this.dropdownOptions.endDate = this.dropdownOptions.startDate;
-                this.dropdownOptions.endTime = this.dropdownOptions.startTime;
-            }
-        },
-        // Validate end date and time
-        validateEndDateTime() {
-            const startDateTime = this.combineDateTime(
-                this.dropdownOptions.startDate,
-                this.dropdownOptions.startTime
-            );
-            const endDateTime = this.combineDateTime(
-                this.dropdownOptions.endDate,
-                this.dropdownOptions.endTime
-            );
-
-            // If end datetime is before start datetime, show an error and adjust
-            if (endDateTime < startDateTime) {
-                uni.showToast({
-                    title: '结束时间不能早于开始时间',
-                    icon: 'none',
+        // basic info
+        getUser() {
+            return new Promise((resolve, reject) => {
+                uni.request({
+                    url: getApp().globalData.requestUrl + '/user/search',
+                    method: 'POST',
+                    data: {
+                        id: uni.getStorageSync("userId")
+                    },
+                    success: (res) => {
+                        this.user = res.data.list[0]
+                        this.balanceAdequateValidation();
+                        resolve();
+                    },
+                    fail: (err) => {
+                        reject(err);
+                    }
                 });
-                // Adjust end datetime to start datetime
-                this.dropdownOptions.endDate = this.dropdownOptions.startDate;
-                this.dropdownOptions.endTime = this.dropdownOptions.startTime;
-            }
+            });
         },
-        // Handle gender picker change
+
+        // gender
         bindGenderPickerChange(e) {
             this.genderIndex = e.detail.value;
         },
-        // Handle age range picker change
+
+        // age
         bindAgeRangePickerChange(e) {
             this.ageRangeIndex = e.detail.value;
             const fromAge = this.dropdownOptions.age[0][this.ageRangeIndex[0]];
@@ -224,7 +198,6 @@ export default {
 
             console.log(`Age Range Selected: ${fromAge} - ${toAge}`);
         },
-        // Handle age range column change
         bindAgeRangeColumnChange(e) {
             const column = e.detail.column;
             const value = e.detail.value;
@@ -256,14 +229,17 @@ export default {
                 this.ageRangeIndex[1] = value; // Update second column index
             }
         },
-        // Handle service duration picker change
+
+        // service duration
         bindServiceDurationPickerChange(e) {
             this.serviceDurationIndex = e.detail.value;
             const selectedDuration = this.dropdownOptions.serviceDuration[this.serviceDurationIndex];
             console.log(`Selected service duration: ${selectedDuration}`);
             this.updatePriceOptions(); // Update price options based on the selected duration
+            this.serviceTime = null
         },
-        // Update price options based on selected duration
+
+        // price
         updatePriceOptions() {
             const selectedDuration = this.dropdownOptions.serviceDuration[this.serviceDurationIndex];
             const durationNumber = parseInt(selectedDuration); // Extract numeric value
@@ -284,11 +260,82 @@ export default {
             this.priceOptions = prices.map((price) => `${price}元`);
             this.priceIndex = 0; // Reset price index
         },
-        // Handle price picker change
         bindPricePickerChange(e) {
             this.priceIndex = e.detail.value;
             console.log(`Selected price: ${this.priceOptions[this.priceIndex]}`);
         },
+
+        // location
+        authVerification() {
+            uni.getSetting({
+                success: (res) => {
+                    if (res.authSetting['scope.userLocation']) {
+                        this.handleChooseLocation()
+                    } else if (res.authSetting['scope.userLocation'] === undefined) {
+                        this.handleOpenSetting()
+                    } else {
+                        this.handleOpenSetting()
+                    }
+                },
+            })
+        },
+        handleChooseLocation() {
+            uni.chooseLocation({
+                latitude: uni.getStorageSync('latitudeFuzzy') || '',
+                longitude: uni.getStorageSync('longitudeFuzzy') || '',
+                success: (res) => {
+                    uni.setStorageSync('currentLocation', res)
+                    this.location = res
+                },
+                fail: function (err) {
+                    console.log('取消按钮', err)
+                }
+            })
+        },
+        handleOpenSetting() {
+            wx.openSetting({
+                success: (res) => {
+                    if (res.authSetting["scope.userLocation"]) {
+                        this.handleChooseLocation()
+                    }
+                }
+            })
+        },
+
+        // service time
+        open() {
+            this.$refs.chooseTime.open()
+        },
+        bindServiceTimeChange(e) {
+            this.serviceTime = e.value
+        },
+
+        // payment
+        paymentMethodSelectionToggle() {
+            this.getUser().then(() => {
+                // Then toggle the visibility after user data has been fetched
+                this.paymentMethodSelectionVisible = !this.paymentMethodSelectionVisible;
+            });
+        },
+        balanceAdequateValidation() {
+            // Convert the amount and balance to floats to ensure accurate comparison
+            const selectedPrice = parseInt(this.priceOptions[this.priceIndex]);
+            const balance = parseFloat(this.user.balance);
+
+            // Ensure both amount and balance are valid numbers (not NaN)
+            if (this.common.isEmpty(selectedPrice) || this.common.isEmpty(balance)) {
+                this.balanceAdequate = false;
+                return;
+            }
+            // Check if the user's balance is sufficient to cover the required amount
+            if (balance >= selectedPrice) {
+                this.balanceAdequate = true;
+            } else {
+                this.balanceAdequate = false;
+            }
+        },
+
+        // submit
         generateTitle() {
             // Destructure values for easier access
             const {gender, age, serviceDuration} = this.dropdownOptions;
@@ -314,53 +361,6 @@ export default {
             // Update the title with the concatenated values
             this.title = `${this.serviceName}服务: ${genderText} / ${ageText} / ${durationText} / ${location} / ¥${price}`;
         },
-
-
-        paymentMethodSelectionToggle() {
-            this.getUser().then(() => {
-                // Then toggle the visibility after user data has been fetched
-                this.paymentMethodSelectionVisible = !this.paymentMethodSelectionVisible;
-            });
-        },
-
-        getUser() {
-            return new Promise((resolve, reject) => {
-                uni.request({
-                    url: getApp().globalData.requestUrl + '/user/search',
-                    method: 'POST',
-                    data: {
-                        id: uni.getStorageSync("userId")
-                    },
-                    success: (res) => {
-                        this.user = res.data.list[0]
-                        this.balanceAdequateValidation();
-                        resolve();
-                    },
-                    fail: (err) => {
-                        reject(err);
-                    }
-                });
-            });
-        },
-        balanceAdequateValidation() {
-            // Convert the amount and balance to floats to ensure accurate comparison
-            const selectedPrice = parseInt(this.priceOptions[this.priceIndex]);
-            const balance = parseFloat(this.user.balance);
-
-            // Ensure both amount and balance are valid numbers (not NaN)
-            if (this.common.isEmpty(selectedPrice) || this.common.isEmpty(balance)) {
-                this.balanceAdequate = false;
-                return;
-            }
-            // Check if the user's balance is sufficient to cover the required amount
-            if (balance >= selectedPrice) {
-                this.balanceAdequate = true;
-            } else {
-                this.balanceAdequate = false;
-            }
-        },
-
-        // submit
         formSubmit(paymentMethod) {
             this.generateTitle();
             // Collect form data
@@ -393,6 +393,10 @@ export default {
                 serviceDuration: selectedDuration,
                 price: selectedPrice,
                 status: 0,
+                location: this.location.address,
+                locationName: this.location.name,
+                latitude: this.location.latitude,
+                longitude: this.location.longitude,
                 paymentMethod: paymentMethod
             };
 

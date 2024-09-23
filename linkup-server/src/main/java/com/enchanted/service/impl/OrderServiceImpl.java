@@ -3,6 +3,7 @@ package com.enchanted.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.enchanted.constant.OrderConstants;
 import com.enchanted.entity.User;
 import com.enchanted.mapper.OrderMapper;
 import com.enchanted.entity.Order;
@@ -37,10 +38,6 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     private IUserService userService;
 
     private final Map<Long, Thread> monitoringThreads = new ConcurrentHashMap<>();
-
-    private static final Dotenv dotenv = Dotenv.load();
-
-    private static int FREE_POSTING_QUOTA = parseInt(dotenv.get("ORDER_FREE_POSTING_QUOTA"));
 
     @Override
     public Page<Order> search(Map<String, Object> params, int page, int size) {
@@ -165,7 +162,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
         BigDecimal refundAmount = order.getPrice();
 
-        if (freeAttemptsToday < FREE_POSTING_QUOTA + 1) {
+        if (freeAttemptsToday < OrderConstants.FREE_POSTING_QUOTA + 1) {
             refundAmount = order.getPrice(); // 100% refund
         } else {
             refundAmount = order.getPrice().multiply(BigDecimal.valueOf(0.8)); // 80% refund
@@ -182,7 +179,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
     public int getRemainingFreePostingQuota(Long userId) {
         int freeAttemptsToday = countFreeAttemptsToday(userId);
-        return Math.max(0, FREE_POSTING_QUOTA - freeAttemptsToday);
+        return Math.max(0, OrderConstants.FREE_POSTING_QUOTA - freeAttemptsToday);
     }
 
     private int countFreeAttemptsToday(Long userId) {

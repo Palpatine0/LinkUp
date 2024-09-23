@@ -12,7 +12,11 @@
         <result property="age" column="age"/>
         <result property="completedOrderCount" column="completed_order_count"/>
         <result property="balance" column="balance"/>
-        <result property="currentLocation" column="current_location"/>
+        <result property="location" column="location"/>
+        <result property="locationName" column="location_name"/>
+        <result property="city" column="city"/>
+        <result property="latitudeFuzzy" column="latitude_fuzzy"/>
+        <result property="longitudeFuzzy" column="longitude_fuzzy"/>
         <result property="createdAt" column="created_at"/>
         <!-- Add more fields as needed -->
     </resultMap>

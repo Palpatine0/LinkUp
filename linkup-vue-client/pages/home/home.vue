@@ -79,7 +79,8 @@ export default {
                     size: this.size,
                 },
                 success: (res) => {
-                    const users = res.data.list;  // Assuming the API returns userList in the response
+                    let users = res.data.list;  // Assuming the API returns userList in the response
+                    users = users.filter(user => user.id !== uni.getStorageSync('userId'));
 
                     if (this.page === 1) {
                         this.userList = []; // Reset user list on the first page
