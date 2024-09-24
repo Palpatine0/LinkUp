@@ -5,19 +5,19 @@
 
         <!-- Gender -->
         <app-title bold="true">服务者性别</app-title>
-        <view class="app-input">
+        <div class="app-input">
             <picker
                 @change="bindGenderPickerChange"
                 :value="genderIndex"
                 :range="dropdownOptions.gender"
             >
-                <view>{{ dropdownOptions.gender[genderIndex] }}</view>
+                <div>{{ dropdownOptions.gender[genderIndex] }}</div>
             </picker>
-        </view>
+        </div>
 
         <!-- Age Range -->
         <app-title bold="true">服务者年龄</app-title>
-        <view class="app-input">
+        <div class="app-input">
             <picker
                 :key="dropdownOptions.age[0][ageRangeIndex[0]] + '-' + dropdownOptions.age[1][0]"
                 mode="multiSelector"
@@ -26,7 +26,7 @@
                 @change="bindAgeRangePickerChange"
                 @columnchange="bindAgeRangeColumnChange"
             >
-                <view class="uni-input">
+                <div class="uni-input">
                     <template v-if="dropdownOptions.age[0][ageRangeIndex[0]] === '不限' &&dropdownOptions.age[1][ageRangeIndex[1]] === '不限'">
                         不限
                     </template>
@@ -39,20 +39,31 @@
                     <template v-else>
                         {{ dropdownOptions.age[0][ageRangeIndex[0]] + ' - ' + dropdownOptions.age[1][ageRangeIndex[1]] }}
                     </template>
-                </view>
+                </div>
             </picker>
-        </view>
+        </div>
 
         <!-- location -->
         <app-title bold="true">服务地点</app-title>
-        <view class="app-input">
-            <div v-if="location.address" @tap="authVerification">
-                {{ location.name }}
+        <div class="app-input" @click="addressPickerToggle">
+            <div v-if="addressSelected" class="address-content">
+                <div style="width: 100%;">
+                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                        <app-title bold="true" type="h3" style="width: 330px;">{{ address.consignee }}</app-title>
+                        <span class="phone-number">{{ address.phoneNumber }}</span>
+                    </div>
+                    <div class="address-info">
+                        <div class="address-details">
+                            {{ address.addressName }}
+                        </div>
+                        <span style="font-size: 14px; color: gray;">{{ address.detail }}</span>
+                    </div>
+                </div>
             </div>
-            <div v-else @tap="authVerification">
+            <div v-else>
                 请选择服务地点
             </div>
-        </view>
+        </div>
 
         <!-- Service Duration -->
         <app-title bold="true">服务时长</app-title>
@@ -62,34 +73,34 @@
                 :value="serviceDurationIndex"
                 :range="dropdownOptions.serviceDuration"
             >
-                <view>{{ dropdownOptions.serviceDuration[serviceDurationIndex] }}</view>
+                <div>{{ dropdownOptions.serviceDuration[serviceDurationIndex] }}</div>
             </picker>
         </div>
         <app-title bold="true">服务时间</app-title>
         <div class="app-input">
-            <div v-if="!serviceScheduleStart || !serviceScheduleEnd" @click="open">请选择服务时间</div>
+            <div v-if="common.isEmpty(this.formData.serviceScheduleStart) || common.isEmpty(this.formData.serviceScheduleEnd)" @click="open">请选择服务时间</div>
             <div v-else @click="open">
                 {{
-                    common.stampToTime(serviceScheduleStart, {yyyy: false, ss: false})
+                    common.stampToTime(this.formData.serviceScheduleStart, {yyyy: false, ss: false})
                 }}
                 -
                 {{
-                    common.stampToTime(serviceScheduleEnd, {yyyy: false, ss: false, MM: false, dd: false})
+                    common.stampToTime(this.formData.serviceScheduleEnd, {yyyy: false, ss: false, MM: false, dd: false})
                 }}
             </div>
         </div>
 
         <!-- Price -->
         <app-title type="h2" bold="true">价格</app-title>
-        <view class="app-input">
+        <div class="app-input">
             <picker
                 @change="bindPricePickerChange"
                 :value="priceIndex"
                 :range="priceOptions"
             >
-                <view>{{ priceOptions[priceIndex] }}</view>
+                <div>{{ priceOptions[priceIndex] }}</div>
             </picker>
-        </view>
+        </div>
 
         <!-- Submit Button -->
         <div name="submit form" class="center_h">
@@ -101,12 +112,14 @@
 
     </div>
     <ServiceSchedule @change="bindServiceTimeChange" ref="chooseTime" title="请选择预约时间" isMask :hour="parseInt(this.dropdownOptions.serviceDuration[this.serviceDurationIndex])"></ServiceSchedule>
+    <AddressSelector v-if="addressPickerVisible" @close="addressPickerToggle" @selectAddress="handleAddressSelect"/>
 </div>
 </template>
 
 <script>
 import PaymentMethodSelection from "../../../../components/page/payment/payment-method-selection.vue";
 import ServiceSchedule from "../../../../components/page/order/service-schedule.vue";
+import AddressSelector from "../../../../components/page/address/address-selector.vue";
 import common from "../../../../utils/common";
 
 export default {
@@ -115,13 +128,27 @@ export default {
             return common
         }
     },
-    components: {PaymentMethodSelection, ServiceSchedule},
+    components: {PaymentMethodSelection, ServiceSchedule, AddressSelector},
     data() {
         return {
+            formData: {
+                title: "",
+                clientId: uni.getStorageSync('userId'),
+                requiredServantType: null,
+                requiredGender: null,
+                requiredAgeMin: null,
+                requiredAgeMax: null,
+                serviceDuration: 1,
+                price: 200,
+                status: 0,
+                paymentMethod: "",
+                serviceScheduleStart: null,
+                serviceScheduleEnd: null,
+                addressId: 0,
+            },
+
             // basic info
             title: "",
-            serviceType: '',
-            serviceName: '',
 
             // gender
             genderIndex: 0,
@@ -136,13 +163,12 @@ export default {
             priceIndex: 0,
             priceOptions: [],
 
-            // location
-            location: {},
+            // address
+            addressPickerVisible: false, // Pop-up visibility state
+            addressSelected: false,
+            address: {},
 
-            // service time
-            serviceScheduleStart: null,
-            serviceScheduleEnd: null,
-
+            // dropdown options
             dropdownOptions: {
                 gender: ['不限', '男', '女'],
                 age: [
@@ -160,7 +186,7 @@ export default {
         };
     },
     onLoad(param) {
-        this.serviceType = param.serviceType;
+        this.formData.requiredServantType = param.serviceType;
         this.serviceName = param.serviceName;
         this.updatePriceOptions();
         this.generateTitle();
@@ -190,15 +216,20 @@ export default {
         // gender
         bindGenderPickerChange(e) {
             this.genderIndex = e.detail.value;
+            if (this.dropdownOptions.gender[this.genderIndex] === '男') {
+                this.formData.requiredGender = 1;
+            } else if (this.dropdownOptions.gender[this.genderIndex] === '女') {
+                this.formData.requiredGender = 2;
+            }
         },
 
         // age
         bindAgeRangePickerChange(e) {
             this.ageRangeIndex = e.detail.value;
-            const fromAge = this.dropdownOptions.age[0][this.ageRangeIndex[0]];
-            const toAge = this.dropdownOptions.age[1][this.ageRangeIndex[1]];
-
-            console.log(`Age Range Selected: ${fromAge} - ${toAge}`);
+            const ageMinStr = this.dropdownOptions.age[0][this.ageRangeIndex[0]];
+            const ageMaxStr = this.dropdownOptions.age[1][this.ageRangeIndex[1]];
+            this.formData.requiredAgeMax = ageMinStr === '不限' ? null : parseInt(ageMinStr);
+            this.formData.requiredAgeMin = ageMaxStr === '不限' ? null : parseInt(ageMaxStr);
         },
         bindAgeRangeColumnChange(e) {
             const column = e.detail.column;
@@ -235,10 +266,8 @@ export default {
         // service duration
         bindServiceDurationPickerChange(e) {
             this.serviceDurationIndex = e.detail.value;
-            const selectedDuration = this.dropdownOptions.serviceDuration[this.serviceDurationIndex];
-            console.log(`Selected service duration: ${selectedDuration}`);
-            this.updatePriceOptions(); // Update price options based on the selected duration
-            this.serviceSchedule = null
+            this.formData.serviceDuration = parseInt(this.dropdownOptions.serviceDuration[this.serviceDurationIndex]);
+            this.updatePriceOptions();
         },
 
         // price
@@ -258,50 +287,24 @@ export default {
                 prices = [basePrice, basePrice + 100, basePrice + 200, basePrice + 300];
             }
 
-            // Update price options with "元" appended for display
             this.priceOptions = prices.map((price) => `${price}元`);
-            this.priceIndex = 0; // Reset price index
+            this.priceIndex = 0;
+
         },
         bindPricePickerChange(e) {
             this.priceIndex = e.detail.value;
-            console.log(`Selected price: ${this.priceOptions[this.priceIndex]}`);
+            this.formData.price = parseInt(this.priceOptions[this.priceIndex])
         },
 
         // location
-        authVerification() {
-            uni.getSetting({
-                success: (res) => {
-                    if (res.authSetting['scope.userLocation']) {
-                        this.handleChooseLocation()
-                    } else if (res.authSetting['scope.userLocation'] === undefined) {
-                        this.handleOpenSetting()
-                    } else {
-                        this.handleOpenSetting()
-                    }
-                },
-            })
+        addressPickerToggle() {
+            this.addressPickerVisible = !this.addressPickerVisible;
         },
-        handleChooseLocation() {
-            uni.chooseLocation({
-                latitude: uni.getStorageSync('latitudeFuzzy') || '',
-                longitude: uni.getStorageSync('longitudeFuzzy') || '',
-                success: (res) => {
-                    uni.setStorageSync('currentLocation', res)
-                    this.location = res
-                },
-                fail: function (err) {
-                    console.log('取消按钮', err)
-                }
-            })
-        },
-        handleOpenSetting() {
-            wx.openSetting({
-                success: (res) => {
-                    if (res.authSetting["scope.userLocation"]) {
-                        this.handleChooseLocation()
-                    }
-                }
-            })
+        handleAddressSelect(address) {
+            this.address = address;
+            this.addressSelected = true;
+            this.formData.addressId = address.id
+            this.addressPickerToggle();
         },
 
         // service time
@@ -311,6 +314,8 @@ export default {
         bindServiceTimeChange(e) {
             this.serviceScheduleStart = this.$common.timeToStamp(`${e.day} ${e.startHour}`);
             this.serviceScheduleEnd = this.$common.timeToStamp(`${e.day} ${e.endHour}`);
+            this.formData.serviceScheduleStart = this.$common.timeToStamp(this.serviceScheduleStart);
+            this.formData.serviceScheduleEnd = this.$common.timeToStamp(this.serviceScheduleEnd);
         },
 
 
@@ -325,7 +330,6 @@ export default {
             // Convert the amount and balance to floats to ensure accurate comparison
             const selectedPrice = parseInt(this.priceOptions[this.priceIndex]);
             const balance = parseFloat(this.user.balance);
-
 
 
             // Ensure both amount and balance are valid numbers (not NaN)
@@ -347,73 +351,28 @@ export default {
             const {gender, age, serviceDuration} = this.dropdownOptions;
             const {genderIndex, ageRangeIndex, serviceDurationIndex} = this;
 
-            // Gender text
             const genderText = gender[genderIndex] === '不限' ? '不限性别' : gender[genderIndex] === '男' ? '男' : '女';
-
-            // Age range text
             const ageMin = age[0][ageRangeIndex[0]] === '不限' ? '不限' : `${age[0][ageRangeIndex[0]]}岁以上`;
             const ageMax = age[1][ageRangeIndex[1]] === '不限' ? '不限' : `${age[1][ageRangeIndex[1]]}岁以下`;
             const ageText = ageMin === '不限' && ageMax === '不限' ? '不限年龄' : `${ageMin} - ${ageMax}`;
-
-            // Service duration text
             const durationText = serviceDuration[serviceDurationIndex];
-
-            // Price
             const price = this.priceOptions[this.priceIndex];
-
-            // State and city text
-            const location = this.dropdownOptions.state ? `${this.dropdownOptions.state}${this.dropdownOptions.city}` : '不限地区';
+            const location = !this.common.isEmpty(this.address) ? this.address.addressName : '不限地区';
 
             // Update the title with the concatenated values
             this.title = `${this.serviceName}服务: ${genderText} / ${ageText} / ${durationText} / ${location} / ¥${price}`;
         },
         formSubmit(paymentMethod) {
             this.generateTitle();
-
-            // Convert serviceScheduleStart and serviceScheduleEnd to timestamps
-            const serviceScheduleStartTimestamp = this.$common.timeToStamp(this.serviceScheduleStart);
-            const serviceScheduleEndTimestamp = this.$common.timeToStamp(this.serviceScheduleEnd);
-
-
-            // Process requiredGender
-            let requiredGenderValue = null;
-            if (this.dropdownOptions.gender[this.genderIndex] === '男') {
-                requiredGenderValue = 1;
-            } else if (this.dropdownOptions.gender[this.genderIndex] === '女') {
-                requiredGenderValue = 2;
-            }
-
-            const ageMinStr = this.dropdownOptions.age[0][this.ageRangeIndex[0]];
-            const ageMaxStr = this.dropdownOptions.age[1][this.ageRangeIndex[1]];
-            const requiredAgeMinValue = ageMinStr === '不限' ? null : parseInt(ageMinStr);
-            const requiredAgeMaxValue = ageMaxStr === '不限' ? null : parseInt(ageMaxStr);
-
-            // Prepare form data
-            const formData = {
+            const param = {
+                ...this.formData,
                 title: this.title,
-                clientId: uni.getStorageSync('userId'),
-                requiredServantType: this.serviceType,
-                requiredGender: requiredGenderValue,
-                requiredAgeMin: requiredAgeMinValue,
-                requiredAgeMax: requiredAgeMaxValue,
-                serviceDuration: parseInt(this.dropdownOptions.serviceDuration[this.serviceDurationIndex]),
-                price: parseInt(this.priceOptions[this.priceIndex]),
-                status: 0,
                 paymentMethod: paymentMethod,
-                serviceScheduleStart: serviceScheduleStartTimestamp,  // Use converted timestamp
-                serviceScheduleEnd: serviceScheduleEndTimestamp,      // Use converted timestamp
-                location: this.location.address,
-                locationName: this.location.name,
-                latitude: this.location.latitude,
-                longitude: this.location.longitude
             };
-
-            console.log('Form Data:', formData);
-            // Submit the form data as needed
             uni.request({
                 url: getApp().globalData.requestUrl + '/order/save',
                 method: 'POST',
-                data: formData,
+                data: param,
                 success: (res) => {
                     uni.showToast({title: '添加成功', icon: 'none'});
                     uni.navigateTo({
@@ -430,3 +389,26 @@ export default {
     },
 };
 </script>
+<style scoped>
+// address
+.address-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.address-info {
+    margin-top: 5px;
+}
+
+.address-details {
+    color: #555;
+}
+
+.phone-number {
+    font-size: 14px;
+    color: gray;
+    margin-left: 10px;
+}
+
+</style>

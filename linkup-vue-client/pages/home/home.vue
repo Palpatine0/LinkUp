@@ -3,7 +3,7 @@
     <app-title type="h1" bold="true">附近</app-title>
 
     <!-- Category Filters (Optional, can be expanded) -->
-    <div class="app-container service-info" style="background: url('https://i.imghippo.com/files/ml5ib1726672366.png') no-repeat center center;background-size: 135%;" @click="serviceDetailRedirect(1)">
+    <div class="app-container service-info" style="background: url('https://i.imghippo.com/files/gHQ3o1727185530.jpg') no-repeat center center;background-size: 135%;" @click="serviceDetailRedirect(1)">
         <div class="gradient-overlay" style="border-bottom-right-radius: 15px;border-bottom-left-radius: 15px"></div>
         <div class="service-info-text">
             导游服务
@@ -136,7 +136,7 @@ export default {
 }
 
 .service-info {
-    height: 200px;
+    height: 160px;
     position: relative;
 }
 

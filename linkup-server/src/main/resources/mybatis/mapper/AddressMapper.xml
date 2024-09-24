@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.enchanted.mapper.AddressMapper">
+
+    <resultMap type="com.enchanted.entity.Address" id="AddressResultMap">
+        <result property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="consignee" column="consignee"/>
+        <result property="phoneNumber" column="phone_number"/>
+        <result property="address" column="address"/>
+        <result property="addressName" column="address_name"/>
+        <result property="detail" column="detail"/>
+        <result property="latitude" column="latitude"/>
+        <result property="longitude" column="longitude"/>
+        <result property="isDeleted" column="is_deleted"/>
+        <result property="createdAt" column="created_at"/>
+    </resultMap>
+
+    <select id="search" resultType="com.enchanted.entity.Address" resultMap="AddressResultMap">
+        SELECT * FROM address
+        <where>
+            is_deleted = 0
+            <if test="params.id != null and params.id != ''">
+                AND id = #{params.id}
+            </if>
+            <if test="params.keyword != null and params.keyword != ''">
+                AND (
+                address LIKE CONCAT('%', #{params.keyword}, '%')
+                OR address_name LIKE CONCAT('%', #{params.keyword}, '%')
+                )
+            </if>
+            <if test="params.userId != null and params.userId != ''">
+                AND user_id = #{params.userId}
+            </if>
+            <!-- Add more conditions as needed -->
+        </where>
+        ORDER BY created_at DESC
+    </select>
+
+</mapper>

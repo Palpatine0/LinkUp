@@ -3,7 +3,7 @@
     <!-- Heading section -->
     <div style="display: flex; align-items: center; justify-content: space-between;">
         <app-title type="h1" bold="true">我的订单</app-title>
-        <img src="/static/page/profile/order/add.svg" style="width: 28px; height: 28px;" @click="orderInitiateRedirect"/>
+        <img src="/static/common/create.svg" style="width: 28px; height: 28px;" @click="orderInitiateRedirect"/>
     </div>
 
     <!-- Search input -->

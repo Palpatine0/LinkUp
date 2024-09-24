@@ -22,6 +22,9 @@ public class Order {
     @TableField("servant_id")
     private Long servantId;
 
+    @TableField("address_id")
+    private Long addressId;
+
     @TableField("required_servant_type")
     private String requiredServantType;
 
@@ -42,19 +45,6 @@ public class Order {
 
     @TableField("service_schedule_end")
     private Date serviceScheduleEnd;
-
-    private String location;
-
-    @TableField("location_name")
-    private String locationName;
-
-    private String state;
-
-    private String city;
-
-    private Double latitude;
-
-    private Double longitude;
 
 
     private BigDecimal price;

@@ -1,7 +1,6 @@
 import App from './App'
 import Vue from 'vue'
 import './style/common.css';
-import './style/shadow.css';
 import './style/animat.css'
 
 import common from "./utils/common";

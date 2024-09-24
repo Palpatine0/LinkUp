@@ -4,7 +4,7 @@
     <div class="profile-section">
         <div class="profile-header center_h">
             <div class="center_h">
-                <img :src="user.avatar" alt="Profile Photo" class="profile-photo" />
+                <img :src="user.avatar" alt="Profile Photo" class="profile-photo"/>
             </div>
             <div class="profile-info">
                 <h1 class="profile-name">{{ user.nickname }}</h1>
@@ -13,8 +13,8 @@
     </div>
 
     <app-container color="#fff" col="12" @click="orderRedirect">
-        <img src="/static/tab-bar/order-active.png" alt="" class="link-icon">
-        <span>订单</span>
+        <img src="/static/page/profile/order.png" alt="" class="link-icon">
+        <span class="link-text">订单</span>
     </app-container>
 
     <!-- Other Options with Icons -->
@@ -27,7 +27,7 @@
             @click="handleLinkClick(item.click)"
         >
             <img :src="item.icon" alt="" class="link-icon">
-            <span>{{ item.label }}</span>
+            <span class="link-text">{{ item.label }}</span>
         </div>
     </app-container>
 </div>
@@ -40,10 +40,11 @@ export default {
         return {
             user: {},
             linkItems: [
-                { label: "余额", icon: "/static/page/profile/card.svg", click: "balanceRedirect" },
-                { label: "收藏", icon: "/static/page/profile/bookmark.svg", click: "favoritesRedirect" },
-                { label: "标签", icon: "/static/page/profile/tag.svg", click: "tagsRedirect" },
-                { label: "数据", icon: "/static/page/profile/data.svg", click: "dataRedirect" },
+                {label: "我的余额", icon: "/static/page/profile/card.png", click: "balanceRedirect"},
+                {label: "地址信息", icon: "/static/page/profile/addr.jpg", click: "addressRedirect"},
+                {label: "我的收藏", icon: "/static/page/profile/bookmark.jpg", click: "favoritesRedirect"},
+                {label: "数据与存储", icon: "/static/page/profile/db.jpg", click: "dataRedirect"},
+                // {label: "标签", icon: "/static/page/profile/tag.svg", click: "tagsRedirect"},
             ],
         };
     },
@@ -77,15 +78,20 @@ export default {
                 console.warn(`Method ${methodName} is not defined.`);
             }
         },
-        orderRedirect(){
+
+        orderRedirect() {
             uni.navigateTo({
                 url: '/pages/profile/order/order',
             });
         },
-
-        balanceRedirect(){
+        balanceRedirect() {
             uni.navigateTo({
                 url: '/pages/profile/balance/balance',
+            });
+        },
+        addressRedirect() {
+            uni.navigateTo({
+                url: '/pages/profile/address/address',
             });
         }
     }
@@ -132,11 +138,16 @@ export default {
     border-bottom: none; /* Remove the border for the last item */
 }
 
+.link-text {
+    position: relative;
+    top: -6px;
+}
+
 .link-icon {
-    width: 20px;
-    height: 20px;
+    width: 28px;
+    height: 28px;
     margin-right: 18px;
     position: relative;
-    top: 4px;
+    top: 2px;
 }
 </style>
