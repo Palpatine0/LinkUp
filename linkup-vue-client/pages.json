@@ -1,6 +1,6 @@
 {
     "pages": [
-        // home
+        //home
         {
             "path": "pages/home/home",
             "style": {
@@ -9,7 +9,7 @@
             }
         },
 
-        // chat
+        //chat
         {
             "path": "pages/chat/chat",
             "style": {
@@ -18,7 +18,7 @@
             }
         },
 
-        // profile
+        //profile
         {
             "path": "pages/profile/profile",
             "style": {
@@ -26,15 +26,7 @@
                 "navigationBarBackgroundColor": "#f3f2f6"
             }
         },
-        // profile > balance
-        {
-            "path": "pages/profile/balance/balance",
-            "style": {
-                "navigationBarTitleText": "",
-                "navigationBarBackgroundColor": "#fefefe"
-            }
-        },
-        // profile > balance
+        // profile > order
         {
             "path": "pages/profile/order/order",
             "style": {
@@ -63,6 +55,14 @@
                 "navigationBarBackgroundColor": "#f3f2f6"
             }
         },
+        // profile > balance
+        {
+            "path": "pages/profile/balance/balance",
+            "style": {
+                "navigationBarTitleText": "",
+                "navigationBarBackgroundColor": "#fefefe"
+            }
+        },
         // profile > address
         {
             "path": "pages/profile/address/address",
@@ -86,7 +86,7 @@
             }
         },
 
-        // components
+        //components
         // user
         {
             "path": "pages/components/user/user-detail/user-detail",
@@ -119,7 +119,6 @@
                 "navigationBarBackgroundColor": "#fefefe"
             }
         },
-
         // registry
         {
             "path": "pages/registry/registry",
@@ -129,6 +128,7 @@
                 "navigationStyle":"custom"
             }
         }
+
     ],
     "globalStyle": {
         "navigationBarTextStyle": "black",

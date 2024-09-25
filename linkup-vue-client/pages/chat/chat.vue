@@ -2,11 +2,11 @@
 <div class="page">
     <!-- Heading section -->
     <div style="display: flex; align-items: center; justify-content: space-between;">
-        <app-title type="h1" bold="true">我的消息</app-title>
+        <app-title type="h1" bold="true">{{$t('chat.chats')}}</app-title>
     </div>
 
     <!-- Search input -->
-    <app-input mode="text" placeholder="搜索" col="12" class="mb-2"/>
+    <app-input mode="text" :placeholder="$t('pub.page.search')" col="12" class="mb-2"/>
 
     <!-- Contact List -->
     <scroll-view :scroll-top="0" scroll-y="true" style="height: 80vh" class="mt-4">

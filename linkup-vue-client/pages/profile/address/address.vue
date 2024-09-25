@@ -36,9 +36,9 @@
                 </div>
             </div>
         </div>
-        <div v-if="loading" style="color: gainsboro; margin-left: 10px;">加载中...</div>
+        <div v-if="loading" style="color: gainsboro; margin-left: 10px;">{{$t('pub.page.loading')}}</div>
         <!-- No More Data Message -->
-        <div v-else-if="!hasMore" class="no-more-data-container-list">已加载全部数据</div>
+        <div v-else-if="!hasMore" class="no-more-data-container-list">{{$t('pub.page.noMoreData')}}</div>
     </scroll-view>
 </div>
 </template>
@@ -125,8 +125,9 @@ export default {
 
         // Redirect to address details (can be used for editing)
         addressDetailRedirect(addressId) {
+            console.log("addressDetailRedirect(addressId) {addressDetailRedirect(addressId) {")
             uni.navigateTo({
-                url: '/pages/profile/address/address-create?addressId=' + addressId,
+                url: '/pages/profile/address/address-create/address-create?addressId=' + addressId,
             });
         },
     },

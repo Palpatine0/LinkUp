@@ -20,10 +20,10 @@
         <div class="wallet-info">
             <div class="balance-card">
                 <div class="balance-details">
-                    <text style="font-size: 14px">您的余额</text>
+                    <text style="font-size: 14px">{{$t('profile>balance.balance')}}</text>
                     <text class="balance-amount">¥ {{ $common.toNumber(user.balance, 'bigdecimal').toFixed(2) }}</text>
                 </div>
-                <div class="pay-button" @click="topUpToggle()">充值</div>
+                <div class="pay-button" @click="topUpToggle()">{{$t('profile>balance.deposit')}}</div>
             </div>
         </div>
     </div>

@@ -9,7 +9,7 @@
     <!-- Search input -->
     <app-input
         mode="text"
-        placeholder="搜索"
+        :placeholder="$t('pub.page.search')"
         col="12"
         class="mb-2"
         v-model="searchKeyword"
@@ -48,9 +48,9 @@
                 </div>
             </div>
         </div>
-        <div v-if="loading" style="color: gainsboro; margin-left: 10px;">加载中...</div>
+        <div v-if="loading" style="color: gainsboro; margin-left: 10px;">{{$t('pub.page.loading')}}</div>
         <!-- No More Data Message -->
-        <div v-else-if="!hasMore" class="no-more-data-container-list">已加载全部数据</div>
+        <div v-else-if="!hasMore" class="no-more-data-container-list">{{ $t('pub.page.noMoreData') }}</div>
     </scroll-view>
 </div>
 </template>

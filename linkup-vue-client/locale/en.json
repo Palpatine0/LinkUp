@@ -1,0 +1,79 @@
+{
+    "//////": "pub",
+    "pub": {
+        "lang": {
+            "en": "English",
+            "zh": "中文",
+            "curLang": "English"
+        },
+        "page": {
+            "search": "Search",
+            "loading": "Loading...",
+            "noMoreData": "No more data"
+        }
+    },
+
+
+    "//////": "home",
+    "home": {
+        "nearby": "Nearby",
+        "tourGuideServices": "Tour Guide Services"
+    },
+
+
+    "//////": "chat",
+    "chat": {
+        "chats": "Chats"
+    },
+
+
+    "//////": "profile",
+    "profile": {
+        "order":"Order",
+        "balance":"Balance",
+        "address":"Address",
+        "myFavorite":"My Favorite",
+        "data":"Data and Storage",
+        "tag":"Tag"
+    },
+
+    "//////": "profile > order",
+    "profile>order": {},
+    "profile>order>orderServantSelection": {},
+    "profile>order>orderInitiate": {},
+    "profile>order>orderDetail": {},
+
+    "//////": "profile > balance",
+    "profile>balance": {
+        "balance":"Balance",
+        "deposit":"Deposit"
+    },
+
+    "//////": "profile > address",
+    "profile>address": {
+        "addressManage": "Address Manage"
+    },
+    "profile>address>addressCreate": {},
+    "profile>address>addressDetail": {},
+
+    "//////": "components(page)",
+    "pageComponent>user>userDetail": {
+        "startChatting": "Start Chatting"
+    },
+    "pageComponent>service>serviceDetail": {},
+    "pageComponent>service>serviceDetail>servantList": {},
+    "pageComponent>chat>chatWindow": {
+        "messageInput": {
+            "enterMsg":""
+        }
+    },
+    "pageComponent>registry": {},
+
+    "//////": "components",
+    "component>balance>topUp": {
+        "topUpTitle": "Top-up",
+        "topUpBtn": "Top-up"
+    }
+
+
+}

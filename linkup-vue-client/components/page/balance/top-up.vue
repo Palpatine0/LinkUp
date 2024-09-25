@@ -2,8 +2,7 @@
 <view class="charge-container">
     <view class="mask" @click="close()"></view>
     <view class="widget-center charge-anim">
-        <view class="charge-header">余额充值</view>
-
+        <view class="charge-header">{{ $t('component>balance>topUp.topUpTitle') }}</view>
         <!-- Predefined Amount Buttons -->
         <view class="charge-options">
             <div class="app-button-outlined" @click="setAmount(100)">
@@ -28,12 +27,12 @@
 
         <!-- Display Selected Amount -->
         <view class="no-more-data">
-            <div class="credit">充值金额: ¥{{ selectedAmount.toFixed(2) }}</div>
+            <div class="credit">¥{{ selectedAmount.toFixed(2) }}</div>
         </view>
 
         <!-- Confirm Button -->
         <div class="center_h" style="width: 60%;">
-            <app-button @click="confirmCharge" shaped>确认充值</app-button>
+            <app-button @click="confirmCharge" shaped>{{ $t('component>balance>topUp.topUpBtn') }}</app-button>
         </div>
     </view>
 </view>

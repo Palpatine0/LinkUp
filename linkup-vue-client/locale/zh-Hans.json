@@ -1,0 +1,79 @@
+{
+    "//////": "pub",
+    "pub": {
+        "lang": {
+            "en": "English",
+            "zh": "中文",
+            "curLang": "中文"
+        },
+        "page": {
+            "search": "搜索",
+            "loading": "加载中...",
+            "noMoreData": "已加载全部数据"
+        }
+    },
+
+
+    "//////": "home",
+    "home": {
+        "nearby": "附近",
+        "tourGuideServices": "导游服务"
+    },
+
+
+    "//////": "chat",
+    "chat": {
+        "chats": "聊天"
+    },
+
+
+    "//////": "profile",
+    "profile": {
+        "order":"订单",
+        "balance":"余额",
+        "address":"地址信息",
+        "myFavorite":"我的收藏",
+        "data":"数据与存储",
+        "tag":"标签"
+    },
+
+    "//////": "profile > order",
+    "profile>order": {},
+    "profile>order>orderServantSelection": {},
+    "profile>order>orderInitiate": {},
+    "profile>order>orderDetail": {},
+
+    "//////": "profile > balance",
+    "profile>balance": {
+        "balance":"您的余额",
+        "deposit":"充值"
+    },
+
+    "//////": "profile > address",
+    "profile>address": {
+        "addressManage": "地址管理"
+    },
+    "profile>address>addressCreate": {},
+    "profile>address>addressDetail": {},
+
+
+
+    "//////": "components(page)",
+    "pageComponent>user>userDetail": {
+        "startChatting": "发起聊天"
+    },
+    "pageComponent>service>serviceDetail": {},
+    "pageComponent>service>serviceDetail>servantList": {},
+    "pageComponent>chat>chatWindow": {
+        "messageInput": {
+            "enterMsg":""
+        }
+    },
+    "pageComponent>registry": {},
+
+    "//////": "components",
+    "component>balance>topUp": {
+        "topUpTitle": "余额充值",
+        "topUpBtn": "确认充值"
+    }
+}

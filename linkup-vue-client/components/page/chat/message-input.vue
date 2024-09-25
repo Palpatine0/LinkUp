@@ -4,7 +4,6 @@
     <textarea
         v-model="message"
         class="message-input"
-        placeholder="Enter your message..."
         @keyup.enter="sendMessage"
         rows="1"
         maxlength="2000"

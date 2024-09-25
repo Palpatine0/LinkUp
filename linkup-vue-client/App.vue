@@ -42,6 +42,15 @@ export default {
             }
         })
     },
+    onLoad() {
+        const lang = uni.getStorageSync('language') || 'en';//获取缓存的语言设置
+        this.$i18n.locale = lang
+        uni.setLocale(lang);
+        this.$store.commit('changeLanguage', lang);
+        uni.onLocaleChange(e => {
+            this.$store.commit('changeLanguage', e.locale);
+        });
+    },
     methods: {
         checkUserInfo() {
             const openid = uni.getStorageSync('openid');

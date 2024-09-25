@@ -1,15 +1,14 @@
 <template>
 <div class="page">
-    <app-title type="h1" bold="true">附近</app-title>
+    <app-title type="h1" bold="true">{{$t('home.nearby')}}</app-title>
 
     <!-- Category Filters (Optional, can be expanded) -->
     <div class="app-container service-info" style="background: url('https://i.imghippo.com/files/gHQ3o1727185530.jpg') no-repeat center center;background-size: 135%;" @click="serviceDetailRedirect(1)">
         <div class="gradient-overlay" style="border-bottom-right-radius: 15px;border-bottom-left-radius: 15px"></div>
         <div class="service-info-text">
-            导游服务
+            {{$t('home.tourGuideServices')}}
         </div>
     </div>
-
     <!-- Scroll View for User List -->
     <user-list
         :userList="userList"
