@@ -16,17 +16,8 @@ import org.jdom.input.SAXBuilder;
 
 
 
-/**
- * Xml工具类
- * @author Administrator
- *
- */
 public class XmlUtil {
 
-	/**
-	 * 生成xml
-	 * @return
-	 */
 	public static String genXml(Map<String,Object> map)throws Exception{
 		StringBuffer sb=new StringBuffer();
 		sb.append("<xml>");
@@ -38,23 +29,13 @@ public class XmlUtil {
 		return new String(sb.toString().getBytes(),"ISO8859-1");
 	}
 	
-	/**  
-     * 解析xml,返回第一级元素键值对。如果第一级元素有子节点，则此节点的值是子节点的xml数据。  
-     * @param strxml  
-     * @return  
-     * @throws JDOMException  
-     * @throws IOException  
-     */    
-    public static Map doXMLParse(String strxml) throws JDOMException, IOException {    
+    public static Map doXMLParse(String strxml) throws JDOMException, IOException {
         strxml = strxml.replaceFirst("encoding=\".*\"", "encoding=\"UTF-8\"");    
-    
-        if(null == strxml || "".equals(strxml)) {    
+        if(null == strxml || "".equals(strxml)) {
             return null;    
         }    
-            
-        Map m = new HashMap();    
-            
-        InputStream in = new ByteArrayInputStream(strxml.getBytes("UTF-8"));    
+        Map m = new HashMap();
+        InputStream in = new ByteArrayInputStream(strxml.getBytes("UTF-8"));
         SAXBuilder builder = new SAXBuilder();    
         Document doc = builder.build(in);    
         Element root = doc.getRootElement();    
@@ -70,22 +51,14 @@ public class XmlUtil {
             } else {    
                 v = XmlUtil.getChildrenText(children);    
             }    
-                
-            m.put(k, v);    
+            m.put(k, v);
         }    
             
-        //关闭流    
-        in.close();    
-            
-        return m;    
+        in.close();
+        return m;
     }    
     
-    /**  
-     * 获取子结点的xml  
-     * @param children  
-     * @return String  
-     */    
-    public static String getChildrenText(List children) {    
+    public static String getChildrenText(List children) {
         StringBuffer sb = new StringBuffer();    
         if(!children.isEmpty()) {    
             Iterator it = children.iterator();    

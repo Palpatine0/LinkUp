@@ -18,6 +18,29 @@ public class UserController {
     @Autowired
     private IUserService userService;
 
+    /*C*/
+    @PostMapping("/save")
+    public R save(@RequestBody User user) {
+        boolean isSaved = userService.save(user);
+        if (isSaved) {
+            return R.ok("添加成功");
+        } else {
+            return R.error("添加失败");
+        }
+    }
+
+    @PostMapping("save-auth-info")
+    public R saveAuthInfo(@RequestBody Map<String, String> dto) {
+        String code = dto.get("code");
+        int role = Integer.parseInt(dto.get("role"));
+        User userAuth = userService.saveAuthInfo(code, role);
+        Map<String, Object> map = new HashMap<>();
+        map.put("auth", userAuth);
+        return R.ok(map);
+    }
+
+
+    /*R*/
     @PostMapping("/search")
     public R search(@RequestBody Map<String, Object> requestData) {
         int page = requestData.get("page") != null ? Integer.parseInt(requestData.get("page").toString()) : 1;
@@ -42,25 +65,8 @@ public class UserController {
         return R.paginate(userPage);
     }
 
-    @PostMapping("save-auth-info")
-    public R saveAuthInfo(@RequestBody Map<String, String> dto) {
-        String code = dto.get("code");
-        User userAuth = userService.saveAuthInfo(code);
-        Map<String, Object> map = new HashMap<>();
-        map.put("auth", userAuth);
-        return R.ok(map);
-    }
 
-    @PostMapping("/save")
-    public R save(@RequestBody User user) {
-        boolean isSaved = userService.save(user);
-        if (isSaved) {
-            return R.ok("添加成功");
-        } else {
-            return R.error("添加失败");
-        }
-    }
-
+    /*U*/
     @PostMapping("/update")
     public R update(@RequestBody Map<String, Object> requestData) {
         Long id = Long.parseLong(requestData.get("id").toString());
@@ -75,6 +81,7 @@ public class UserController {
     }
 
 
+    /*D*/
     @PostMapping("/delete")
     public R delete(@RequestBody Map<String, Object> requestData) {
         Long id = Long.parseLong(requestData.get("id").toString());

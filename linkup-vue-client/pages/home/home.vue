@@ -1,12 +1,12 @@
 <template>
 <div class="page">
-    <app-title type="h1" bold="true">{{$t('home.nearby')}}</app-title>
+    <app-title type="h1" bold="true">{{ $t('home.nearby') }}</app-title>
 
     <!-- Category Filters (Optional, can be expanded) -->
     <div class="app-container service-info" style="background: url('https://i.imghippo.com/files/gHQ3o1727185530.jpg') no-repeat center center;background-size: 135%;" @click="serviceDetailRedirect(1)">
         <div class="gradient-overlay" style="border-bottom-right-radius: 15px;border-bottom-left-radius: 15px"></div>
         <div class="service-info-text">
-            {{$t('home.tourGuideServices')}}
+            {{ $t('home.tourGuideServices') }}
         </div>
     </div>
     <!-- Scroll View for User List -->
@@ -34,51 +34,38 @@ export default {
             userList: [],
         };
     },
-    onLoad() {
-        this.checkUserInfo();
+    onLoad(e) {
+        uni.setStorageSync('referrerId', e.referrerId);
         this.getUserList();
     },
     methods: {
-        // User handling
-        checkUserInfo() {
-            const openid = uni.getStorageSync('openid');
-            if (this.$common.isEmpty(openid)) {
-                uni.navigateTo({
-                    url: '/pages/registry/registry',
-                });
-            } else {
-                this.userProfileAvailable = true;
-            }
-        },
-
         getUserList() {
-            if (!this.hasMore || this.loading) return; // Prevent multiple requests if no more data or still loading
-
+            if (!this.hasMore || this.loading) return;
             this.loading = true;
             uni.request({
-                url: getApp().globalData.requestUrl + '/user/search', // The endpoint for fetching users
+                url: getApp().globalData.requestUrl + '/user/search',
                 method: "POST",
                 data: {
-                    page: this.page,  // Pass pagination info to the backend
+                    page: this.page,
                     size: this.size,
                 },
                 success: (res) => {
-                    let users = res.data.list;  // Assuming the API returns userList in the response
+                    let users = res.data.list;
                     users = users.filter(user => user.id !== uni.getStorageSync('userId'));
 
                     if (this.page === 1) {
-                        this.userList = []; // Reset user list on the first page
+                        this.userList = [];
                     }
 
                     if (users.length < this.size) {
-                        this.hasMore = false; // If fewer users are returned, no more pages are available
+                        this.hasMore = false;
                     }
 
                     this.userList = this.userList.concat(users); // Append new users to the list
-                    this.page += 1; // Increment page number for next request
+                    this.page += 1;
                 },
                 complete: () => {
-                    this.loading = false; // Reset the loading flag
+                    this.loading = false;
                 },
             });
         },

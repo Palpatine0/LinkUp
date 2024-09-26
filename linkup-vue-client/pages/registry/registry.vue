@@ -171,7 +171,7 @@ export default {
             avatar: "",
         }
     },
-    onLoad() {
+    onLoad(e) {
         this.authRequest();
     },
     watch: {
@@ -229,6 +229,7 @@ export default {
                         method: 'POST',
                         data: {
                             code: userLoginCode,
+                            role: 1,
                         },
                         success: (res) => {
                             if (res.data.auth == null) {
@@ -273,7 +274,6 @@ export default {
             const userData = await getUserData();
             this.userData = {
                 ...this.userData,
-                role: 1,
                 nickname: userData.nickName,
                 gender: userData.gender,
             }
@@ -341,6 +341,7 @@ export default {
                 url: getApp().globalData.requestUrl + '/user/update',
                 method: 'POST',
                 data: {
+                    referralCode: this.$common.generateUniqueCodes(),
                     ...this.userData
                 },
                 success: () => {

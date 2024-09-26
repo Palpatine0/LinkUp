@@ -38,7 +38,6 @@ public class DateUtil {
 		try {
 			System.out.println(getCurrentDateStr());
 		} catch (Exception e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}

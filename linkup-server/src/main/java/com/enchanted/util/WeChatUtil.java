@@ -2,23 +2,19 @@ package com.enchanted.util;
 
 import com.alibaba.fastjson.JSONObject;
 
+import com.enchanted.constant.WeChatConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
 import java.net.URL;
 import java.net.URLConnection;
-import io.github.cdimascio.dotenv.Dotenv;
 
 @Slf4j(topic = "WechatUtils")
 @Component
 public class WeChatUtil {
-    private static final Dotenv dotenv = Dotenv.load();
-    private static final String appId = dotenv.get("WECHAT_APP_ID");
-    private static final String secret = dotenv.get("WECHAT_SECRET");
-
     public static JSONObject getOpenId(String code) {
-        String url = "https://api.weixin.qq.com/sns/jscode2session?appid=" + appId + "&secret=" + secret + "&js_code=" + code + "&grant_type=authorization_code";
+        String url = "https://api.weixin.qq.com/sns/jscode2session?appid=" + WeChatConstant.APP_ID + "&secret=" + WeChatConstant.SECRET + "&js_code=" + code + "&grant_type=authorization_code";
         PrintWriter out = null;
         BufferedReader in = null;
         String line;

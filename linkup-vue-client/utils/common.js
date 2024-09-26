@@ -4,6 +4,45 @@ if (!String.prototype.replaceAll) {
     }
 }
 var $common = {
+    generateUniqueCodes: function (pattern, numCodes) {
+        const bases = [];
+        let totalPermutations = 1;
+
+        // Determine the base for each character in the pattern
+        for (const char of pattern) {
+            if (char === 'a') {
+                bases.push('ABCDEFGHIJKLMNOPQRSTUVWXYZ'); // Base for letters
+            } else if (char === '1') {
+                bases.push('1234567890'); // Base for numbers
+            }
+        }
+
+        // Calculate total permutations
+        bases.forEach(base => {
+            totalPermutations *= base.length;
+        });
+
+        // Check if the requested number of coupons exceeds the possible permutations
+        if (numCodes > totalPermutations) {
+            throw new Error('Requested number of coupons exceeds possible permutations.');
+        }
+
+        const coupons = new Set();
+        while (coupons.size < numCodes) {
+            const randomIndex = Math.floor(Math.random() * totalPermutations);
+            let coupon = '';
+
+            let index = randomIndex;
+            for (const base of bases) {
+                const baseLength = base.length;
+                const charIndex = index % baseLength;
+                coupon += base[charIndex];
+                index = Math.floor(index / baseLength);
+            }
+            coupons.add(coupon);
+        }
+        return Array.from(coupons).join('');
+    },
     getRandom: function (v) {
         v = v || 999999;
         return Math.floor(Math.random() * v);
@@ -21,7 +60,7 @@ var $common = {
      */
     stampToTime: function (stamp, options = {}) {
         // Default options for exclusion (exclude nothing by default)
-        const { yyyy = true, MM = true, dd = true, HH = true, mm = true, ss = true } = options;
+        const {yyyy = true, MM = true, dd = true, HH = true, mm = true, ss = true} = options;
 
         stamp = stamp || new Date().getTime();
         stamp = (stamp + "").length <= 10 ? Number(stamp) * 1000 : stamp;

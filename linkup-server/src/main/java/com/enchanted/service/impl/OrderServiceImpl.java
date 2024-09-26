@@ -3,7 +3,7 @@ package com.enchanted.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.enchanted.constant.OrderConstants;
+import com.enchanted.constant.OrderConstant;
 import com.enchanted.entity.User;
 import com.enchanted.mapper.OrderMapper;
 import com.enchanted.entity.Order;
@@ -11,7 +11,6 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.enchanted.service.IOrderService;
 import com.enchanted.service.IUserService;
 import com.enchanted.util.ConversionUtils;
-import io.github.cdimascio.dotenv.Dotenv;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
@@ -25,8 +24,6 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
-
-import static java.lang.Integer.*;
 
 @Service
 public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements IOrderService {
@@ -162,7 +159,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
         BigDecimal refundAmount = order.getPrice();
 
-        if (freeAttemptsToday < OrderConstants.FREE_POSTING_QUOTA + 1) {
+        if (freeAttemptsToday < OrderConstant.FREE_POSTING_QUOTA + 1) {
             refundAmount = order.getPrice(); // 100% refund
         } else {
             refundAmount = order.getPrice().multiply(BigDecimal.valueOf(0.8)); // 80% refund
@@ -179,7 +176,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
     public int getRemainingFreePostingQuota(Long userId) {
         int freeAttemptsToday = countFreeAttemptsToday(userId);
-        return Math.max(0, OrderConstants.FREE_POSTING_QUOTA - freeAttemptsToday);
+        return Math.max(0, OrderConstant.FREE_POSTING_QUOTA - freeAttemptsToday);
     }
 
     private int countFreeAttemptsToday(Long userId) {

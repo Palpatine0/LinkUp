@@ -17,14 +17,21 @@ public class User {
      */
     private Integer role;
 
-    @TableField("openid")
     private String openid;
 
     @TableField("session_key")
     private String sessionKey;
 
-    @TableField("unionid")
     private String unionid;
+
+    @TableField("referrer_id")
+    private String referrerId;
+
+    @TableField("referral_qr_code")
+    private String referralQrCode;
+
+    @TableField("referral_code")
+    private String referralCode;
 
     private String nickname;
 
