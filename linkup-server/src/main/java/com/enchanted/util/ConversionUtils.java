@@ -1,5 +1,7 @@
 package com.enchanted.util;
 
+import java.math.BigDecimal;
+
 public class ConversionUtils {
 
     public static Object convertValueToRequiredType(Object value, Class<?> targetType) {
@@ -38,6 +40,15 @@ public class ConversionUtils {
                 return Double.parseDouble((String) value);
             } else if (value instanceof Number) {
                 return ((Number) value).doubleValue();
+            }
+        }
+
+
+        if (targetType.equals(BigDecimal.class)) {
+            if (value instanceof String) {
+                return new BigDecimal((String) value);
+            } else if (value instanceof Number) {
+                return BigDecimal.valueOf(((Number) value).doubleValue());
             }
         }
 

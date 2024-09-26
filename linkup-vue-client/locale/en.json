@@ -10,52 +10,87 @@
             "search": "Search",
             "loading": "Loading...",
             "noMoreData": "No more data"
+        },
+        "button": {
+            "confirm": "Confirm",
+            "cancel": "Cancel"
+        },
+        "gender": {
+            "m": "Male",
+            "f": "Female"
+        },
+        "unit": {
+            "cny": "CNY"
         }
     },
-
-
     "//////": "home",
     "home": {
         "nearby": "Nearby",
         "tourGuideServices": "Tour Guide Services"
     },
-
-
     "//////": "chat",
     "chat": {
         "chats": "Chats"
     },
-
-
     "//////": "profile",
     "profile": {
-        "order":"Order",
-        "balance":"Balance",
-        "address":"Address",
-        "myFavorite":"My Favorite",
-        "data":"Data and Storage",
-        "tag":"Tag"
+        "order": "Order",
+        "balance": "Balance",
+        "address": "Address",
+        "myFavorite": "My Favorite",
+        "data": "Data and Storage",
+        "tag": "Tag"
     },
-
     "//////": "profile > order",
-    "profile>order": {},
-    "profile>order>orderServantSelection": {},
-    "profile>order>orderInitiate": {},
+    "profile>order": {
+        "myOrders": "My Orders",
+        "candidates": "Candidates"
+    },
+    "profile>order>orderServantSelection": {
+        "selectServantType": "Select your Servant Type"
+    },
+    "profile>order>orderInitiate": {
+        "publishOrder": "Publish Order",
+        "serviceGender": "Service Provider Gender",
+        "serviceAge": "Service Provider Age",
+        "ageRangeUnlimited": "Unlimited",
+        "ageRange": "Age Range",
+        "selectLocation": "Select Location",
+        "serviceDuration": "Service Location",
+        "serviceSchedule": "Service Schedule",
+        "selectServiceSchedule": "Select Service Schedule",
+        "price": "Price",
+        "saveOrder": "Save Order",
+        "options": {
+            "all": "All",
+            "allGender": "All Genders",
+            "allAge": "All Ages"
+        }
+    },
     "profile>order>orderDetail": {},
-
     "//////": "profile > balance",
     "profile>balance": {
-        "balance":"Balance",
-        "deposit":"Deposit"
+        "balance": "Balance",
+        "deposit": "Deposit"
     },
-
     "//////": "profile > address",
     "profile>address": {
-        "addressManage": "Address Manage"
+        "addressManage": "Manage Addresses"
     },
-    "profile>address>addressCreate": {},
-    "profile>address>addressDetail": {},
-
+    "profile>address>addressManage": {
+        "createAddress": "Create an Address",
+        "editAddress": "Edit Address",
+        "consignee": "Consignee",
+        "consigneePlaceholder": "Please enter consignee name",
+        "phoneNumber": "Phone Number",
+        "phonePlaceholder": "Please enter phone number",
+        "serviceLocation": "Service Location",
+        "selectLocation": "Please select service location",
+        "detailedAddress": "Detailed Address",
+        "detailPlaceholder": "Please enter detailed address",
+        "saveBtn": "Save",
+        "updateBtn": "Update"
+    },
     "//////": "components(page)",
     "pageComponent>user>userDetail": {
         "startChatting": "Start Chatting"
@@ -64,16 +99,13 @@
     "pageComponent>service>serviceDetail>servantList": {},
     "pageComponent>chat>chatWindow": {
         "messageInput": {
-            "enterMsg":""
+            "enterMsg": ""
         }
     },
     "pageComponent>registry": {},
-
     "//////": "components",
     "component>balance>topUp": {
         "topUpTitle": "Top-up",
         "topUpBtn": "Top-up"
     }
-
-
 }

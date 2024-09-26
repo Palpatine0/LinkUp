@@ -2,7 +2,7 @@
 <div class="page">
     <!-- Heading section -->
     <div style="display: flex; align-items: center; justify-content: space-between;">
-        <app-title type="h1" bold="true">我的订单</app-title>
+        <app-title type="h1" bold="true">{{$t('profile>order.myOrders')}}</app-title>
         <img src="/static/common/create.svg" style="width: 28px; height: 28px;" @click="orderInitiateRedirect"/>
     </div>
 
@@ -40,8 +40,8 @@
                         <span v-if="order.status==3" class="status-dot gray-dot"></span>
                     </div>
                     <div class="order-info">
-                        <div class="respondent-count">
-                            抢单人数: {{ order.candidateCount }}
+                        <div class="candidates-count">
+                            {{$t('profile>order.candidates')}}: {{ order.candidateCount }}
                         </div>
                         <span style="font-size: 14px; color: gray;">{{ order.createdAt }}</span>
                     </div>
@@ -54,6 +54,7 @@
     </scroll-view>
 </div>
 </template>
+
 
 <script>
 import orderDetail from './order-detail/order-detail.vue';
@@ -207,13 +208,13 @@ export default {
     margin-right: 10px;
 }
 
-.respondent-count {
+.candidates-count {
     color: white;
     background-color: #007aff;
     border-radius: 5px;
     font-weight: bold;
     padding: 2px;
-    width: 92px;
+    width: 100px;
     font-size: 14px;
     margin-bottom: 4px;
 }

@@ -10,6 +10,17 @@
             "search": "搜索",
             "loading": "加载中...",
             "noMoreData": "已加载全部数据"
+        },
+        "button": {
+            "confirm": "确认",
+            "cancel": "取消"
+        },
+        "gender": {
+            "m": "男",
+            "f": "女"
+        },
+        "unit": {
+            "cny": "元"
         }
     },
 
@@ -38,9 +49,31 @@
     },
 
     "//////": "profile > order",
-    "profile>order": {},
-    "profile>order>orderServantSelection": {},
-    "profile>order>orderInitiate": {},
+    "profile>order": {
+        "myOrders": "我的订单",
+        "candidates": "抢单人数"
+    },
+    "profile>order>orderServantSelection": {
+        "selectServantType": "选择你的服务者类型"
+    },
+    "profile>order>orderInitiate": {
+        "publishOrder": "发布订单",
+        "serviceGender": "服务者性别",
+        "serviceAge": "服务者年龄",
+        "ageRangeUnlimited": "不限",
+        "ageRange": "年龄范围",
+        "selectLocation": "服务地点",
+        "serviceDuration": "服务时长",
+        "serviceSchedule": "服务时间",
+        "selectServiceSchedule": "请选择服务时间",
+        "price": "价格",
+        "saveOrder": "保存订单",
+        "options": {
+            "all": "不限",
+            "allGender": "不限性别",
+            "allAge": "不限年龄"
+        }
+    },
     "profile>order>orderDetail": {},
 
     "//////": "profile > balance",
@@ -53,8 +86,20 @@
     "profile>address": {
         "addressManage": "地址管理"
     },
-    "profile>address>addressCreate": {},
-    "profile>address>addressDetail": {},
+    "profile>address>addressManage": {
+        "createAddress": "添加地址",
+        "editAddress": "编辑地址",
+        "consignee": "收货人",
+        "consigneePlaceholder": "请输入收货人姓名",
+        "phoneNumber": "联系电话",
+        "phonePlaceholder": "请输入联系电话",
+        "serviceLocation": "服务地点",
+        "selectLocation": "请选择服务地点",
+        "detailedAddress": "详细地址",
+        "detailPlaceholder": "请输入详细地址",
+        "saveBtn": "保存地址",
+        "updateBtn": "更新地址"
+    },
 
 
 

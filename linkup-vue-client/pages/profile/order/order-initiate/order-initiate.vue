@@ -1,10 +1,10 @@
 <template>
 <div>
     <div class="page">
-        <app-title type="h1" bold="true">发布订单</app-title>
+        <app-title type="h1" bold="true">{{ $t('profile>order>orderInitiate.publishOrder') }}</app-title>
 
         <!-- Gender -->
-        <app-title bold="true">服务者性别</app-title>
+        <app-title bold="true">{{ $t('profile>order>orderInitiate.serviceGender') }}</app-title>
         <div class="app-input">
             <picker
                 @change="bindGenderPickerChange"
@@ -16,7 +16,7 @@
         </div>
 
         <!-- Age Range -->
-        <app-title bold="true">服务者年龄</app-title>
+        <app-title bold="true">{{ $t('profile>order>orderInitiate.serviceAge') }}</app-title>
         <div class="app-input">
             <picker
                 :key="dropdownOptions.age[0][ageRangeIndex[0]] + '-' + dropdownOptions.age[1][0]"
@@ -27,13 +27,13 @@
                 @columnchange="bindAgeRangeColumnChange"
             >
                 <div class="uni-input">
-                    <template v-if="dropdownOptions.age[0][ageRangeIndex[0]] === '不限' &&dropdownOptions.age[1][ageRangeIndex[1]] === '不限'">
-                        不限
+                    <template v-if="dropdownOptions.age[0][ageRangeIndex[0]] === $t('profile>order>orderInitiate.unlimited') && dropdownOptions.age[1][ageRangeIndex[1]] === $t('profile>order>orderInitiate.unlimited')">
+                        {{ $t('profile>order>orderInitiate.unlimited') }}
                     </template>
-                    <template v-else-if="dropdownOptions.age[0][ageRangeIndex[0]] === '不限'">
-                        {{ '不限 - ' + dropdownOptions.age[1][ageRangeIndex[1]] }}
+                    <template v-else-if="dropdownOptions.age[0][ageRangeIndex[0]] === $t('profile>order>orderInitiate.unlimited')">
+                        {{ $t('profile>order>orderInitiate.unlimited') + ' - ' + dropdownOptions.age[1][ageRangeIndex[1]] }}
                     </template>
-                    <template v-else-if="dropdownOptions.age[1][ageRangeIndex[1]] === '不限'">
+                    <template v-else-if="dropdownOptions.age[1][ageRangeIndex[1]] === $t('profile>order>orderInitiate.unlimited')">
                         {{ dropdownOptions.age[0][ageRangeIndex[0]] + '岁以上' }}
                     </template>
                     <template v-else>
@@ -43,8 +43,8 @@
             </picker>
         </div>
 
-        <!-- location -->
-        <app-title bold="true">服务地点</app-title>
+        <!-- Service Location -->
+        <app-title bold="true">{{ $t('profile>order>orderInitiate.selectLocation') }}</app-title>
         <div class="app-input" @click="addressPickerToggle">
             <div v-if="addressSelected" class="address-content">
                 <div style="width: 100%;">
@@ -61,12 +61,12 @@
                 </div>
             </div>
             <div v-else>
-                请选择服务地点
+                {{ $t('profile>order>orderInitiate.selectLocation') }}
             </div>
         </div>
 
         <!-- Service Duration -->
-        <app-title bold="true">服务时长</app-title>
+        <app-title bold="true">{{ $t('profile>order>orderInitiate.serviceDuration') }}</app-title>
         <div class="app-input">
             <picker
                 @change="bindServiceDurationPickerChange"
@@ -76,9 +76,13 @@
                 <div>{{ dropdownOptions.serviceDuration[serviceDurationIndex] }}</div>
             </picker>
         </div>
-        <app-title bold="true">服务时间</app-title>
+
+        <!-- Service Schedule -->
+        <app-title bold="true">{{ $t('profile>order>orderInitiate.serviceSchedule') }}</app-title>
         <div class="app-input">
-            <div v-if="common.isEmpty(this.formData.serviceScheduleStart) || common.isEmpty(this.formData.serviceScheduleEnd)" @click="open">请选择服务时间</div>
+            <div v-if="common.isEmpty(this.formData.serviceScheduleStart) || common.isEmpty(this.formData.serviceScheduleEnd)" @click="open">
+                {{ $t('profile>order>orderInitiate.selectServiceSchedule') }}
+            </div>
             <div v-else @click="open">
                 {{
                     common.stampToTime(this.formData.serviceScheduleStart, {yyyy: false, ss: false})
@@ -91,7 +95,7 @@
         </div>
 
         <!-- Price -->
-        <app-title type="h2" bold="true">价格</app-title>
+        <app-title type="h2" bold="true">{{ $t('profile>order>orderInitiate.price') }}</app-title>
         <div class="app-input">
             <picker
                 @change="bindPricePickerChange"
@@ -104,14 +108,14 @@
 
         <!-- Submit Button -->
         <div name="submit form" class="center_h">
-            <div class="app-button" @click="paymentMethodSelectionToggle">发布</div>
+            <div class="app-button" @click="paymentMethodSelectionToggle">{{ $t('profile>order>orderInitiate.publishOrder') }}</div>
         </div>
 
         <PaymentMethodSelection v-if="paymentMethodSelectionVisible" :user="user" :balanceAdequate="balanceAdequate"></PaymentMethodSelection>
 
-
     </div>
-    <ServiceSchedule @change="bindServiceTimeChange" ref="chooseTime" title="请选择预约时间" isMask :hour="parseInt(this.dropdownOptions.serviceDuration[this.serviceDurationIndex])"></ServiceSchedule>
+
+    <ServiceSchedule @change="bindServiceTimeChange" ref="chooseTime" isMask :hour="parseInt(this.dropdownOptions.serviceDuration[this.serviceDurationIndex])"></ServiceSchedule>
     <AddressSelector v-if="addressPickerVisible" @close="addressPickerToggle" @selectAddress="handleAddressSelect"/>
 </div>
 </template>
@@ -170,12 +174,12 @@ export default {
 
             // dropdown options
             dropdownOptions: {
-                gender: ['不限', '男', '女'],
+                gender: [this.$t('profile>order>orderInitiate.options.all'), this.$t('pub.gender.m'), this.$t('pub.gender.f')],
                 age: [
-                    ['不限'].concat(Array.from({length: 83}, (_, i) => i + 18)), // Ages 18 to 100
-                    ['不限'].concat(Array.from({length: 83}, (_, i) => i + 18)), // Adjusted in methods
+                    [this.$t('profile>order>orderInitiate.options.all')].concat(Array.from({length: 83}, (_, i) => i + 18)), // Ages 18 to 100
+                    [this.$t('profile>order>orderInitiate.options.all')].concat(Array.from({length: 83}, (_, i) => i + 18)), // Adjusted in methods
                 ],
-                serviceDuration: Array.from({length: 24}, (_, i) => `${i + 1}小时`),
+                serviceDuration: Array.from({length: 24}, (_, i) => `${i + 1}h`),
                 price: [],
             },
 
@@ -216,9 +220,9 @@ export default {
         // gender
         bindGenderPickerChange(e) {
             this.genderIndex = e.detail.value;
-            if (this.dropdownOptions.gender[this.genderIndex] === '男') {
+            if (this.dropdownOptions.gender[this.genderIndex] === this.$t('pub.gender.m')) {
                 this.formData.requiredGender = 1;
-            } else if (this.dropdownOptions.gender[this.genderIndex] === '女') {
+            } else if (this.dropdownOptions.gender[this.genderIndex] === this.$t('pub.gender.f')) {
                 this.formData.requiredGender = 2;
             }
         },
@@ -228,8 +232,8 @@ export default {
             this.ageRangeIndex = e.detail.value;
             const ageMinStr = this.dropdownOptions.age[0][this.ageRangeIndex[0]];
             const ageMaxStr = this.dropdownOptions.age[1][this.ageRangeIndex[1]];
-            this.formData.requiredAgeMax = ageMinStr === '不限' ? null : parseInt(ageMinStr);
-            this.formData.requiredAgeMin = ageMaxStr === '不限' ? null : parseInt(ageMaxStr);
+            this.formData.requiredAgeMax = ageMinStr === this.$t('profile>order>orderInitiate.options.all') ? null : parseInt(ageMinStr);
+            this.formData.requiredAgeMin = ageMaxStr === this.$t('profile>order>orderInitiate.options.all') ? null : parseInt(ageMaxStr);
         },
         bindAgeRangeColumnChange(e) {
             const column = e.detail.column;
@@ -241,18 +245,18 @@ export default {
 
                 let newSecondColumn;
 
-                if (selectedFromAge === '不限') {
+                if (selectedFromAge === this.$t('profile>order>orderInitiate.options.all')) {
                     // If "不限" is selected, the second column includes "不限" and all ages
-                    newSecondColumn = ['不限'].concat(
+                    newSecondColumn = [this.$t('profile>order>orderInitiate.options.all')].concat(
                         Array.from({length: 83}, (_, i) => i + 18)
                     );
                 } else {
                     // Second column options start from selectedFromAge to 100
                     const fromAgeNumber = parseInt(selectedFromAge);
                     newSecondColumn = this.dropdownOptions.age[0].filter((age) => {
-                        return age !== '不限' && parseInt(age) >= fromAgeNumber;
+                        return age !== this.$t('profile>order>orderInitiate.options.all') && parseInt(age) >= fromAgeNumber;
                     });
-                    // Do not include '不限' in the second column
+                    // Do not include this.$t('profile>order>orderInitiate.options.all') in the second column
                 }
 
                 // Replace the entire age array to ensure reactivity
@@ -287,7 +291,7 @@ export default {
                 prices = [basePrice, basePrice + 100, basePrice + 200, basePrice + 300];
             }
 
-            this.priceOptions = prices.map((price) => `${price}元`);
+            this.priceOptions = prices.map((price) => '¥'+price);
             this.priceIndex = 0;
 
         },
@@ -351,16 +355,16 @@ export default {
             const {gender, age, serviceDuration} = this.dropdownOptions;
             const {genderIndex, ageRangeIndex, serviceDurationIndex} = this;
 
-            const genderText = gender[genderIndex] === '不限' ? '不限性别' : gender[genderIndex] === '男' ? '男' : '女';
-            const ageMin = age[0][ageRangeIndex[0]] === '不限' ? '不限' : `${age[0][ageRangeIndex[0]]}岁以上`;
-            const ageMax = age[1][ageRangeIndex[1]] === '不限' ? '不限' : `${age[1][ageRangeIndex[1]]}岁以下`;
-            const ageText = ageMin === '不限' && ageMax === '不限' ? '不限年龄' : `${ageMin} - ${ageMax}`;
+            const genderText = gender[genderIndex] === this.$t('profile>order>orderInitiate.options.all') ? this.$t('profile>order>orderInitiate.options.allGender') : gender[genderIndex] === this.$t('pub.gender.m') ? this.$t('pub.gender.m') : this.$t('pub.gender.f');
+            const ageMin = age[0][ageRangeIndex[0]] === this.$t('profile>order>orderInitiate.options.all') ? this.$t('profile>order>orderInitiate.options.all') : `${age[0][ageRangeIndex[0]]}岁以上`;
+            const ageMax = age[1][ageRangeIndex[1]] === this.$t('profile>order>orderInitiate.options.all') ? this.$t('profile>order>orderInitiate.options.all') : `${age[1][ageRangeIndex[1]]}岁以下`;
+            const ageText = ageMin === this.$t('profile>order>orderInitiate.options.all') && ageMax === this.$t('profile>order>orderInitiate.options.all') ? this.$t('profile>order>orderInitiate.options.allAge') : `${ageMin} - ${ageMax}`;
             const durationText = serviceDuration[serviceDurationIndex];
             const price = this.priceOptions[this.priceIndex];
             const location = !this.common.isEmpty(this.address) ? this.address.addressName : '不限地区';
 
             // Update the title with the concatenated values
-            this.title = `${this.serviceName}服务: ${genderText} / ${ageText} / ${durationText} / ${location} / ¥${price}`;
+            this.title = `${this.serviceName}服务: ${genderText} / ${ageText} / ${durationText} / ${location} / ${price}`;
         },
         formSubmit(paymentMethod) {
             this.generateTitle();

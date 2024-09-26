@@ -2,7 +2,7 @@
 <div class="page">
     <!-- Heading section -->
     <div style="display: flex; align-items: center; justify-content: space-between;">
-        <app-title type="h1" bold="true">我的地址</app-title>
+        <app-title type="h1" bold="true">{{$t('profile>address.addressManage')}}</app-title>
         <img src="/static/common/create.svg" style="width: 28px; height: 28px;" @click="addressCreateRedirect"/>
     </div>
 
@@ -119,7 +119,7 @@ export default {
         // Redirect to create address page
         addressCreateRedirect() {
             uni.navigateTo({
-                url: '/pages/profile/address/address-create/address-create',
+                url: '/pages/profile/address/address-manage/address-manage',
             });
         },
 
@@ -127,7 +127,7 @@ export default {
         addressDetailRedirect(addressId) {
             console.log("addressDetailRedirect(addressId) {addressDetailRedirect(addressId) {")
             uni.navigateTo({
-                url: '/pages/profile/address/address-create/address-create?addressId=' + addressId,
+                url: '/pages/profile/address/address-manage/address-manage?addressId=' + addressId,
             });
         },
     },

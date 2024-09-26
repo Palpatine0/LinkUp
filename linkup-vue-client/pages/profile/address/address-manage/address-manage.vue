@@ -1,43 +1,48 @@
 <template>
 <div class="page">
-    <app-title type="h1" bold="true">{{ addressId ? '编辑地址' : '新增地址' }}</app-title>
+    <app-title v-if="!addressId" type="h1" bold="true">
+        {{ $t('profile>address>addressManage.createAddress') }}
+    </app-title>
+    <app-title v-else type="h1" bold="true">
+        {{ $t('profile>address>addressManage.editAddress') }}
+    </app-title>
 
     <!-- Consignee Name -->
-    <app-title bold="true">收货人</app-title>
+    <app-title bold="true">{{ $t('profile>address>addressManage.consignee') }}</app-title>
     <app-input
         mode="text"
-        placeholder="请输入收货人姓名"
+        :placeholder="$t('profile>address>addressManage.consigneePlaceholder')"
         col="12"
         class="mb-2"
         v-model="address.consignee"
     />
 
     <!-- Phone Number -->
-    <app-title bold="true">联系电话</app-title>
+    <app-title bold="true">{{ $t('profile>address>addressManage.phoneNumber') }}</app-title>
     <app-input
         mode="text"
-        placeholder="请输入联系电话"
+        :placeholder="$t('profile>address>addressManage.phonePlaceholder')"
         col="12"
         class="mb-2"
         v-model="address.phoneNumber"
     />
 
     <!-- Location -->
-    <app-title bold="true">服务地点</app-title>
+    <app-title bold="true">{{ $t('profile>address>addressManage.serviceLocation') }}</app-title>
     <view class="app-input">
         <div v-if="address.address" @tap="authVerification">
             {{ address.addressName }}
         </div>
         <div v-else @tap="authVerification">
-            请选择服务地点
+            {{ $t('profile>address>addressManage.selectLocation') }}
         </div>
     </view>
 
     <!-- Detailed Address -->
-    <app-title bold="true">详细地址</app-title>
+    <app-title bold="true">{{ $t('profile>address>addressManage.detailedAddress') }}</app-title>
     <app-input
         mode="text"
-        placeholder="请输入详细地址"
+        :placeholder="$t('profile>address>addressManage.detailPlaceholder')"
         col="12"
         class="mb-2"
         v-model="address.detail"
@@ -45,7 +50,12 @@
 
     <!-- Submit Button -->
     <div class="center_h">
-        <div class="app-button" @click="formSubmit">保存地址</div>
+        <span v-if="!addressId">
+            <div class="app-button" @click="formSubmit">{{ $t('profile>address>addressManage.saveBtn') }}</div>
+        </span>
+        <span v-else>
+            <div class="app-button" @click="formSubmit">{{ $t('profile>address>addressManage.updateBtn') }}</div>
+        </span>
     </div>
 </div>
 </template>
@@ -78,13 +88,11 @@ export default {
         // Load address details for editing
         getAddressDetail(addressId) {
             uni.request({
-                url: getApp().globalData.requestUrl + '/address/detail',
+                url: getApp().globalData.requestUrl + '/address/search',
                 method: 'POST',
                 data: {id: addressId},
                 success: (res) => {
-                    if (res.data && res.data.address) {
-                        this.address = res.data.address;
-                    }
+                    this.address = res.data.list[0];
                 },
                 fail: (err) => {
                     uni.showToast({title: '加载失败', icon: 'none'});

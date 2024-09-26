@@ -3,9 +3,9 @@
     <!-- Pop-up Layer -->
     <view :class="scrollClass">
         <view class="time-title" :style="{ borderRadius: getRadius }">
-            <span @click.stop="close">取消</span>
-            {{ title }}
-            <text @click.stop="confirm" :style="selectedTimeIndex !== null ? 'color:#007aff;' : ''">确定</text>
+            <span @click.stop="close">{{$t('pub.button.cancel')}}</span>
+            {{ $t('profile>order>orderInitiate.selectSchedule') }}
+            <text @click.stop="confirm" :style="selectedTimeIndex !== null ? 'color:#007aff;' : ''">{{$t('pub.button.confirm')}}</text>
         </view>
         <view class="time-picker" :style="{ height: height }">
             <scroll-view class="date-scroll" scroll-y>

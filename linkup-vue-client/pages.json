@@ -72,14 +72,7 @@
             }
         },
         {
-            "path": "pages/profile/address/address-create/address-create",
-            "style": {
-                "navigationBarTitleText": "",
-                "navigationBarBackgroundColor": "#fefefe"
-            }
-        },
-        {
-            "path": "pages/profile/address/address-detail/address-detail",
+            "path": "pages/profile/address/address-manage/address-manage",
             "style": {
                 "navigationBarTitleText": "",
                 "navigationBarBackgroundColor": "#fefefe"
