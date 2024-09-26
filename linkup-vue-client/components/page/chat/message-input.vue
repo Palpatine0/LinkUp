@@ -28,7 +28,57 @@ export default {
             }
         },
         selectFileType() {
-            // Your existing code for file selection
+            uni.showActionSheet({
+                itemList: [
+                    this.$t('component>chat>message-input.choseFromAlbum'),
+                    this.$t('component>chat>message-input.takePhoto'),
+                ],
+                success: (res) => {
+                    console.log(res.tapIndex);
+                    if (res.tapIndex == 0) {
+                        // chose from album
+                        uni.chooseImage({
+                            count: 12,
+                            sizeType: ['original', 'compressed'],
+                            sourceType: ['album'],
+                            success: (res) => {
+                                console.log("AL res")
+                                console.log(res)
+                                Promise.all(
+                                    res.tempFilePaths.map(item => {
+                                        return new Promise((resolve, reject) => {
+                                            fs.readFile({
+                                                filePath: item,
+                                                encoding: 'base64',
+                                                success: res => {
+                                                    resolve('data:image/png;base64,' + res.data)
+                                                },
+                                                fail: err => {
+                                                    reject(err)
+                                                }
+                                            })
+                                        })
+                                    })
+                                ).then(results => {
+                                    that.uploadLivePic(results)
+                                })
+                            }
+                        })
+                    } else if (res.tapIndex == 1) {
+                        // take photo
+                        uni.chooseImage({
+                            count: 12,
+                            sizeType: ['original', 'compressed'],
+                            sourceType: ['camera'],
+                            success: (res) => {
+                                console.log("CA res")
+                                console.log(res)
+
+                            }
+                        })
+                    }
+                },
+            });
         },
     },
 };
@@ -64,6 +114,7 @@ export default {
     justify-content: center;
     align-items: center;
     cursor: pointer;
+    align-self: flex-end;
 }
 
 .upload-button {
@@ -77,5 +128,6 @@ export default {
     align-items: center;
     cursor: pointer;
     padding: 5px;
+    align-self: flex-end;
 }
 </style>

@@ -70,6 +70,7 @@ export default {
     onLoad() {
         this.getUser();
     },
+
     methods: {
         getUser() {
             uni.request({
@@ -83,7 +84,6 @@ export default {
                 },
             });
         },
-
 
         handleLinkClick(methodName) {
             if (this[methodName] && typeof this[methodName] === 'function') {
@@ -103,7 +103,6 @@ export default {
                     uni.navigateTo({
                         url: '/pages/profile/profile'
                     });
-
                     const language = [
                         {text:'英文',code:'en'},
                         {text:'中文简体',code:'zh-Hans'},

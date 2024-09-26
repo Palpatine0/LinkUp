@@ -32,7 +32,7 @@
         </scroll-view>
 
         <!-- Button Section (Fixed at Bottom) -->
-        <div class="action-button app-button" @click="contactRedirect">{{$t('pageComponent>user>userDetail.startChatting')}}</div>
+        <div class="action-button app-button" @click="contactRedirect">{{$t('componentPage>user>userDetail.startChatting')}}</div>
     </div>
 </div>
 </template>

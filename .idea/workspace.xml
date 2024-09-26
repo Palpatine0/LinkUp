@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="9c9b3c3a-34fd-440a-b886-b49acb267e4e" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/linkup-server/src/main/java/com/enchanted/entity/Order.java" beforeDir="false" afterPath="$PROJECT_DIR$/linkup-server/src/main/java/com/enchanted/entity/Order.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/linkup-vue-client/components/page/order/service-schedule.vue" beforeDir="false" afterPath="$PROJECT_DIR$/linkup-vue-client/components/page/order/service-schedule.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/linkup-vue-client/main.js" beforeDir="false" afterPath="$PROJECT_DIR$/linkup-vue-client/main.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/linkup-vue-client/pages/profile/balance/balance.vue" beforeDir="false" afterPath="$PROJECT_DIR$/linkup-vue-client/pages/profile/balance/balance.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/linkup-vue-client/pages/profile/order/order-detail/order-detail.vue" beforeDir="false" afterPath="$PROJECT_DIR$/linkup-vue-client/pages/profile/order/order-detail/order-detail.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/linkup-vue-client/pages/profile/order/order-initiate/order-initiate.vue" beforeDir="false" afterPath="$PROJECT_DIR$/linkup-vue-client/pages/profile/order/order-initiate/order-initiate.vue" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/linkup-vue-client/pages/profile/order/order.vue" beforeDir="false" afterPath="$PROJECT_DIR$/linkup-vue-client/pages/profile/order/order.vue" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitHubPullRequestSearchHistory"><![CDATA[{
+  "lastFilter": {
+    "state": "OPEN",
+    "assignee": "Palpatine0"
+  }
+}]]></component>
+  <component name="GithubPullRequestsUISettings"><![CDATA[{
+  "selectedUrlAndAccountId": {
+    "url": "git@github.com:Palpatine0/LinkUp.git",
+    "accountId": "5115ae2d-40be-4b2e-9ac2-2961f3d3c65f"
+  }
+}]]></component>
+  <component name="ProjectColorInfo"><![CDATA[{
+  "customColor": "156ff6ff",
+  "associatedIndex": 1
+}]]></component>
+  <component name="ProjectId" id="2mTKColzUFFQzwUsZ9xXFQ5uNBY" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "main",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
+  }
+}]]></component>
+  <component name="SharedIndexes">
+    <attachedChunks>
+      <set>
+        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-WS-242.22855.79" />
+      </set>
+    </attachedChunks>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="9c9b3c3a-34fd-440a-b886-b49acb267e4e" name="Changes" comment="" />
+      <created>1727095000706</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1727095000706</updated>
+      <workItem from="1727095001745" duration="16000" />
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+</project>
