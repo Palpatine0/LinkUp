@@ -54,7 +54,7 @@ export default {
             searchKeyword: '',
         };
     },
-    onLoad() {
+    onShow() {
         this.resetPagination();
         this.getAddressList();
     },
@@ -98,7 +98,7 @@ export default {
             let url = getApp().globalData.data.requestUrl + '/address/search';
             let method = 'POST';
             let data = {
-                userId: uni.getStorageSync('userId'),
+                userId: uni.getStorageSync(getApp().globalData.data.userInfoKey).id,
                 page: this.page,
                 size: this.size,
             };

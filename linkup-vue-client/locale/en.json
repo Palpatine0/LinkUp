@@ -24,7 +24,26 @@
         },
         "loading": {
             "loading": "Loading..."
+        },
+        "tips": {
+            "continue": "Continue",
+            "successSignUp": "Sign Up Complete!"
         }
+    },
+
+
+    "//////": "register",
+    "register": {
+        "step2Title": "Welcome to Looking! Choose your gender",
+        "step2Desc": "Specify your gender to better personalize your interactions",
+        "step3Title": "How old are you?",
+        "step3Placeholder": "Choose an age",
+        "step3Desc": "Specify your age to better personalize your interactions",
+        "step4Title": "What is your name?",
+        "step4Desc": "Other users will refer to you by this name",
+        "step4Placeholder": "Enter your username",
+        "step5Title": "Choose an awesome avatar!",
+        "step5Desc": "Select an avatar by clicking the img below"
     },
 
     "//////": "home",
@@ -116,6 +135,10 @@
 
 
     "//////": "components",
+    "component>address>addressSelector": {
+        "selectorServiceAddress": "Selector an Address",
+        "createAddress": "Create an Address"
+    },
     "component>balance>topUp": {
         "topUpTitle": "Top-up",
         "topUpBtn": "Top-up"

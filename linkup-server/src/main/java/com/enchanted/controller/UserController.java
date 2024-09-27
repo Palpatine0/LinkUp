@@ -32,17 +32,6 @@ public class UserController {
         }
     }
 
-    @PostMapping("save-auth-info")
-    public R saveAuthInfo(@RequestBody Map<String, String> dto) {
-        String code = dto.get("code");
-        int role = Integer.parseInt(dto.get("role"));
-//        User userAuth = userService.saveAuthInfo(code, role);
-//        Map<String, Object> map = new HashMap<>();
-//        map.put("auth", userAuth);
-//        return R.ok(map);
-        return null;
-    }
-
 
     /*R*/
     @PostMapping("/search")

@@ -5,6 +5,7 @@ export default {
             size: 10,
             global: false,
             hasMore: true,
+            loading: false,
         };
     },
     methods: {

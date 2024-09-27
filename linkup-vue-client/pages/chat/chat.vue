@@ -34,21 +34,19 @@ import app from "../../App.vue";
 export default {
     data() {
         return {
+            // ** page vars ** //
             page: 1,
             size: 10,
-            hasMoreContacts: true,
+            hasMore: true,
             loading: false,
+            // ** /page vars ** //
 
-            user: {},
+            userId: uni.getStorageSync(app.globalData.data.userInfoKey).id,
             contactList: [],
         };
     },
     onShow() {
         this.contactList = []
-        this.user = uni.getStorageSync(app.globalData.data.userInfoKey)
-        const userLogin = uni.getStorageSync(app.globalData.data.userLoginKey);
-        console.log("userLogin");
-        console.log(userLogin);
         if (uni.getStorageSync(app.globalData.data.userLoginKey) == true) {
             this.getUserList();
         }
@@ -65,7 +63,7 @@ export default {
                 url: getApp().globalData.data.requestUrl + '/message/search-contacts',
                 method: 'POST',
                 data: {
-                    senderId: this.user.id,  // Fetch messages where current user is the sender
+                    senderId: this.userId,  // Fetch messages where current user is the sender
                     page: this.page,
                     size: this.size,
                 },
@@ -84,7 +82,7 @@ export default {
                         url: getApp().globalData.data.requestUrl + '/message/search-contacts',
                         method: 'POST',
                         data: {
-                            recipientId: this.user.id,  // Fetch messages where current user is the recipient
+                            recipientId: this.userId,  // Fetch messages where current user is the recipient
                             page: this.page,
                             size: this.size,
                         },

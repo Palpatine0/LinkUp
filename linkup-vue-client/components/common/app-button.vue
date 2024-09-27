@@ -82,7 +82,7 @@ export default {
 }
 
 .button-very-large {
-    padding: 14px 28px;
+    padding: 12px 28px;
     font-size: 20px;
     height: 50px;
 }

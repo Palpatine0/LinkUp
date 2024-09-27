@@ -66,7 +66,7 @@ export default {
         return {
             address: {
                 id: null,
-                userId: uni.getStorageSync('userId'),
+                userId: uni.getStorageSync(getApp().globalData.data.userInfoKey).id,
                 consignee: '',
                 phoneNumber: '',
                 address: '',

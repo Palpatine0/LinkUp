@@ -14,8 +14,8 @@
             <img src="/static/page/registry/back.svg">
         </div>
         <div class="header-registry">
-            <app-title type="h1" bold>👋 欢迎来到领客</app-title>
-            <p>指定您的性别，以便更好地进行个性化互动</p>
+            <app-title type="h1" bold>👋 {{ $t('register.step2Title') }}</app-title>
+            <p class="center_h">{{ $t('register.step2Desc') }}</p>
         </div>
         <!-- Gender Selection Buttons -->
         <div class="button-wrapper">
@@ -24,7 +24,7 @@
                     <span class="button-registry-icon">
                         👨‍💻
                     </span>
-                    <span class="button-registry-text">男性</span>
+                    <span class="button-registry-text">{{ $t('pub.gender.m') }}</span>
                 </span>
             </div>
             <div class="button-registry" @click="selectGender(1)">
@@ -32,7 +32,7 @@
                     <span class="button-registry-icon">
                         👩‍💻
                     </span>
-                    <span class="button-registry-text">女性</span>
+                    <span class="button-registry-text">{{ $t('pub.gender.f') }}</span>
                 </span>
             </div>
         </div>
@@ -44,8 +44,8 @@
             <img src="/static/page/registry/back.svg">
         </div>
         <div class="header-registry">
-            <app-title type="h1" bold>您的年龄？</app-title>
-            <p>指定您的年龄，以便更好地进行个性化互动</p>
+            <app-title type="h1" bold>{{ $t('register.step3Title') }}</app-title>
+            <p class="center_h">{{ $t('register.step3Desc') }}</p>
         </div>
 
         <!-- Single Button for Age Selection with Picker Integrated -->
@@ -62,7 +62,7 @@
                         {{ selectedAgeIcon }}
                     </span>
                     <span class="button-registry-text">
-                        {{ selectedAgeText ? `${selectedAgeText}` : "选择您的年龄" }}
+                        {{ selectedAgeText ? `${selectedAgeText}` : $t('register.step3Placeholder') }}
                     </span>
                 </span>
             </picker>
@@ -72,7 +72,7 @@
 
         </div>
         <app-button v-if="!common.isEmpty(userData.age)" shaped size="very-large" class="button-continuation-registry" @click="advance()" width="85vw">
-            继续
+            {{ $t('pub.tips.continue')}}
         </app-button>
     </div>
 
@@ -82,8 +82,8 @@
             <img src="/static/page/registry/back.svg">
         </div>
         <div class="header-registry">
-            <app-title type="h1" bold>您的显示名称？</app-title>
-            <p>请输入您的用户名，让我们更好地了解您</p>
+            <app-title type="h1" bold>{{ $t('register.step4Title') }}</app-title>
+            <p class="center_h">{{ $t('register.step4Desc') }}</p>
         </div>
 
         <!-- Input Field Styled as Button -->
@@ -92,12 +92,12 @@
                 class="input-registry center_h"
                 type="text"
                 v-model="userData.nickname"
-                placeholder="请输入您的用户名"
+                :placeholder="$t('register.step4Placeholder')"
                 @input="updateUsername"
             />
         </div>
         <app-button shaped size="very-large" class="button-continuation-registry" @click="advance()" width="85vw">
-            继续
+            {{ $t('pub.tips.continue') }}
         </app-button>
     </div>
 
@@ -107,15 +107,15 @@
             <img src="/static/page/registry/back.svg">
         </div>
         <div class="header-registry">
-            <app-title type="h1" bold>您的头像？</app-title>
-            <p>点击下方图片以切换不同的头像</p>
+            <app-title type="h1" bold>{{ $t('register.step5Title')}}</app-title>
+            <p class="center_h">{{ $t('register.step5Desc')}}</p>
         </div>
 
         <div class="button-wrapper center_h">
             <img :src="avatar" class="avatar" @click="changeAvatar">
         </div>
         <app-button shaped size="very-large" class="button-continuation-registry" @click="setUserInfo()" width="85vw">
-            注册成功!
+            {{ $t('pub.tips.successSignUp')}}
         </app-button>
     </div>
 
@@ -137,6 +137,7 @@ export default {
         return {
             step: 1,
             userData: {},
+            userConfigData: {},
 
             // step 3
             preciseAgeRanges: [
@@ -172,8 +173,9 @@ export default {
             avatar: "",
         }
     },
-    onLoad(e) {
+    onLoad(param) {
         this.authRequest();
+        this.userConfigData = JSON.parse(decodeURIComponent(param.userConfigData));
     },
     watch: {
         step(newStep) {
@@ -208,49 +210,11 @@ export default {
             uni.showLoading({title: '加载中'});
 
             // fetch user config data (openid)
-            const getUserLoginCode = () => {
-                return new Promise((resolve) =>
-                    uni.login({
-                        provider: 'weixin',
-                        success: (res) => {
-                            resolve(res.code);
-                        },
-                        fail: () => {
-                            uni.showToast({title: '用户code获取失败', icon: 'none'});
-                        },
-                    })
-                );
-            };
-            const userLoginCode = await getUserLoginCode();
-            const getUserConfigData = () => {
-                return new Promise((resolve) => {
-                    uni.request({
-                        url: getApp().globalData.data.requestUrl + '/user/save-auth-info',
-                        method: 'POST',
-                        data: {
-                            code: userLoginCode,
-                            role: 1,
-                        },
-                        success: (res) => {
-                            if (res.data.auth == null) {
-                                uni.showToast({title: '授权失败', icon: 'none'});
-                            } else {
-                                resolve(res.data.auth);
-                            }
-                        },
-                        fail: () => {
-                            uni.showToast({title: '授权请求失败', icon: 'none'});
-                        },
-                    });
-                });
-            };
-            const userConfigData = await getUserConfigData();
             this.userData = {
                 ...this.userData,
-                id: userConfigData.id,
-                openid: userConfigData.openid,
-                sessionKey: userConfigData.openid.sessionKey,
-                unionid: userConfigData.unionid,
+                openid: this.userConfigData.openid,
+                sessionKey: this.userConfigData.openid.sessionKey,
+                unionid: this.userConfigData.unionid,
             }
 
             // fetch user basic data
@@ -338,17 +302,17 @@ export default {
         // done
         setUserInfo(e) {
             uni.request({
-                url: getApp().globalData.data.requestUrl + '/user/update',
+                url: getApp().globalData.data.requestUrl + '/user/save',
                 method: 'POST',
                 data: {
                     referralCode: this.$common.generateUniqueCodes('a1a', 2),
+                    role: 1,
                     ...this.userData
                 },
                 success: () => {
                     uni.setStorageSync(app.globalData.data.userLoginKey, true);
                     uni.setStorageSync(app.globalData.data.userInfoKey, this.userData);
                     uni.showToast({title: '授权成功', icon: 'none'});
-
                 },
                 fail: () => {
                     uni.showToast({title: '授权失败', icon: 'none'});
@@ -360,9 +324,7 @@ export default {
                     console.log("redierect err");
                     console.log(err);
                 }
-            })
-            ;
-
+            });
         }
     }
 }
@@ -395,6 +357,7 @@ export default {
 }
 
 .header-registry {
+    width: 90vw;
     position: absolute;
     top: 16vh;
     text-align: center;

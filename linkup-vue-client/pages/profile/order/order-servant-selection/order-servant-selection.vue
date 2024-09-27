@@ -1,6 +1,6 @@
 <template>
 <div class="page">
-    <app-title type="h1" bold="true">{{$t('profile>order>orderServantSelection.selectServantType')}}</app-title>
+    <app-title type="h1" bold="true">{{ $t('profile>order>orderServantSelection.selectServantType') }}</app-title>
     <div v-for="item in servantTypeList" :key="item.id">
         <app-container color="#f3f2f6" col="12" @click="orderInitiateRedirect(item.id,item.name)">
             <div style="height: 100px">
@@ -35,7 +35,7 @@ export default {
         },
         orderInitiateRedirect(serviceType, serviceName) {
             uni.navigateTo({
-                url: '/pages/profile/order/order-initiate/order-initiate?serviceType=' + serviceType + '&serviceName=' + serviceName
+                url: '/pages/profile/order/order-initiate/order-initiate?serviceType=' + serviceType + '&serviceName=' + serviceName,
             });
         },
 

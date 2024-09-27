@@ -137,7 +137,7 @@ export default {
         return {
             formData: {
                 title: "",
-                clientId: uni.getStorageSync('userId'),
+                clientId: uni.getStorageSync(getApp().globalData.data.userInfoKey).id,
                 requiredServantType: null,
                 requiredGender: null,
                 requiredAgeMin: null,

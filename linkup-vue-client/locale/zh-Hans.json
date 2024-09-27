@@ -24,9 +24,27 @@
         },
         "loading": {
             "loading": "加载中..."
+        },
+        "tips": {
+            "continue": "继续",
+            "successSignUp": "注册成功!"
         }
     },
 
+
+    "//////": "register",
+    "register": {
+        "step2Title": "欢迎来到领客",
+        "step2Desc": "指定您的性别，以便更好地进行个性化互动",
+        "step3Title": "您的年龄?",
+        "step3Desc": "指定您的年龄，以便更好地进行个性化互动",
+        "step3Placeholder": "选择您的年龄",
+        "step4Title": "您的显示名称?",
+        "step4Desc": "请输入您的用户名，让我们更好地了解您",
+        "step4Placeholder": "请输入您的用户名",
+        "step5Title": "您的头像?",
+        "step5Desc": "点击下方图片以切换不同的头像"
+    },
 
     "//////": "home",
     "home": {
@@ -122,6 +140,10 @@
     "componentPage>registry": {},
 
     "//////": "components",
+    "component>address>addressSelector": {
+        "selectorServiceAddress": "选择服务地点",
+        "createAddress": "新增地址"
+    },
     "component>balance>topUp": {
         "topUpTitle": "余额充值",
         "topUpBtn": "确认充值"

@@ -84,7 +84,9 @@ export default {
                 await syncToStorage()
 
             } else if (userConfigData.isNewUser == "1") {
-                console.log("S UP")
+                uni.navigateTo({
+                    url: `/pages/registry/registry?userConfigData=${encodeURIComponent(JSON.stringify(userConfigData))}`,
+                });
             }
         },
         async signOut() {
@@ -122,16 +124,7 @@ export default {
         this.$i18n.locale = lang
         uni.setLocale(lang);
     },
-    methods: {
-        checkUserInfo() {
-            const openid = uni.getStorageSync('openid');
-            if (this.$common.isEmpty(openid)) {
-                uni.navigateTo({
-                    url: '/pages/registry/registry',
-                });
-            }
-        },
-    }
+    methods: {}
 }
 </script>
 
