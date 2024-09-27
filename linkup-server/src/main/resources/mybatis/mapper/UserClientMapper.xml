@@ -5,14 +5,7 @@
 
 <mapper namespace="com.enchanted.mapper.UserClientMapper">
 
-    <resultMap type="com.enchanted.entity.UserClient" id="UserClientResultMap">
-        <id property="id" column="id"/>
-        <result property="userId" column="user_id"/>
-        <result property="isDeleted" column="is_deleted"/>
-        <result property="createdAt" column="created_at"/>
-    </resultMap>
-
-    <select id="search" resultType="com.enchanted.entity.UserClient" resultMap="UserClientResultMap">
+    <select id="search" resultType="com.enchanted.entity.UserClient">
         SELECT * FROM `user_client`
         <where>
             is_deleted = 0

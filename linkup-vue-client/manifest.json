@@ -1,24 +1,24 @@
 {
-    "name": "linkup-vue-client",
-    "appid": "wxdbc6d6a058de05f7",
-    "description": "",
-    "versionName": "1.0.0",
-    "versionCode": "100",
-    "transformPx": false,
-    "app-plus": {
-        "usingComponents": true,
-        "nvueStyleCompiler": "uni-app",
-        "compilerVersion": 3,
-        "splashscreen": {
-            "alwaysShowBeforeRender": true,
-            "waiting": true,
-            "autoclose": true,
-            "delay": 0
+    "name" : "linkup-vue-client",
+    "appid" : "wxdbc6d6a058de05f7",
+    "description" : "",
+    "versionName" : "1.0.0",
+    "versionCode" : "100",
+    "transformPx" : false,
+    "app-plus" : {
+        "usingComponents" : true,
+        "nvueStyleCompiler" : "uni-app",
+        "compilerVersion" : 3,
+        "splashscreen" : {
+            "alwaysShowBeforeRender" : true,
+            "waiting" : true,
+            "autoclose" : true,
+            "delay" : 0
         },
-        "modules": {},
-        "distribute": {
-            "android": {
-                "permissions": [
+        "modules" : {},
+        "distribute" : {
+            "android" : {
+                "permissions" : [
                     "<uses-permission android:name=\"android.permission.CHANGE_NETWORK_STATE\"/>",
                     "<uses-permission android:name=\"android.permission.MOUNT_UNMOUNT_FILESYSTEMS\"/>",
                     "<uses-permission android:name=\"android.permission.VIBRATE\"/>",
@@ -36,52 +36,49 @@
                     "<uses-permission android:name=\"android.permission.WRITE_SETTINGS\"/>"
                 ]
             },
-            "ios": {},
-            "sdkConfigs": {}
+            "ios" : {},
+            "sdkConfigs" : {}
         }
     },
-    "quickapp": {},
-    "mp-weixin": {
-        "appid": "wxdbc6d6a058de05f7",
-        "setting": {
-            "urlCheck": false,
-            "es6": true
+    "quickapp" : {},
+    "mp-weixin" : {
+        "appid" : "wxdbc6d6a058de05f7",
+        "setting" : {
+            "urlCheck" : false,
+            "es6" : true
         },
-        "permission": {
-            "scope.userLocation": {
-                "desc": "为了给您提供完整的服务，请授权您的地理位置信息"
-            },
+        "permission" : {
             "scope.userFuzzyLocation" : {
                 "desc" : "为了给您提供完整的服务，请授权您的地理位置信息"
             },
-            "scope.chooseLocation": {
-                "desc": "为了给您提供完整的服务，请授权您的地理位置信息"
+            "scope.chooseLocation" : {
+                "desc" : "为了给您提供完整的服务，请授权您的地理位置信息"
+            },
+            "scope.userLocation" : {
+                "desc" : "为了给您提供完整的服务，请授权您的地理位置信息"
             }
         },
-        "requiredPrivateInfos": [
-            "chooseLocation",
-            "getFuzzyLocation"
-        ],
-        "usingComponents": true
+        "requiredPrivateInfos" : [ "chooseLocation", "getFuzzyLocation" ],
+        "usingComponents" : true
     },
-    "mp-alipay": {
-        "usingComponents": true
+    "mp-alipay" : {
+        "usingComponents" : true
     },
-    "mp-baidu": {
-        "usingComponents": true
+    "mp-baidu" : {
+        "usingComponents" : true
     },
-    "mp-toutiao": {
-        "usingComponents": true
+    "mp-toutiao" : {
+        "usingComponents" : true
     },
-    "uniStatistics": {
-        "enable": false
+    "uniStatistics" : {
+        "enable" : false
     },
-    "vueVersion": "2",
-    "h5": {
-        "sdkConfigs": {
-            "maps": {
-                "qqmap": {
-                    "key": "PRNBZ-K7NKH-SFYDR-WEWZ2-QPJVE-N4FYG"
+    "vueVersion" : "2",
+    "h5" : {
+        "sdkConfigs" : {
+            "maps" : {
+                "qqmap" : {
+                    "key" : "PRNBZ-K7NKH-SFYDR-WEWZ2-QPJVE-N4FYG"
                 }
             }
         }

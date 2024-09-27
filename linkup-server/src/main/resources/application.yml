@@ -21,17 +21,10 @@ mybatis-plus:
     db-config:
       id-type: auto
   configuration:
-    map-underscore-to-camel-case: false
+    map-underscore-to-camel-case: true
     auto-mapping-behavior: full
     log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
   mapper-locations: classpath:mybatis/mapper/*.xml
-
-wechat:
-  accessTokenUrl: https://api.weixin.qq.com/cgi-bin/token
-  appid: ${WECHAT_APP_ID}
-  secret: ${WECHAT_SECRET}
-
-
 
 
 

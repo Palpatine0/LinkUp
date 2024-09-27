@@ -341,7 +341,7 @@ export default {
                 url: getApp().globalData.requestUrl + '/user/update',
                 method: 'POST',
                 data: {
-                    referralCode: this.$common.generateUniqueCodes(),
+                    referralCode: this.$common.generateUniqueCodes('a1a',2),
                     ...this.userData
                 },
                 success: () => {

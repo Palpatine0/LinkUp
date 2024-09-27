@@ -5,23 +5,8 @@
 
 <mapper namespace="com.enchanted.mapper.UserMapper">
 
-    <resultMap type="com.enchanted.entity.User" id="UserResultMap">
-        <result property="id" column="id"/>
-        <result property="nickname" column="nickname"/>
-        <result property="gender" column="gender"/>
-        <result property="age" column="age"/>
-        <result property="completedOrderCount" column="completed_order_count"/>
-        <result property="balance" column="balance"/>
-        <result property="location" column="location"/>
-        <result property="locationName" column="location_name"/>
-        <result property="city" column="city"/>
-        <result property="latitudeFuzzy" column="latitude_fuzzy"/>
-        <result property="longitudeFuzzy" column="longitude_fuzzy"/>
-        <result property="createdAt" column="created_at"/>
-        <!-- Add more fields as needed -->
-    </resultMap>
 
-    <select id="search" resultMap="UserResultMap">
+    <select id="search" resultType="com.enchanted.entity.User">
         SELECT * FROM `user`
         <where>
             is_deleted = 0
@@ -42,15 +27,15 @@
         ORDER BY created_at DESC
     </select>
 
-    <select id="searchServant" resultMap="UserResultMap">
+    <select id="searchServant" resultType="com.enchanted.entity.User">
         SELECT
-        u.id,
-        u.nickname,
-        u.age,
-        u.gender,
-        u.avatar,
-        us.bio,
-        GROUP_CONCAT(st.name) AS service_types
+            u.id,
+            u.nickname,
+            u.age,
+            u.gender,
+            u.avatar,
+            us.bio,
+            GROUP_CONCAT(st.name) AS service_types
         FROM user u
         LEFT JOIN user_servant us ON u.id = us.user_id
         LEFT JOIN user_servant_service_type usst ON us.id = usst.user_servant_id
@@ -76,12 +61,12 @@
             </if>
         </where>
         GROUP BY
-        u.id,
-        u.nickname,
-        u.age,
-        u.gender,
-        u.avatar,
-        us.bio
+            u.id,
+            u.nickname,
+            u.age,
+            u.gender,
+            u.avatar,
+            us.bio
         ORDER BY u.created_at DESC
     </select>
 

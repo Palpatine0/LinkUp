@@ -5,16 +5,7 @@
 
 <mapper namespace="com.enchanted.mapper.ServiceTypeMapper">
 
-    <resultMap type="com.enchanted.entity.ServiceType" id="ServiceTypeResultMap">
-        <result property="id" column="id"/>
-        <result property="name" column="name"/>
-        <result property="coverImg" column="cover_img"/>
-        <result property="introImg" column="intro_img"/>
-        <result property="isDeleted" column="is_deleted"/>
-        <result property="createdAt" column="created_at"/>
-    </resultMap>
-
-    <select id="search" resultType="com.enchanted.entity.ServiceType" resultMap="ServiceTypeResultMap">
+    <select id="search" resultType="com.enchanted.entity.ServiceType">
         SELECT * FROM `service_type`
         <where>
             is_deleted = 0

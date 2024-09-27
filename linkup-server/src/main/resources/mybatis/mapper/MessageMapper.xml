@@ -5,20 +5,7 @@
 
 <mapper namespace="com.enchanted.mapper.MessageMapper">
 
-    <resultMap type="com.enchanted.entity.Message" id="MessageResultMap">
-        <result property="id" column="id"/>
-        <result property="senderId" column="sender_id"/>
-        <result property="recipientId" column="recipient_id"/>
-        <result property="content" column="content"/>
-        <result property="status" column="status"/>
-        <result property="isRead" column="is_read"/>
-        <result property="createdAt" column="created_at"/>
-        <result property="mediaType" column="media_type"/>
-        <result property="mediaUrl" column="media_url"/>
-    </resultMap>
-
-
-    <select id="search" resultType="com.enchanted.entity.Message" resultMap="MessageResultMap">
+    <select id="search" resultType="com.enchanted.entity.Message">
         SELECT * FROM `message`
         <where>
             <if test="params.senderId != null and params.recipientId != null">
@@ -49,8 +36,7 @@
         ORDER BY created_at DESC
     </select>
 
-
-    <select id="searchContacts" resultType="com.enchanted.entity.Message" resultMap="MessageResultMap">
+    <select id="searchContacts" resultType="com.enchanted.entity.Message">
         SELECT * FROM `message`
         <where>
             <if test="params.id != null and params.id != ''">

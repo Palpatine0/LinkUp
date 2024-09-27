@@ -1,11 +1,16 @@
 <script>
+import app from "./App.vue";
+
 export default {
     globalData: {
-        needsTopPadding: null,
         // dev
         requestUrl: "http://localhost:8090",
         // prd
         // request_url:"http://111.231.19.137:8090"
+
+        userLoginKey: "userLoginKey",
+        userInfoKey: "userInfoKey",
+        systemInfoKey: "systemInfoKey",
 
         colors: {
             primary: '#2676f7',
@@ -17,39 +22,32 @@ export default {
     },
     onLaunch() {
         this.checkUserInfo();
+
+        // auth
         uni.authorize({
             scope: 'scope.userInfo',
             success() {
             }
         })
-        wx.authorize({
+        uni.authorize({
             scope: 'scope.userLocation',
             success: function () {
             }
         })
-        wx.authorize({
+        uni.authorize({
             scope: 'scope.chooseLocation',
             success: function () {
             }
         })
-        wx.getSystemInfo({
-            success: (res) => {
-                if (res.safeArea.top > 40) {
-                    this.globalData.needsTopPadding = true
-                } else {
-                    this.globalData.needsTopPadding = false
-                }
-            }
-        })
-    },
-    onLoad() {
-        const lang = uni.getStorageSync('language') || 'en';//获取缓存的语言设置
+
+        // handle sys info
+        uni.setStorageSync(app.globalData.systemInfoKey, uni.getSystemInfoSync());
+
+        // language settings
+        const systemInfo = uni.getStorageSync(app.globalData.systemInfoKey)
+        const lang = systemInfo.appLanguage || 'en';
         this.$i18n.locale = lang
         uni.setLocale(lang);
-        this.$store.commit('changeLanguage', lang);
-        uni.onLocaleChange(e => {
-            this.$store.commit('changeLanguage', e.locale);
-        });
     },
     methods: {
         checkUserInfo() {
