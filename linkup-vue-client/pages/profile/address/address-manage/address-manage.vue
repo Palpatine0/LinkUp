@@ -88,7 +88,7 @@ export default {
         // Load address details for editing
         getAddressDetail(addressId) {
             uni.request({
-                url: getApp().globalData.requestUrl + '/address/search',
+                url: getApp().globalData.data.requestUrl + '/address/search',
                 method: 'POST',
                 data: {id: addressId},
                 success: (res) => {
@@ -142,7 +142,7 @@ export default {
 
         // Submit address form
         formSubmit() {
-            const url = this.addressId ? getApp().globalData.requestUrl + '/address/update' : getApp().globalData.requestUrl + '/address/save';
+            const url = this.addressId ? getApp().globalData.data.requestUrl + '/address/update' : getApp().globalData.data.requestUrl + '/address/save';
             const method = this.addressId ? 'POST' : 'POST';
 
             const addressData = {

@@ -58,7 +58,7 @@ export default {
         // Fetch user details
         getUser() {
             uni.request({
-                url: getApp().globalData.requestUrl + '/user/search',
+                url: getApp().globalData.data.requestUrl + '/user/search',
                 method: 'POST',
                 data: {
                     id: this.userId
@@ -72,7 +72,7 @@ export default {
         // Fetch servant details
         getUserServant() {
             uni.request({
-                url: getApp().globalData.requestUrl + '/user-servant/search',
+                url: getApp().globalData.data.requestUrl + '/user-servant/search',
                 method: 'POST',
                 data: {
                     userId: this.userId

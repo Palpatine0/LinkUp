@@ -20,6 +20,8 @@
 
 <script>
 
+import app from "../../App.vue";
+
 export default {
     name: "home",
     data() {
@@ -31,11 +33,13 @@ export default {
             loading: false,
             // ** /page vars ** //
 
+            user: {},
             userList: [],
         };
     },
     onLoad(e) {
         uni.setStorageSync('referrerId', e.referrerId);
+        this.user = uni.getStorageSync(app.globalData.data.userInfoKey)
         this.getUserList();
     },
     methods: {
@@ -43,7 +47,7 @@ export default {
             if (!this.hasMore || this.loading) return;
             this.loading = true;
             uni.request({
-                url: getApp().globalData.requestUrl + '/user/search',
+                url: getApp().globalData.data.requestUrl + '/user/search',
                 method: "POST",
                 data: {
                     page: this.page,
@@ -51,7 +55,7 @@ export default {
                 },
                 success: (res) => {
                     let users = res.data.list;
-                    users = users.filter(user => user.id !== uni.getStorageSync('userId'));
+                    users = users.filter(user => user.id !== this.user.id);
 
                     if (this.page === 1) {
                         this.userList = [];

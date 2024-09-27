@@ -13,7 +13,7 @@ import java.net.URLConnection;
 @Slf4j(topic = "WechatUtils")
 @Component
 public class WeChatUtil {
-    public static JSONObject getOpenId(String code) {
+    public static JSONObject getUserConfigInfo(String code) {
         String url = "https://api.weixin.qq.com/sns/jscode2session?appid=" + WeChatConstant.APP_ID + "&secret=" + WeChatConstant.SECRET + "&js_code=" + code + "&grant_type=authorization_code";
         PrintWriter out = null;
         BufferedReader in = null;

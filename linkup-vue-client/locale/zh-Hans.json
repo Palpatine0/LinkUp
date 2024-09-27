@@ -21,6 +21,9 @@
         },
         "unit": {
             "cny": "元"
+        },
+        "loading": {
+            "loading": "加载中..."
         }
     },
 
@@ -45,7 +48,9 @@
         "address":"地址信息",
         "myFavorite":"我的收藏",
         "data":"数据与存储",
-        "tag":"标签"
+        "tag":"标签",
+        "signIn": "登录",
+        "signOut": "退出登录"
     },
 
     "//////": "profile > order",

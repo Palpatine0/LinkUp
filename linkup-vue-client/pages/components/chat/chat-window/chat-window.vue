@@ -13,7 +13,7 @@
         <div v-for="message in messages" :key="message.id">
             <MessageBubble
                 :content="message.content"
-                :msgBelongs="message.senderId === userId"
+                :msgBelongs="message.senderId === user.id"
             />
         </div>
     </scroll-view>
@@ -27,6 +27,7 @@
 import ChatHeader from '../../../../components/page/chat/chat-header.vue';
 import MessageBubble from '../../../../components/page/chat/message-bubble.vue';
 import MessageInput from '../../../../components/page/chat/message-input.vue';
+import app from "../../../../App.vue";
 
 export default {
     components: {
@@ -51,8 +52,7 @@ export default {
     },
     async onLoad(params) {
         this.contactId = params.contactId;
-        this.userId = uni.getStorageSync('userId');
-
+        this.user = uni.getStorageSync(app.globalData.data.userInfoKey)
         await this.getUser();
         await this.getContact();
         await this.getMessages(); // Load the initial set of messages
@@ -61,10 +61,10 @@ export default {
         getUser() {
             return new Promise((resolve, reject) => {
                 uni.request({
-                    url: getApp().globalData.requestUrl + '/user/search',
+                    url: getApp().globalData.data.requestUrl + '/user/search',
                     method: 'POST',
                     data: {
-                        id: this.userId
+                        id: this.user.id
                     },
                     success: (res) => {
                         this.user = res.data.list[0];
@@ -79,7 +79,7 @@ export default {
         getContact() {
             return new Promise((resolve, reject) => {
                 uni.request({
-                    url: getApp().globalData.requestUrl + '/user/search',
+                    url: getApp().globalData.data.requestUrl + '/user/search',
                     method: 'POST',
                     data: {
                         id: this.contactId,
@@ -101,10 +101,10 @@ export default {
                 this.loading = true;
 
                 uni.request({
-                    url: getApp().globalData.requestUrl + '/message/search', // Your API endpoint
+                    url: getApp().globalData.data.requestUrl + '/message/search', // Your API endpoint
                     method: 'POST',
                     data: {
-                        senderId: this.userId,    // Current user's ID
+                        senderId: this.user.id,    // Current user's ID
                         recipientId: this.contactId,  // Contact's ID
                         page: this.page,
                         size: this.size
@@ -142,20 +142,20 @@ export default {
         // Handle sending a new message
         handleSend(messageContent) {
             const messageData = {
-                senderId: this.userId,
+                senderId: this.user.id,
                 recipientId: this.contactId,
                 content: messageContent,
                 mediaType: 0
             };
             uni.request({
-                url: getApp().globalData.requestUrl + '/message/save',
+                url: getApp().globalData.data.requestUrl + '/message/save',
                 method: 'POST',
                 data: messageData,
                 success: (res) => {
                     this.messages.push({
                         id: res.data.id,
                         content: messageContent,
-                        senderId: this.userId,
+                        senderId: this.user.id,
                         createdAt: new Date().toISOString(),
                     });
                     this.scrollTop = 0; // Scroll to the bottom after sending a new message

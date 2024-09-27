@@ -15,7 +15,10 @@ public interface IUserService extends IService<User> {
 
     Page<User> searchServant(Map<String, Object> params, int page, int size); // <-- Added search method
 
+    Map getAuthInfo(String code);
+
     boolean update(Long id, Map<String, Object> changes);
 
     boolean delete(Long id);
+
 }

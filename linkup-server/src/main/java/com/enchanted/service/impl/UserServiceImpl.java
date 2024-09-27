@@ -55,10 +55,10 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     }
 
     @Override
-    public User saveAuthInfo(String code,int role) {
+    public User saveAuthInfo(String code, int role) {
         User user = new User();
 
-        JSONObject object = WeChatUtil.getOpenId(code);
+        JSONObject object = WeChatUtil.getUserConfigInfo(code);
         String openid = object.get("openid").toString();
         String sessionkey = object.get("session_key").toString();
         String unionId = "";
@@ -152,6 +152,22 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         userPage = userMapper.searchServant(userPage, params);
         return (Page<User>) userPage;
     }
+
+    @Override
+    public Map<String, String> getAuthInfo(String code) {
+        HashMap<String, String> map = new HashMap<>();
+        JSONObject object = WeChatUtil.getUserConfigInfo(code);
+        map.put("openid", object.get("openid").toString());
+        map.put("session_key", object.get("session_key").toString());
+        User existingUser = userMapper.selectOne(new QueryWrapper<User>().eq("openid", object.get("openid").toString()));
+        if (existingUser != null) {
+            map.put("isNewUser", "0");
+        }else {
+            map.put("isNewUser", "1");
+        }
+        return map;
+    }
+
 
     @Override
     public boolean update(Long id, Map<String, Object> changes) {

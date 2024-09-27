@@ -121,7 +121,7 @@ export default {
 
             if (this.searchKeyword && this.searchKeyword.trim() !== '') {
                 // Use the search endpoint
-                url = getApp().globalData.requestUrl + '/order/search';
+                url = getApp().globalData.data.requestUrl + '/order/search';
                 data = {
                     userId: uni.getStorageSync('userId'),
                     keyword: this.searchKeyword,
@@ -130,7 +130,7 @@ export default {
                 };
             } else {
                 // Use the get-all-by-user-id endpoint
-                url = getApp().globalData.requestUrl + '/order/search';
+                url = getApp().globalData.data.requestUrl + '/order/search';
                 method = 'POST';
                 data = {
                     userId: uni.getStorageSync('userId'),

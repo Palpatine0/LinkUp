@@ -1,8 +1,11 @@
 package com.enchanted.controller;
 
+import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.enchanted.entity.User;
 import com.enchanted.service.IUserService;
+import com.enchanted.util.WeChatUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.enchanted.vo.R;
@@ -33,10 +36,11 @@ public class UserController {
     public R saveAuthInfo(@RequestBody Map<String, String> dto) {
         String code = dto.get("code");
         int role = Integer.parseInt(dto.get("role"));
-        User userAuth = userService.saveAuthInfo(code, role);
-        Map<String, Object> map = new HashMap<>();
-        map.put("auth", userAuth);
-        return R.ok(map);
+//        User userAuth = userService.saveAuthInfo(code, role);
+//        Map<String, Object> map = new HashMap<>();
+//        map.put("auth", userAuth);
+//        return R.ok(map);
+        return null;
     }
 
 
@@ -65,6 +69,11 @@ public class UserController {
         return R.paginate(userPage);
     }
 
+    @PostMapping("/user-config")
+    public R getAuthInfo(@RequestBody Map<String, String> dto) {
+        String code = dto.get("code");
+        return R.ok(userService.getAuthInfo(code));
+    }
 
     /*U*/
     @PostMapping("/update")

@@ -124,6 +124,7 @@
 
 <script>
 import common from "../../utils/common";
+import app from "../../App.vue";
 
 export default {
     name: "auth",
@@ -191,7 +192,6 @@ export default {
 
         // step 1
         authRequest() {
-            this.userProfileAvailable = false;
             uni.showModal({
                 title: '授权',
                 content: '请授权您的个人信息以使用完整服务',
@@ -216,7 +216,7 @@ export default {
                             resolve(res.code);
                         },
                         fail: () => {
-                            uni.showToast({title: '用户openid获取失败', icon: 'none'});
+                            uni.showToast({title: '用户code获取失败', icon: 'none'});
                         },
                     })
                 );
@@ -225,7 +225,7 @@ export default {
             const getUserConfigData = () => {
                 return new Promise((resolve) => {
                     uni.request({
-                        url: getApp().globalData.requestUrl + '/user/save-auth-info',
+                        url: getApp().globalData.data.requestUrl + '/user/save-auth-info',
                         method: 'POST',
                         data: {
                             code: userLoginCode,
@@ -338,24 +338,15 @@ export default {
         // done
         setUserInfo(e) {
             uni.request({
-                url: getApp().globalData.requestUrl + '/user/update',
+                url: getApp().globalData.data.requestUrl + '/user/update',
                 method: 'POST',
                 data: {
-                    referralCode: this.$common.generateUniqueCodes('a1a',2),
+                    referralCode: this.$common.generateUniqueCodes('a1a', 2),
                     ...this.userData
                 },
                 success: () => {
-                    // userAccountData
-                    uni.setStorageSync('userId', this.userData.id);
-                    uni.setStorageSync('openid', this.userData.openid);
-                    uni.setStorageSync('sessionKey', this.userData.openid.session_key);
-                    uni.setStorageSync('unionid', this.userData.unionid);
-                    // userData
-                    uni.setStorageSync('nickname', this.userData.nickName);
-                    uni.setStorageSync('avatar', this.userData.avatar);
-                    uni.setStorageSync('gender', this.userData.gender);
-                    this.userProfileAvailable = true;
-                    uni.hideLoading();
+                    uni.setStorageSync(app.globalData.data.userLoginKey, true);
+                    uni.setStorageSync(app.globalData.data.userInfoKey, this.userData);
                     uni.showToast({title: '授权成功', icon: 'none'});
 
                 },

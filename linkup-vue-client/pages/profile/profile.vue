@@ -1,7 +1,7 @@
 <template>
 <div class="page" style="background-color: #f3f2f6;">
     <!-- Profile Section -->
-    <div class="profile-section">
+    <div v-if="isUserLogin" class="profile-section">
         <div class="profile-header center_h">
             <div class="center_h">
                 <img :src="user.avatar" alt="Profile Photo" class="profile-photo"/>
@@ -11,14 +11,24 @@
             </div>
         </div>
     </div>
+    <div v-if="!isUserLogin" class="profile-section">
+        <div class="profile-header center_h">
+            <div class="center_h">
+                <img src="/static/page/profile/logo.jpg" alt="Profile Photo" class="profile-photo"/>
+            </div>
+            <div class="profile-info">
+                <div class="app-button" @click="signIn">{{ $t('profile.signIn') }}</div>
+            </div>
+        </div>
+    </div>
 
-    <app-container color="#fff" col="12" @click="orderRedirect">
+    <app-container v-if="isUserLogin" color="#fff" col="12" @click="orderRedirect">
         <img src="/static/page/profile/order.png" alt="" class="link-icon">
-        <span class="link-text">{{$t('profile.order')}}</span>
+        <span class="link-text">{{ $t('profile.order') }}</span>
     </app-container>
 
     <!-- Other Options with Icons -->
-    <app-container color="#fff" col="12" type="list">
+    <app-container v-if="isUserLogin" color="#fff" col="12" type="list">
         <div
             v-for="(item, index) in linkItemsB"
             :key="index"
@@ -27,7 +37,7 @@
             @click="handleLinkClick(item.click)"
         >
             <img :src="item.icon" alt="" class="link-icon">
-            <span class="link-text">{{$t(item.label)}}</span>
+            <span class="link-text">{{ $t(item.label) }}</span>
 
 
         </div>
@@ -41,17 +51,23 @@
             @click="handleLinkClick(item.click)"
         >
             <img :src="item.icon" alt="" class="link-icon">
-            <span class="link-text">{{$t(item.label)}}</span>
+            <span class="link-text">{{ $t(item.label) }}</span>
         </div>
     </app-container>
+
+    <div v-if="isUserLogin" class="sign-out-button app-button" @click="signOut">{{ $t('profile.signOut') }}</div>
+
 </div>
 </template>
 
 
 <script>
+import app from "../../App.vue";
+
 export default {
     data() {
         return {
+            isUserLogin: false,
             user: {},
             linkItemsB: [
                 {label: "profile.balance", icon: "/static/page/profile/card.png", click: "balanceRedirect"},
@@ -66,25 +82,11 @@ export default {
             ],
         };
     },
-
-    onLoad() {
-        this.getUser();
+    onShow() {
+        this.user = uni.getStorageSync(app.globalData.data.userInfoKey)
+        this.isUserLogin = uni.getStorageSync(app.globalData.data.userLoginKey)
     },
-
     methods: {
-        getUser() {
-            uni.request({
-                url: getApp().globalData.requestUrl + '/user/search',
-                method: 'POST',
-                data: {
-                    id: uni.getStorageSync('userId')
-                },
-                success: (res) => {
-                    this.user = res.data.list[0]
-                },
-            });
-        },
-
         handleLinkClick(methodName) {
             if (this[methodName] && typeof this[methodName] === 'function') {
                 this[methodName]();
@@ -93,21 +95,37 @@ export default {
             }
         },
 
-        languageToggle(){
+        async signIn() {
+            uni.showLoading({title: this.$t('pub.loading.loading')});
+            await getApp().globalData.signIn()
+            this.user = uni.getStorageSync(app.globalData.data.userInfoKey)
+            this.isUserLogin = true
+            uni.hideLoading();
+        },
+        signOut() {
+            getApp().globalData.signOut()
+            this.user = {}
+            this.isUserLogin = false
+            uni.switchTab({
+                url: '/pages/profile/profile'
+            });
+        },
+
+        languageToggle() {
             uni.showActionSheet({
                 itemList: [
                     this.$t('pub.lang.en'),
                     this.$t('pub.lang.zh'),
                 ],
-                success:  (res)=>{
+                success: (res) => {
                     uni.navigateTo({
                         url: '/pages/profile/profile'
                     });
                     const language = [
-                        {text:'英文',code:'en'},
-                        {text:'中文简体',code:'zh-Hans'},
+                        {text: '英文', code: 'en'},
+                        {text: '中文简体', code: 'zh-Hans'},
                     ]
-                    uni.setStorage({key:'language',data:language[res.tapIndex].code})
+                    uni.setStorage({key: 'language', data: language[res.tapIndex].code})
                     this.$i18n.locale = language[res.tapIndex].code
                     uni.setLocale(language[res.tapIndex].code)
                 },
@@ -186,4 +204,10 @@ export default {
     position: relative;
     top: 2px;
 }
+
+.sign-out-button {
+    background-color: white;
+    color: red;
+}
+
 </style>

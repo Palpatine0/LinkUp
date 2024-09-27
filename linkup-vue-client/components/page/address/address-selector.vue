@@ -42,7 +42,7 @@ export default {
             console.log("getAddressList() {getAddressList() {getAddressList() {");
             // Fetch addresses from the server
             uni.request({
-                url: getApp().globalData.requestUrl + '/address/search',
+                url: getApp().globalData.data.requestUrl + '/address/search',
                 method: 'POST',
                 data: {userId: uni.getStorageSync('userId')},
                 success: (res) => {

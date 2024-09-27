@@ -107,7 +107,7 @@ export default {
     methods: {
         getOrder() {
             uni.request({
-                url: getApp().globalData.requestUrl + '/order/search',
+                url: getApp().globalData.data.requestUrl + '/order/search',
                 method: 'POST',
                 data: {
                     id: this.orderId
@@ -124,7 +124,7 @@ export default {
 
         getRemainingFreeOrderPostingQuota() {
             uni.request({
-                url: getApp().globalData.requestUrl + '/order/remaining-free-posting-quota',
+                url: getApp().globalData.data.requestUrl + '/order/remaining-free-posting-quota',
                 method: 'POST',
                 data: {
                     userId: this.order.clientId
@@ -182,7 +182,7 @@ export default {
 
         getServantList() {
             uni.request({
-                url: getApp().globalData.requestUrl + '/order-candidate/get-servants',
+                url: getApp().globalData.data.requestUrl + '/order-candidate/get-servants',
                 method: 'POST',
                 data: {
                     orderId: this.orderId
@@ -194,7 +194,7 @@ export default {
                     const promises = this.servantList.map((user) => {
                         return new Promise((resolve) => {
                             uni.request({
-                                url: getApp().globalData.requestUrl + '/user-servant/search',
+                                url: getApp().globalData.data.requestUrl + '/user-servant/search',
                                 method: 'POST',
                                 data: {
                                     userId: user.id
@@ -234,7 +234,7 @@ export default {
                 confirmText: '确定',
                 success: (res) => {
                     uni.request({
-                        url: getApp().globalData.requestUrl + '/order/cancel-order',
+                        url: getApp().globalData.data.requestUrl + '/order/cancel-order',
                         method: 'POST',
                         data: {
                             orderId: this.order.id

@@ -21,6 +21,9 @@
         },
         "unit": {
             "cny": "CNY"
+        },
+        "loading": {
+            "loading": "Loading..."
         }
     },
 
@@ -42,7 +45,9 @@
         "address": "Address",
         "myFavorite": "My Favorite",
         "data": "Data and Storage",
-        "tag": "Tag"
+        "tag": "Tag",
+        "signIn": "Sign In",
+        "signOut": "Sign Out"
     },
     "//////": "profile > order",
     "profile>order": {

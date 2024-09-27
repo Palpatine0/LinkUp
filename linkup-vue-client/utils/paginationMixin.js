@@ -3,7 +3,7 @@ export default {
         return {
             page: 1,
             size: 10,
-            loading: false,
+            global: false,
             hasMore: true,
         };
     },

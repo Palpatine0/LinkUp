@@ -31,7 +31,7 @@ export default {
             if (!this.hasMore || this.loading) return;
             this.loading = true;
             uni.request({
-                url: getApp().globalData.requestUrl + '/user/search-servant',
+                url: getApp().globalData.data.requestUrl + '/user/search-servant',
                 method: "POST",
                 data: {
                     page: this.page,

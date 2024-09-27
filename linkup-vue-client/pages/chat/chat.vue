@@ -2,7 +2,7 @@
 <div class="page">
     <!-- Heading section -->
     <div style="display: flex; align-items: center; justify-content: space-between;">
-        <app-title type="h1" bold="true">{{$t('chat.chats')}}</app-title>
+        <app-title type="h1" bold="true">{{ $t('chat.chats') }}</app-title>
     </div>
 
     <!-- Search input -->
@@ -29,35 +29,43 @@
 </template>
 
 <script>
+import app from "../../App.vue";
+
 export default {
     data() {
         return {
-            userId: uni.getStorageSync('userId'), // Current user ID
-            contactList: [], // Will hold the list of contacts
-            page: 1, // Pagination
-            size: 10, // Number of records to fetch per request
-            hasMoreContacts: true, // To control when to stop fetching
-            loading: false, // Prevent multiple requests at once
+            page: 1,
+            size: 10,
+            hasMoreContacts: true,
+            loading: false,
+
+            user: {},
+            contactList: [],
         };
     },
-    onLoad(){
-        this.getUserList(); // Initial load
+    onShow() {
+        this.contactList = []
+        this.user = uni.getStorageSync(app.globalData.data.userInfoKey)
+        const userLogin = uni.getStorageSync(app.globalData.data.userLoginKey);
+        console.log("userLogin");
+        console.log(userLogin);
+        if (uni.getStorageSync(app.globalData.data.userLoginKey) == true) {
+            this.getUserList();
+        }
     },
     methods: {
         // Step 1: Fetch messages to find unique user IDs who sent/received messages
         getUserList() {
             if (this.loading) return; // Prevent multiple requests
-
             this.loading = true;
-
             const uniqueUserIds = new Set(); // To store all unique contact IDs
 
             // Step 1: Find messages where current user is the sender
             uni.request({
-                url: getApp().globalData.requestUrl + '/message/search-contacts',
+                url: getApp().globalData.data.requestUrl + '/message/search-contacts',
                 method: 'POST',
                 data: {
-                    senderId: this.userId,  // Fetch messages where current user is the sender
+                    senderId: this.user.id,  // Fetch messages where current user is the sender
                     page: this.page,
                     size: this.size,
                 },
@@ -73,10 +81,10 @@ export default {
 
                     // Step 2: Find messages where current user is the recipient
                     uni.request({
-                        url: getApp().globalData.requestUrl + '/message/search-contacts',
+                        url: getApp().globalData.data.requestUrl + '/message/search-contacts',
                         method: 'POST',
                         data: {
-                            recipientId: this.userId,  // Fetch messages where current user is the recipient
+                            recipientId: this.user.id,  // Fetch messages where current user is the recipient
                             page: this.page,
                             size: this.size,
                         },
@@ -110,7 +118,7 @@ export default {
         // Step 2: Fetch user details for the unique user IDs found in the messages
         getUserDetails(id) {
             uni.request({
-                url: getApp().globalData.requestUrl + '/user/search', // The endpoint for fetching user details
+                url: getApp().globalData.data.requestUrl + '/user/search', // The endpoint for fetching user details
                 method: "POST",
                 data: {
                     id: id,  // Pass the array of unique user IDs
@@ -129,7 +137,7 @@ export default {
         },
 
         // Redirect to chat window for the selected contact
-        contactRedirect(contactId){
+        contactRedirect(contactId) {
             uni.navigateTo({
                 url: '/pages/components/chat/chat-window/chat-window?contactId=' + contactId
             });
