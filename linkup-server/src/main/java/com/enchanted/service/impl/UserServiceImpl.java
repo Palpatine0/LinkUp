@@ -51,53 +51,18 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     @Override
     public boolean save(User user) {
         int insert = userMapper.insert(user);
+        // generate qr code
+        genQrCodeImage(this.getAccessToken(), String.valueOf(user.getId()));
+        if (user.getRole() == 1) {
+            UserClient userClient = new UserClient();
+            userClient.setUserId(user.getId());
+            userClientMapper.insert(userClient);
+        } else if (user.getRole() == 2) {
+            UserServant userServant = new UserServant();
+            userServant.setUserId(user.getId());
+            userServantMapper.insert(userServant);
+        }
         return retBool(insert);
-    }
-
-    @Override
-    public User saveAuthInfo(String code, int role) {
-        User user = new User();
-
-        JSONObject object = WeChatUtil.getUserConfigInfo(code);
-        String openid = object.get("openid").toString();
-        String sessionkey = object.get("session_key").toString();
-        String unionId = "";
-        String id = "";
-        if (object.get("unionid") != null) {
-            unionId = object.get("unionid").toString();
-        }
-
-        user.setOpenid(openid);
-        user.setSessionKey(sessionkey);
-        user.setUnionid(unionId);
-        user.setCreatedAt(new Date());
-
-        User existingUser = userMapper.selectOne(new QueryWrapper<User>().eq("openid", openid));
-        if (existingUser != null) {
-            existingUser.setSessionKey(sessionkey);
-            existingUser.setUnionid(unionId);
-            userMapper.updateById(existingUser);
-            user.setId(existingUser.getId());
-        } else {
-            userMapper.insert(user);
-            user.setId(user.getId());
-            user.setRole(role);
-            // generate qr code
-            String qrCode = genQrCodeImage(this.getAccessToken(), String.valueOf(user.getId()));
-            user.setReferralQrCode(qrCode);
-            // generate user_client record
-            if (role == 1) {
-                UserClient userClient = new UserClient();
-                userClient.setUserId(user.getId());
-                userClientMapper.insert(userClient);
-            } else if (role == 2) {
-                UserServant userServant = new UserServant();
-                userServant.setUserId(user.getId());
-                userServantMapper.insert(userServant);
-            }
-            userMapper.updateById(user);
-        }
-        return user;
     }
 
     private String getAccessToken() {
@@ -107,13 +72,17 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         return jsonObject.get("access_token").toString();
     }
 
-    private String genQrCodeImage(String accessToken, String referrerId) {
+    private void genQrCodeImage(String accessToken, String referrerId) {
         Map<String, Object> body = new HashMap<>();
         body.put("path", "pages/home/home?referrerId=" + referrerId);
         String url = WeChatConstant.QR_CODE_Url + "?access_token=" + accessToken;
         byte[] qrCodeBytes = getWechatQrcodeByHttpClient(url, body);
-        String base64QRCode = Base64.getEncoder().encodeToString(qrCodeBytes);
-        return base64QRCode;
+        String referralQRCode = Base64.getEncoder().encodeToString(qrCodeBytes);
+        User user = new User();
+        user.setReferralQrCode(referralQRCode);
+        user.setId(Long.parseLong(referrerId));
+        userMapper.updateById(user);
+//        user.setReferralQrCode(referralQRCode);
     }
 
     private byte[] getWechatQrcodeByHttpClient(String url, Map<String, Object> body) {
@@ -158,11 +127,11 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         HashMap<String, String> map = new HashMap<>();
         JSONObject object = WeChatUtil.getUserConfigInfo(code);
         map.put("openid", object.get("openid").toString());
-        map.put("session_key", object.get("session_key").toString());
+        map.put("sessionKey", object.get("session_key").toString());
         User existingUser = userMapper.selectOne(new QueryWrapper<User>().eq("openid", object.get("openid").toString()));
         if (existingUser != null) {
             map.put("isNewUser", "0");
-        }else {
+        } else {
             map.put("isNewUser", "1");
         }
         return map;

@@ -27,6 +27,12 @@
         }
     },
 
+
+    "//////": "register",
+    "register": {
+
+    },
+
     "//////": "home",
     "home": {
         "nearby": "Nearby",
@@ -116,6 +122,10 @@
 
 
     "//////": "components",
+    "component>address>addressSelector": {
+        "selectorServiceAddress": "Selector an Address",
+        "createAddress": "Create an Address"
+    },
     "component>balance>topUp": {
         "topUpTitle": "Top-up",
         "topUpBtn": "Top-up"

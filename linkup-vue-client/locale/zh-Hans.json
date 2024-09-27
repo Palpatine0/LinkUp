@@ -122,6 +122,10 @@
     "componentPage>registry": {},
 
     "//////": "components",
+    "component>address>addressSelector": {
+        "selectorServiceAddress": "选择服务地点",
+        "createAddress": "新增地址"
+    },
     "component>balance>topUp": {
         "topUpTitle": "余额充值",
         "topUpBtn": "确认充值"

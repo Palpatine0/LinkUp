@@ -98,12 +98,12 @@ export default {
         async signIn() {
             uni.showLoading({title: this.$t('pub.loading.loading')});
             await getApp().globalData.signIn()
-            this.user = uni.getStorageSync(app.globalData.data.userInfoKey)
-            this.isUserLogin = true
+            this.user = uni.getStorageSync(getApp().globalData.data.userInfoKey)
+            this.isUserLogin = uni.getStorageSync(getApp().globalData.data.userLoginKey)
             uni.hideLoading();
         },
-        signOut() {
-            getApp().globalData.signOut()
+        async signOut() {
+            await getApp().globalData.signOut()
             this.user = {}
             this.isUserLogin = false
             uni.switchTab({

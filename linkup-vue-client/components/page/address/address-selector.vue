@@ -2,7 +2,7 @@
 <view class="popup-container">
     <view class="mask" @click="close"></view>
     <view class="popup-content">
-        <view class="popup-header">选择服务地点</view>
+        <view class="popup-header">{{$t('component>address>addressSelector.selectorServiceAddress')}}</view>
 
         <!-- Address List -->
         <view v-for="address in addressList" :key="address.id" class="address-item" @click="selectAddress(address)">
@@ -13,7 +13,7 @@
         </view>
 
         <!-- Create New Address Button -->
-        <view class="create-address" @click="addressCreateRedirect">新增地址</view>
+        <view class="create-address" @click="addressCreateRedirect">{{$t('component>address>addressSelector.createAddress')}}</view>
     </view>
 
 </view>
@@ -39,12 +39,11 @@ export default {
             this.$emit('selectAddress', address);
         },
         getAddressList() {
-            console.log("getAddressList() {getAddressList() {getAddressList() {");
             // Fetch addresses from the server
             uni.request({
                 url: getApp().globalData.data.requestUrl + '/address/search',
                 method: 'POST',
-                data: {userId: uni.getStorageSync('userId')},
+                data: {userId: uni.getStorageSync(getApp().globalData.data.userInfoKey).id},
                 success: (res) => {
                     this.addressList = res.data.list; // Populate address list
                 },
@@ -56,7 +55,7 @@ export default {
 
         addressCreateRedirect() {
             uni.navigateTo({
-                url: '/pages/profile/address/address-create/address-create',
+                url: '/pages/profile/address/address-manage/address-manage',
             });
         },
     }

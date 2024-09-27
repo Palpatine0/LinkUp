@@ -89,7 +89,7 @@ export default {
                 url: getApp().globalData.data.requestUrl + '/user/search',
                 method: 'POST',
                 data: {
-                    id: uni.getStorageSync('userId')
+                    id: uni.getStorageSync(getApp().globalData.data.userInfoKey).id
                 },
                 success: (res) => {
                     this.user = res.data.list[0]

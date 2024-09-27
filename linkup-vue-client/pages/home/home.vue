@@ -39,6 +39,7 @@ export default {
     },
     onLoad(e) {
         uni.setStorageSync('referrerId', e.referrerId);
+        console.log(this.user = uni.getStorageSync(app.globalData.data.userInfoKey).id)
         this.user = uni.getStorageSync(app.globalData.data.userInfoKey)
         this.getUserList();
     },

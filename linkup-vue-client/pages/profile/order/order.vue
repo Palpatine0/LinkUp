@@ -2,7 +2,7 @@
 <div class="page">
     <!-- Heading section -->
     <div style="display: flex; align-items: center; justify-content: space-between;">
-        <app-title type="h1" bold="true">{{$t('profile>order.myOrders')}}</app-title>
+        <app-title type="h1" bold="true">{{ $t('profile>order.myOrders') }}</app-title>
         <img src="/static/common/create.svg" style="width: 28px; height: 28px;" @click="orderInitiateRedirect"/>
     </div>
 
@@ -41,14 +41,14 @@
                     </div>
                     <div class="order-info">
                         <div class="candidates-count">
-                            {{$t('profile>order.candidates')}}: {{ order.candidateCount }}
+                            {{ $t('profile>order.candidates') }}: {{ order.candidateCount }}
                         </div>
                         <span style="font-size: 14px; color: gray;">{{ order.createdAt }}</span>
                     </div>
                 </div>
             </div>
         </div>
-        <div v-if="loading" style="color: gainsboro; margin-left: 10px;">{{$t('pub.page.loading')}}</div>
+        <div v-if="loading" style="color: gainsboro; margin-left: 10px;">{{ $t('pub.page.loading') }}</div>
         <!-- No More Data Message -->
         <div v-else-if="!hasMore" class="no-more-data-container-list">{{ $t('pub.page.noMoreData') }}</div>
     </scroll-view>
@@ -58,7 +58,7 @@
 
 <script>
 import orderDetail from './order-detail/order-detail.vue';
-import paginationMixin from '../../../utils/paginationMixin'; // Adjust the path as necessary
+import paginationMixin from '../../../utils/paginationMixin';
 
 export default {
     mixins: [paginationMixin],
@@ -123,7 +123,7 @@ export default {
                 // Use the search endpoint
                 url = getApp().globalData.data.requestUrl + '/order/search';
                 data = {
-                    userId: uni.getStorageSync('userId'),
+                    userId: uni.getStorageSync(getApp().globalData.data.userInfoKey).id,
                     keyword: this.searchKeyword,
                     page: this.page,
                     size: this.size,
@@ -133,7 +133,7 @@ export default {
                 url = getApp().globalData.data.requestUrl + '/order/search';
                 method = 'POST';
                 data = {
-                    userId: uni.getStorageSync('userId'),
+                    userId: uni.getStorageSync(getApp().globalData.data.userInfoKey).id,
                     page: this.page,
                     size: this.size,
                 };

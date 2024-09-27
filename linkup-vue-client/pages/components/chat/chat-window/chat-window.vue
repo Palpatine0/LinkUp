@@ -13,7 +13,7 @@
         <div v-for="message in messages" :key="message.id">
             <MessageBubble
                 :content="message.content"
-                :msgBelongs="message.senderId === user.id"
+                :msgBelongs="message.senderId === userId"
             />
         </div>
     </scroll-view>
@@ -37,7 +37,7 @@ export default {
     },
     data() {
         return {
-            userId: "",
+            userId: uni.getStorageSync(app.globalData.data.userInfoKey).id,
             user: {},
             contactId: '',
             contact: {},
@@ -52,7 +52,6 @@ export default {
     },
     async onLoad(params) {
         this.contactId = params.contactId;
-        this.user = uni.getStorageSync(app.globalData.data.userInfoKey)
         await this.getUser();
         await this.getContact();
         await this.getMessages(); // Load the initial set of messages
@@ -64,7 +63,7 @@ export default {
                     url: getApp().globalData.data.requestUrl + '/user/search',
                     method: 'POST',
                     data: {
-                        id: this.user.id
+                        id: this.userId
                     },
                     success: (res) => {
                         this.user = res.data.list[0];
@@ -104,7 +103,7 @@ export default {
                     url: getApp().globalData.data.requestUrl + '/message/search', // Your API endpoint
                     method: 'POST',
                     data: {
-                        senderId: this.user.id,    // Current user's ID
+                        senderId: this.userId,    // Current user's ID
                         recipientId: this.contactId,  // Contact's ID
                         page: this.page,
                         size: this.size
@@ -142,7 +141,7 @@ export default {
         // Handle sending a new message
         handleSend(messageContent) {
             const messageData = {
-                senderId: this.user.id,
+                senderId: this.userId,
                 recipientId: this.contactId,
                 content: messageContent,
                 mediaType: 0
@@ -155,7 +154,7 @@ export default {
                     this.messages.push({
                         id: res.data.id,
                         content: messageContent,
-                        senderId: this.user.id,
+                        senderId: this.userId,
                         createdAt: new Date().toISOString(),
                     });
                     this.scrollTop = 0; // Scroll to the bottom after sending a new message

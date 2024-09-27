@@ -136,7 +136,9 @@ export default {
     data() {
         return {
             step: 1,
-            userData: {},
+            userData: {
+            },
+            userConfigData: {},
 
             // step 3
             preciseAgeRanges: [
@@ -172,8 +174,9 @@ export default {
             avatar: "",
         }
     },
-    onLoad(e) {
+    onLoad(param) {
         this.authRequest();
+        this.userConfigData = JSON.parse(decodeURIComponent(param.userConfigData));
     },
     watch: {
         step(newStep) {
@@ -208,49 +211,11 @@ export default {
             uni.showLoading({title: '加载中'});
 
             // fetch user config data (openid)
-            const getUserLoginCode = () => {
-                return new Promise((resolve) =>
-                    uni.login({
-                        provider: 'weixin',
-                        success: (res) => {
-                            resolve(res.code);
-                        },
-                        fail: () => {
-                            uni.showToast({title: '用户code获取失败', icon: 'none'});
-                        },
-                    })
-                );
-            };
-            const userLoginCode = await getUserLoginCode();
-            const getUserConfigData = () => {
-                return new Promise((resolve) => {
-                    uni.request({
-                        url: getApp().globalData.data.requestUrl + '/user/save-auth-info',
-                        method: 'POST',
-                        data: {
-                            code: userLoginCode,
-                            role: 1,
-                        },
-                        success: (res) => {
-                            if (res.data.auth == null) {
-                                uni.showToast({title: '授权失败', icon: 'none'});
-                            } else {
-                                resolve(res.data.auth);
-                            }
-                        },
-                        fail: () => {
-                            uni.showToast({title: '授权请求失败', icon: 'none'});
-                        },
-                    });
-                });
-            };
-            const userConfigData = await getUserConfigData();
             this.userData = {
                 ...this.userData,
-                id: userConfigData.id,
-                openid: userConfigData.openid,
-                sessionKey: userConfigData.openid.sessionKey,
-                unionid: userConfigData.unionid,
+                openid: this.userConfigData.openid,
+                sessionKey: this.userConfigData.openid.sessionKey,
+                unionid: this.userConfigData.unionid,
             }
 
             // fetch user basic data
@@ -338,17 +303,17 @@ export default {
         // done
         setUserInfo(e) {
             uni.request({
-                url: getApp().globalData.data.requestUrl + '/user/update',
+                url: getApp().globalData.data.requestUrl + '/user/save',
                 method: 'POST',
                 data: {
                     referralCode: this.$common.generateUniqueCodes('a1a', 2),
+                    role: 1,
                     ...this.userData
                 },
                 success: () => {
                     uni.setStorageSync(app.globalData.data.userLoginKey, true);
                     uni.setStorageSync(app.globalData.data.userInfoKey, this.userData);
                     uni.showToast({title: '授权成功', icon: 'none'});
-
                 },
                 fail: () => {
                     uni.showToast({title: '授权失败', icon: 'none'});
@@ -360,9 +325,7 @@ export default {
                     console.log("redierect err");
                     console.log(err);
                 }
-            })
-            ;
-
+            });
         }
     }
 }

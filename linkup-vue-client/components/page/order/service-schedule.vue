@@ -4,7 +4,7 @@
     <view :class="scrollClass">
         <view class="time-title" :style="{ borderRadius: getRadius }">
             <span @click.stop="close">{{$t('pub.button.cancel')}}</span>
-            {{ $t('profile>order>orderInitiate.selectSchedule') }}
+            {{ $t('profile>order>orderInitiate.selectServiceSchedule') }}
             <text @click.stop="confirm" :style="selectedTimeIndex !== null ? 'color:#007aff;' : ''">{{$t('pub.button.confirm')}}</text>
         </view>
         <view class="time-picker" :style="{ height: height }">
