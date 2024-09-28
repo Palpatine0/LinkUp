@@ -92,7 +92,7 @@ export default {
 
             } else if (userConfigData.isNewUser == "1") {
                 uni.navigateTo({
-                    url: `/pages/registry/registry?userConfigData=${encodeURIComponent(JSON.stringify(userConfigData))}`,
+                    url: `/pages/register/register?userConfigData=${encodeURIComponent(JSON.stringify(userConfigData))}`,
                 });
             }
         },

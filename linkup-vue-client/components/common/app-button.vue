@@ -58,8 +58,8 @@ export default {
 
 /* Define size classes */
 .button-very-small {
-    padding: 5px 10px;
-    font-size: 12px;
+    padding: 3px 10px;
+    font-size: 16px;
     height: 30px;
 }
 

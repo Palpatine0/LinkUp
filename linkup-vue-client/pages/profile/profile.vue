@@ -17,7 +17,9 @@
                 <img src="/static/page/profile/logo.jpg" alt="Profile Photo" class="profile-photo"/>
             </div>
             <div class="profile-info">
-                <div class="app-button" @click="signIn">{{ $t('profile.signIn') }}</div>
+                <app-button shaped size="very-small" @click="signIn">
+                    {{ $t('profile.signIn') }}
+                </app-button>
             </div>
         </div>
     </div>
@@ -96,7 +98,7 @@ export default {
         },
 
         async signIn() {
-            uni.showLoading({title: this.$t('pub.loading.loading')});
+            uni.showLoading({title: this.$t('pub.status.loading')});
             await getApp().globalData.signIn()
             this.user = uni.getStorageSync(getApp().globalData.data.userInfoKey)
             this.isUserLogin = uni.getStorageSync(getApp().globalData.data.userLoginKey)

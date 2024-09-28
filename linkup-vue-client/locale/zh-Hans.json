@@ -22,7 +22,7 @@
         "unit": {
             "cny": "元"
         },
-        "loading": {
+        "status": {
             "loading": "加载中..."
         },
         "tips": {
@@ -142,7 +142,7 @@
             "enterMsg":""
         }
     },
-    "componentPage>registry": {},
+    "componentPage>register": {},
 
     "//////": "components",
     "component>address>addressSelector": {

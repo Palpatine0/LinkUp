@@ -22,7 +22,7 @@
         "unit": {
             "cny": "CNY"
         },
-        "loading": {
+        "status": {
             "loading": "Loading..."
         },
         "tips": {
@@ -129,7 +129,7 @@
             "enterMsg": ""
         }
     },
-    "componentPage>registry": {},
+    "componentPage>register": {},
     "//////": "components",
     "component>address>addressSelector": {
         "selectorServiceAddress": "Selector an Address",

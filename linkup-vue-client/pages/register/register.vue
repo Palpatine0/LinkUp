@@ -1,8 +1,11 @@
 <template>
 <div class="page" style="background-color: #f5f7fb">
 
-    <div v-if="step==0" class="page-registry">
-        <div class="header-registry">
+    <div v-if="step==0" class="page-register">
+        <div class="back" @click="backToHome()">
+            <img src="/static/page/register/back.svg">
+        </div>
+        <div class="header-register">
             <app-title type="h1" bold>{{ $t('register.step0Title') }}</app-title>
             <p class="center_h">{{ $t('register.step0Desc') }}</p>
         </div>
@@ -10,61 +13,64 @@
         <!-- Input Field Styled as Button -->
         <div class="button-wrapper">
             <input
-                class="input-registry center_h"
+                class="input-register center_h"
                 type="text"
                 v-model="referralCode"
                 :placeholder="$t('register.step0Placeholder')"
                 @input="setReferralCode"
             />
         </div>
-        <app-button shaped size="very-large" class="button-continuation-registry" @click="referralCodeValidation()" width="85vw">
+        <app-button shaped size="very-large" class="button-continuation-register" @click="referralCodeValidation()" width="85vw">
             {{ $t('pub.tips.submit') }}
         </app-button>
     </div>
 
     <!--step 1-->
     <div v-if="step==1" style="height: 100vh;width: 100%">
+        <div class="back" @click="backToHome()">
+            <img src="/static/page/register/back.svg">
+        </div>
         <div class="center_h">
-            <img style="width: 100px;height: 100px;margin-top: 80vh" src="/static/page/registry/logo-trans.png">
+            <img style="width: 100px;height: 100px;margin-top: 80vh" src="/static/page/register/logo-trans.png">
         </div>
     </div>
 
     <!--step 2-->
-    <div v-if="step==2" class="page-registry">
+    <div v-if="step==2" class="page-register">
         <div class="back" @click="back()">
-            <img src="/static/page/registry/back.svg">
+            <img src="/static/page/register/back.svg">
         </div>
-        <div class="header-registry">
+        <div class="header-register">
             <app-title type="h1" bold>👋 {{ $t('register.step2Title') }}</app-title>
             <p class="center_h">{{ $t('register.step2Desc') }}</p>
         </div>
         <!-- Gender Selection Buttons -->
         <div class="button-wrapper">
-            <div class="button-registry" @click="selectGender(0)">
+            <div class="button-register" @click="selectGender(0)">
                 <span>
-                    <span class="button-registry-icon">
+                    <span class="button-register-icon">
                         👨‍💻
                     </span>
-                    <span class="button-registry-text">{{ $t('pub.gender.m') }}</span>
+                    <span class="button-register-text">{{ $t('pub.gender.m') }}</span>
                 </span>
             </div>
-            <div class="button-registry" @click="selectGender(1)">
+            <div class="button-register" @click="selectGender(1)">
                 <span>
-                    <span class="button-registry-icon">
+                    <span class="button-register-icon">
                         👩‍💻
                     </span>
-                    <span class="button-registry-text">{{ $t('pub.gender.f') }}</span>
+                    <span class="button-register-text">{{ $t('pub.gender.f') }}</span>
                 </span>
             </div>
         </div>
     </div>
 
     <!--step 3-->
-    <div v-if="step==3" class="page-registry">
+    <div v-if="step==3" class="page-register">
         <div class="back" @click="back()">
-            <img src="/static/page/registry/back.svg">
+            <img src="/static/page/register/back.svg">
         </div>
-        <div class="header-registry">
+        <div class="header-register">
             <app-title type="h1" bold>{{ $t('register.step3Title') }}</app-title>
             <p class="center_h">{{ $t('register.step3Desc') }}</p>
         </div>
@@ -72,33 +78,33 @@
         <!-- Single Button for Age Selection with Picker Integrated -->
         <div class="button-wrapper">
             <picker
-                class="button-registry"
+                class="button-register"
                 mode="selector"
                 :range="ageRange"
                 :value="ageRangeIndex"
                 @change="bindAgePickerChange"
             >
                 <span>
-                    <span class="button-registry-icon">
+                    <span class="button-register-icon">
                         {{ selectedAgeIcon }}
                     </span>
-                    <span class="button-registry-text">
+                    <span class="button-register-text">
                         {{ selectedAgeText ? `${selectedAgeText}` : $t('register.step3Placeholder') }}
                     </span>
                 </span>
             </picker>
         </div>
-        <app-button v-if="!common.isEmpty(userData.age)" shaped size="very-large" class="button-continuation-registry" @click="advance()" width="85vw">
+        <app-button v-if="!common.isEmpty(userData.age)" shaped size="very-large" class="button-continuation-register" @click="advance()" width="85vw">
             {{ $t('pub.tips.continue') }}
         </app-button>
     </div>
 
     <!--step 4-->
-    <div v-if="step==4" class="page-registry">
+    <div v-if="step==4" class="page-register">
         <div class="back" @click="back()">
-            <img src="/static/page/registry/back.svg">
+            <img src="/static/page/register/back.svg">
         </div>
-        <div class="header-registry">
+        <div class="header-register">
             <app-title type="h1" bold>{{ $t('register.step4Title') }}</app-title>
             <p class="center_h">{{ $t('register.step4Desc') }}</p>
         </div>
@@ -106,24 +112,24 @@
         <!-- Input Field Styled as Button -->
         <div class="button-wrapper">
             <input
-                class="input-registry center_h"
+                class="input-register center_h"
                 type="text"
                 v-model="userData.nickname"
                 :placeholder="$t('register.step4Placeholder')"
                 @input="updateUsername"
             />
         </div>
-        <app-button shaped size="very-large" class="button-continuation-registry" @click="advance()" width="85vw">
+        <app-button shaped size="very-large" class="button-continuation-register" @click="advance()" width="85vw">
             {{ $t('pub.tips.continue') }}
         </app-button>
     </div>
 
     <!--step 5-->
-    <div v-if="step==5" class="page-registry">
+    <div v-if="step==5" class="page-register">
         <div class="back" @click="back()">
-            <img src="/static/page/registry/back.svg">
+            <img src="/static/page/register/back.svg">
         </div>
-        <div class="header-registry">
+        <div class="header-register">
             <app-title type="h1" bold>{{ $t('register.step5Title') }}</app-title>
             <p class="center_h">{{ $t('register.step5Desc') }}</p>
         </div>
@@ -131,7 +137,7 @@
         <div class="button-wrapper center_h">
             <img :src="avatar" class="avatar" @click="changeAvatar">
         </div>
-        <app-button shaped size="very-large" class="button-continuation-registry" @click="setUserInfo()" width="85vw">
+        <app-button shaped size="very-large" class="button-continuation-register" @click="setUserInfo()" width="85vw">
             {{ $t('pub.tips.successSignUp') }}
         </app-button>
     </div>
@@ -238,6 +244,11 @@ export default {
         advance() {
             this.step++;
         },
+        backToHome(){
+            uni.switchTab({
+                url: '/pages/home/home',
+            });
+        },
 
         // step 0
         setReferralCode(event) {
@@ -256,10 +267,13 @@ export default {
                         this.getUserInfo();
                     }
                 },
+                fail: () => {
+                    this.backToHome()
+                }
             });
         },
         async getUserInfo(e) {
-            uni.showLoading({title: '加载中'});
+            uni.showLoading({title: this.$t('pub.status.loading')});
 
             // fetch user config data (openid)
             this.userData = {
@@ -371,16 +385,14 @@ export default {
                     uni.showToast({title: '授权失败', icon: 'none'});
                 },
             });
-            uni.switchTab({
-                url: '/pages/home/home',
-            });
+            this.backToHome()
         }
     }
 }
 </script>
 
 <style scoped>
-.page-registry {
+.page-register {
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -405,18 +417,18 @@ export default {
     height: 25px;
 }
 
-.header-registry {
+.header-register {
     width: 90vw;
     position: absolute;
     top: 16vh;
     text-align: center;
 }
 
-.header-registry app-title {
+.header-register app-title {
     margin-bottom: 10px;
 }
 
-.header-registry p {
+.header-register p {
     font-size: 18px;
     color: #666;
     margin-top: 68px;
@@ -430,7 +442,7 @@ export default {
     width: 100%;
 }
 
-.button-registry {
+.button-register {
     display: flex;
     align-items: center;
     justify-content: flex-start;
@@ -445,23 +457,23 @@ export default {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
 }
 
-.button-registry:hover {
+.button-register:hover {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     border-color: #007bff;
 }
 
-.button-registry span {
+.button-register span {
     display: flex;
     align-items: center;
     gap: 10px;
 }
 
-.button-registry span .button-registry-icon {
+.button-register span .button-register-icon {
     font-size: 24px;
     margin: 0 10px 0 10px;
 }
 
-.button-registry span .button-registry-text {
+.button-register span .button-register-text {
     font-weight: bold;
 }
 
@@ -483,7 +495,7 @@ export default {
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
 }
 
-.button-continuation-registry {
+.button-continuation-register {
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -493,7 +505,7 @@ export default {
     bottom: 80px;
 }
 
-.input-registry {
+.input-register {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -509,17 +521,17 @@ export default {
     transition: box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
-.input-registry:focus {
+.input-register:focus {
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
     border-color: #007bff;
     outline: none;
 }
 
 .avatar {
-    width: 300px;
-    height: 300px;
+    width: 230px;
+    height: 230px;
     object-fit: cover;
     border-radius: 50%;
-    margin-bottom: 10px;
+    margin-bottom: -20px;
 }
 </style>

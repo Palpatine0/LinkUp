@@ -112,9 +112,9 @@
                 "navigationBarBackgroundColor": "#fefefe"
             }
         },
-        // registry
+        // register
         {
-            "path": "pages/registry/registry",
+            "path": "pages/register/register",
             "style": {
                 "navigationBarTitleText": "",
                 "navigationBarBackgroundColor": "#fefefe",
