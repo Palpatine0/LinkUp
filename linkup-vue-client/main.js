@@ -1,6 +1,7 @@
 import App from './App'
 import Vue from 'vue'
 import VueI18n from 'vue-i18n'
+import globalMixin from './utils/globalMixin'
 
 import common from "./utils/common";
 import messages from './locale/index.js'
@@ -22,6 +23,7 @@ Vue.component('app-container', AppContainer);
 Vue.component('app-button', AppButton);
 // page
 Vue.component('user-list', UserList);
+Vue.mixin(globalMixin)
 
 Vue.prototype.$common = common;
 Vue.use(VueI18n)

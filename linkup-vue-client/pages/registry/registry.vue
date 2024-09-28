@@ -1,6 +1,27 @@
 <template>
 <div class="page" style="background-color: #f5f7fb">
 
+    <div v-if="step==0" class="page-registry">
+        <div class="header-registry">
+            <app-title type="h1" bold>{{ $t('register.step0Title') }}</app-title>
+            <p class="center_h">{{ $t('register.step0Desc') }}</p>
+        </div>
+
+        <!-- Input Field Styled as Button -->
+        <div class="button-wrapper">
+            <input
+                class="input-registry center_h"
+                type="text"
+                v-model="referralCode"
+                :placeholder="$t('register.step0Placeholder')"
+                @input="setReferralCode"
+            />
+        </div>
+        <app-button shaped size="very-large" class="button-continuation-registry" @click="referralCodeValidation()" width="85vw">
+            {{ $t('pub.tips.submit') }}
+        </app-button>
+    </div>
+
     <!--step 1-->
     <div v-if="step==1" style="height: 100vh;width: 100%">
         <div class="center_h">
@@ -69,10 +90,9 @@
         </div>
 
         <div>
-
         </div>
         <app-button v-if="!common.isEmpty(userData.age)" shaped size="very-large" class="button-continuation-registry" @click="advance()" width="85vw">
-            {{ $t('pub.tips.continue')}}
+            {{ $t('pub.tips.continue') }}
         </app-button>
     </div>
 
@@ -107,15 +127,15 @@
             <img src="/static/page/registry/back.svg">
         </div>
         <div class="header-registry">
-            <app-title type="h1" bold>{{ $t('register.step5Title')}}</app-title>
-            <p class="center_h">{{ $t('register.step5Desc')}}</p>
+            <app-title type="h1" bold>{{ $t('register.step5Title') }}</app-title>
+            <p class="center_h">{{ $t('register.step5Desc') }}</p>
         </div>
 
         <div class="button-wrapper center_h">
             <img :src="avatar" class="avatar" @click="changeAvatar">
         </div>
         <app-button shaped size="very-large" class="button-continuation-registry" @click="setUserInfo()" width="85vw">
-            {{ $t('pub.tips.successSignUp')}}
+            {{ $t('pub.tips.successSignUp') }}
         </app-button>
     </div>
 
@@ -123,8 +143,8 @@
 </template>
 
 <script>
-import common from "../../utils/common";
 import app from "../../App.vue";
+import common from "../../utils/common";
 
 export default {
     name: "auth",
@@ -138,6 +158,8 @@ export default {
             step: 1,
             userData: {},
             userConfigData: {},
+            referralCode: "",
+            referrerId: "",
 
             // step 3
             preciseAgeRanges: [
@@ -174,8 +196,14 @@ export default {
         }
     },
     onLoad(param) {
-        this.authRequest();
         this.userConfigData = JSON.parse(decodeURIComponent(param.userConfigData));
+        if (this.$common.isEmpty(uni.getStorageSync('referrerId'))) {
+            this.step = 0
+        } else {
+            this.referrerId = uni.getStorageSync('referrerId');
+            this.authRequest();
+        }
+
     },
     watch: {
         step(newStep) {
@@ -185,11 +213,38 @@ export default {
         }
     },
     methods: {
+        referralCodeValidation() {
+            uni.request({
+                url: getApp().globalData.data.requestUrl + '/user/referral-code-validation',
+                method: 'POST',
+                data: {
+                    referralCode: this.referralCode,
+                },
+                success: (res) => {
+                    if (res.data.data.validRC == "1") {
+                        this.referrerId = res.data.data.referrerId;
+                        this.advance()
+                        this.authRequest();
+                    } else {
+                        uni.showToast({title: this.$t('register.incorrectRC'), icon: 'none'});
+                    }
+                },
+                fail: (res) => {
+                    uni.showToast({title: this.$t('register.incorrectRC'), icon: 'none'});
+                }
+            });
+        },
+
         back() {
             this.step--;
         },
         advance() {
             this.step++;
+        },
+
+        // step 0
+        setReferralCode(event) {
+            this.$set(this.referralCode, 'referralCode', event.target.value);
         },
 
         // step 1
@@ -307,6 +362,7 @@ export default {
                 data: {
                     referralCode: this.$common.generateUniqueCodes('a1a', 2),
                     role: 1,
+                    referrerId: this.referrerId,
                     ...this.userData
                 },
                 success: () => {
@@ -320,10 +376,6 @@ export default {
             });
             uni.switchTab({
                 url: '/pages/home/home',
-                fail(err) {
-                    console.log("redierect err");
-                    console.log(err);
-                }
             });
         }
     }

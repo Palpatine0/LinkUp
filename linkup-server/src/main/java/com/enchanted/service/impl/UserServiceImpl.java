@@ -28,10 +28,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 import java.io.*;
 import java.lang.reflect.Field;
-import java.util.Base64;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserService {
@@ -123,7 +120,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     }
 
     @Override
-    public Map<String, String> getAuthInfo(String code) {
+    public Map<String, String> getConfigInfo(String code) {
         HashMap<String, String> map = new HashMap<>();
         JSONObject object = WeChatUtil.getUserConfigInfo(code);
         map.put("openid", object.get("openid").toString());
@@ -133,6 +130,22 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             map.put("isNewUser", "0");
         } else {
             map.put("isNewUser", "1");
+        }
+        return map;
+    }
+
+    @Override
+    public Map referralCodeValidation(String referralCode) {
+        HashMap<String, String> map = new HashMap<>();
+        QueryWrapper<User> wrapper = new QueryWrapper<>();
+        wrapper.eq("referral_code", referralCode);
+        wrapper.eq("is_deleted", "0");
+        User user = userMapper.selectOne(wrapper);
+        if (user != null) {
+            map.put("referrerId", String.valueOf(user.getId()));
+            map.put("validRC", "1");
+        }else {
+            map.put("validRC", "0");
         }
         return map;
     }

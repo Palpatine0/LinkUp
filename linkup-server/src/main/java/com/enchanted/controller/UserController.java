@@ -1,16 +1,12 @@
 package com.enchanted.controller;
 
-import com.alibaba.fastjson.JSONObject;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.enchanted.entity.User;
 import com.enchanted.service.IUserService;
-import com.enchanted.util.WeChatUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.enchanted.vo.R;
 
-import java.util.HashMap;
 import java.util.Map;
 
 @CrossOrigin
@@ -59,9 +55,15 @@ public class UserController {
     }
 
     @PostMapping("/user-config")
-    public R getAuthInfo(@RequestBody Map<String, String> dto) {
+    public R getConfigInfo(@RequestBody Map<String, String> dto) {
         String code = dto.get("code");
-        return R.ok(userService.getAuthInfo(code));
+        return R.ok().put("data", userService.getConfigInfo(code));
+    }
+
+    @PostMapping("/referral-code-validation")
+    public R referralCodeValidation(@RequestBody Map<String, String> dto) {
+        String referralCode = dto.get("referralCode");
+        return R.ok().put("data", userService.referralCodeValidation(referralCode));
     }
 
     /*U*/
@@ -89,13 +91,5 @@ public class UserController {
         } else {
             return R.error("删除失败");
         }
-    }
-
-    private R buildPaginatedResponse(Page<User> userPage) {
-        return R.ok()
-            .put("userList", userPage.getRecords())
-            .put("total", userPage.getTotal())
-            .put("pages", userPage.getPages())
-            .put("current", userPage.getCurrent());
     }
 }

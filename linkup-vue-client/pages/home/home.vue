@@ -21,6 +21,7 @@
 <script>
 
 import app from "../../App.vue";
+import common from "../../utils/common";
 
 export default {
     name: "home",
@@ -38,12 +39,17 @@ export default {
         };
     },
     onLoad(e) {
-        uni.setStorageSync('referrerId', e.referrerId);
-        console.log(this.user = uni.getStorageSync(app.globalData.data.userInfoKey).id)
+        if (!common.isEmpty(e.referrerId)) {
+            uni.setStorageSync('referrerId', e.referrerId);
+            console.log("uni.getStorageSync('referrerId')")
+            console.log(uni.getStorageSync('referrerId'))
+        }
         this.user = uni.getStorageSync(app.globalData.data.userInfoKey)
         this.getUserList();
     },
+
     methods: {
+
         getUserList() {
             if (!this.hasMore || this.loading) return;
             this.loading = true;

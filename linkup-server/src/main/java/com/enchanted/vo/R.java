@@ -11,10 +11,11 @@ public class R extends HashMap<String, Object> {
 
     public R() {
         put("code", 0);
+        put("message", "Success");
     }
 
     public static R error() {
-        return error(500, "未知异常，请联系管理员");
+        return error(500, "Unknown error, please contact the administrator");
     }
 
     public static R error(String msg) {

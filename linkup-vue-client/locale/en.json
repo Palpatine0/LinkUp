@@ -26,14 +26,17 @@
             "loading": "Loading..."
         },
         "tips": {
+            "submit": "Submit",
             "continue": "Continue",
             "successSignUp": "Sign Up Complete!"
         }
     },
-
-
     "//////": "register",
     "register": {
+        "incorrectRC": "Referral Code Not Found",
+        "step0Title": "Your referrer?",
+        "step0Desc": "Please enter a 6 characters referral code to continue",
+        "step0Placeholder": "Enter a referral code",
         "step2Title": "Welcome to Looking! Choose your gender",
         "step2Desc": "Specify your gender to better personalize your interactions",
         "step3Title": "How old are you?",
@@ -45,18 +48,15 @@
         "step5Title": "Choose an awesome avatar!",
         "step5Desc": "Select an avatar by clicking the img below"
     },
-
     "//////": "home",
     "home": {
         "nearby": "Nearby",
         "tourGuideServices": "Tour Guide Services"
     },
-
     "//////": "chat",
     "chat": {
         "chats": "Chats"
     },
-
     "//////": "profile",
     "profile": {
         "order": "Order",
@@ -118,8 +118,6 @@
         "saveBtn": "Save",
         "updateBtn": "Update"
     },
-
-
     "//////": "components(page)",
     "componentPage>user>userDetail": {
         "startChatting": "Start Chatting"
@@ -132,8 +130,6 @@
         }
     },
     "componentPage>registry": {},
-
-
     "//////": "components",
     "component>address>addressSelector": {
         "selectorServiceAddress": "Selector an Address",
@@ -144,7 +140,7 @@
         "topUpBtn": "Top-up"
     },
     "component>chat>message-input": {
-        "takePhoto":"Take Photo",
+        "takePhoto": "Take Photo",
         "choseFromAlbum": "Choose From Album"
     }
 }

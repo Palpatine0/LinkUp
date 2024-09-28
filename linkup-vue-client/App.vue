@@ -30,6 +30,7 @@ export default {
                     uni.login({
                         provider: 'weixin',
                         success: (res) => {
+                            console.log("getUserLoginCode")
                             resolve(res.code);
                         },
                         fail: () => {
@@ -41,24 +42,30 @@ export default {
             const userLoginCode = await getUserLoginCode();
             const getUserConfigData = () => {
                 return new Promise((resolve) => {
-                    uni.request({
-                        url: getApp().globalData.data.requestUrl + '/user/user-config',
-                        method: 'POST',
-                        data: {
-                            code: userLoginCode,
-                            role: 1,
-                        },
-                        success: (res) => {
-                            if (res.data.code == 0) {
-                                resolve(res.data);
-                            } else {
-                                uni.showToast({title: '授权失败', icon: 'none'});
-                            }
+                    uni.authorize({
+                        scope: 'scope.userInfo',
+                        success: function () {
+                            uni.request({
+                                url: getApp().globalData.data.requestUrl + '/user/user-config',
+                                method: 'POST',
+                                data: {
+                                    code: userLoginCode,
+                                    role: 1,
+                                },
+                                success: (res) => {
+                                    if (res.data.code == 0) {
+                                        resolve(res.data.data);
+                                    } else {
+                                        uni.showToast({title: '授权失败', icon: 'none'});
+                                    }
+                                },
+                            });
                         },
                         fail: () => {
                             uni.showToast({title: '授权请求失败', icon: 'none'});
                         },
-                    });
+                    })
+
                 });
             };
             const userConfigData = await getUserConfigData();
@@ -92,28 +99,33 @@ export default {
         async signOut() {
             uni.removeStorageSync(app.globalData.data.userInfoKey);
             uni.removeStorageSync(app.globalData.data.userLoginKey);
-        }
+        },
 
+    },
+    onShareAppMessage() {
+        var shareTitle = "Come check this app!!";
+        var referrerId = uni.getStorageSync(getApp().globalData.data.userInfoKey).id
+        var sharePath = '/pages/home/home?referrerId=' + referrerId;
+        let shareImg = "https://i.imghippo.com/files/BGqLk1727503992.jpg";
+        return {
+            title: shareTitle,
+            path: sharePath,
+            imageUrl: shareImg,
+            success: function (res) {
+            },
+            fail: function (res) {
+            }
+        }
     },
     onLaunch() {
         // this.checkUserInfo();
 
         // auth
-        uni.authorize({
-            scope: 'scope.userInfo',
-            success() {
-            }
-        })
-        uni.authorize({
+        /*uni.authorize({
             scope: 'scope.userLocation',
             success: function () {
             }
-        })
-        uni.authorize({
-            scope: 'scope.chooseLocation',
-            success: function () {
-            }
-        })
+        })*/
 
         // handle sys info
         uni.setStorageSync(app.globalData.data.systemInfoKey, uni.getSystemInfoSync());

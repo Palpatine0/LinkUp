@@ -7,16 +7,22 @@ import com.enchanted.entity.User;
 import java.util.Map;
 
 public interface IUserService extends IService<User> {
+    /*C*/
     boolean save(User user);
 
+    /*R*/
     Page<User> search(Map<String, Object> params, int page, int size); // <-- Added search method
 
     Page<User> searchServant(Map<String, Object> params, int page, int size); // <-- Added search method
 
-    Map getAuthInfo(String code);
+    Map getConfigInfo(String code);
 
+    Map referralCodeValidation(String referralCode);
+
+    /*U*/
     boolean update(Long id, Map<String, Object> changes);
 
+    /*D*/
     boolean delete(Long id);
 
 }

@@ -26,6 +26,7 @@
             "loading": "加载中..."
         },
         "tips": {
+            "submit": "提交",
             "continue": "继续",
             "successSignUp": "注册成功!"
         }
@@ -34,6 +35,10 @@
 
     "//////": "register",
     "register": {
+        "incorrectRC": "邀请码异常",
+        "step0Title": "您的邀请人?",
+        "step0Desc": "请输入一个六位的邀请码以完成注册",
+        "step0Placeholder": "输入6位邀请码",
         "step2Title": "欢迎来到领客",
         "step2Desc": "指定您的性别，以便更好地进行个性化互动",
         "step3Title": "您的年龄?",
@@ -67,7 +72,7 @@
         "myFavorite":"我的收藏",
         "data":"数据与存储",
         "tag":"标签",
-        "signIn": "登录",
+        "signIn": "微信一键登录",
         "signOut": "退出登录"
     },
 

@@ -115,18 +115,23 @@ export default {
             })
         },
         handleChooseLocation() {
-            uni.chooseLocation({
-                latitude: uni.getStorageSync('latitudeFuzzy') || '',
-                longitude: uni.getStorageSync('longitudeFuzzy') || '',
-                success: (res) => {
-                    uni.setStorageSync('currentLocation', res)
-                    this.address.address = res.address
-                    this.address.addressName = res.name
-                    this.address.latitude = res.latitude
-                    this.address.longitude = res.longitude
-                },
-                fail: function (err) {
-                    console.log('取消按钮', err)
+            uni.authorize({
+                scope: 'scope.chooseLocation',
+                success: function () {
+                    uni.chooseLocation({
+                        latitude: uni.getStorageSync('latitudeFuzzy') || '',
+                        longitude: uni.getStorageSync('longitudeFuzzy') || '',
+                        success: (res) => {
+                            uni.setStorageSync('currentLocation', res)
+                            this.address.address = res.address
+                            this.address.addressName = res.name
+                            this.address.latitude = res.latitude
+                            this.address.longitude = res.longitude
+                        },
+                        fail: function (err) {
+                            console.log('取消按钮', err)
+                        }
+                    })
                 }
             })
         },
