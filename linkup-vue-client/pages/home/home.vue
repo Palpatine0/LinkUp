@@ -47,9 +47,7 @@ export default {
         this.user = uni.getStorageSync(app.globalData.data.userInfoKey)
         this.getUserList();
     },
-
     methods: {
-
         getUserList() {
             if (!this.hasMore || this.loading) return;
             this.loading = true;

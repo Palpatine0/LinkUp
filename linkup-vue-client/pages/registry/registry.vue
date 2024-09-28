@@ -88,9 +88,6 @@
                 </span>
             </picker>
         </div>
-
-        <div>
-        </div>
         <app-button v-if="!common.isEmpty(userData.age)" shaped size="very-large" class="button-continuation-registry" @click="advance()" width="85vw">
             {{ $t('pub.tips.continue') }}
         </app-button>
