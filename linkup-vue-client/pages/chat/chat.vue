@@ -30,6 +30,7 @@
 
 <script>
 import app from "../../App.vue";
+import common from "../../utils/common";
 
 export default {
     data() {
@@ -47,7 +48,9 @@ export default {
     },
     onShow() {
         this.contactList = []
-        if (uni.getStorageSync(app.globalData.data.userLoginKey) == true) {
+        console.log("uni.getStorageSync(app.globalData.data.userInfoKey)")
+        console.log(uni.getStorageSync(app.globalData.data.userInfoKey))
+        if (!this.$common.isEmpty(this.userId)) {
             this.getUserList();
         }
     },

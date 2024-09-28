@@ -13,6 +13,7 @@ import com.enchanted.service.IUserService;
 import com.enchanted.util.ConversionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
@@ -34,19 +35,14 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     @Autowired
     private IUserService userService;
 
-    private final Map<Long, Thread> monitoringThreads = new ConcurrentHashMap<>();
+    private final Map<Long, Thread> assignmentMonitoringThreads = new ConcurrentHashMap<>();
+    private final Map<Long, Thread> autoRatingMonitoringThreads = new ConcurrentHashMap<>();
 
-    @Override
-    public Page<Order> search(Map<String, Object> params, int page, int size) {
-        IPage<Order> orderPage = new Page<>(page, size);
-        orderPage = orderMapper.search(orderPage, params);
-        return (Page<Order>) orderPage;
-    }
-
+    /*C*/
     @Override
     public boolean save(Order order) {
         order.setIdentifier(generateOrderIdentifier());
-
+        order.setStatus(OrderConstant.PENDING);
         // Get the user who posted the order
         User user = userService.getById(order.getClientId());
         if (user == null) {
@@ -83,7 +79,69 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         return "LK-ORD-" + currentTime + "-" + randomNumber;
     }
 
+    @Override
+    public void startOrderAssignmentMonitor(Long orderId) {
+        Thread monitoringThread = new Thread(() -> {
+            try {
+                Thread.sleep(600000); // Sleep for 10 minutes
+                Order order = this.getById(orderId);
+                if (order != null && order.getServantId() == null) {
+                    cancelOrder(order);
+                } else {
+                }
 
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+
+        assignmentMonitoringThreads.put(orderId, monitoringThread);
+        monitoringThread.start();
+    }
+
+    @Override
+    public void stopOrderAssignmentMonitor(Long orderId) {
+        Thread monitoringThread = assignmentMonitoringThreads.get(orderId);
+        if (monitoringThread != null && monitoringThread.isAlive()) {
+            monitoringThread.interrupt(); // Interrupt the thread to stop monitoring
+            assignmentMonitoringThreads.remove(orderId); // Remove from active monitoring map
+            System.out.println("Stopped monitoring order with ID: " + orderId);
+        }
+    }
+
+
+    /*R*/
+    @Override
+    public Page<Order> search(Map<String, Object> params, int page, int size) {
+        IPage<Order> orderPage = new Page<>(page, size);
+        orderPage = orderMapper.search(orderPage, params);
+        return (Page<Order>) orderPage;
+    }
+
+    @Override
+    public int getRemainingFreePostingQuota(Long userId) {
+        int freeAttemptsToday = countFreeAttemptsToday(userId);
+        return Math.max(0, OrderConstant.FREE_POSTING_QUOTA - freeAttemptsToday);
+    }
+
+    private int countFreeAttemptsToday(Long userId) {
+        // Get the start and end of the current day
+        LocalDate today = LocalDate.now();
+        LocalDateTime startOfDay = today.atStartOfDay();
+        LocalDateTime endOfDay = today.plusDays(1).atStartOfDay().minusSeconds(1);
+
+        // Query the order table to count free attempts
+        QueryWrapper<Order> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("client_id", userId);
+        queryWrapper.isNull("servant_id"); // No servant matched
+        queryWrapper.between("created_at", startOfDay, endOfDay); // Only orders from today
+        Long cnt = orderMapper.selectCount(queryWrapper);
+        // Return the count of such orders
+        return Math.toIntExact(cnt);
+    }
+
+
+    /*U*/
     @Override
     public boolean update(Long id, Map<String, Object> changes) {
         Order order = orderMapper.selectById(id);
@@ -109,44 +167,136 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         return retBool(updated);
     }
 
-
     @Override
-    public boolean delete(Long id) {
-        return orderMapper.deleteById(id) > 0;
-    }
-
-    @Override
-    public void monitorOrder(Long orderId) {
-        Thread monitoringThread = new Thread(() -> {
-            try {
-                Thread.sleep(600000); // Sleep for 10 minutes
-                Order order = this.getById(orderId);
-                if (order != null && order.getServantId() == null) {
-                    cancelOrder(order);
-                } else {
-                }
-
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        });
-
-        monitoringThreads.put(orderId, monitoringThread);
-        monitoringThread.start();
-    }
-
-
-    @Override
-    public void stopMonitoring(Long orderId) {
-        Thread monitoringThread = monitoringThreads.get(orderId);
-        if (monitoringThread != null && monitoringThread.isAlive()) {
-            monitoringThread.interrupt(); // Interrupt the thread to stop monitoring
-            monitoringThreads.remove(orderId); // Remove from active monitoring map
-            System.out.println("Stopped monitoring order with ID: " + orderId);
+    @Transactional
+    public boolean changeStatus(Long orderId, int newStatus) {
+        Order order = orderMapper.selectById(orderId);
+        if (order == null) {
+            return false;
         }
+
+        // Update the order status
+        order.setStatus(newStatus);
+        int updated = orderMapper.updateById(order);
+        if (updated == 0) {
+            return false;
+        }
+
+        // Perform actions based on the new status
+        switch (newStatus) {
+            case OrderConstant.COMPLETED:
+                completeOrder(order);
+                break;
+
+            case OrderConstant.CANCELED:
+                stopOrderAssignmentMonitor(order.getId());
+                cancelOrder(order);
+                break;
+            case OrderConstant.PROCESSING:
+                stopOrderAssignmentMonitor(order.getId());
+                processingOrder(order);
+                break;
+
+            default:
+                break;
+        }
+        return true;
     }
 
-    @Override
+    /**
+     * Complete Order
+     * Mark an order as completed
+     *
+     * @param order
+     */
+    public void completeOrder(Order order) {
+        // Check if the order is already marked as completed
+        if (order.getCompletedAt() != null) {
+            return;
+        }
+
+        // Set the completion timestamp
+        order.setCompletedAt(new Date());
+        orderMapper.updateById(order);
+
+        // Proceed with completion logic
+        sendClientReferrerCommission(order);
+        sendServantReferrerCommission(order);
+        payServantInitialAmount(order);
+
+        // Start monitoring for auto-rating
+        monitorAutoRating(order.getId());
+    }
+
+    private void sendClientReferrerCommission(Order order) {
+        // Fetch the client
+        User client = userService.getById(order.getClientId());
+        if (client == null || client.getReferrerId() == null) {
+            return;
+        }
+
+        // Fetch the referrer
+        User referrer = userService.getById(client.getReferrerId());
+        if (referrer == null) {
+            return;
+        }
+
+        // Calculate 5% of the order price
+        BigDecimal commission = order.getPrice().multiply(OrderConstant.CLIENT_REFERRER_SHARE);
+
+        // Update referrer's balance
+        referrer.setBalance(referrer.getBalance().add(commission));
+        userService.updateById(referrer);
+    }
+
+    private void sendServantReferrerCommission(Order order) {
+        User servant = userService.getById(order.getServantId());
+        if (servant == null || servant.getReferrerId() == null) {
+            return;
+        }
+
+        // Fetch the referrer
+        User referrer = userService.getById(servant.getReferrerId());
+        if (referrer == null) {
+            return;
+        }
+
+        // Calculate 5% of the order price
+        BigDecimal commission = order.getPrice().multiply(OrderConstant.SERVANT_REFERRER_SHARE);
+
+        // Update referrer's balance
+        referrer.setBalance(referrer.getBalance().add(commission));
+        userService.updateById(referrer);
+    }
+
+    private void payServantInitialAmount(Order order) {
+        User servant = userService.getById(order.getServantId());
+        if (servant == null) {
+            return;
+        }
+
+        // Calculate the maximum servant share (70% of order price)
+        BigDecimal maxServantShare = order.getPrice().multiply(OrderConstant.MAX_SERVANT_COMMISSION);
+
+        // Calculate 80% of the servant's maximum share
+        BigDecimal initialPayment = maxServantShare.multiply(OrderConstant.INITIAL_SERVANT_PAYMENT_RATE);
+
+        // Update servant's balance
+        servant.setBalance(servant.getBalance().add(initialPayment));
+        userService.updateById(servant);
+
+        // Store the remaining 20% for potential additional payment after rating
+        order.setPendingServantPayment(maxServantShare.subtract(initialPayment));
+        orderMapper.updateById(order);
+    }
+
+
+    /**
+     * Cancel Order
+     * The client should retake its money or partial of it after order canceled
+     *
+     * @param order
+     */
     public void cancelOrder(Order order) {
         // Fetch the user who posted the order
         User user = userService.getById(order.getClientId());
@@ -170,29 +320,117 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         userService.updateById(user);
 
         // Mark the order as completed and failed
-        order.setStatus(3);
-        this.updateById(order);
+        order.setStatus(OrderConstant.CANCELED);
+        orderMapper.updateById(order);
     }
 
-    public int getRemainingFreePostingQuota(Long userId) {
-        int freeAttemptsToday = countFreeAttemptsToday(userId);
-        return Math.max(0, OrderConstant.FREE_POSTING_QUOTA - freeAttemptsToday);
+    /**
+     * Processing Order
+     * Mark an order as processing
+     *
+     * @param order
+     */
+    public void processingOrder(Order order) {
+        order.setStatus(OrderConstant.PROCESSING);
+        orderMapper.updateById(order);
     }
 
-    private int countFreeAttemptsToday(Long userId) {
-        // Get the start and end of the current day
-        LocalDate today = LocalDate.now();
-        LocalDateTime startOfDay = today.atStartOfDay();
-        LocalDateTime endOfDay = today.plusDays(1).atStartOfDay().minusSeconds(1);
 
-        // Query the order table to count free attempts
-        QueryWrapper<Order> queryWrapper = new QueryWrapper<>();
-        queryWrapper.eq("client_id", userId);
-        queryWrapper.isNull("servant_id"); // No servant matched
-        queryWrapper.between("created_at", startOfDay, endOfDay); // Only orders from today
-        Long cnt = orderMapper.selectCount(queryWrapper);
-        // Return the count of such orders
-        return Math.toIntExact(cnt);
+    @Override
+    @Transactional
+    public boolean rateOrder(Long orderId, Integer rating) {
+        Order order = orderMapper.selectById(orderId);
+        if (order == null || order.getStatus() != OrderConstant.COMPLETED) {
+            return false;
+        }
+
+        // Update the order's performance rating
+        order.setPerformanceRating(rating);
+        int updated = orderMapper.updateById(order);
+        if (updated == 0) {
+            return false;
+        }
+
+        // Adjust servant's payment based on the rating
+        payServantPerformanceAmount(order, rating);
+
+        // Stop the auto-rating monitor thread
+        stopAutoRatingMonitor(orderId);
+
+        return true;
     }
+
+    private void payServantPerformanceAmount(Order order, Integer rating) {
+        // Fetch the servant
+        User servant = userService.getById(order.getServantId());
+        if (servant == null) {
+            return;
+        }
+
+        // Calculate the maximum servant share (70% of order price)
+        BigDecimal maxServantShare = order.getPrice().multiply(OrderConstant.MAX_SERVANT_COMMISSION);
+
+        // Determine additional payment based on rating
+        BigDecimal additionalPercentage = BigDecimal.ZERO;
+        if (rating == OrderConstant.LIMITED) {
+            additionalPercentage = OrderConstant.ADDITIONAL_PAYMENT_RATE_LIMITED; // 0%
+        } else if (rating == OrderConstant.FAIR) {
+            additionalPercentage = OrderConstant.ADDITIONAL_PAYMENT_RATE_FAIR; // 10% of 70%
+        } else if (rating == OrderConstant.GOOD) {
+            additionalPercentage = OrderConstant.ADDITIONAL_PAYMENT_RATE_GOOD; // 20% of 70%
+        }
+
+        // Calculate the additional payment
+        BigDecimal additionalPayment = maxServantShare.multiply(additionalPercentage);
+
+        // Update servant's balance
+        servant.setBalance(servant.getBalance().add(additionalPayment));
+        userService.updateById(servant);
+
+        // Update order's pending payment
+        BigDecimal pendingPayment = order.getPendingServantPayment();
+        if (pendingPayment == null) {
+            pendingPayment = BigDecimal.ZERO;
+        }
+        pendingPayment = pendingPayment.subtract(additionalPayment);
+        order.setPendingServantPayment(pendingPayment);
+        orderMapper.updateById(order);
+    }
+
+    public void monitorAutoRating(Long orderId) {
+        Thread autoRatingThread = new Thread(() -> {
+            try {
+                Thread.sleep(86400000); // Sleep for 24 hours (24 * 60 * 60 * 1000 milliseconds)
+                Order order = this.getById(orderId);
+                if (order != null && order.getPerformanceRating()==null) {
+                    rateOrder(orderId, OrderConstant.GOOD);
+                }
+            } catch (InterruptedException e) {
+                // Thread was interrupted, do nothing
+            } finally {
+                // Clean up the thread from the map
+                autoRatingMonitoringThreads.remove(orderId);
+            }
+        });
+
+        autoRatingMonitoringThreads.put(orderId, autoRatingThread);
+        autoRatingThread.start();
+    }
+
+    public void stopAutoRatingMonitor(Long orderId) {
+        Thread autoRatingThread = autoRatingMonitoringThreads.get(orderId);
+        if (autoRatingThread != null && autoRatingThread.isAlive()) {
+            autoRatingThread.interrupt(); // Interrupt the thread to stop monitoring
+            autoRatingMonitoringThreads.remove(orderId); // Remove from active monitoring map
+        }
+    }
+
+
+    /*D*/
+    @Override
+    public boolean delete(Long id) {
+        return orderMapper.deleteById(id) > 0;
+    }
+
 
 }

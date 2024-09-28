@@ -41,7 +41,7 @@
             <img src="/static/page/register/back.svg">
         </div>
         <div class="header-register">
-            <app-title type="h1" bold>👋 {{ $t('register.step2Title') }}</app-title>
+            <app-title type="h1" bold>👋{{ $t('register.step2Title') }}</app-title>
             <p class="center_h">{{ $t('register.step2Desc') }}</p>
         </div>
         <!-- Gender Selection Buttons -->
@@ -376,7 +376,8 @@ export default {
                     referrerId: this.referrerId,
                     ...this.userData
                 },
-                success: () => {
+                success: (res) => {
+                    this.userData.id=res.data.data.id;
                     uni.setStorageSync(app.globalData.data.userLoginKey, true);
                     uni.setStorageSync(app.globalData.data.userInfoKey, this.userData);
                     uni.showToast({title: '授权成功', icon: 'none'});

@@ -118,14 +118,18 @@ export default {
         }
     },
     onLaunch() {
-        // this.checkUserInfo();
 
         // auth
-        /*uni.authorize({
+        uni.authorize({
             scope: 'scope.userLocation',
             success: function () {
             }
-        })*/
+        })
+        uni.authorize({
+            scope: 'scope.chooseLocation',
+            success: function () {
+            }
+        })
 
         // handle sys info
         uni.setStorageSync(app.globalData.data.systemInfoKey, uni.getSystemInfoSync());

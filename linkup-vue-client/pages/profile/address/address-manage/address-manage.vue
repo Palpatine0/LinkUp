@@ -34,7 +34,7 @@
             {{ address.addressName }}
         </div>
         <div v-else @tap="authVerification">
-            {{ $t('profile>address>addressManage.selectLocation') }}
+            {{$t('profile>address>addressManage.selectLocation')}}
         </div>
     </view>
 
@@ -61,13 +61,15 @@
 </template>
 
 <script>
+import app from "../../../../App.vue";
+
 export default {
     data() {
         return {
             address: {
                 id: null,
                 userId: uni.getStorageSync(getApp().globalData.data.userInfoKey).id,
-                consignee: '',
+                consignee: uni.getStorageSync(getApp().globalData.data.userInfoKey).nickname,
                 phoneNumber: '',
                 address: '',
                 addressName: '',
@@ -104,6 +106,8 @@ export default {
         authVerification() {
             uni.getSetting({
                 success: (res) => {
+                    console.log("uni.getSetting({")
+                    console.log(res)
                     if (res.authSetting['scope.userLocation']) {
                         this.handleChooseLocation()
                     } else if (res.authSetting['scope.userLocation'] === undefined) {
@@ -116,25 +120,35 @@ export default {
         },
         handleChooseLocation() {
             uni.authorize({
-                scope: 'scope.chooseLocation',
-                success: function () {
+                scope: 'scope.userLocation',
+                success: () => { // Change to arrow function
                     uni.chooseLocation({
-                        latitude: uni.getStorageSync('latitudeFuzzy') || '',
-                        longitude: uni.getStorageSync('longitudeFuzzy') || '',
-                        success: (res) => {
-                            uni.setStorageSync('currentLocation', res)
-                            this.address.address = res.address
-                            this.address.addressName = res.name
-                            this.address.latitude = res.latitude
-                            this.address.longitude = res.longitude
+                        latitude: uni.getStorageSync(app.globalData.data.userInfoKey).latitudeFuzzy || '',
+                        longitude: uni.getStorageSync(app.globalData.data.userInfoKey).longitudeFuzzy || '',
+                        success: (res) => { // Change to arrow function
+                            console.log("res");
+                            console.log(res);
+                            uni.setStorageSync('currentLocation', res);
+                            console.log("this.address");
+                            console.log(this.address); // Now `this` should refer to the Vue component
+                            this.address.address = res.address;
+                            this.address.addressName = res.name;
+                            this.address.latitude = res.latitude;
+                            this.address.longitude = res.longitude;
                         },
-                        fail: function (err) {
-                            console.log('取消按钮', err)
+                        fail: (err) => {
+                            console.log("uni.chooseLocation fail");
+                            console.log(err);
                         }
-                    })
+                    });
+                },
+                fail: (err) => {
+                    console.log("uni.authorize err");
+                    console.log(err);
                 }
-            })
+            });
         },
+
         handleOpenSetting() {
             wx.openSetting({
                 success: (res) => {

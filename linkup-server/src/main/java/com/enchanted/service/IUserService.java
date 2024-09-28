@@ -8,7 +8,7 @@ import java.util.Map;
 
 public interface IUserService extends IService<User> {
     /*C*/
-    boolean save(User user);
+    Map saveInfo(User user);
 
     /*R*/
     Page<User> search(Map<String, Object> params, int page, int size); // <-- Added search method

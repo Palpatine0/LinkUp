@@ -2,7 +2,7 @@
 <view class="popup-container">
     <view class="mask" @click="close"></view>
     <view class="popup-content">
-        <view class="popup-header">{{$t('component>address>addressSelector.selectorServiceAddress')}}</view>
+        <view class="popup-header">{{ $t('component>address>addressSelector.selectorServiceAddress') }}</view>
 
         <!-- Address List -->
         <view v-for="address in addressList" :key="address.id" class="address-item" @click="selectAddress(address)">
@@ -13,13 +13,15 @@
         </view>
 
         <!-- Create New Address Button -->
-        <view class="create-address" @click="addressCreateRedirect">{{$t('component>address>addressSelector.createAddress')}}</view>
+        <view class="create-address" @click="addressCreateRedirect">{{ $t('component>address>addressSelector.createAddress') }}</view>
     </view>
 
 </view>
 </template>
 
 <script>
+
+import app from "../../../App.vue";
 
 export default {
     data() {
@@ -43,7 +45,9 @@ export default {
             uni.request({
                 url: getApp().globalData.data.requestUrl + '/address/search',
                 method: 'POST',
-                data: {userId: uni.getStorageSync(getApp().globalData.data.userInfoKey).id},
+                data: {
+                    userId: uni.getStorageSync(app.globalData.data.userInfoKey).id
+                },
                 success: (res) => {
                     this.addressList = res.data.list; // Populate address list
                 },

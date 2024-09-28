@@ -50,7 +50,7 @@ public class OrderCandidateServiceImpl extends ServiceImpl<OrderCandidateMapper,
                 order.setCountdownStartAt(new Date());
                 orderService.updateById(order);
             }
-            orderService.monitorOrder(orderCandidate.getOrderId());
+            orderService.startOrderAssignmentMonitor(orderCandidate.getOrderId());
         }else {
             Order order = orderService.getById(orderCandidate.getOrderId());
             order.setStatus(0);

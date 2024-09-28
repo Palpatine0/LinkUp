@@ -49,12 +49,16 @@ public class Order {
 
     private BigDecimal price;
 
+    @TableField("pending_servant_payment")
+    private BigDecimal pendingServantPayment;
+
     /**
      * 0: limited;
      * 1: fair;
-     * 2: good
+     * 2: good;
      */
-    private BigDecimal rating;
+    @TableField("performance_rating")
+    private Integer performanceRating;
 
     @TableField("candidate_count")
     private Integer candidateCount;

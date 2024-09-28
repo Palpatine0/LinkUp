@@ -17,6 +17,19 @@ public class OrderController {
     @Autowired
     private IOrderService orderService;
 
+
+    /*C*/
+    @PostMapping("/save")
+    public R save(@RequestBody Order order) {
+        boolean isSaved = orderService.save(order);
+        if (isSaved) {
+            return R.ok("添加成功");
+        } else {
+            return R.error("添加失败");
+        }
+    }
+
+    /*R*/
     @PostMapping("/search")
     public R search(@RequestBody Map<String, Object> requestData) {
         int page = requestData.get("page") != null ? Integer.parseInt(requestData.get("page").toString()) : 1;
@@ -29,16 +42,14 @@ public class OrderController {
         return R.paginate(orderPage);
     }
 
-    @PostMapping("/save")
-    public R save(@RequestBody Order order) {
-        boolean isSaved = orderService.save(order);
-        if (isSaved) {
-            return R.ok("添加成功");
-        } else {
-            return R.error("添加失败");
-        }
+    @PostMapping("/remaining-free-posting-quota")
+    public R getRemainingFreePostingQuota(@RequestBody Map<String, Object> requestData) {
+        Long userId = Long.parseLong(requestData.get("userId").toString());
+        int freeOrderPostingQuota = orderService.getRemainingFreePostingQuota(userId);
+        return R.ok().put("freeOrderPostingQuota", freeOrderPostingQuota);
     }
 
+    /*U*/
     @PostMapping("/update")
     public R update(@RequestBody Map<String, Object> requestData) {
         Long id = Long.parseLong(requestData.get("id").toString());
@@ -52,6 +63,36 @@ public class OrderController {
         }
     }
 
+    @PostMapping("/update-status")
+    public R changeStatus(@RequestBody Map<String, Object> requestData) {
+        Long orderId = Long.parseLong(requestData.get("orderId").toString());
+        Integer newStatus = Integer.parseInt(requestData.get("status").toString());
+
+        boolean isUpdated = orderService.changeStatus(orderId, newStatus);
+        if (isUpdated) {
+            return R.ok("Order status changed successfully");
+        } else {
+            return R.error("Failed to change order status");
+        }
+    }
+
+
+    @PostMapping("/rate")
+    public R rateOrder(@RequestBody Map<String, Object> requestData) {
+        Long orderId = Long.parseLong(requestData.get("orderId").toString());
+        Integer rating = Integer.parseInt(requestData.get("rating").toString());
+
+        boolean isRated = orderService.rateOrder(orderId, rating);
+        if (isRated) {
+            return R.ok("Order rated successfully");
+        } else {
+            return R.error("Failed to rate order");
+        }
+    }
+
+
+
+    /*D*/
     @PostMapping("/delete")
     public R delete(@RequestBody Map<String, Object> requestData) {
         Long id = Long.parseLong(requestData.get("id").toString());
@@ -61,28 +102,5 @@ public class OrderController {
         } else {
             return R.error("删除失败");
         }
-    }
-
-    @PostMapping("/cancel-order")
-    public R cancelOrder(@RequestBody Map<String, Object> requestData) {
-        Long orderId = Long.parseLong(requestData.get("orderId").toString());
-
-        Order order = orderService.getById(orderId);
-        if (order == null) {
-            return R.error("Order not found");
-        }
-
-        // Stop monitoring the order and handle failure
-        orderService.stopMonitoring(orderId); // Implement this method to stop the monitoring
-        orderService.cancelOrder(order);
-
-        return R.ok("Order failure handled successfully");
-    }
-
-    @PostMapping("/remaining-free-posting-quota")
-    public R getRemainingFreePostingQuota(@RequestBody Map<String, Object> requestData) {
-        Long userId = Long.parseLong(requestData.get("userId").toString());
-        int freeOrderPostingQuota = orderService.getRemainingFreePostingQuota(userId);
-        return R.ok().put("freeOrderPostingQuota", freeOrderPostingQuota);
     }
 }

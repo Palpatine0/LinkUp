@@ -45,8 +45,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     @Autowired
     private HttpClientUtil httpClientUtil;
 
-    @Override
-    public boolean save(User user) {
+
+    public Map<String, String> saveInfo(User user) {
+        HashMap<String, String> map = new HashMap<>();
         int insert = userMapper.insert(user);
         // generate qr code
         genQrCodeImage(this.getAccessToken(), String.valueOf(user.getId()));
@@ -59,7 +60,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             userServant.setUserId(user.getId());
             userServantMapper.insert(userServant);
         }
-        return retBool(insert);
+        map.put("id", user.getId().toString());
+        return map;
     }
 
     private String getAccessToken() {
@@ -104,6 +106,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         }
         return null;
     }
+
+
 
     @Override
     public Page<User> search(Map<String, Object> params, int page, int size) {

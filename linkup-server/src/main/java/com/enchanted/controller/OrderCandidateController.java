@@ -18,6 +18,7 @@ public class OrderCandidateController {
     @Autowired
     private IOrderCandidateService orderCandidateService;
 
+    /*C*/
     @PostMapping("/save")
     public R save(@RequestBody OrderCandidate orderCandidate) {
         boolean isSaved = orderCandidateService.save(orderCandidate);
@@ -28,6 +29,7 @@ public class OrderCandidateController {
         }
     }
 
+    /*R*/
     @PostMapping("/search")
     public R search(@RequestBody Map<String, Object> requestData) {
         int page = requestData.get("page") != null ? Integer.parseInt(requestData.get("page").toString()) : 1;
@@ -42,7 +44,7 @@ public class OrderCandidateController {
         return R.paginate(orderCandidatePage);
     }
 
-    @PostMapping("/get-servants")
+    @PostMapping("/servants")
     public R getServantsBy(@RequestBody Map<String, Object> requestData) {
         int page = requestData.get("page") != null ? Integer.parseInt(requestData.get("page").toString()) : 1;
         int size = requestData.get("size") != null ? Integer.parseInt(requestData.get("size").toString()) : 10;
@@ -55,15 +57,10 @@ public class OrderCandidateController {
         if (userPage.getRecords().isEmpty()) {
             return R.error("No servants found for the given order.");
         }
-
-        return R.ok()
-            .put("servantList", userPage.getRecords()) // List of servant users
-            .put("total", userPage.getTotal())         // Total number of users
-            .put("pages", userPage.getPages())         // Total pages
-            .put("current", userPage.getCurrent());    // Current page
+        return R.paginate(userPage);
     }
 
-
+    /*U*/
     @PostMapping("/update")
     public R update(@RequestBody Map<String, Object> requestData) {
         Long id = Long.parseLong(requestData.get("id").toString());
@@ -77,6 +74,7 @@ public class OrderCandidateController {
         }
     }
 
+    /*D*/
     @PostMapping("/delete")
     public R delete(@RequestBody Map<String, Object> requestData) {
         Long id = Long.parseLong(requestData.get("id").toString());

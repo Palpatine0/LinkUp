@@ -8,20 +8,27 @@ import java.util.Map;
 
 public interface IOrderService extends IService<Order> {
 
-    Page<Order> search(Map<String, Object> params, int page, int size);
-
+    /*C*/
     boolean save(Order order);
 
-    boolean update(Long id, Map<String, Object> changes);
-
-    boolean delete(Long id);
-
-    void monitorOrder(Long orderId);
-
-    void cancelOrder(Order order);
-
-    void stopMonitoring(Long orderId);
+    /*R*/
+    Page<Order> search(Map<String, Object> params, int page, int size);
 
     int getRemainingFreePostingQuota(Long userId);
+
+    /*U*/
+    boolean update(Long id, Map<String, Object> changes);
+
+    boolean changeStatus(Long orderId, int newStatus);
+
+    boolean rateOrder(Long orderId, Integer rating);
+
+    void startOrderAssignmentMonitor(Long orderId);
+
+    void stopOrderAssignmentMonitor(Long orderId);
+
+
+    /*D*/
+    boolean delete(Long id);
 
 }

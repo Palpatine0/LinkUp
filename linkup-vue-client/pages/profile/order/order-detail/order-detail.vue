@@ -182,13 +182,13 @@ export default {
 
         getServantList() {
             uni.request({
-                url: getApp().globalData.data.requestUrl + '/order-candidate/get-servants',
+                url: getApp().globalData.data.requestUrl + '/order-candidate/servants',
                 method: 'POST',
                 data: {
                     orderId: this.orderId
                 },
                 success: (res) => {
-                    this.servantList = res.data.servantList;
+                    this.servantList = res.data.list;
 
                     // Fetch servantData for all users in parallel
                     const promises = this.servantList.map((user) => {
@@ -237,7 +237,8 @@ export default {
                         url: getApp().globalData.data.requestUrl + '/order/cancel-order',
                         method: 'POST',
                         data: {
-                            orderId: this.order.id
+                            orderId: this.order.id,
+                            status: 2
                         },
                         success: (res) => {
 

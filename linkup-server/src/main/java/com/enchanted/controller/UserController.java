@@ -20,12 +20,7 @@ public class UserController {
     /*C*/
     @PostMapping("/save")
     public R save(@RequestBody User user) {
-        boolean isSaved = userService.save(user);
-        if (isSaved) {
-            return R.ok("添加成功");
-        } else {
-            return R.error("添加失败");
-        }
+        return R.ok().put("data", userService.saveInfo(user));
     }
 
 
