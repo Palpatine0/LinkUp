@@ -107,6 +107,14 @@
                 {{ weChatText }}
             </div>
         </div>
+        <div class="order-detail">
+            <span>{{ $t('profile>order>orderDetail.orderInfo.address') }}:</span>
+            <div style="flex-direction: column;text-align: end;">
+                <div>{{orderAddress.address}}</div>
+                <div>{{orderAddress.addressName}}</div>
+                <div>{{orderAddress.detail}}</div>
+            </div>
+        </div>
     </div>
 </div>
 </template>
@@ -125,6 +133,7 @@ export default {
         return {
             orderId: '',
             order: {},
+            orderAddress: {},
             servantList: [],
             countdown: 0, // Countdown in seconds
             countdownInterval: null,
@@ -158,9 +167,11 @@ export default {
                         this.startCountdown();
                     }
                     this.getRemainingFreeOrderPostingQuota();
+                    this.getOrderAddress();
                 },
             });
         },
+
 
         getRemainingFreeOrderPostingQuota() {
             uni.request({
@@ -171,6 +182,18 @@ export default {
                 },
                 success: (res) => {
                     this.freeOrderPostingQuota = res.data.freeOrderPostingQuota;
+                },
+            });
+        },
+        getOrderAddress(){
+            uni.request({
+                url: getApp().globalData.data.requestUrl + '/address/search',
+                method: 'POST',
+                data: {
+                    id: this.order.addressId,
+                },
+                success: (res) => {
+                    this.orderAddress = res.data.list[0];
                 },
             });
         },

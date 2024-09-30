@@ -128,7 +128,8 @@
             "orderTime": "下单时间",
             "paymentMethod": "支付方式",
             "balance": "余额",
-            "weChat": "微信支付"
+            "weChat": "微信支付",
+            "address": "地址"
         }
     },
 
