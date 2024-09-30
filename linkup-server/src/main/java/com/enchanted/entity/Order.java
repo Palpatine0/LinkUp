@@ -71,6 +71,10 @@ public class Order {
      */
     private Integer status;
 
+    /**
+     * 0: balance;
+     * 1: WeChat;
+     */
     @TableField("payment_method")
     private String paymentMethod;
 

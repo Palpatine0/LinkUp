@@ -1,10 +1,15 @@
 package com.enchanted.constant;
 
 import java.math.BigDecimal;
+import java.util.concurrent.TimeUnit;
 
 public class OrderConstant {
     // Free posting quota
     public static final int FREE_POSTING_QUOTA = 2;
+
+    // Payment method
+    public static final String BALANCE = "0";
+    public static final String WECHAT = "1";
 
     // Order status constants
     public static final int PENDING = 0;
@@ -27,4 +32,9 @@ public class OrderConstant {
     public static final BigDecimal ADDITIONAL_PAYMENT_RATE_LIMITED = BigDecimal.ZERO;      // 0%
     public static final BigDecimal ADDITIONAL_PAYMENT_RATE_FAIR = BigDecimal.valueOf(0.10); // 10% of 70%
     public static final BigDecimal ADDITIONAL_PAYMENT_RATE_GOOD = BigDecimal.valueOf(0.20); // 20% of 70%
+
+    // Count down timing
+    public static final int AUTO_REFUND_MONITOR_DELAY = (int) TimeUnit.MINUTES.toMillis(30);
+    public static final int SERVANT_SELECTION_MONITOR_DELAY = (int) TimeUnit.MINUTES.toMillis(10);
+    public static final int AUTO_RATING_MONITOR_DELAY = (int) TimeUnit.DAYS.toMillis(1);
 }

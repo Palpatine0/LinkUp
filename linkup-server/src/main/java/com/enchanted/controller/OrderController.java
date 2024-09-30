@@ -68,7 +68,7 @@ public class OrderController {
         Long orderId = Long.parseLong(requestData.get("orderId").toString());
         Integer newStatus = Integer.parseInt(requestData.get("status").toString());
 
-        boolean isUpdated = orderService.changeStatus(orderId, newStatus);
+        boolean isUpdated = orderService.updateStatus(orderId, newStatus);
         if (isUpdated) {
             return R.ok("Order status changed successfully");
         } else {

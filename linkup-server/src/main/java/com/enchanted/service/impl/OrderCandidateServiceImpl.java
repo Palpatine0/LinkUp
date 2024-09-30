@@ -3,6 +3,7 @@ package com.enchanted.service.impl;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.enchanted.constant.OrderConstant;
 import com.enchanted.entity.Order;
 import com.enchanted.entity.OrderCandidate;
 import com.enchanted.entity.User;
@@ -50,7 +51,7 @@ public class OrderCandidateServiceImpl extends ServiceImpl<OrderCandidateMapper,
                 order.setCountdownStartAt(new Date());
                 orderService.updateById(order);
             }
-            orderService.startOrderAssignmentMonitor(orderCandidate.getOrderId());
+            orderService.startServantSelectionMonitor(orderCandidate.getOrderId());
         }else {
             Order order = orderService.getById(orderCandidate.getOrderId());
             order.setStatus(0);
@@ -59,6 +60,11 @@ public class OrderCandidateServiceImpl extends ServiceImpl<OrderCandidateMapper,
             order.setCandidateCount(candidateCount);
             orderService.updateById(order);
         }
+
+        if (isSaved) {
+            orderService.stopAutoRefundMonitor(orderCandidate.getOrderId());
+        }
+
         return isSaved;
     }
 
@@ -117,6 +123,17 @@ public class OrderCandidateServiceImpl extends ServiceImpl<OrderCandidateMapper,
         // Perform paginated query for users
         return userService.page(userPage, userQueryWrapper);
     }
+
+    @Override
+    public boolean hasCandidatesForOrder(Long orderId) {
+        QueryWrapper<OrderCandidate> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("order_id", orderId);
+        queryWrapper.eq("is_deleted", 0);  // Assuming is_deleted is used to track soft deletions
+
+        // Count the number of candidates for the order
+        return orderCandidateMapper.selectCount(queryWrapper) > 0;
+    }
+
 
     @Override
     public boolean update(Long id, Map<String, Object> changes) {

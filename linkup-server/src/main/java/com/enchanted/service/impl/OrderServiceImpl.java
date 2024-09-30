@@ -8,6 +8,7 @@ import com.enchanted.entity.User;
 import com.enchanted.mapper.OrderMapper;
 import com.enchanted.entity.Order;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.enchanted.service.IOrderCandidateService;
 import com.enchanted.service.IOrderService;
 import com.enchanted.service.IUserService;
 import com.enchanted.util.ConversionUtils;
@@ -30,13 +31,19 @@ import java.util.concurrent.ConcurrentHashMap;
 public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements IOrderService {
 
     @Autowired
+    private IUserService userService;
+
+    @Autowired
     private OrderMapper orderMapper;
 
     @Autowired
-    private IUserService userService;
+    private IOrderCandidateService orderCandidateService;
 
+
+    private final Map<Long, Thread> autoRefundMonitoringThreads = new ConcurrentHashMap<>();
     private final Map<Long, Thread> assignmentMonitoringThreads = new ConcurrentHashMap<>();
     private final Map<Long, Thread> autoRatingMonitoringThreads = new ConcurrentHashMap<>();
+
 
     /*C*/
     @Override
@@ -50,7 +57,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         }
 
         // Payment processing
-        if ("1".equals(order.getPaymentMethod())) { // Pay by balance
+        if (OrderConstant.BALANCE.equals(order.getPaymentMethod())) { // Pay by balance
             if (user.getBalance().compareTo(order.getPrice()) < 0) {
                 throw new IllegalArgumentException("Insufficient balance");
             }
@@ -63,7 +70,11 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
         // Save the order
         order.setCreatedAt(new Date());
-        return orderMapper.insert(order) > 0;
+        boolean isSaved = orderMapper.insert(order) > 0;
+        if (isSaved) {
+            startAutoRefundMonitor(order.getId());
+        }
+        return isSaved;
     }
 
     private String generateOrderIdentifier() {
@@ -80,10 +91,50 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     }
 
     @Override
-    public void startOrderAssignmentMonitor(Long orderId) {
+    public void startAutoRefundMonitor(Long orderId) {
+        Thread autoRefundThread = new Thread(() -> {
+            try {
+                // Wait for 30 minutes (30 * 60 * 1000 milliseconds)
+                Thread.sleep(OrderConstant.AUTO_REFUND_MONITOR_DELAY);
+
+                // Check if any candidates picked this order
+
+                boolean hasCandidates = orderCandidateService.hasCandidatesForOrder(orderId);
+
+                // If no candidate picked the order, auto-refund the order
+                if (!hasCandidates) {
+                    Order order = this.getById(orderId);
+                    if (order != null && order.getServantId() == null) {
+                        cancelOrder(order);  // No servant picked, full refund
+                    }
+                }
+
+            } catch (InterruptedException e) {
+                // Thread was interrupted (in case a servant was assigned before 30 minutes)
+            } finally {
+                autoRefundMonitoringThreads.remove(orderId);  // Clean up the thread from the map
+            }
+        });
+
+        autoRefundMonitoringThreads.put(orderId, autoRefundThread);
+        autoRefundThread.start();
+    }
+
+    @Override
+    public void stopAutoRefundMonitor(Long orderId) {
+        Thread autoRefundThread = autoRefundMonitoringThreads.get(orderId);
+        if (autoRefundThread != null && autoRefundThread.isAlive()) {
+            autoRefundThread.interrupt(); // Interrupt the thread to stop monitoring
+            autoRefundMonitoringThreads.remove(orderId); // Remove from active monitoring map
+        }
+    }
+
+    @Override
+    public void startServantSelectionMonitor(Long orderId) {
+        // Start a new thread to monitor the order assignment. Tf the order is not binding with a servant 10 minutes after, cancel it
         Thread monitoringThread = new Thread(() -> {
             try {
-                Thread.sleep(600000); // Sleep for 10 minutes
+                Thread.sleep(OrderConstant.SERVANT_SELECTION_MONITOR_DELAY); // Sleep for 10 minutes
                 Order order = this.getById(orderId);
                 if (order != null && order.getServantId() == null) {
                     cancelOrder(order);
@@ -100,7 +151,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     }
 
     @Override
-    public void stopOrderAssignmentMonitor(Long orderId) {
+    public void stopServantSelectionMonitor(Long orderId) {
         Thread monitoringThread = assignmentMonitoringThreads.get(orderId);
         if (monitoringThread != null && monitoringThread.isAlive()) {
             monitoringThread.interrupt(); // Interrupt the thread to stop monitoring
@@ -121,7 +172,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     @Override
     public int getRemainingFreePostingQuota(Long userId) {
         int freeAttemptsToday = countFreeAttemptsToday(userId);
-        return Math.max(0, OrderConstant.FREE_POSTING_QUOTA - freeAttemptsToday);
+        return Math.max(0, OrderConstant.FREE_POSTING_QUOTA - freeAttemptsToday)+1;
     }
 
     private int countFreeAttemptsToday(Long userId) {
@@ -134,6 +185,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         QueryWrapper<Order> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("client_id", userId);
         queryWrapper.isNull("servant_id"); // No servant matched
+        queryWrapper.isNotNull("countdown_start_at"); // No servant matched
         queryWrapper.between("created_at", startOfDay, endOfDay); // Only orders from today
         Long cnt = orderMapper.selectCount(queryWrapper);
         // Return the count of such orders
@@ -169,7 +221,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
     @Override
     @Transactional
-    public boolean changeStatus(Long orderId, int newStatus) {
+    public boolean updateStatus(Long orderId, int newStatus) {
         Order order = orderMapper.selectById(orderId);
         if (order == null) {
             return false;
@@ -187,16 +239,14 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             case OrderConstant.COMPLETED:
                 completeOrder(order);
                 break;
-
             case OrderConstant.CANCELED:
-                stopOrderAssignmentMonitor(order.getId());
+                stopAutoRefundMonitor(order.getId());
                 cancelOrder(order);
                 break;
             case OrderConstant.PROCESSING:
-                stopOrderAssignmentMonitor(order.getId());
+                stopAutoRefundMonitor(order.getId());
                 processingOrder(order);
                 break;
-
             default:
                 break;
         }
@@ -298,30 +348,35 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
      * @param order
      */
     public void cancelOrder(Order order) {
-        // Fetch the user who posted the order
         User user = userService.getById(order.getClientId());
         if (user == null) {
             return;
         }
 
-        // Check the number of free attempts used by the user today
-        int freeAttemptsToday = countFreeAttemptsToday(order.getClientId());
-
+        boolean hasCandidates = orderCandidateService.hasCandidatesForOrder(order.getId());
         BigDecimal refundAmount = order.getPrice();
 
-        if (freeAttemptsToday < OrderConstant.FREE_POSTING_QUOTA + 1) {
-            refundAmount = order.getPrice(); // 100% refund
+        // If no servant picked the order, refund 100%
+        if (!hasCandidates) {
+            refundAmount = order.getPrice(); // Full refund
         } else {
-            refundAmount = order.getPrice().multiply(BigDecimal.valueOf(0.8)); // 80% refund
+            int freeAttemptsToday = countFreeAttemptsToday(order.getClientId());
+            if (freeAttemptsToday < OrderConstant.FREE_POSTING_QUOTA + 1) {
+                refundAmount = order.getPrice(); // 100% refund
+            } else {
+                refundAmount = order.getPrice().multiply(BigDecimal.valueOf(0.8)); // 80% refund
+            }
         }
 
         // Refund the user
         user.setBalance(user.getBalance().add(refundAmount));
         userService.updateById(user);
 
-        // Mark the order as completed and failed
+        // Mark the order as canceled
         order.setStatus(OrderConstant.CANCELED);
         orderMapper.updateById(order);
+
+        stopAutoRefundMonitor(order.getId());
     }
 
     /**
@@ -400,9 +455,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     public void monitorAutoRating(Long orderId) {
         Thread autoRatingThread = new Thread(() -> {
             try {
-                Thread.sleep(86400000); // Sleep for 24 hours (24 * 60 * 60 * 1000 milliseconds)
+                Thread.sleep(OrderConstant.AUTO_RATING_MONITOR_DELAY); // Sleep for 24 hours
                 Order order = this.getById(orderId);
-                if (order != null && order.getPerformanceRating()==null) {
+                if (order != null && order.getPerformanceRating() == null) {
                     rateOrder(orderId, OrderConstant.GOOD);
                 }
             } catch (InterruptedException e) {

@@ -19,13 +19,17 @@ public interface IOrderService extends IService<Order> {
     /*U*/
     boolean update(Long id, Map<String, Object> changes);
 
-    boolean changeStatus(Long orderId, int newStatus);
+    boolean updateStatus(Long orderId, int newStatus);
 
     boolean rateOrder(Long orderId, Integer rating);
 
-    void startOrderAssignmentMonitor(Long orderId);
+    void startServantSelectionMonitor(Long orderId);
 
-    void stopOrderAssignmentMonitor(Long orderId);
+    void stopServantSelectionMonitor(Long orderId);
+
+    void startAutoRefundMonitor(Long orderId);
+
+    void stopAutoRefundMonitor(Long orderId);
 
 
     /*D*/
