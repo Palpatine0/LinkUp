@@ -57,6 +57,8 @@
     "chat": {
         "chats": "Chats"
     },
+
+
     "//////": "profile",
     "profile": {
         "order": "Order",
@@ -68,11 +70,17 @@
         "signIn": "Sign In",
         "signOut": "Sign Out"
     },
+
     "//////": "profile > order",
     "profile>order": {
         "myOrders": "My Orders",
-        "candidates": "Candidates"
+        "candidates": "Candidates",
+        "pending": "Pending",
+        "processing": "Processing",
+        "completed": "Completed",
+        "canceled": "Canceled"
     },
+
     "profile>order>orderServantSelection": {
         "selectServantType": "Select your Servant Type"
     },
@@ -94,7 +102,31 @@
             "allAge": "All Ages"
         }
     },
-    "profile>order>orderDetail": {},
+    "profile>order>orderDetail": {
+        "price": "Order Price",
+        "totalCandidates": "Total Candidates",
+        "selectedBeforeCountdown": "Please select a candidate before the countdown is over",
+        "cancelOrder": "Cancel Order",
+
+        "orderClosed": "This order has been closed",
+        "refunded": "The cost of your order has been refunded",
+        "orderExpiredExplanation": "Failure in selecting candidate in designated time. This order has been closed",
+        "orderCanceledManuallyExplanation": "You canceled this order",
+        "orderCanceledExplanation": "The order has been closed due to the fact that no one has taken the order within half an hour of its release",
+
+
+        "candidates": "Candidates",
+        "selectCandidate":"Select Candidate",
+        "noCandidate": "No one responded just yet",
+        "orderInfo": {
+            "orderId": "Order ID",
+            "orderTime": "Order Time",
+            "paymentMethod": "Payment Method",
+            "balance": "Balance",
+            "weChat": "WeChat"
+        }
+    },
+
     "//////": "profile > balance",
     "profile>balance": {
         "balance": "Balance",
@@ -118,6 +150,12 @@
         "saveBtn": "Save",
         "updateBtn": "Update"
     },
+
+    "//////": "profile > data",
+    "profile>data": {
+        "ds": "Data and Storage"
+    },
+
     "//////": "components(page)",
     "componentPage>user>userDetail": {
         "startChatting": "Start Chatting"

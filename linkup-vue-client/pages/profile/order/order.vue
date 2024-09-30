@@ -32,24 +32,38 @@
         >
             <div class="order-content">
                 <div style="width: 100%;">
-                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                    <div style="display: flex; align-items: center;">
                         <app-title bold="true" type="h3" style="width: 330px;">{{ order.title }}</app-title>
-                        <span v-if="order.status==0" class="status-dot yellow-dot"></span>
-                        <span v-if="order.status==1" class="status-dot green-dot"></span>
-                        <span v-if="order.status==2" class="status-dot red-dot"></span>
-                        <span v-if="order.status==3" class="status-dot gray-dot"></span>
                     </div>
-                    <div class="order-info">
+                    <div class="order-detail">
                         <div class="candidates-count">
                             {{ $t('profile>order.candidates') }}: {{ order.candidateCount }}
                         </div>
                         <span style="font-size: 14px; color: gray;">{{ order.createdAt }}</span>
+                        <div style="display:flex;justify-content: space-between;">
+                            <span style="font-size: 14px; color: gray;">{{ order.identifier }}</span>
+                            <div v-if="order.status==0" class="flex">
+                                <span class="status-dot yellow-dot"></span>
+                                <div class="status-text">{{ $t('profile>order.pending') }}</div>
+                            </div>
+                            <div v-if="order.status==1" class="flex">
+                                <span class="status-dot green-dot"></span>
+                                <div class="status-text">{{ $t('profile>order.processing') }}</div>
+                            </div>
+                            <div v-if="order.status==2" class="flex">
+                                <span class="status-dot gray-dot"></span>
+                                <div class="status-text">{{ $t('profile>order.completed') }}</div>
+                            </div>
+                            <div v-if="order.status==3" class="flex">
+                                <div class="status-dot red-dot"></div>
+                                <div class="status-text">{{ $t('profile>order.canceled') }}</div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
         <div v-if="loading" style="color: gainsboro; margin-left: 10px;">{{ $t('pub.page.loading') }}</div>
-        <!-- No More Data Message -->
         <div v-else-if="!hasMore" class="no-more-data-container-list">{{ $t('pub.page.noMoreData') }}</div>
     </scroll-view>
 </div>
@@ -176,7 +190,7 @@ export default {
     margin-right: 10px;
 }
 
-.order-info {
+.order-detail {
     margin-top: 5px;
 }
 
@@ -185,7 +199,14 @@ export default {
     height: 10px;
     border-radius: 50%;
     margin-left: 10px;
-    margin-top: -38px;
+    margin-top: 2px;
+}
+
+.status-text {
+    position: relative;
+    bottom: 4px;
+    left: 5px;
+    margin-right: 12px;
 }
 
 .yellow-dot {

@@ -79,7 +79,11 @@
     "//////": "profile > order",
     "profile>order": {
         "myOrders": "我的订单",
-        "candidates": "抢单人数"
+        "candidates": "抢单人数",
+        "pending": "已发布",
+        "processing": "订单开始",
+        "completed": "订单完成",
+        "canceled": "订单取消"
     },
     "profile>order>orderServantSelection": {
         "selectServantType": "选择你的服务者类型"
@@ -102,7 +106,31 @@
             "allAge": "不限年龄"
         }
     },
-    "profile>order>orderDetail": {},
+    "profile>order>orderDetail": {
+        "price": "报价",
+        "totalCandidates": "已抢单",
+        "selectedBeforeCountdown": "请在剩余时间内选择一个达人",
+        "cancelOrder": "取消订单",
+
+        "orderExpired": "订单关闭",
+        "refunded": "您的订单费用已退回至您的余额",
+        "orderExpiredExplanation": "由于您未在规定时间内选择达人，订单已失效",
+        "orderCanceledManuallyExplanation": "您取消了订单",
+        "orderCanceledExplanation": "因订单发布半小时内无人抢单,订单已关闭",
+
+
+
+        "candidates": "已抢单用户",
+        "selectCandidate":"选择达人",
+        "noCandidate": "暂时无人抢单",
+        "orderInfo": {
+            "orderId": "订单编号",
+            "orderTime": "下单时间",
+            "paymentMethod": "支付方式",
+            "balance": "余额",
+            "weChat": "微信支付"
+        }
+    },
 
     "//////": "profile > balance",
     "profile>balance": {
@@ -127,6 +155,10 @@
         "detailPlaceholder": "请输入详细地址",
         "saveBtn": "保存地址",
         "updateBtn": "更新地址"
+    },
+    "//////": "profile > data",
+    "profile>data": {
+        "addressManage": "数据与存储"
     },
 
 

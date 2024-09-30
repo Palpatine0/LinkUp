@@ -102,7 +102,7 @@
                 :value="priceIndex"
                 :range="priceOptions"
             >
-                <div>{{ priceOptions[priceIndex] }}</div>
+                <div>{{ '¥' + priceOptions[priceIndex] }}</div>
             </picker>
         </div>
 
@@ -111,10 +111,9 @@
             <div class="app-button" @click="paymentMethodSelectionToggle">{{ $t('profile>order>orderInitiate.publishOrder') }}</div>
         </div>
 
-        <PaymentMethodSelection v-if="paymentMethodSelectionVisible" :user="user" :balanceAdequate="balanceAdequate"></PaymentMethodSelection>
-
     </div>
 
+    <PaymentMethodSelection v-if="paymentMethodSelectionVisible" :user="user" :balanceAdequate="balanceAdequate"></PaymentMethodSelection>
     <ServiceSchedule @change="bindServiceTimeChange" ref="chooseTime" isMask :hour="parseInt(this.dropdownOptions.serviceDuration[this.serviceDurationIndex])"></ServiceSchedule>
     <AddressSelector v-if="addressPickerVisible" @close="addressPickerToggle" @selectAddress="handleAddressSelect"/>
 </div>
@@ -291,13 +290,14 @@ export default {
                 prices = [basePrice, basePrice + 100, basePrice + 200, basePrice + 300];
             }
 
-            this.priceOptions = prices.map((price) => '¥'+price);
+            // No '¥' in the data, only for display
+            this.priceOptions = prices;
             this.priceIndex = 0;
-
         },
+
         bindPricePickerChange(e) {
             this.priceIndex = e.detail.value;
-            this.formData.price = parseInt(this.priceOptions[this.priceIndex])
+            this.formData.price = this.priceOptions[this.priceIndex];  // Just store the number
         },
 
         // location
@@ -335,7 +335,6 @@ export default {
             const selectedPrice = parseInt(this.priceOptions[this.priceIndex]);
             const balance = parseFloat(this.user.balance);
 
-
             // Ensure both amount and balance are valid numbers (not NaN)
             if (this.$common.isEmpty(selectedPrice) || this.$common.isEmpty(balance)) {
                 this.balanceAdequate = false;
@@ -364,7 +363,7 @@ export default {
             const location = !this.common.isEmpty(this.address) ? this.address.addressName : '不限地区';
 
             // Update the title with the concatenated values
-            this.title = `${this.serviceName}服务: ${genderText} / ${ageText} / ${durationText} / ${location} / ${price}`;
+            this.title = `${this.serviceName}服务: ${genderText} / ${ageText} / ${durationText} / ${location} / ¥${price}`;
         },
         formSubmit(paymentMethod) {
             this.generateTitle();

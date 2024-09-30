@@ -78,6 +78,14 @@
                 "navigationBarBackgroundColor": "#fefefe"
             }
         },
+        // profile > data
+        {
+            "path": "pages/profile/data/data",
+            "style": {
+                "navigationBarTitleText": "",
+                "navigationBarBackgroundColor": "#fefefe"
+            }
+        },
 
         //components
         // user

@@ -27,10 +27,10 @@ export default {
         },
 
         payWithWeChat() {
-            this.$parent.formSubmit(0);
+            this.$parent.formSubmit(1);
         },
         payWithBalance() {
-            this.$parent.formSubmit(1);
+            this.$parent.formSubmit(0);
         },
 
     },

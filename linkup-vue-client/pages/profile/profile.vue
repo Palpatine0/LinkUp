@@ -34,26 +34,26 @@
         <div
             v-for="(item, index) in linkItemsB"
             :key="index"
-            class="link-item"
-            :class="{ 'no-border': index === linkItemsB.length - 1 }"
-            @click="handleLinkClick(item.click)"
         >
-            <img :src="item.icon" alt="" class="link-icon">
-            <span class="link-text">{{ $t(item.label) }}</span>
-
-
+            <div class="link-item" @click="handleLinkClick(item.click)">
+                <img :src="item.icon" alt="" class="link-icon">
+                <span class="link-text">{{ $t(item.label) }}</span>
+            </div>
+            <!-- Separator div instead of border-bottom -->
+            <div v-if="index !== linkItemsB.length - 1" class="separator"></div>
         </div>
     </app-container>
     <app-container color="#fff" col="12" type="list">
         <div
             v-for="(item, index) in linkItemsC"
             :key="index"
-            class="link-item"
-            :class="{ 'no-border': index === linkItemsC.length - 1 }"
-            @click="handleLinkClick(item.click)"
         >
-            <img :src="item.icon" alt="" class="link-icon">
-            <span class="link-text">{{ $t(item.label) }}</span>
+            <div class="link-item" @click="handleLinkClick(item.click)">
+                <img :src="item.icon" alt="" class="link-icon">
+                <span class="link-text">{{ $t(item.label) }}</span>
+            </div>
+            <!-- Separator div instead of border-bottom -->
+            <div v-if="index !== linkItemsC.length - 1" class="separator"></div>
         </div>
     </app-container>
 
@@ -149,6 +149,11 @@ export default {
             uni.navigateTo({
                 url: '/pages/profile/address/address',
             });
+        },
+        dataRedirect() {
+            uni.navigateTo({
+                url: '/pages/profile/data/data',
+            });
         }
     }
 };
@@ -179,19 +184,8 @@ export default {
     text-align: center;
 }
 
-.settings-links {
-    background-color: white;
-    padding: 0px 18px 0px 18px;
-    border-radius: 10px;
-}
-
 .link-item {
     padding: 10px 0;
-    border-bottom: 1px solid #e5e5e5;
-}
-
-.link-item.no-border {
-    border-bottom: none; /* Remove the border for the last item */
 }
 
 .link-text {
@@ -210,6 +204,13 @@ export default {
 .sign-out-button {
     background-color: white;
     color: red;
+}
+
+.separator {
+    height: 1px;
+    background-color: #e5e5e5;
+    margin-left: 42px;
+    margin-right: 22px;
 }
 
 </style>
