@@ -60,7 +60,7 @@ export default {
         getUser() {
             return new Promise((resolve, reject) => {
                 uni.request({
-                    url: getApp().globalData.data.requestUrl + '/user/search',
+                    url: getApp().globalData.data.requestUrl + this.$API.user.search,
                     method: 'POST',
                     data: {
                         id: this.userId
@@ -78,7 +78,7 @@ export default {
         getContact() {
             return new Promise((resolve, reject) => {
                 uni.request({
-                    url: getApp().globalData.data.requestUrl + '/user/search',
+                    url: getApp().globalData.data.requestUrl + this.$API.user.search,
                     method: 'POST',
                     data: {
                         id: this.contactId,
@@ -100,7 +100,7 @@ export default {
                 this.loading = true;
 
                 uni.request({
-                    url: getApp().globalData.data.requestUrl + '/message/search', // Your API endpoint
+                    url: getApp().globalData.data.requestUrl + this.$API.message.search,
                     method: 'POST',
                     data: {
                         senderId: this.userId,    // Current user's ID
@@ -147,7 +147,7 @@ export default {
                 mediaType: 0
             };
             uni.request({
-                url: getApp().globalData.data.requestUrl + '/message/save',
+                url: getApp().globalData.data.requestUrl + this.$API.message.save,
                 method: 'POST',
                 data: messageData,
                 success: (res) => {

@@ -77,7 +77,7 @@ export default {
             } else {
                 const updatedBalance = parseFloat((this.balance - this.withdrawAmount).toFixed(2));
                 uni.request({
-                    url: getApp().globalData.data.requestUrl + '/user/update',
+                    url: getApp().globalData.data.requestUrl + this.$API.user.update,
                     method: 'POST',
                     data: {
                         id: this.userInfo.id,

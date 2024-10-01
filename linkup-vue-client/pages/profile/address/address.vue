@@ -95,7 +95,7 @@ export default {
 
         // Build API parameters based on search keyword
         buildApiParams() {
-            let url = getApp().globalData.data.requestUrl + '/address/search';
+            let url = getApp().globalData.data.requestUrl + this.$API.address.search;
             let method = 'POST';
             let data = {
                 userId: uni.getStorageSync(getApp().globalData.data.userInfoKey).id,

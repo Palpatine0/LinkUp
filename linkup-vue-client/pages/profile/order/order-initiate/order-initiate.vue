@@ -199,7 +199,7 @@ export default {
         getUser() {
             return new Promise((resolve, reject) => {
                 uni.request({
-                    url: getApp().globalData.data.requestUrl + '/user/search',
+                    url: getApp().globalData.data.requestUrl + this.$API.user.search,
                     method: 'POST',
                     data: {
                         id: uni.getStorageSync("userId")
@@ -373,7 +373,7 @@ export default {
                 paymentMethod: paymentMethod,
             };
             uni.request({
-                url: getApp().globalData.data.requestUrl + '/order/save',
+                url: getApp().globalData.data.requestUrl + this.$API.order.save,
                 method: 'POST',
                 data: param,
                 success: (res) => {

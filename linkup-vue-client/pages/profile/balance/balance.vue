@@ -88,7 +88,7 @@ export default {
     methods: {
         getUser() {
             uni.request({
-                url: getApp().globalData.data.requestUrl + '/user/search',
+                url: getApp().globalData.data.requestUrl + this.$API.user.search,
                 method: 'POST',
                 data: {
                     id: uni.getStorageSync(getApp().globalData.data.userInfoKey).id

@@ -156,7 +156,7 @@ export default {
     methods: {
         getOrder() {
             uni.request({
-                url: getApp().globalData.data.requestUrl + '/order/search',
+                url: getApp().globalData.data.requestUrl + this.$API.order.search,
                 method: 'POST',
                 data: {
                     id: this.orderId
@@ -175,7 +175,7 @@ export default {
 
         getRemainingFreeOrderPostingQuota() {
             uni.request({
-                url: getApp().globalData.data.requestUrl + '/order/remaining-free-posting-quota',
+                url: getApp().globalData.data.requestUrl + this.$API.order.remainingFreePostingQuota,
                 method: 'POST',
                 data: {
                     userId: this.order.clientId
@@ -187,7 +187,7 @@ export default {
         },
         getOrderAddress(){
             uni.request({
-                url: getApp().globalData.data.requestUrl + '/address/search',
+                url: getApp().globalData.data.requestUrl + this.$API.user.search,
                 method: 'POST',
                 data: {
                     id: this.order.addressId,
@@ -245,7 +245,7 @@ export default {
 
         getServantList() {
             uni.request({
-                url: getApp().globalData.data.requestUrl + '/order-candidate/servants',
+                url: getApp().globalData.data.requestUrl + this.$API.orderCandidate.servants,
                 method: 'POST',
                 data: {
                     orderId: this.orderId
@@ -257,7 +257,7 @@ export default {
                     const promises = this.servantList.map((user) => {
                         return new Promise((resolve) => {
                             uni.request({
-                                url: getApp().globalData.data.requestUrl + '/user-servant/search',
+                                url: getApp().globalData.data.requestUrl + this.$API.userServant.search,
                                 method: 'POST',
                                 data: {
                                     userId: user.id
@@ -297,7 +297,7 @@ export default {
                 confirmText: '确定',
                 success: (res) => {
                     uni.request({
-                        url: getApp().globalData.data.requestUrl + '/order/update-status',
+                        url: getApp().globalData.data.requestUrl + this.$API.order.updateStatus,
                         method: 'POST',
                         data: {
                             orderId: this.order.id,

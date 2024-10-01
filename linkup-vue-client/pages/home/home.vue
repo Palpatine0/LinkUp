@@ -52,7 +52,7 @@ export default {
             if (!this.hasMore || this.loading) return;
             this.loading = true;
             uni.request({
-                url: getApp().globalData.data.requestUrl + '/user/search',
+                url: getApp().globalData.data.requestUrl + this.$API.user.search,
                 method: "POST",
                 data: {
                     page: this.page,

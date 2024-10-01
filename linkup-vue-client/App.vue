@@ -46,7 +46,7 @@ export default {
                         scope: 'scope.userInfo',
                         success: function () {
                             uni.request({
-                                url: getApp().globalData.data.requestUrl + '/user/user-config',
+                                url: getApp().globalData.data.requestUrl + this.$API.user.userConfig,
                                 method: 'POST',
                                 data: {
                                     code: userLoginCode,
@@ -75,7 +75,7 @@ export default {
                 const syncToStorage = () => {
                     return new Promise((resolve) => {
                         uni.request({
-                            url: getApp().globalData.data.requestUrl + '/user/search',
+                            url: getApp().globalData.data.requestUrl + this.$API.user.search,
                             method: 'POST',
                             data: {
                                 openid: userConfigData.openid

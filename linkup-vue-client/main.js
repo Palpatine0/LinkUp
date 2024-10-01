@@ -4,6 +4,7 @@ import VueI18n from 'vue-i18n'
 import globalMixin from './utils/globalMixin'
 
 import common from "./utils/common";
+import API from "./api/api";
 import messages from './locale/index.js'
 
 import './style/common.css';
@@ -26,6 +27,7 @@ Vue.component('user-list', UserList);
 Vue.mixin(globalMixin)
 
 Vue.prototype.$common = common;
+Vue.prototype.$API = API;
 Vue.use(VueI18n)
 Vue.config.productionTip = false
 

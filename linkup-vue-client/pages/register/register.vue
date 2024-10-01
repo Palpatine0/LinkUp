@@ -218,7 +218,7 @@ export default {
     methods: {
         referralCodeValidation() {
             uni.request({
-                url: getApp().globalData.data.requestUrl + '/user/referral-code-validation',
+                url: getApp().globalData.data.requestUrl + this.$API.user.referralCodeValidation,
                 method: 'POST',
                 data: {
                     referralCode: this.referralCode,
@@ -244,7 +244,7 @@ export default {
         advance() {
             this.step++;
         },
-        backToHome(){
+        backToHome() {
             uni.switchTab({
                 url: '/pages/home/home',
             });
@@ -368,7 +368,7 @@ export default {
         // done
         setUserInfo(e) {
             uni.request({
-                url: getApp().globalData.data.requestUrl + '/user/save',
+                url: getApp().globalData.data.requestUrl + this.$API.user.save,
                 method: 'POST',
                 data: {
                     referralCode: this.$common.generateUniqueCodes('a1a', 2),
@@ -377,7 +377,7 @@ export default {
                     ...this.userData
                 },
                 success: (res) => {
-                    this.userData.id=res.data.data.id;
+                    this.userData.id = res.data.data.id;
                     uni.setStorageSync(app.globalData.data.userLoginKey, true);
                     uni.setStorageSync(app.globalData.data.userInfoKey, this.userData);
                     uni.showToast({title: '授权成功', icon: 'none'});

@@ -43,7 +43,7 @@ export default {
         getAddressList() {
             // Fetch addresses from the server
             uni.request({
-                url: getApp().globalData.data.requestUrl + '/address/search',
+                url: getApp().globalData.data.requestUrl + this.$API.address.search,
                 method: 'POST',
                 data: {
                     userId: uni.getStorageSync(app.globalData.data.userInfoKey).id

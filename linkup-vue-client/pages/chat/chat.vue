@@ -63,7 +63,7 @@ export default {
 
             // Step 1: Find messages where current user is the sender
             uni.request({
-                url: getApp().globalData.data.requestUrl + '/message/search-contacts',
+                url: getApp().globalData.data.requestUrl + this.$API.message.searchContacts,
                 method: 'POST',
                 data: {
                     senderId: this.userId,  // Fetch messages where current user is the sender
@@ -82,7 +82,7 @@ export default {
 
                     // Step 2: Find messages where current user is the recipient
                     uni.request({
-                        url: getApp().globalData.data.requestUrl + '/message/search-contacts',
+                        url: getApp().globalData.data.requestUrl + this.$API.message.searchContacts,
                         method: 'POST',
                         data: {
                             recipientId: this.userId,  // Fetch messages where current user is the recipient
@@ -119,7 +119,7 @@ export default {
         // Step 2: Fetch user details for the unique user IDs found in the messages
         getUserDetails(id) {
             uni.request({
-                url: getApp().globalData.data.requestUrl + '/user/search', // The endpoint for fetching user details
+                url: getApp().globalData.data.requestUrl + this.$API.user.search, // The endpoint for fetching user details
                 method: "POST",
                 data: {
                     id: id,  // Pass the array of unique user IDs

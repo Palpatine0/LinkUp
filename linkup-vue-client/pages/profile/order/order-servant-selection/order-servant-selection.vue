@@ -25,7 +25,7 @@ export default {
     methods: {
         getServantTypeList() {
             uni.request({
-                url: getApp().globalData.data.requestUrl + '/service-type/search',
+                url: getApp().globalData.data.requestUrl + this.$API.serviceType.search,
                 method: 'POST',
                 data: {},
                 success: (res) => {
