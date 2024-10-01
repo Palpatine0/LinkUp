@@ -8,8 +8,8 @@
         <div class="price-respondent-container">
             <!-- Price Section -->
             <div class="price-section">
-                <app-title bold="true">{{ $t('profile>order>orderDetail.price') }}</app-title>
-                <p>{{ order.price }} ¥</p>
+                <app-title bold="true">{{ $t('profile>order>orderDetail.orderInfoBasic.price') }}</app-title>
+                <p>¥{{ order.price }}</p>
             </div>
 
             <!-- Divider -->
@@ -17,7 +17,7 @@
 
             <!-- Respondent Section -->
             <div class="respondent-section">
-                <app-title bold="true">{{ $t('profile>order>orderDetail.totalCandidates') }}</app-title>
+                <app-title bold="true">{{ $t('profile>order>orderDetail.orderInfoBasic.totalCandidates') }}</app-title>
                 <p>{{ order.candidateCount }}</p>
             </div>
         </div>
@@ -55,7 +55,7 @@
 
 
     <!-- Respondent Users Title -->
-    <div v-if="countdown > 0&&order.status==0" class="mt-4" >
+    <div v-if="countdown > 0&&order.status==0" class="mt-4">
         <app-title bold="true">{{ $t('profile>order>orderDetail.candidates') }}</app-title>
         <div v-if="servantList.length > 0">
             <z-swiper v-model="servantList" :options="{slidesPerView: 'auto', centeredSlides: true, spaceBetween: 14}" style="width: 100%">
@@ -93,13 +93,13 @@
     <!-- Order Detail -->
     <div class="mt-4" style="color: grey">
         <div class="order-detail">
-            <span>{{ $t('profile>order>orderDetail.orderInfo.orderId') }}:</span> {{ order.identifier }}
+            <span>{{ $t('profile>order>orderDetail.orderInfoDetail.orderId') }}:</span> {{ order.identifier }}
         </div>
         <div class="order-detail">
-            <span>{{ $t('profile>order>orderDetail.orderInfo.orderTime') }}:</span> {{ common.stampToTime(order.createdAt) }}
+            <span>{{ $t('profile>order>orderDetail.orderInfoDetail.orderTime') }}:</span> {{ common.stampToTime(order.createdAt) }}
         </div>
         <div class="order-detail">
-            <span>{{ $t('profile>order>orderDetail.orderInfo.paymentMethod') }}:</span>
+            <span>{{ $t('profile>order>orderDetail.orderInfoDetail.paymentMethod') }}:</span>
             <div v-if="order.paymentMethod==0">
                 {{ balanceText }}
             </div>
@@ -108,12 +108,26 @@
             </div>
         </div>
         <div class="order-detail">
-            <span>{{ $t('profile>order>orderDetail.orderInfo.address') }}:</span>
+            <span>{{ $t('profile>order>orderDetail.orderInfoDetail.address') }}:</span>
             <div style="flex-direction: column;text-align: end;">
-                <div>{{orderAddress.address}}</div>
-                <div>{{orderAddress.addressName}}</div>
-                <div>{{orderAddress.detail}}</div>
+                <div>{{ orderAddress.address }}</div>
+                <div>{{ orderAddress.addressName }}</div>
+                <div>{{ orderAddress.detail }}</div>
             </div>
+        </div>
+
+        <!-- Cancel order (no candidates) -->
+        <div v-if="order.status==0&&common.isEmpty(this.servantList)" class="fix-bottom">
+            <app-button color="red" shaped @click="cancelOrder">
+                {{ $t('profile>order>orderDetail.cancelOrder') }}
+            </app-button>
+        </div>
+
+        <!-- Repost order -->
+        <div v-if="order.status==3" class="fix-bottom">
+            <app-button  shaped @click="repostOrder">
+                {{ $t('profile>order>orderDetail.repostOrder') }}
+            </app-button>
         </div>
     </div>
 </div>
@@ -122,6 +136,7 @@
 <script>
 
 import common from "../../../../utils/common";
+import $common from "../../../../utils/common";
 
 export default {
     computed: {
@@ -138,8 +153,8 @@ export default {
             countdown: 0, // Countdown in seconds
             countdownInterval: null,
             freeOrderPostingQuota: 0,
-            balanceText:this.$t('profile>order>orderDetail.orderInfo.balance'),
-            weChatText:this.$t('profile>order>orderDetail.orderInfo.weChat'),
+            balanceText: this.$t('profile>order>orderDetail.orderInfoDetail.balance'),
+            weChatText: this.$t('profile>order>orderDetail.orderInfoDetail.weChat'),
         };
     },
     onLoad(params) {
@@ -148,7 +163,6 @@ export default {
         this.getServantList();
     },
     onUnLoad() {
-        // Clear the countdown interval when the component is destroyed
         if (this.countdownInterval) {
             clearInterval(this.countdownInterval);
         }
@@ -185,9 +199,9 @@ export default {
                 },
             });
         },
-        getOrderAddress(){
+        getOrderAddress() {
             uni.request({
-                url: getApp().globalData.data.requestUrl + this.$API.user.search,
+                url: getApp().globalData.data.requestUrl + this.$API.address.search,
                 method: 'POST',
                 data: {
                     id: this.order.addressId,
@@ -208,11 +222,6 @@ export default {
 
             // Get the current time in milliseconds
             const currentTime = new Date().getTime();
-
-            console.log("Raw countdownStartAt:", this.order.countdownStartAt);
-            console.log("Parsed Start Time (milliseconds):", startTime);
-            console.log("Countdown End Time (milliseconds):", countdownEndTime);
-            console.log("Current Time (milliseconds):", currentTime);
 
             // Calculate the remaining time until countdown ends
             const remainingTime = countdownEndTime - currentTime;
@@ -290,25 +299,86 @@ export default {
         },
 
         cancelOrder() {
+            if (this.$common.isEmpty(this.servantList)) {
+                uni.showModal({
+                    title: this.$t('profile>order>orderDetail.noCandidateCancelModal.title'),
+                    content: this.$t('profile>order>orderDetail.noCandidateCancelModal.content'),
+                    showCancel: true,
+                    confirmText: this.$t('pub.button.confirm'),
+                    cancelText: this.$t('pub.button.cancel'),
+                    success: (res) => {
+                        if (res.confirm) {
+                            uni.request({
+                                url: getApp().globalData.data.requestUrl + this.$API.order.updateStatus,
+                                method: 'POST',
+                                data: {
+                                    orderId: this.order.id,
+                                    status: 3
+                                },
+                                success: (res) => {
+                                    uni.redirectTo({
+                                        url: '/pages/profile/order/order',
+                                    })
+                                },
+                            });
+                        }
+
+                    },
+                });
+            } else {
+                uni.showModal({
+                    title: this.$t('profile>order>orderDetail.hasCandidateCancelModal.title'),
+                    content: this.$t('profile>order>orderDetail.hasCandidateCancelModal.content') + `${this.freeOrderPostingQuota}`,
+                    showCancel: true,
+                    confirmText: this.$t('pub.button.confirm'),
+                    cancelText: this.$t('pub.button.cancel'),
+                    success: (res) => {
+                        if (res.confirm) {
+                            uni.request({
+                                url: getApp().globalData.data.requestUrl + this.$API.order.updateStatus,
+                                method: 'POST',
+                                data: {
+                                    orderId: this.order.id,
+                                    status: 3
+                                },
+                                success: (res) => {
+                                    uni.redirectTo({
+                                        url: '/pages/profile/order/order',
+                                    })
+                                },
+                            });
+                        }
+
+                    },
+                });
+            }
+
+        },
+
+        repostOrder(){
             uni.showModal({
-                title: '确认取消订单',
-                content: `是否确定要取消订单？您今日的免费发单额度还剩${this.freeOrderPostingQuota}次。超出额度本订单只能回退定价的80%`,
+                title: this.$t('profile>order>orderDetail.repostModal.title'),
+                content: this.$t('profile>order>orderDetail.repostModal.content'),
                 showCancel: true,
-                confirmText: '确定',
+                confirmText: this.$t('pub.button.confirm'),
+                cancelText: this.$t('pub.button.cancel'),
                 success: (res) => {
-                    uni.request({
-                        url: getApp().globalData.data.requestUrl + this.$API.order.updateStatus,
-                        method: 'POST',
-                        data: {
-                            orderId: this.order.id,
-                            status: 3
-                        },
-                        success: (res) => {
-                            uni.redirectTo({
-                                url: '/pages/profile/order/order',
-                            })
-                        },
-                    });
+                    if (res.confirm) {
+                        uni.request({
+                            url: getApp().globalData.data.requestUrl + this.$API.order.updateStatus,
+                            method: 'POST',
+                            data: {
+                                orderId: this.order.id,
+                                status: 3
+                            },
+                            success: (res) => {
+                                uni.redirectTo({
+                                    url: '/pages/profile/order/order',
+                                })
+                            },
+                        });
+                    }
+
                 },
             });
         },

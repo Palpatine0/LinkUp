@@ -60,6 +60,13 @@ public class OrderCandidateController {
         return R.paginate(userPage);
     }
 
+    @PostMapping("/has-candidates")
+    public R hasCandidatesForOrder(@RequestBody Map<String, Object> requestData) {
+        Long orderId = Long.parseLong(requestData.get("orderId").toString());
+        boolean hasCandidates = orderCandidateService.hasCandidatesForOrder(orderId);
+        return R.ok().put("hasCandidates", hasCandidates);
+    }
+
     /*U*/
     @PostMapping("/update")
     public R update(@RequestBody Map<String, Object> requestData) {

@@ -107,23 +107,40 @@
         }
     },
     "profile>order>orderDetail": {
-        "price": "报价",
-        "totalCandidates": "已抢单",
-        "selectedBeforeCountdown": "请在剩余时间内选择一个达人",
-        "cancelOrder": "取消订单",
+        "orderInfoBasic": {
+            "price": "报价",
+            "totalCandidates": "已抢单"
+        },
 
+        "candidates": "已抢单用户",
+        "selectCandidate":"选择达人",
+        "noCandidate": "暂时无人抢单",
+
+
+
+        "selectedBeforeCountdown": "请在剩余时间内选择一个达人",
         "orderExpired": "订单关闭",
         "refunded": "您的订单费用已退回至您的余额",
         "orderExpiredExplanation": "由于您未在规定时间内选择达人，订单已失效",
         "orderCanceledManuallyExplanation": "您取消了订单",
         "orderCanceledExplanation": "因订单发布半小时内无人抢单,订单已关闭",
 
+        "cancelOrder": "取消订单",
+        "NoCandidateCancelModal": {
+            "title": "确认取消订单",
+            "content": "确定要取消订单?"
+        },
+        "HasCandidateCancelModal": {
+            "title": "确认取消订单",
+            "content": "您的订单已经被选择，是否确认取消？超出今日的免费发单额度后本订单只能回退定价的80%。您今日的免费发单额度次数: "
+        },
+        "repostOrder": "重新发布订单",
+        "repostModal": {
+            "title": "重新发布订单",
+            "content": "您确定要重新发布订单?"
+        },
 
-
-        "candidates": "已抢单用户",
-        "selectCandidate":"选择达人",
-        "noCandidate": "暂时无人抢单",
-        "orderInfo": {
+        "orderInfoDetail": {
             "orderId": "订单编号",
             "orderTime": "下单时间",
             "paymentMethod": "支付方式",

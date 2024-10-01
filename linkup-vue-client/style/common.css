@@ -152,6 +152,17 @@
     text-align: center;
 }
 
+/*positioning*/
+.fix-bottom{
+    position: fixed;
+    bottom: 20px;
+    left: 20px;
+    right: 20px;
+    cursor: pointer;
+    text-align: center;
+    z-index: 100;
+    width: auto;
+}
 
 
 /* miscellaneous */

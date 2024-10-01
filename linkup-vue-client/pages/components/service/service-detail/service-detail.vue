@@ -36,7 +36,10 @@
             </div>
         </scroll-view>
 
-        <div class="action-button app-button" @click="servantListRedirect">立即下单</div>
+        <div class="fix-bottom">
+            <div class="app-button" @click="servantListRedirect">立即下单</div>
+        </div>
+
     </div>
 </div>
 </template>
@@ -172,17 +175,6 @@ export default {
     padding: 20px;
 }
 
-.action-button {
-    position: fixed;
-    bottom: 20px;
-    left: 20px;
-    right: 20px;
-    padding: 10px 30px;
-    cursor: pointer;
-    text-align: center;
-    z-index: 100;
-    width: auto;
-}
 
 .detail-placeholder {
     background-color: #ccc;
