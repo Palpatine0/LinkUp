@@ -130,8 +130,9 @@
 
     "//////": "profile > balance",
     "profile>balance": {
-        "balance": "Balance",
-        "deposit": "Deposit"
+        "balance": "Your Looking Coins",
+        "deposit": "Deposit",
+        "withdraw": "Withdraw"
     },
     "//////": "profile > address",
     "profile>address": {
@@ -174,9 +175,19 @@
         "selectorServiceAddress": "Selector an Address",
         "createAddress": "Create an Address"
     },
-    "component>balance>topUp": {
-        "topUpTitle": "Top-up",
-        "topUpBtn": "Top-up"
+    "component>balance>deposit": {
+        "depositTitle": "Deposit",
+        "depositBtn": "Deposit"
+    },
+    "component>balance>withdraw": {
+        "withdrawTitle": "Withdraw",
+        "withdrawBtn": "Withdraw",
+        "placeholder": "Enter amount to withdraw",
+        "invalidAmount": "Please enter a valid withdrawal amount",
+        "clientMinWithdrawAmount": "The minimum withdrawal amount is ¥100",
+        "servantMinWithdrawAmount": "The minimum withdrawal amount is ¥200",
+        "success": "Withdrawal successful",
+        "fail": "Withdrawal failed"
     },
     "component>chat>message-input": {
         "takePhoto": "Take Photo",

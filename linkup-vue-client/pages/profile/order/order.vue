@@ -21,7 +21,6 @@
         :scroll-top="0"
         scroll-y="true"
         style="height: 80vh"
-        class="mt-4"
         @scrolltolower="onReachBottom"
     >
         <div

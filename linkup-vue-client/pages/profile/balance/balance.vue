@@ -1,29 +1,28 @@
 <template>
-<div class="page" style="background-color: #f3f2f6;">
+<div class="page">
 
     <!-- User Info Section -->
     <div class="user-info">
-        <div class="profile-picture">
-            <image :src="user.avatar" mode="aspectFill" class="profile-img"></image>
-        </div>
         <div class="user-details">
-            <text class="user-name">{{ user.nickname }}</text>
-            <div class="points-balance">
-                <image src="/static/page/balance/coins.svg" class="points-icon"></image>
-                <text class="user-points">{{ user.credit }}</text>
-            </div>
+            <div class="user-name">Hi, <span style="font-weight: bold">{{ user.nickname }}</span></div>
         </div>
+        <image :src="user.avatar" mode="aspectFill" class="profile-img"></image>
     </div>
 
     <!-- Wallet and Balance Section -->
     <div class="wallet-balance">
-        <div class="wallet-info">
-            <div class="balance-card">
-                <div class="balance-details">
-                    <text style="font-size: 14px">{{$t('profile>balance.balance')}}</text>
-                    <text class="balance-amount">¥ {{ $common.toNumber(user.balance, 'bigdecimal').toFixed(2) }}</text>
-                </div>
-                <div class="pay-button" @click="topUpToggle()">{{$t('profile>balance.deposit')}}</div>
+        <div class="balance-info">
+            <div style="font-size: 24px;font-weight: bold">{{ $t('profile>balance.balance') }}</div>
+            <div class="balance-amount">{{ $common.toNumber(user.balance, 'bigdecimal').toFixed(2) }}</div>
+        </div>
+        <div class="balance-opts">
+            <div class="pay-button" @click="depositToggle()">
+                <div style="width: 70px">{{ $t('profile>balance.deposit') }}</div>
+                <img class="pay-button-icon" src="/static/page/balance/arrow-down-left.svg">
+            </div>
+            <div class="pay-button" @click="withdrawToggle()">
+                <div style="width: 70px">{{ $t('profile>balance.withdraw') }}</div>
+                <img class="pay-button-icon" src="/static/page/balance/arrow-up-right.svg">
             </div>
         </div>
     </div>
@@ -57,27 +56,30 @@
     </div>-->
 
     <!--widgets-->
-    <TopUp v-if="topUpVisible" :userInfo="user"></TopUp>
+    <Deposit v-if="depositVisible" :userInfo="user"></Deposit>
+    <Withdraw v-if="withdrawVisible" :userInfo="user"></Withdraw>
     <!--<QrShare v-if="qeShareVisible" :userInfo="user"></QrShare>-->
 </div>
 </template>
 
 <script>
 // import QrShare from "../../components/qrShare.vue";
-import TopUp from "../../../components/page/balance/top-up.vue";
+import Deposit from "../../../components/page/balance/deposit.vue";
+import Withdraw from "../../../components/page/balance/withdraw.vue";
 
 export default {
     components: {
-        TopUp,
+        Deposit,
+        Withdraw
         // QrShare,
     },
     data() {
         return {
             user: {},
-
             userBalance: 0.00,
             qeShareVisible: false,
-            topUpVisible: false,
+            depositVisible: false,
+            withdrawVisible: false,
         };
     },
     onLoad() {
@@ -105,9 +107,12 @@ export default {
                 url: '/pages/order-history/order-history'
             })
         },
-        topUpToggle() {
-            this.topUpVisible = !this.topUpVisible
-        }
+        depositToggle() {
+            this.depositVisible = !this.depositVisible
+        },
+        withdrawToggle() {
+            this.withdrawVisible = !this.withdrawVisible
+        },
     },
 
 }
@@ -121,11 +126,9 @@ export default {
     padding: 20rpx;
     border-radius: 20rpx;
     margin-bottom: 20rpx;
+    justify-content: space-between;
 }
 
-.profile-picture {
-    margin-right: 20rpx;
-}
 
 .profile-img {
     width: 130rpx;
@@ -139,8 +142,7 @@ export default {
 }
 
 .user-name {
-    font-size: 36rpx;
-    font-weight: bold;
+    font-size: 66rpx;
     color: #333;
 }
 
@@ -150,53 +152,50 @@ export default {
     margin-top: 10rpx;
 }
 
-.points-icon {
-    width: 30rpx;
-    height: 30rpx;
-    margin-right: 10rpx;
-}
-
-.user-points {
-    font-size: 36rpx;
-    color: #f8be23;
-}
 
 /* Wallet and Balance Section */
 .wallet-balance {
-    background-color: #fac322;
+    background-color: #2676f7;
     padding: 20rpx;
-    border-radius: 45rpx;
+    border-radius: 70rpx;
     margin-bottom: 20rpx;
-    height: 160px;
+    height: 210px;
+    color: white;
 }
 
-.balance-card {
+.balance-opts {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: 70px;
-    padding: 18px;
+    padding: 0px 14px;
 }
 
-.balance-details {
-    display: flex;
-    flex-direction: column;
+.balance-info {
+    padding: 15px;
+    color: white;
 }
 
 .balance-amount {
-    font-size: 40rpx;
+    font-size: 82rpx;
     font-weight: bold;
-    color: #333;
     margin-top: 10rpx;
 }
 
 .pay-button {
-    background-color: #fbd83f;
-    color: white;
-    padding: 10rpx 30rpx;
+    display: flex;
+    background-color: white;
+    color: #2676f7;
+    font-weight: bold;
+    padding: 23rpx 30rpx;
     border-radius: 50rpx;
-    font-size: 44rpx;
+    font-size: 35rpx;
     margin-top: 20rpx;
+}
+
+.pay-button-icon{
+    width: 24px;
+    height: 24px;
+    margin: 2px 0 0 32px;
 }
 
 /* Orders and Favorites Section */

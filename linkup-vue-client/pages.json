@@ -26,100 +26,7 @@
                 "navigationBarBackgroundColor": "#f3f2f6"
             }
         },
-        // profile > order
-        {
-            "path": "pages/profile/order/order",
-            "style": {
-                "navigationBarTitleText": "",
-                "navigationBarBackgroundColor": "#fefefe"
-            }
-        },
-        {
-            "path": "pages/profile/order/order-servant-selection/order-servant-selection",
-            "style": {
-                "navigationBarTitleText": "",
-                "navigationBarBackgroundColor": "#fefefe"
-            }
-        },
-        {
-            "path": "pages/profile/order/order-initiate/order-initiate",
-            "style": {
-                "navigationBarTitleText": "",
-                "navigationBarBackgroundColor": "#fefefe"
-            }
-        },
-        {
-            "path": "pages/profile/order/order-detail/order-detail",
-            "style": {
-                "navigationBarTitleText": "",
-                "navigationBarBackgroundColor": "#f3f2f6"
-            }
-        },
-        // profile > balance
-        {
-            "path": "pages/profile/balance/balance",
-            "style": {
-                "navigationBarTitleText": "",
-                "navigationBarBackgroundColor": "#fefefe"
-            }
-        },
-        // profile > address
-        {
-            "path": "pages/profile/address/address",
-            "style": {
-                "navigationBarTitleText": "",
-                "navigationBarBackgroundColor": "#fefefe"
-            }
-        },
-        {
-            "path": "pages/profile/address/address-manage/address-manage",
-            "style": {
-                "navigationBarTitleText": "",
-                "navigationBarBackgroundColor": "#fefefe"
-            }
-        },
-        // profile > data
-        {
-            "path": "pages/profile/data/data",
-            "style": {
-                "navigationBarTitleText": "",
-                "navigationBarBackgroundColor": "#fefefe"
-            }
-        },
 
-        //components
-        // user
-        {
-            "path": "pages/components/user/user-detail/user-detail",
-            "style": {
-                "navigationBarTitleText": "",
-                "navigationBarBackgroundColor": "#fefefe"
-            }
-        },
-        // service
-        {
-            "path": "pages/components/service/service-detail/service-detail",
-            "style": {
-                "navigationBarTitleText": "",
-                "navigationBarBackgroundColor": "#fefefe",
-                "navigationStyle":"custom"
-            }
-        },
-        {
-            "path": "pages/components/service/service-detail/servant-list/servant-list",
-            "style": {
-                "navigationBarTitleText": "",
-                "navigationBarBackgroundColor": "#fefefe"
-            }
-        },
-        // chat
-        {
-            "path": "pages/components/chat/chat-window/chat-window",
-            "style": {
-                "navigationBarTitleText": "",
-                "navigationBarBackgroundColor": "#fefefe"
-            }
-        },
         // register
         {
             "path": "pages/register/register",
@@ -129,7 +36,127 @@
                 "navigationStyle":"custom"
             }
         }
+    ],
+    "subPackages": [
+        // profile > order
+        {
+            "root": "pages/profile/order",
+            "pages": [
+                {
+                    "path": "order",
+                    "style": {
+                        "navigationBarTitleText": "",
+                        "navigationBarBackgroundColor": "#fefefe"
+                    }
+                },
+                {
+                    "path": "order-servant-selection/order-servant-selection",
+                    "style": {
+                        "navigationBarTitleText": "",
+                        "navigationBarBackgroundColor": "#fefefe"
+                    }
+                },
+                {
+                    "path": "order-initiate/order-initiate",
+                    "style": {
+                        "navigationBarTitleText": "",
+                        "navigationBarBackgroundColor": "#fefefe"
+                    }
+                },
+                {
+                    "path": "order-detail/order-detail",
+                    "style": {
+                        "navigationBarTitleText": "",
+                        "navigationBarBackgroundColor": "#f3f2f6"
+                    }
+                }
+            ]
+        },
+        // profile > balance
+        {
+            "root": "pages/profile/balance",
+            "pages": [
+                {
+                    "path": "balance",
+                    "style": {
+                        "navigationBarTitleText": "",
+                        "navigationBarBackgroundColor": "#fefefe"
+                    }
+                }
+            ]
+        },
+        // profile > address
+        {
+            "root": "pages/profile/address",
+            "pages": [
+                {
+                    "path": "address",
+                    "style": {
+                        "navigationBarTitleText": "",
+                        "navigationBarBackgroundColor": "#fefefe"
+                    }
+                },
+                {
+                    "path": "address-manage/address-manage",
+                    "style": {
+                        "navigationBarTitleText": "",
+                        "navigationBarBackgroundColor": "#fefefe"
+                    }
+                }
+            ]
+        },
+        // profile > data
+        {
+            "root": "pages/profile/data",
+            "pages": [
+                {
+                    "path": "data",
+                    "style": {
+                        "navigationBarTitleText": "",
+                        "navigationBarBackgroundColor": "#fefefe"
+                    }
+                }
+            ]
+        },
 
+        //components
+        {
+            "root": "pages/components",
+            "pages": [
+                // user
+                {
+                    "path": "user/user-detail/user-detail",
+                    "style": {
+                        "navigationBarTitleText": "",
+                        "navigationBarBackgroundColor": "#fefefe"
+                    }
+                },
+                // service
+                {
+                    "path": "service/service-detail/service-detail",
+                    "style": {
+                        "navigationBarTitleText": "",
+                        "navigationBarBackgroundColor": "#fefefe",
+                        "navigationStyle":"custom"
+                    }
+                },
+                {
+                    "path": "service/service-detail/servant-list/servant-list",
+                    "style": {
+                        "navigationBarTitleText": "",
+                        "navigationBarBackgroundColor": "#fefefe"
+                    }
+                },
+                // chat
+                {
+                    "path": "chat/chat-window/chat-window",
+                    "style": {
+                        "navigationBarTitleText": "",
+                        "navigationBarBackgroundColor": "#fefefe"
+                    }
+                }
+            ]
+        }
     ],
     "globalStyle": {
         "navigationBarTextStyle": "black",

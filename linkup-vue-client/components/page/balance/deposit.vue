@@ -2,7 +2,7 @@
 <view class="charge-container">
     <view class="mask" @click="close()"></view>
     <view class="widget-center charge-anim">
-        <view class="charge-header">{{ $t('component>balance>topUp.topUpTitle') }}</view>
+        <view class="charge-header">{{ $t('component>balance>deposit.depositTitle') }}</view>
         <!-- Predefined Amount Buttons -->
         <view class="charge-options">
             <div class="app-button-outlined" @click="setAmount(100)">
@@ -32,7 +32,7 @@
 
         <!-- Confirm Button -->
         <div class="center_h" style="width: 60%;">
-            <app-button @click="confirmCharge" shaped>{{ $t('component>balance>topUp.topUpBtn') }}</app-button>
+            <app-button @click="confirmCharge" shaped>{{ $t('component>balance>deposit.depositBtn') }}</app-button>
         </div>
     </view>
 </view>
@@ -49,7 +49,7 @@ export default {
     props: {userInfo: Object},
     methods: {
         close() {
-            this.$parent.topUpToggle(false);
+            this.$parent.depositToggle(false);
         },
         setAmount(amount) {
             this.selectedAmount = amount;

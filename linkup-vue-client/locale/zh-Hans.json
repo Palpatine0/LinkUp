@@ -135,8 +135,9 @@
 
     "//////": "profile > balance",
     "profile>balance": {
-        "balance":"您的余额",
-        "deposit":"充值"
+        "balance":"您的领客币",
+        "deposit":"充值",
+        "withdraw": "提款"
     },
 
     "//////": "profile > address",
@@ -182,9 +183,19 @@
         "selectorServiceAddress": "选择服务地点",
         "createAddress": "新增地址"
     },
-    "component>balance>topUp": {
-        "topUpTitle": "余额充值",
-        "topUpBtn": "确认充值"
+    "component>balance>deposit": {
+        "depositTitle": "余额充值",
+        "depositBtn": "确认充值"
+    },
+    "component>balance>withdraw": {
+        "withdrawTitle": "余额提现",
+        "withdrawBtn": "确认提现",
+        "placeholder": "请输入提现金额",
+        "invalidAmount": "请输入有效的提现金额",
+        "clientMinWithdrawAmount": "最低提款金额为100元",
+        "servantMinWithdrawAmount": "最低提款金额为200元",
+        "success": "提现成功",
+        "fail": "提现失败"
     },
     "component>chat>message-input": {
         "takePhoto":"拍照",

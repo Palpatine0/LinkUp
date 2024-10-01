@@ -170,10 +170,14 @@
     z-index: 1; /* Make sure it's above the background */
 }
 .no-more-data-container-list {
+    text-align: center;
     color: gainsboro;
-    margin-left: 10px;
+    margin: 10px 0;
 }
 .no-more-data-text {
     color: #9e9e9e;
     margin-top: 4px;
+}
+.hint{
+    color: #949393;
 }
