@@ -20,11 +20,13 @@ public class UserClientServiceImpl extends ServiceImpl<UserClientMapper, UserCli
     @Autowired
     private UserClientMapper userClientMapper;
 
+    /*C*/
     @Override
     public boolean save(UserClient userClient) {
         return userClientMapper.insert(userClient) > 0;
     }
 
+    /*R*/
     @Override
     public Page<UserClient> search(Map<String, Object> params, int page, int size) {
         QueryWrapper<UserClient> queryWrapper = new QueryWrapper<>();
@@ -47,6 +49,7 @@ public class UserClientServiceImpl extends ServiceImpl<UserClientMapper, UserCli
         return this.page(userClientPage, queryWrapper);
     }
 
+    /*U*/
     @Override
     public boolean update(Long id, Map<String, Object> changes) {
         UserClient userClient = userClientMapper.selectById(id);
@@ -72,6 +75,7 @@ public class UserClientServiceImpl extends ServiceImpl<UserClientMapper, UserCli
         return retBool(updated);
     }
 
+    /*D*/
     @Override
     public boolean delete(Long id) {
         return userClientMapper.deleteById(id) > 0;

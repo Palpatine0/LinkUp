@@ -17,6 +17,7 @@ public class UserClientController {
     @Autowired
     private IUserClientService userClientService;
 
+    /*C*/
     @PostMapping("/save")
     public R save(@RequestBody UserClient userClient) {
         boolean isSaved = userClientService.save(userClient);
@@ -27,6 +28,7 @@ public class UserClientController {
         }
     }
 
+    /*R*/
     @PostMapping("/search")
     public R search(@RequestBody Map<String, Object> requestData) {
         int page = requestData.get("page") != null ? Integer.parseInt(requestData.get("page").toString()) : 1;
@@ -41,6 +43,7 @@ public class UserClientController {
         return R.paginate(userClientPage);
     }
 
+    /*U*/
     @PostMapping("/update")
     public R update(@RequestBody Map<String, Object> requestData) {
         Long id = Long.parseLong(requestData.get("id").toString());
@@ -54,6 +57,7 @@ public class UserClientController {
         }
     }
 
+    /*D*/
     @PostMapping("/delete")
     public R delete(@RequestBody Map<String, Object> requestData) {
         Long id = Long.parseLong(requestData.get("id").toString());
