@@ -34,7 +34,8 @@ public class OrderConstant {
     public static final BigDecimal ADDITIONAL_PAYMENT_RATE_GOOD = BigDecimal.valueOf(0.20); // 20% of 70%
 
     // Count down timing
-    public static final int AUTO_REFUND_MONITOR_DELAY = (int) TimeUnit.MINUTES.toMillis(30);
+//    public static final int AUTO_REFUND_MONITOR_DELAY = (int) TimeUnit.MINUTES.toMillis(30);
+    public static final int AUTO_REFUND_MONITOR_DELAY = (int) TimeUnit.SECONDS.toMillis(10);
     public static final int SERVANT_SELECTION_MONITOR_DELAY = (int) TimeUnit.MINUTES.toMillis(10);
     public static final int AUTO_RATING_MONITOR_DELAY = (int) TimeUnit.DAYS.toMillis(1);
 }

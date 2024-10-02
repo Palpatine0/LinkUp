@@ -8,6 +8,12 @@
     <select id="search" resultType="com.enchanted.entity.Transaction">
         SELECT * FROM `transaction`
         <where>
+            <if test="params.keyword != null and params.keyword != ''">
+                AND (
+                description LIKE CONCAT('%', #{params.keyword}, '%')
+                OR description_cn LIKE CONCAT('%', #{params.keyword}, '%')
+                )
+            </if>
             <if test="params.id != null and params.id != ''">
                 AND id = #{params.id}
             </if>

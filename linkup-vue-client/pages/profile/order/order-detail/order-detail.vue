@@ -109,7 +109,7 @@
         </div>
         <div class="order-detail">
             <span>{{ $t('profile>order>orderDetail.orderInfoDetail.address') }}:</span>
-            <div style="flex-direction: column;text-align: end;">
+            <div style="flex-direction: column;text-align: end;width: 70vw;">
                 <div>{{ orderAddress.address }}</div>
                 <div>{{ orderAddress.addressName }}</div>
                 <div>{{ orderAddress.detail }}</div>

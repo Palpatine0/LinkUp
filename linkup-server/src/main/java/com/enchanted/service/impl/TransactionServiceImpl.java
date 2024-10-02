@@ -8,6 +8,9 @@ import com.enchanted.service.ITransactionService;
 import com.enchanted.util.ConversionUtils;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.jdbc.CannotGetJdbcConnectionException;
+import org.springframework.retry.annotation.Backoff;
+import org.springframework.retry.annotation.Retryable;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
 
@@ -24,6 +27,7 @@ public class TransactionServiceImpl extends ServiceImpl<TransactionMapper, Trans
     private TransactionMapper transactionMapper;
 
     /*C*/
+    @Retryable(value = {CannotGetJdbcConnectionException.class}, maxAttempts = 3, backoff = @Backoff(delay = 2000))
     @Override
     public boolean save(Transaction transaction) {
         transaction.setCreatedAt(new java.util.Date());

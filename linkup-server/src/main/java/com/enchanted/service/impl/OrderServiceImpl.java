@@ -1,5 +1,6 @@
 package com.enchanted.service.impl;
 
+import com.alibaba.druid.util.StringUtils;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -15,7 +16,9 @@ import com.enchanted.service.IOrderService;
 import com.enchanted.service.ITransactionService;
 import com.enchanted.service.IUserService;
 import com.enchanted.util.ConversionUtils;
+import com.enchanted.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ReflectionUtils;
@@ -83,16 +86,19 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
         boolean isSaved = orderMapper.insert(order) > 0;
         if (isSaved) {
-            startAutoRefundMonitor(order.getId());
-            // Record the transaction
-            Transaction transaction = new Transaction();
-            transaction.setUserId(user.getId());
-            transaction.setOrderId(order.getId());
-            transaction.setAmount(order.getPrice().negate());
-            transaction.setBalanceAfter(user.getBalance());
-            transaction.setTransactionType(TransactionConstant.DEDUCTION);
-            transaction.setDescription(TransactionConstant.CLIENT_ORDER_PAYMENT);
-            transactionService.save(transaction);
+            if (StringUtils.equals(order.getPaymentMethod(), OrderConstant.BALANCE)) {
+                startAutoRefundMonitor(order.getId());
+                // Record the transaction
+                Transaction transaction = new Transaction();
+                transaction.setUserId(user.getId());
+                transaction.setOrderId(order.getId());
+                transaction.setAmount(order.getPrice().negate());
+                transaction.setBalanceAfter(user.getBalance());
+                transaction.setTransactionType(TransactionConstant.DEDUCTION);
+                transaction.setDescription(TransactionConstant.CLIENT_ORDER_PAYMENT);
+                transaction.setDescriptionCn(TransactionConstant.CLIENT_ORDER_PAYMENT_CN);
+                transactionService.save(transaction);
+            }
         }
         return isSaved;
     }
@@ -320,6 +326,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         transaction.setBalanceAfter(referrer.getBalance());
         transaction.setTransactionType(TransactionConstant.ADDITION);
         transaction.setDescription(TransactionConstant.CLIENT_REFERRER_COMMISSION);
+        transaction.setDescriptionCn(TransactionConstant.CLIENT_REFERRER_COMMISSION_CN);
         transactionService.save(transaction);
     }
 
@@ -350,6 +357,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         transaction.setBalanceAfter(referrer.getBalance());
         transaction.setTransactionType(TransactionConstant.ADDITION);
         transaction.setDescription(TransactionConstant.SERVANT_REFERRER_COMMISSION);
+        transaction.setDescriptionCn(TransactionConstant.SERVANT_REFERRER_COMMISSION_CN);
         transactionService.save(transaction);
     }
 
@@ -373,7 +381,6 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         order.setPendingServantPayment(maxServantShare.subtract(initialPayment));
         orderMapper.updateById(order);
 
-        // Record the transaction
         Transaction transaction = new Transaction();
         transaction.setUserId(servant.getId());
         transaction.setOrderId(order.getId());
@@ -381,6 +388,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         transaction.setBalanceAfter(servant.getBalance());
         transaction.setTransactionType(TransactionConstant.ADDITION);
         transaction.setDescription(TransactionConstant.SERVANT_INITIAL_PAYMENT);
+        transaction.setDescriptionCn(TransactionConstant.SERVANT_INITIAL_PAYMENT_CN);
         transactionService.save(transaction);
     }
 
@@ -390,6 +398,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
      *
      * @param order
      */
+    @Async("taskExecutor")
     public void cancelOrder(Order order) {
         User user = userService.getById(order.getClientId());
         if (user == null) {
@@ -429,6 +438,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         transaction.setBalanceAfter(user.getBalance());
         transaction.setTransactionType(TransactionConstant.ADDITION);
         transaction.setDescription(TransactionConstant.CLIENT_CANCEL_ORDER_REFUND);
+        transaction.setDescriptionCn(TransactionConstant.CLIENT_CANCEL_ORDER_REFUND_CN);
         transactionService.save(transaction);
     }
 
@@ -511,6 +521,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         transaction.setBalanceAfter(servant.getBalance());
         transaction.setTransactionType(TransactionConstant.ADDITION);
         transaction.setDescription(TransactionConstant.SERVANT_PERFORMANCE_PAYMENT);
+        transaction.setDescriptionCn(TransactionConstant.SERVANT_PERFORMANCE_PAYMENT_CN);
         transactionService.save(transaction);
     }
 

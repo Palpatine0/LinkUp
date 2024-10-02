@@ -29,14 +29,14 @@
 
     <!-- Location -->
     <app-title bold="true">{{ $t('profile>address>addressManage.serviceLocation') }}</app-title>
-    <view class="app-input">
+    <div class="app-input" style="margin-bottom: 30px">
         <div v-if="address.address" @tap="authVerification">
             {{ address.addressName }}
         </div>
         <div v-else @tap="authVerification">
             {{$t('profile>address>addressManage.selectLocation')}}
         </div>
-    </view>
+    </div>
 
     <!-- Detailed Address -->
     <app-title bold="true">{{ $t('profile>address>addressManage.detailedAddress') }}</app-title>
