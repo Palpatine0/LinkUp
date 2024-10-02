@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.enchanted.mapper.TransactionMapper">
+
+    <select id="search" resultType="com.enchanted.entity.Transaction">
+        SELECT * FROM `transaction`
+        <where>
+            <if test="params.id != null and params.id != ''">
+                AND id = #{params.id}
+            </if>
+            <if test="params.userId != null and params.userId != ''">
+                AND user_id = #{params.userId}
+            </if>
+            <if test="params.transactionType != null and params.transactionType != ''">
+                AND transaction_type = #{params.transactionType}
+            </if>
+            <!-- Add more conditions as needed -->
+        </where>
+        ORDER BY created_at DESC
+    </select>
+
+</mapper>

@@ -92,6 +92,19 @@ export default {
                         uni.showToast({ title: this.$t('component>balance>withdraw.fail'), icon: 'none' });
                     },
                 });
+                uni.request({
+                    url: getApp().globalData.data.requestUrl + this.$API.transaction.save,
+                    method: 'POST',
+                    data: {
+                        userId: this.userInfo.id,
+                        amount: -this.withdrawAmount,
+                        balanceAfter: updatedBalance,
+                        transactionType: 0,
+                        description: "WITHDRAW",
+                    },
+                    success: (res) => {
+                    },
+                });
             }
         }
 

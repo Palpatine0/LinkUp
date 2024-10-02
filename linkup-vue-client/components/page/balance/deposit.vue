@@ -97,13 +97,26 @@ export default {
                     success: (res) => {
                         console.log(res);
                         uni.showToast({title: '充值成功', icon: 'none'});
-                        this.$parent.getUser(); // Refresh user data after successful update
-                        this.close(); // Close the top-up dialog
+                        this.$parent.getUser();
+                        this.close();
                     },
                     fail: (err) => {
                         console.log(err);
                         uni.showToast({title: '充值失败', icon: 'none'});
                     }
+                });
+                uni.request({
+                    url: getApp().globalData.data.requestUrl + this.$API.transaction.save,
+                    method: 'POST',
+                    data: {
+                        userId: this.userInfo.id,
+                        amount: this.selectedAmount,
+                        balanceAfter: updatedBalance,
+                        transactionType: 1,
+                        description: "DEPOSIT",
+                    },
+                    success: (res) => {
+                    },
                 });
             } else {
                 uni.showToast({title: '请选择或输入一个充值金额', icon: 'none'});

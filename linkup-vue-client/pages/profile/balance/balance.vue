@@ -28,10 +28,10 @@
     </div>
 
     <!-- Orders and Share QR Code Section -->
-    <!--<div class="myorders-shareqrcode">
+    <div class="myorders-shareqrcode">
         <div class="wrapper" @click="orderHistoryRedirect">
             <div class="content">
-                <text style="font-weight: bold;">我的订单</text>
+                <text style="font-weight: bold;">我的交易记录</text>
                 <br>
                 <text class="div-more">点击查看</text>
             </div>
@@ -40,7 +40,7 @@
             </div>
         </div>
 
-        &lt;!&ndash; Vertical Divider Line &ndash;&gt;
+        <!-- Vertical Divider Line -->
         <div class="vertical-moulding"></div>
 
         <div class="wrapper" @click="qeShareToggle">
@@ -53,7 +53,7 @@
                 <image class="icon" src="/static/tab/qrcode.svg"></image>
             </div>
         </div>
-    </div>-->
+    </div>
 
     <!--widgets-->
     <Deposit v-if="depositVisible" :userInfo="user"></Deposit>
