@@ -5,6 +5,7 @@ import com.enchanted.entity.Message;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import java.util.List;
 
 import java.util.Map;
 
@@ -12,4 +13,6 @@ import java.util.Map;
 public interface MessageMapper extends BaseMapper<Message> {
     IPage<Message> search(IPage<Message> page, @Param("params") Map<String, Object> params);
     IPage<Message> searchContacts(IPage<Message> page, @Param("params") Map<String, Object> params);
+
+    int updateMessagesAsRead(@Param("messageIds") List<Long> messageIds);
 }

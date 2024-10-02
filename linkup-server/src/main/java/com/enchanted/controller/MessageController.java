@@ -17,6 +17,7 @@ import java.net.MalformedURLException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 @CrossOrigin
@@ -27,48 +28,7 @@ public class MessageController {
     @Autowired
     private IMessageService messageService;
 
-    @PostMapping("/search")
-    public R search(@RequestBody Map<String, Object> requestData) {
-        int page = requestData.get("page") != null ? Integer.parseInt(requestData.get("page").toString()) : 1;
-        int size = requestData.get("size") != null ? Integer.parseInt(requestData.get("size").toString()) : 20;
-
-        requestData.remove("page");
-        requestData.remove("size");
-
-        Page<Message> messagePage = messageService.search(requestData, page, size);
-        return R.paginate(messagePage);
-    }
-
-    @PostMapping("/search-contacts")
-    public R searchContacts(@RequestBody Map<String, Object> requestData) {
-        int page = requestData.get("page") != null ? Integer.parseInt(requestData.get("page").toString()) : 1;
-        int size = requestData.get("size") != null ? Integer.parseInt(requestData.get("size").toString()) : 20;
-
-        requestData.remove("page");
-        requestData.remove("size");
-
-        Page<Message> messagePage = messageService.searchContacts(requestData, page, size);
-        return R.paginate(messagePage);
-    }
-
-    @GetMapping("/files/{filename:.+}")
-    public ResponseEntity<Resource> getFile(@PathVariable String filename) {
-        try {
-            Path filePath = Paths.get("/path/to/upload/directory/").resolve(filename).normalize();
-            Resource resource = new UrlResource(filePath.toUri());
-
-            if (resource.exists()) {
-                return ResponseEntity.ok()
-                    .contentType(MediaTypeFactory.getMediaType(resource).orElse(MediaType.APPLICATION_OCTET_STREAM))
-                    .body(resource);
-            } else {
-                return ResponseEntity.notFound().build();
-            }
-        } catch (MalformedURLException e) {
-            return ResponseEntity.badRequest().build();
-        }
-    }
-
+    /*C*/
     @PostMapping("/save")
     public R save(@RequestBody Message message) {
         boolean isSaved = messageService.save(message);
@@ -124,6 +84,50 @@ public class MessageController {
         }
     }
 
+    /*R*/
+    @PostMapping("/search")
+    public R search(@RequestBody Map<String, Object> requestData) {
+        int page = requestData.get("page") != null ? Integer.parseInt(requestData.get("page").toString()) : 1;
+        int size = requestData.get("size") != null ? Integer.parseInt(requestData.get("size").toString()) : 20;
+
+        requestData.remove("page");
+        requestData.remove("size");
+
+        Page<Message> messagePage = messageService.search(requestData, page, size);
+        return R.paginate(messagePage);
+    }
+
+    @PostMapping("/search-contacts")
+    public R searchContacts(@RequestBody Map<String, Object> requestData) {
+        int page = requestData.get("page") != null ? Integer.parseInt(requestData.get("page").toString()) : 1;
+        int size = requestData.get("size") != null ? Integer.parseInt(requestData.get("size").toString()) : 20;
+
+        requestData.remove("page");
+        requestData.remove("size");
+
+        Page<Message> messagePage = messageService.searchContacts(requestData, page, size);
+        return R.paginate(messagePage);
+    }
+
+    @GetMapping("/files/{filename:.+}")
+    public ResponseEntity<Resource> getFile(@PathVariable String filename) {
+        try {
+            Path filePath = Paths.get("/path/to/upload/directory/").resolve(filename).normalize();
+            Resource resource = new UrlResource(filePath.toUri());
+
+            if (resource.exists()) {
+                return ResponseEntity.ok()
+                    .contentType(MediaTypeFactory.getMediaType(resource).orElse(MediaType.APPLICATION_OCTET_STREAM))
+                    .body(resource);
+            } else {
+                return ResponseEntity.notFound().build();
+            }
+        } catch (MalformedURLException e) {
+            return ResponseEntity.badRequest().build();
+        }
+    }
+
+    /*U*/
     @PostMapping("/update")
     public R update(@RequestBody Map<String, Object> requestData) {
         Long id = Long.parseLong(requestData.get("id").toString());
@@ -137,6 +141,24 @@ public class MessageController {
         }
     }
 
+    @PostMapping("/mark-read")
+    public R markAsRead(@RequestBody Map<String, Object> requestData) {
+        List<Long> messageIds = (List<Long>) requestData.get("messageIds");
+        if (messageIds == null || messageIds.isEmpty()) {
+            return R.error("No messages to update");
+        }
+
+        boolean isUpdated = messageService.markMessagesAsRead(messageIds);
+        if (isUpdated) {
+            return R.ok("Messages marked as read successfully");
+        } else {
+            return R.error("Failed to mark messages as read");
+        }
+    }
+
+
+
+    /*D*/
     @PostMapping("/delete")
     public R delete(@RequestBody Map<String, Object> requestData) {
         Long id = Long.parseLong(requestData.get("id").toString());
@@ -146,13 +168,5 @@ public class MessageController {
         } else {
             return R.error("Failed to delete message");
         }
-    }
-
-    private R buildPaginatedResponse(Page<Message> messagePage) {
-        return R.ok()
-            .put("messageList", messagePage.getRecords())
-            .put("total", messagePage.getTotal())
-            .put("pages", messagePage.getPages())
-            .put("current", messagePage.getCurrent());
     }
 }

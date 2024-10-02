@@ -1,4 +1,4 @@
-<template>
+"<template>
 <div class="message-input-container">
     <img src="/static/page/chat/upload.svg" alt="Upload" class="upload-button" @click="selectFileType"/>
     <textarea
@@ -108,26 +108,27 @@ export default {
     background-color: transparent;
     border: none;
     border-radius: 50%;
-    width: 40px;
+    width: 25px;
     height: 40px;
     display: flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
     align-self: flex-end;
+    padding: 0 8px 0 10px;
 }
 
 .upload-button {
     background-color: transparent;
     border: none;
     border-radius: 50%;
-    width: 30px;
+    width: 25px;
     height: 30px;
     display: flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    padding: 5px;
+    padding: 0 10px 6px 8px;
     align-self: flex-end;
 }
 </style>

@@ -82,7 +82,7 @@ export default {
             searchKeyword: '',
         };
     },
-    onLoad() {
+    onShow() {
         this.resetPagination();
         this.getOrderList();
     },
@@ -94,7 +94,7 @@ export default {
     methods: {
         // Fetch order list
         getOrderList() {
-            if (this.loading || !this.hasMore) return;
+            if (this.loading || !this.hasMore||this.$common.isEmpty(uni.getStorageSync(getApp().globalData.data.userInfoKey).id)) return;
 
             this.loading = true;
 

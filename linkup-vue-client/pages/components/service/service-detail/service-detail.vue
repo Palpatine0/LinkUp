@@ -94,7 +94,7 @@ export default {
         },
 
         servantListRedirect() {
-            uni.navigateTo({
+            uni.redirectTo({
                 url: '/pages/components/service/service-detail/servant-list/servant-list?serviceTypeId=' + this.serviceTypeId
             });
         }

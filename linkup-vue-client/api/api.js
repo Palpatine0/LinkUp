@@ -10,6 +10,7 @@ var $API = {
         save: '/message/save',
         search: '/message/search',
         searchContacts: '/message/search-contacts',
+        markAsRead: '/message/mark-read',
     },
     // Service Type
     serviceType: {

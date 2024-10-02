@@ -82,7 +82,7 @@ export default {
     methods: {
         // Fetch transaction list
         getTransactionList() {
-            if (this.loading || !this.hasMore) return;
+            if (this.loading || !this.hasMore||this.$common.isEmpty(uni.getStorageSync(getApp().globalData.data.userInfoKey).id)) return;
 
             this.loading = true;
 

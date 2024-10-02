@@ -13,6 +13,9 @@
             <if test="params.id != null and params.id != ''">
                 AND id = #{params.id}
             </if>
+            <if test="params.openid != null and params.openid != ''">
+                AND openid = #{params.openid}
+            </if>
             <if test="params.nickname != null and params.nickname != ''">
                 AND nickname LIKE CONCAT('%', #{params.nickname}, '%')
             </if>
@@ -22,7 +25,6 @@
             <if test="params.ageMin != null and params.ageMax != null">
                 AND age BETWEEN #{params.ageMin} AND #{params.ageMax}
             </if>
-            <!-- Add more conditions as necessary -->
         </where>
         ORDER BY created_at DESC
     </select>

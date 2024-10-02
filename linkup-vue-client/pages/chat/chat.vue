@@ -9,7 +9,7 @@
     <app-input mode="text" :placeholder="$t('pub.page.search')" col="12" class="mb-2"/>
 
     <!-- Contact List -->
-    <scroll-view :scroll-top="0" scroll-y="true" style="height: 80vh" class="mt-4">
+    <scroll-view :scroll-top="0" scroll-y="true" style="height: 80vh">
         <div v-for="(contact, index) in contactList" :key="contact.id">
             <div
                 @click="contactRedirect(contact.id)"

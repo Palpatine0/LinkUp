@@ -1,14 +1,16 @@
 <template>
 <div :class="['message-bubble', msgBelongs ? 'sender' : 'receiver']">
     <p class="message-content">{{ content }}</p>
+    <div v-if="msgBelongs && isRead" class="read-indicator"></div>
 </div>
 </template>
 
 <script>
 export default {
     props: {
-        content: { type: String, required: true },
-        msgBelongs: { type: Boolean, default: false },
+        content: {type: String, required: true},
+        msgBelongs: {type: Boolean, default: false},
+        isRead: {type: Boolean, default: false},
     },
 };
 </script>
@@ -35,5 +37,16 @@ export default {
 
 .message-content {
     white-space: pre-wrap; /* Preserves whitespace and line breaks */
+}
+
+.read-indicator {
+    width: 8px;
+    height: 8px;
+    background-color: #007bff;
+    border-radius: 50%;
+    margin-top: 5px;
+    align-self: flex-end;
+    position: absolute;
+    margin-left: -20px;
 }
 </style>

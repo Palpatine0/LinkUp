@@ -7,19 +7,26 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 
+import java.util.List;
 import java.util.Map;
 
 public interface IMessageService extends IService<Message> {
 
-    Page<Message> search(Map<String, Object> params, int page, int size);
-
-    Page<Message> searchContacts(Map<String, Object> params, int page, int size);
-
+    /*C*/
     boolean save(Message message);
 
     String saveMediaFile(MultipartFile file);
 
+    /*R*/
+    Page<Message> search(Map<String, Object> params, int page, int size);
+
+    Page<Message> searchContacts(Map<String, Object> params, int page, int size);
+
+    /*U*/
     boolean update(Long id, Map<String, Object> changes);
 
+    boolean markMessagesAsRead(List<Long> messageIds);
+
+    /*D*/
     boolean delete(Long id);
 }

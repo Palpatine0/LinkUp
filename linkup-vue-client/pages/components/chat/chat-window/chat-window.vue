@@ -14,6 +14,7 @@
             <MessageBubble
                 :content="message.content"
                 :msgBelongs="message.senderId === userId"
+                :isRead="message.isRead"
             />
         </div>
     </scroll-view>
@@ -95,7 +96,7 @@ export default {
         },
         // Fetch initial messages
         getMessages() {
-            return new Promise((resolve, reject) => {
+            return new Promise(async (resolve, reject) => {
                 if (this.loading || !this.hasMoreMessages) return;
                 this.loading = true;
 
@@ -129,8 +130,37 @@ export default {
                         reject(err);
                     }
                 });
+
+                await this.markMessagesAsRead();
             });
         },
+        async markMessagesAsRead() {
+            const unreadMessageIds = this.messages
+            .filter(msg => msg.senderId === this.contactId && !msg.isRead)
+            .map(msg => msg.id);
+
+            if (unreadMessageIds.length > 0) {
+                await uni.request({
+                    url: getApp().globalData.data.requestUrl + this.$API.message.markAsRead,
+                    method: 'POST',
+                    data: {
+                        messageIds: unreadMessageIds,
+                    },
+                    success: (res) => {
+                        // Update local messages
+                        this.messages.forEach(msg => {
+                            if (unreadMessageIds.includes(msg.id)) {
+                                msg.isRead = true;
+                            }
+                        });
+                    },
+                    fail: (err) => {
+                        console.error('Failed to mark messages as read:', err);
+                    },
+                });
+            }
+        },
+
         // Load more messages when scrolling to the top
         loadMoreMessages() {
             this.getMessages().then(() => {
@@ -167,6 +197,8 @@ export default {
                 }
             });
         },
+
+
     }
 };
 

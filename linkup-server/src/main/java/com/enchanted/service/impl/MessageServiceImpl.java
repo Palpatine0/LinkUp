@@ -13,7 +13,9 @@ import org.springframework.util.ReflectionUtils;
 
 import java.io.File;
 import java.lang.reflect.Field;
+import java.util.List;
 import java.util.Map;
+
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
@@ -24,20 +26,7 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
     @Autowired
     private MessageMapper messageMapper;
 
-    @Override
-    public Page<Message> search(Map<String, Object> params, int page, int size) {
-        IPage<Message> messagePage = new Page<>(page, size);
-        messagePage = messageMapper.search(messagePage, params);
-        return (Page<Message>) messagePage;
-    }
-
-    @Override
-    public Page<Message> searchContacts(Map<String, Object> params, int page, int size) {
-        IPage<Message> messagePage = new Page<>(page, size);
-        messagePage = messageMapper.searchContacts(messagePage, params);
-        return (Page<Message>) messagePage;
-    }
-
+    /*C*/
     @Override
     public boolean save(Message message) {
         return messageMapper.insert(message) > 0;
@@ -77,7 +66,22 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
         }
     }
 
+    /*R*/
+    @Override
+    public Page<Message> search(Map<String, Object> params, int page, int size) {
+        IPage<Message> messagePage = new Page<>(page, size);
+        messagePage = messageMapper.search(messagePage, params);
+        return (Page<Message>) messagePage;
+    }
 
+    @Override
+    public Page<Message> searchContacts(Map<String, Object> params, int page, int size) {
+        IPage<Message> messagePage = new Page<>(page, size);
+        messagePage = messageMapper.searchContacts(messagePage, params);
+        return (Page<Message>) messagePage;
+    }
+
+    /*U*/
     @Override
     public boolean update(Long id, Map<String, Object> changes) {
         Message message = messageMapper.selectById(id);
@@ -102,6 +106,14 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
         return retBool(updated);
     }
 
+    @Override
+    public boolean markMessagesAsRead(List<Long> messageIds) {
+        return messageMapper.updateMessagesAsRead(messageIds) > 0;
+    }
+
+
+
+    /*D*/
     @Override
     public boolean delete(Long id) {
         return messageMapper.deleteById(id) > 0;

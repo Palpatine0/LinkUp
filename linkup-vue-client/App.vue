@@ -78,9 +78,13 @@ export default {
                                 openid: userConfigData.openid
                             },
                             success: (res) => {
-                                uni.setStorageSync(app.globalData.data.userInfoKey, res.data.list[0]);
-                                uni.setStorageSync(app.globalData.data.userLoginKey, true);
-                                resolve(res)
+                                if(!$common.isEmpty(res.data.list)){
+                                    uni.setStorageSync(app.globalData.data.userInfoKey, res.data.list[0]);
+                                    uni.setStorageSync(app.globalData.data.userLoginKey, true);
+                                    resolve(res)
+                                }else {
+                                    uni.showToast({title: 'Login error', icon: 'none'});
+                                }
                             },
                         });
                     });
