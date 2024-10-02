@@ -3,7 +3,6 @@
     <!-- Heading section -->
     <div style="display: flex; align-items: center; justify-content: space-between;">
         <app-title type="h1" bold="true">{{ $t('profile>balance>transactionHistory.transactionHistory') }}</app-title>
-        <img src="/static/common/create.svg" style="width: 28px; height: 28px;" @click="transactionInitiateRedirect"/>
     </div>
 
     <!-- Search input -->
@@ -24,37 +23,30 @@
         @scrolltolower="onReachBottom"
     >
         <div
-            class="app-container"
+            class="app-container transaction-item"
             v-for="transaction in transactionList"
             :key="transaction.id"
             @click="transactionDetailRedirect(transaction.id)"
         >
-            <div class="transaction-content">
-                <div style="width: 100%;">
-                    <div style="display: flex; align-items: center;">
-                        <app-title bold="true" type="h3" style="width: 330px;">{{ transaction.title }}</app-title>
-                    </div>
-                    <div class="transaction-detail">
-                        <div class="transaction-amount">
-                            {{ $t('profile>balance>transactionHistory.amount') }}: {{ transaction.amount }}
-                        </div>
-                        <span style="font-size: 14px; color: gray;">{{ transaction.createdAt }}</span>
-                        <div style="display:flex;justify-content: space-between;">
-                            <span style="font-size: 14px; color: gray;">{{ transaction.identifier }}</span>
-                            <div v-if="transaction.status==0" class="flex">
-                                <span class="status-dot yellow-dot"></span>
-                                <div class="status-text">{{ $t('profile>balance>transactionHistory.pending') }}</div>
-                            </div>
-                            <div v-if="transaction.status==1" class="flex">
-                                <span class="status-dot green-dot"></span>
-                                <div class="status-text">{{ $t('profile>balance>transactionHistory.completed') }}</div>
-                            </div>
-                            <div v-if="transaction.status==2" class="flex">
-                                <span class="status-dot gray-dot"></span>
-                                <div class="status-text">{{ $t('profile>balance>transactionHistory.failed') }}</div>
-                            </div>
-                        </div>
-                    </div>
+            <div class="transaction-icon">
+                <!-- Display different icons based on the transaction type -->
+                <img v-if="transaction.transactionType === 1" src="/static/page/balance/hand-holding-circle-dollar.svg" alt="Received"/>
+                <img v-else src="/static/page/balance/circle-dollar-to-slot.svg" alt="Deducted"/>
+            </div>
+            <div class="transaction-details">
+                <div class="transaction-title">
+                    <span>{{ transaction.transactionType === 1 ? income : expanse }}</span>
+                </div>
+                <div class="transaction-detail">
+                    <span>{{ language != "en" ? transaction.descriptionCn : transaction.description}}</span>
+                </div>
+            </div>
+            <div style="text-align: right">
+                <div class="transaction-amount" :class="{'positive': transaction.transactionType === 1, 'negative': transaction.transactionType === 0}">
+                    {{ transaction.transactionType === 1 ? '' : '' }}{{ transaction.amount.toFixed(2) }}
+                </div>
+                <div class="transaction-datetime">
+                    <span>{{ common.timeToStampRecord(transaction.createdAt) }}</span>
                 </div>
             </div>
         </div>
@@ -65,24 +57,27 @@
 </template>
 
 <script>
-// import transactionDetail from './transaction-detail/transaction-detail.vue';
+import common from "../../../../utils/common";
 
 export default {
+    computed: {
+        common() {
+            return common
+        }
+    },
     data() {
         return {
+            language: uni.getStorageSync("language"),
             userProfileAvailable: false,
             transactionList: [],
             searchKeyword: '',
+            income: this.$t('profile>balance>transactionHistory.income'),
+            expanse: this.$t('profile>balance>transactionHistory.expanse')
         };
     },
     onLoad() {
         this.resetPagination();
         this.getTransactionList();
-    },
-    computed: {
-        /*transactionDetail() {
-            return transactionDetail;
-        },*/
     },
     methods: {
         // Fetch transaction list
@@ -153,69 +148,67 @@ export default {
             this.resetPagination();
             this.getTransactionList();
         },
-
-        // Redirects
-        transactionInitiateRedirect() {
-            uni.navigateTo({
-                url: '/pages/profile/balance/deposit',
-            });
-        },
-        /*transactionDetailRedirect(transactionId) {
-            uni.navigateTo({
-                url: '/pages/profile/transaction/transaction-detail?transactionId=' + transactionId,
-            });
-        },*/
     },
 };
 </script>
 
 <style scoped>
-.transaction-content {
+.transaction-item {
     display: flex;
     align-items: center;
     justify-content: space-between;
+    margin: 10px 0;
+    padding: 10px;
+    background-color: white;
+    border-radius: 10px;
+}
+
+.transaction-icon{
+    padding: 6px;
+    background-color: #2196f338;
+    width: 40px;
+    height: 40px;
+    border-radius: 20px;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+}
+.transaction-icon img {
+    width: 32px;
+    height: 25px;
+}
+
+.transaction-details {
+    flex-grow: 1;
+    padding-left: 20px;
+}
+
+.transaction-title {
+    font-weight: bold;
+    font-size: 16px;
+    color: #282e5c;
 }
 
 .transaction-detail {
-    margin-top: 5px;
+    font-size: 14px;
+    color: #787ea1;
 }
 
-.status-dot {
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    margin-left: 10px;
-    margin-top: 2px;
-}
-
-.status-text {
-    position: relative;
-    bottom: 4px;
-    left: 5px;
-    margin-right: 12px;
-}
-
-.yellow-dot {
-    background-color: #feb327;
-}
-
-.green-dot {
-    background-color: #27b459;
-}
-
-.gray-dot {
-    background-color: #8c8c8c;
+.transaction-datetime {
+    font-size: 14px;
+    color: #afb3cc;
 }
 
 .transaction-amount {
-    color: white;
-    background-color: #007aff;
-    border-radius: 5px;
+    font-size: 16px;
     font-weight: bold;
-    padding: 2px;
-    width: 100px;
-    font-size: 14px;
-    margin-bottom: 4px;
 }
 
+.transaction-amount.positive {
+    color: #34bc68;
+}
+
+.transaction-amount.negative {
+    color: #1f2758;
+}
 </style>

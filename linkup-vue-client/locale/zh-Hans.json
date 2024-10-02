@@ -164,8 +164,9 @@
         "pending": "待处理",
         "completed": "已完成",
         "failed": "失败",
-        "createdAt": "创建时间",
-        "identifier": "交易ID"
+        "identifier": "ID",
+        "income": "收入",
+        "expanse": "支出"
     },
 
     "//////": "profile > address",
@@ -188,7 +189,7 @@
     },
     "//////": "profile > data",
     "profile>data": {
-        "addressManage": "数据与存储"
+        "ds": "数据与存储"
     },
 
 

@@ -100,7 +100,8 @@ export default {
                         amount: -this.withdrawAmount,
                         balanceAfter: updatedBalance,
                         transactionType: 0,
-                        description: "WITHDRAW",
+                        description: "Withdraw",
+                        descriptionCn: "提现",
                     },
                     success: (res) => {
                     },

@@ -52,6 +52,34 @@ var $common = {
         var date = new Date(dateTime);
         return date.getTime();
     },
+    timeToStampRecord: function (dateTime) {
+        dateTime = dateTime || new Date();
+        var date = new Date(dateTime);
+
+        // Get current date and time
+        var now = new Date();
+
+        // Check if the given date is today
+        if (date.toDateString() === now.toDateString()) {
+            return date.getHours() + ':' + date.getMinutes(); // Return hour and min for today
+        }
+
+        // Check if the given date is yesterday
+        var yesterday = new Date(now);
+        yesterday.setDate(now.getDate() - 1);
+        if (date.toDateString() === yesterday.toDateString()) {
+            return 'Yesterday';
+        }
+
+        // Otherwise return mm-dd-hh-min
+        var month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-indexed
+        var day = date.getDate().toString().padStart(2, '0');
+        var hours = date.getHours().toString().padStart(2, '0');
+        var minutes = date.getMinutes().toString().padStart(2, '0');
+
+        return month + '-' + day + ' ' + hours + ':' + minutes;
+    },
+
     /**
      * Converts a timestamp to a formatted time string.
      * @param {number} stamp - The timestamp to be converted.

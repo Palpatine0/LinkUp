@@ -86,7 +86,8 @@
                 {
                     "path": "transaction-history/transaction-history",
                     "style": {
-                        "navigationBarTitleText": ""
+                        "navigationBarTitleText": "",
+                        "navigationBarBackgroundColor": "#ffffff"
                     }
                 }
             ]

@@ -33,7 +33,11 @@ public class Transaction {
     @TableField("transaction_type")
     private Integer transactionType;
 
+    @TableField("description")
     private String description;
+
+    @TableField("description_cn")
+    private String descriptionCn;
 
     @TableField("created_at")
     private Date createdAt;

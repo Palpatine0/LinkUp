@@ -113,7 +113,8 @@ export default {
                         amount: this.selectedAmount,
                         balanceAfter: updatedBalance,
                         transactionType: 1,
-                        description: "DEPOSIT",
+                        description: "Deposit",
+                        descriptionCn: "存款",
                     },
                     success: (res) => {
                     },

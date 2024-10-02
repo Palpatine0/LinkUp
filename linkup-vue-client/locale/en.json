@@ -160,8 +160,9 @@
         "pending": "Pending",
         "completed": "Completed",
         "failed": "Failed",
-        "createdAt": "Created At",
-        "identifier": "Transaction ID"
+        "identifier": "Transaction ID",
+        "income": "Income",
+        "expanse": "Expanse"
     },
 
     "//////": "profile > address",

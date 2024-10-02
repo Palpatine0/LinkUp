@@ -1,7 +1,7 @@
 <script>
 import app from "./App.vue";
-import common from "./utils/common";
 import $common from "./utils/common";
+import $API from "./api/api";
 
 export default {
     globalData: {
@@ -30,7 +30,6 @@ export default {
                     uni.login({
                         provider: 'weixin',
                         success: (res) => {
-                            console.log("getUserLoginCode")
                             resolve(res.code);
                         },
                         fail: () => {
@@ -46,7 +45,7 @@ export default {
                         scope: 'scope.userInfo',
                         success: function () {
                             uni.request({
-                                url: getApp().globalData.data.requestUrl + this.$API.user.userConfig,
+                                url: getApp().globalData.data.requestUrl + $API.user.userConfig,
                                 method: 'POST',
                                 data: {
                                     code: userLoginCode,
@@ -69,13 +68,11 @@ export default {
                 });
             };
             const userConfigData = await getUserConfigData();
-            console.log("userConfigData")
-            console.log(userConfigData)
             if (userConfigData.isNewUser == "0") {
                 const syncToStorage = () => {
                     return new Promise((resolve) => {
                         uni.request({
-                            url: getApp().globalData.data.requestUrl + this.$API.user.search,
+                            url: getApp().globalData.data.requestUrl + $API.user.search,
                             method: 'POST',
                             data: {
                                 openid: userConfigData.openid
@@ -139,6 +136,7 @@ export default {
         const lang = systemInfo.appLanguage || 'en';
         this.$i18n.locale = lang
         uni.setLocale(lang);
+        uni.setStorageSync('language', lang)
     },
     methods: {}
 }

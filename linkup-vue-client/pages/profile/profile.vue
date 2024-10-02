@@ -127,9 +127,9 @@ export default {
                         {text: '英文', code: 'en'},
                         {text: '中文简体', code: 'zh-Hans'},
                     ]
-                    uni.setStorage({key: 'language', data: language[res.tapIndex].code})
+                    uni.setStorageSync('language', language[res.tapIndex].code)
                     this.$i18n.locale = language[res.tapIndex].code
-                    uni.setLocale(language[res.tapIndex].code)
+                    uni.setLocale()
                 },
                 fail: function (res) {
                 }

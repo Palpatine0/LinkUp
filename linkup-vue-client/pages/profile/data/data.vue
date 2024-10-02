@@ -26,6 +26,8 @@ export default {
         console.warn(userInfo)
         const sysInfo = uni.getStorageSync(app.globalData.data.systemInfoKey)
         console.warn(sysInfo)
+        const language = uni.getStorageSync("language")
+        console.warn(language)
     },
 };
 </script>
