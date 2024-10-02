@@ -28,15 +28,15 @@
     </div>
 
     <!-- Orders and Share QR Code Section -->
-    <div class="myorders-shareqrcode">
+    <div class="transactions-shareqrcode">
         <div class="wrapper" @click="orderHistoryRedirect">
             <div class="content">
-                <text style="font-weight: bold;">我的交易记录</text>
+                <text style="font-weight: bold;">{{ $t('profile>balance.transactionHistory') }}</text>
                 <br>
-                <text class="div-more">点击查看</text>
+                <text class="div-more">{{ $t('profile>balance.viewMore') }}</text>
             </div>
-            <div class="icon-wrapper">
-                <image class="icon" src="/static/tab/history.jpg"></image>
+            <div class="icon-wrapper center-v">
+                <img class="icon" src="/static/page/profile/balance/money-from-bracket.svg"></img>
             </div>
         </div>
 
@@ -45,12 +45,12 @@
 
         <div class="wrapper" @click="qeShareToggle">
             <div class="content">
-                <text style="font-weight: bold;">我的分享码</text>
+                <text style="font-weight: bold;">{{ $t('profile>balance.qrCode') }}</text>
                 <br>
-                <text class="div-more">点击查看</text>
+                <text class="div-more">{{ $t('profile>balance.viewMore') }}</text>
             </div>
-            <div class="icon-wrapper">
-                <image class="icon" src="/static/tab/qrcode.svg"></image>
+            <div class="icon-wrapper center-v">
+                <img class="icon" src="/static/page/profile/balance/qrcode.svg"></img>
             </div>
         </div>
     </div>
@@ -58,26 +58,26 @@
     <!--widgets-->
     <Deposit v-if="depositVisible" :userInfo="user"></Deposit>
     <Withdraw v-if="withdrawVisible" :userInfo="user"></Withdraw>
-    <!--<QrShare v-if="qeShareVisible" :userInfo="user"></QrShare>-->
+    <ReferralQRCode v-if="referralQRVisible" :userInfo="user"></ReferralQRCode>
 </div>
 </template>
 
 <script>
-// import QrShare from "../../components/qrShare.vue";
+import ReferralQRCode from "../../../components/page/balance/referralQRCode.vue";
 import Deposit from "../../../components/page/balance/deposit.vue";
 import Withdraw from "../../../components/page/balance/withdraw.vue";
 
 export default {
     components: {
         Deposit,
-        Withdraw
-        // QrShare,
+        Withdraw,
+        ReferralQRCode,
     },
     data() {
         return {
             user: {},
             userBalance: 0.00,
-            qeShareVisible: false,
+            referralQRVisible: false,
             depositVisible: false,
             withdrawVisible: false,
         };
@@ -100,11 +100,11 @@ export default {
         },
 
         qeShareToggle() {
-            this.qeShareVisible = !this.qeShareVisible
+            this.referralQRVisible = !this.referralQRVisible
         },
         orderHistoryRedirect() {
             uni.navigateTo({
-                url: '/pages/order-history/order-history'
+                url: '/pages/profile/balance/transaction-history/transaction-history'
             })
         },
         depositToggle() {
@@ -199,14 +199,13 @@ export default {
 }
 
 /* Orders and Favorites Section */
-.myorders-shareqrcode {
+.transactions-shareqrcode {
     display: flex;
-    padding: 26px;
+    padding: 15px;
     border-radius: 45rpx;
     margin-bottom: 20rpx;
-    background-color: #fff;
-    box-shadow: 0 5rpx 10rpx rgba(0, 0, 0, 0.05);
     justify-content: space-between;
+    background-color: #f3f2f6;
 }
 
 .wrapper {
@@ -234,10 +233,8 @@ export default {
 }
 
 .vertical-moulding {
-    float: left;
-    width: 0.5px;
-    height: 44px;
-    background: #ececec;
+    width: 1px;
+    background: #d0d0d0;
+    align-self: stretch; /* This makes the vertical line match the parent’s height */
 }
-
 </style>

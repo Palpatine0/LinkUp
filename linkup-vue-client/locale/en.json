@@ -149,8 +149,21 @@
     "profile>balance": {
         "balance": "Your Looking Coins",
         "deposit": "Deposit",
-        "withdraw": "Withdraw"
+        "withdraw": "Withdraw",
+        "transactionHistory": "Transaction History",
+        "qrCode": "Referral QR Code",
+        "viewMore": "View More"
     },
+    "profile>balance>transactionHistory": {
+        "transactionHistory": "Transaction History",
+        "amount": "Amount",
+        "pending": "Pending",
+        "completed": "Completed",
+        "failed": "Failed",
+        "createdAt": "Created At",
+        "identifier": "Transaction ID"
+    },
+
     "//////": "profile > address",
     "profile>address": {
         "addressManage": "Manage Addresses"
@@ -174,6 +187,7 @@
     "profile>data": {
         "ds": "Data and Storage"
     },
+
 
     "//////": "components(page)",
     "componentPage>user>userDetail": {
@@ -205,6 +219,11 @@
         "servantMinWithdrawAmount": "The minimum withdrawal amount is ¥200",
         "success": "Withdrawal successful",
         "fail": "Withdrawal failed"
+    },
+    "component>balance>referralQRCode": {
+        "yourReferralQRCode": "Your Referral QR Code",
+        "descA": "If a user opens this mini program by scanning your QR code, you will receive 5% of their order price stored in your balance each time they successfully complete an order.",
+        "descB": "This also applies if you share this mini program with users after signing in."
     },
     "component>chat>message-input": {
         "takePhoto": "Take Photo",

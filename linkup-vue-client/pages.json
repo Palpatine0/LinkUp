@@ -82,6 +82,12 @@
                         "navigationBarTitleText": "",
                         "navigationBarBackgroundColor": "#fefefe"
                     }
+                },
+                {
+                    "path": "transaction-history/transaction-history",
+                    "style": {
+                        "navigationBarTitleText": ""
+                    }
                 }
             ]
         },

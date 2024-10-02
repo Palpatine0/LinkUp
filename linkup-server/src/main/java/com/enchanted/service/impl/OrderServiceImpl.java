@@ -4,18 +4,23 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.enchanted.constant.OrderConstant;
+import com.enchanted.constant.TransactionConstant;
+import com.enchanted.entity.Transaction;
 import com.enchanted.entity.User;
 import com.enchanted.mapper.OrderMapper;
 import com.enchanted.entity.Order;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.enchanted.service.IOrderCandidateService;
 import com.enchanted.service.IOrderService;
+import com.enchanted.service.ITransactionService;
 import com.enchanted.service.IUserService;
 import com.enchanted.util.ConversionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ReflectionUtils;
+import org.springframework.scheduling.TaskScheduler;
+import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
@@ -26,6 +31,8 @@ import java.util.Date;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements IOrderService {
@@ -34,20 +41,26 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     private IUserService userService;
 
     @Autowired
+    private ITransactionService transactionService;
+
+    @Autowired
     private OrderMapper orderMapper;
 
     @Autowired
     private IOrderCandidateService orderCandidateService;
 
+    @Autowired
+    private TaskScheduler taskScheduler;
 
-    private final Map<Long, Thread> autoRefundMonitoringThreads = new ConcurrentHashMap<>();
-    private final Map<Long, Thread> assignmentMonitoringThreads = new ConcurrentHashMap<>();
-    private final Map<Long, Thread> autoRatingMonitoringThreads = new ConcurrentHashMap<>();
-
+    // Maps to keep track of scheduled tasks
+    private final Map<Long, ScheduledFuture<?>> autoRefundTasks = new ConcurrentHashMap<>();
+    private final Map<Long, ScheduledFuture<?>> servantSelectionTasks = new ConcurrentHashMap<>();
+    private final Map<Long, ScheduledFuture<?>> autoRatingTasks = new ConcurrentHashMap<>();
 
     /*C*/
     @Override
     public boolean save(Order order) {
+        order.setCreatedAt(new Date());
         order.setIdentifier(generateOrderIdentifier());
         order.setStatus(OrderConstant.PENDING);
         // Get the user who posted the order
@@ -62,17 +75,24 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
                 throw new IllegalArgumentException("Insufficient balance");
             }
             user.setBalance(user.getBalance().subtract(order.getPrice()));
-            userService.updateById(user); // Update user balance
+            userService.updateById(user);
         } else {
             // External payment method handling
             // Implement the payment gateway interaction here if necessary
         }
 
-        // Save the order
-        order.setCreatedAt(new Date());
         boolean isSaved = orderMapper.insert(order) > 0;
         if (isSaved) {
             startAutoRefundMonitor(order.getId());
+            // Record the transaction
+            Transaction transaction = new Transaction();
+            transaction.setUserId(user.getId());
+            transaction.setOrderId(order.getId());
+            transaction.setAmount(order.getPrice().negate());
+            transaction.setBalanceAfter(user.getBalance());
+            transaction.setTransactionType(TransactionConstant.DEDUCTION);
+            transaction.setDescription(TransactionConstant.CLIENT_ORDER_PAYMENT);
+            transactionService.save(transaction);
         }
         return isSaved;
     }
@@ -92,74 +112,69 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
     @Override
     public void startAutoRefundMonitor(Long orderId) {
-        Thread autoRefundThread = new Thread(() -> {
-            try {
-                // Wait for 30 minutes (30 * 60 * 1000 milliseconds)
-                Thread.sleep(OrderConstant.AUTO_REFUND_MONITOR_DELAY);
+        Runnable task = () -> {
+            // Check if any candidates picked this order
+            boolean hasCandidates = orderCandidateService.hasCandidatesForOrder(orderId);
 
-                // Check if any candidates picked this order
-
-                boolean hasCandidates = orderCandidateService.hasCandidatesForOrder(orderId);
-
-                // If no candidate picked the order, auto-refund the order
-                if (!hasCandidates) {
-                    Order order = this.getById(orderId);
-                    if (order != null && order.getServantId() == null) {
-                        cancelOrder(order);  // No servant picked, full refund
-                    }
+            // If no candidate picked the order, auto-refund the order
+            if (!hasCandidates) {
+                Order order = this.getById(orderId);
+                if (order != null && order.getServantId() == null) {
+                    cancelOrder(order);  // No servant picked, full refund
                 }
-
-            } catch (InterruptedException e) {
-                // Thread was interrupted (in case a servant was assigned before 30 minutes)
-            } finally {
-                autoRefundMonitoringThreads.remove(orderId);  // Clean up the thread from the map
             }
-        });
 
-        autoRefundMonitoringThreads.put(orderId, autoRefundThread);
-        autoRefundThread.start();
+            // Remove the task from the map after execution
+            autoRefundTasks.remove(orderId);
+        };
+
+        // Schedule the task with the delay from constants
+        ScheduledFuture<?> future = taskScheduler.schedule(
+            task,
+            new Date(System.currentTimeMillis() + OrderConstant.AUTO_REFUND_MONITOR_DELAY)
+        );
+
+        autoRefundTasks.put(orderId, future);
     }
 
     @Override
     public void stopAutoRefundMonitor(Long orderId) {
-        Thread autoRefundThread = autoRefundMonitoringThreads.get(orderId);
-        if (autoRefundThread != null && autoRefundThread.isAlive()) {
-            autoRefundThread.interrupt(); // Interrupt the thread to stop monitoring
-            autoRefundMonitoringThreads.remove(orderId); // Remove from active monitoring map
+        ScheduledFuture<?> future = autoRefundTasks.get(orderId);
+        if (future != null && !future.isCancelled()) {
+            future.cancel(true);
+            autoRefundTasks.remove(orderId);
         }
     }
 
     @Override
     public void startServantSelectionMonitor(Long orderId) {
-        // Start a new thread to monitor the order assignment. Tf the order is not binding with a servant 10 minutes after, cancel it
-        Thread monitoringThread = new Thread(() -> {
-            try {
-                Thread.sleep(OrderConstant.SERVANT_SELECTION_MONITOR_DELAY); // Sleep for 10 minutes
-                Order order = this.getById(orderId);
-                if (order != null && order.getServantId() == null) {
-                    cancelOrder(order);
-                } else {
-                }
-
-            } catch (InterruptedException e) {
-                e.printStackTrace();
+        Runnable task = () -> {
+            Order order = this.getById(orderId);
+            if (order != null && order.getServantId() == null) {
+                cancelOrder(order);
             }
-        });
 
-        assignmentMonitoringThreads.put(orderId, monitoringThread);
-        monitoringThread.start();
+            // Remove the task from the map after execution
+            servantSelectionTasks.remove(orderId);
+        };
+
+        // Schedule the task with the delay from constants
+        ScheduledFuture<?> future = taskScheduler.schedule(
+            task,
+            new Date(System.currentTimeMillis() + OrderConstant.SERVANT_SELECTION_MONITOR_DELAY)
+        );
+
+        servantSelectionTasks.put(orderId, future);
     }
 
     @Override
     public void stopServantSelectionMonitor(Long orderId) {
-        Thread monitoringThread = assignmentMonitoringThreads.get(orderId);
-        if (monitoringThread != null && monitoringThread.isAlive()) {
-            monitoringThread.interrupt(); // Interrupt the thread to stop monitoring
-            assignmentMonitoringThreads.remove(orderId); // Remove from active monitoring map
-            System.out.println("Stopped monitoring order with ID: " + orderId);
+        ScheduledFuture<?> future = servantSelectionTasks.get(orderId);
+        if (future != null && !future.isCancelled()) {
+            future.cancel(true);
+            servantSelectionTasks.remove(orderId);
         }
     }
-
 
     /*R*/
     @Override
@@ -172,7 +187,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     @Override
     public int getRemainingFreePostingQuota(Long userId) {
         int freeAttemptsToday = countFreeAttemptsToday(userId);
-        return Math.max(0, OrderConstant.FREE_POSTING_QUOTA - freeAttemptsToday)+1;
+        return Math.max(0, OrderConstant.FREE_POSTING_QUOTA - freeAttemptsToday) + 1;
     }
 
     private int countFreeAttemptsToday(Long userId) {
@@ -192,7 +207,6 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         return Math.toIntExact(cnt);
     }
 
-
     /*U*/
     @Override
     public boolean update(Long id, Map<String, Object> changes) {
@@ -202,7 +216,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         }
 
         changes.forEach((field, value) -> {
-            Field classField = ReflectionUtils.findField(User.class, field);
+            Field classField = ReflectionUtils.findField(Order.class, field);
             if (classField != null) {
                 classField.setAccessible(true);
                 // Check for type mismatch and convert if necessary
@@ -297,6 +311,16 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         // Update referrer's balance
         referrer.setBalance(referrer.getBalance().add(commission));
         userService.updateById(referrer);
+
+        // Record the transaction
+        Transaction transaction = new Transaction();
+        transaction.setUserId(referrer.getId());
+        transaction.setOrderId(order.getId());
+        transaction.setAmount(commission);
+        transaction.setBalanceAfter(referrer.getBalance());
+        transaction.setTransactionType(TransactionConstant.ADDITION);
+        transaction.setDescription(TransactionConstant.CLIENT_REFERRER_COMMISSION);
+        transactionService.save(transaction);
     }
 
     private void sendServantReferrerCommission(Order order) {
@@ -317,6 +341,16 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         // Update referrer's balance
         referrer.setBalance(referrer.getBalance().add(commission));
         userService.updateById(referrer);
+
+        // Record the transaction
+        Transaction transaction = new Transaction();
+        transaction.setUserId(referrer.getId());
+        transaction.setOrderId(order.getId());
+        transaction.setAmount(commission);
+        transaction.setBalanceAfter(referrer.getBalance());
+        transaction.setTransactionType(TransactionConstant.ADDITION);
+        transaction.setDescription(TransactionConstant.SERVANT_REFERRER_COMMISSION);
+        transactionService.save(transaction);
     }
 
     private void payServantInitialAmount(Order order) {
@@ -338,8 +372,17 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         // Store the remaining 20% for potential additional payment after rating
         order.setPendingServantPayment(maxServantShare.subtract(initialPayment));
         orderMapper.updateById(order);
-    }
 
+        // Record the transaction
+        Transaction transaction = new Transaction();
+        transaction.setUserId(servant.getId());
+        transaction.setOrderId(order.getId());
+        transaction.setAmount(initialPayment);
+        transaction.setBalanceAfter(servant.getBalance());
+        transaction.setTransactionType(TransactionConstant.ADDITION);
+        transaction.setDescription(TransactionConstant.SERVANT_INITIAL_PAYMENT);
+        transactionService.save(transaction);
+    }
 
     /**
      * Cancel Order
@@ -377,6 +420,16 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         orderMapper.updateById(order);
 
         stopAutoRefundMonitor(order.getId());
+
+        // Store the transaction
+        Transaction transaction = new Transaction();
+        transaction.setUserId(user.getId());
+        transaction.setOrderId(order.getId());
+        transaction.setAmount(refundAmount);
+        transaction.setBalanceAfter(user.getBalance());
+        transaction.setTransactionType(TransactionConstant.ADDITION);
+        transaction.setDescription(TransactionConstant.CLIENT_CANCEL_ORDER_REFUND);
+        transactionService.save(transaction);
     }
 
     /**
@@ -389,7 +442,6 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         order.setStatus(OrderConstant.PROCESSING);
         orderMapper.updateById(order);
     }
-
 
     @Override
     @Transactional
@@ -409,7 +461,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         // Adjust servant's payment based on the rating
         payServantPerformanceAmount(order, rating);
 
-        // Stop the auto-rating monitor thread
+        // Stop the auto-rating monitor task
         stopAutoRatingMonitor(orderId);
 
         return true;
@@ -450,42 +502,49 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         pendingPayment = pendingPayment.subtract(additionalPayment);
         order.setPendingServantPayment(pendingPayment);
         orderMapper.updateById(order);
+
+        // Record the transaction
+        Transaction transaction = new Transaction();
+        transaction.setUserId(servant.getId());
+        transaction.setOrderId(order.getId());
+        transaction.setAmount(additionalPayment);
+        transaction.setBalanceAfter(servant.getBalance());
+        transaction.setTransactionType(TransactionConstant.ADDITION);
+        transaction.setDescription(TransactionConstant.SERVANT_PERFORMANCE_PAYMENT);
+        transactionService.save(transaction);
     }
 
     public void monitorAutoRating(Long orderId) {
-        Thread autoRatingThread = new Thread(() -> {
-            try {
-                Thread.sleep(OrderConstant.AUTO_RATING_MONITOR_DELAY); // Sleep for 24 hours
-                Order order = this.getById(orderId);
-                if (order != null && order.getPerformanceRating() == null) {
-                    rateOrder(orderId, OrderConstant.GOOD);
-                }
-            } catch (InterruptedException e) {
-                // Thread was interrupted, do nothing
-            } finally {
-                // Clean up the thread from the map
-                autoRatingMonitoringThreads.remove(orderId);
+        Runnable task = () -> {
+            Order order = this.getById(orderId);
+            if (order != null && order.getPerformanceRating() == null) {
+                rateOrder(orderId, OrderConstant.GOOD);
             }
-        });
+            // Remove the task from the map after execution
+            autoRatingTasks.remove(orderId);
+        };
 
-        autoRatingMonitoringThreads.put(orderId, autoRatingThread);
-        autoRatingThread.start();
+        // Schedule the task with the delay from constants
+        ScheduledFuture<?> future = taskScheduler.schedule(
+            task,
+            new Date(System.currentTimeMillis() + OrderConstant.AUTO_RATING_MONITOR_DELAY)
+        );
+
+        autoRatingTasks.put(orderId, future);
     }
 
     public void stopAutoRatingMonitor(Long orderId) {
-        Thread autoRatingThread = autoRatingMonitoringThreads.get(orderId);
-        if (autoRatingThread != null && autoRatingThread.isAlive()) {
-            autoRatingThread.interrupt(); // Interrupt the thread to stop monitoring
-            autoRatingMonitoringThreads.remove(orderId); // Remove from active monitoring map
+        ScheduledFuture<?> future = autoRatingTasks.get(orderId);
+        if (future != null && !future.isCancelled()) {
+            future.cancel(true);
+            autoRatingTasks.remove(orderId);
         }
     }
-
 
     /*D*/
     @Override
     public boolean delete(Long id) {
         return orderMapper.deleteById(id) > 0;
     }
-
 
 }

@@ -31,7 +31,7 @@
         </view>
 
         <!-- Confirm Button -->
-        <div class="center_h" style="width: 60%;">
+        <div class="center-h" style="width: 60%;">
             <app-button @click="confirmCharge" shaped>{{ $t('component>balance>deposit.depositBtn') }}</app-button>
         </div>
     </view>

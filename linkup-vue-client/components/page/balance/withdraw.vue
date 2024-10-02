@@ -26,7 +26,7 @@
         </div>
 
         <!-- Confirm Button -->
-        <div class="center_h" style="width: 60%;">
+        <div class="center-h" style="width: 60%;">
             <app-button @click="confirmWithdraw" shaped>{{ $t('component>balance>withdraw.withdrawBtn') }}</app-button>
         </div>
     </div>

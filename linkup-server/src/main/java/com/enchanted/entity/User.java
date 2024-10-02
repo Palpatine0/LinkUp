@@ -3,6 +3,7 @@ package com.enchanted.entity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
+
 import java.math.BigDecimal;
 import java.util.Date;
 
@@ -13,7 +14,9 @@ public class User {
     private Long id;
 
     /**
-     * Role: 0: admin; 1: client; 2: servant
+     * 0: admin;
+     * 1: client;
+     * 2: servant
      */
     private Integer role;
 
@@ -38,7 +41,8 @@ public class User {
     private Integer age;
 
     /**
-     * Gender: 0: male; 1: female
+     * 0: male;
+     * 1: female
      */
     private String gender;
 

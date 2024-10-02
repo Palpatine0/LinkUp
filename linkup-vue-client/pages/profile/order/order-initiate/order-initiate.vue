@@ -105,7 +105,7 @@
         </div>
 
         <!-- Submit Button -->
-        <div name="submit form" class="center_h">
+        <div name="submit form" class="center-h">
             <div class="app-button" @click="paymentMethodSelectionToggle">
                 {{ orderId ? $t('profile>order>orderInitiate.repostOrder') : $t('profile>order>orderInitiate.postOrder') }}
             </div>

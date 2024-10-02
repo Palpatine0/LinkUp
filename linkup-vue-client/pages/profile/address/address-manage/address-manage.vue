@@ -49,7 +49,7 @@
     />
 
     <!-- Submit Button -->
-    <div class="center_h">
+    <div class="center-h">
         <span v-if="!addressId">
             <div class="app-button" @click="formSubmit">{{ $t('profile>address>addressManage.saveBtn') }}</div>
         </span>
@@ -193,7 +193,7 @@ export default {
     margin-bottom: 20px;
 }
 
-.center_h {
+.center-h {
     display: flex;
     justify-content: center;
     margin-top: 20px;

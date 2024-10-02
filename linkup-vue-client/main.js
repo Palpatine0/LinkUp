@@ -2,6 +2,7 @@ import App from './App'
 import Vue from 'vue'
 import VueI18n from 'vue-i18n'
 import globalMixin from './utils/globalMixin'
+import paginationMixin from './utils/paginationMixin';
 
 import common from "./utils/common";
 import API from "./api/api";
@@ -25,6 +26,7 @@ Vue.component('app-button', AppButton);
 // page
 Vue.component('user-list', UserList);
 Vue.mixin(globalMixin)
+Vue.mixin(paginationMixin)
 
 Vue.prototype.$common = common;
 Vue.prototype.$API = API;

@@ -62,7 +62,7 @@
                 <z-swiper-item v-for="(user, index) in servantList" :key="index" :custom-style="{width: '500rpx'}">
                     <demo-item :item="user">
                         <app-container color="#fff" col="12" @click="userDetailRedirect(user.id)">
-                            <div class="center_h">
+                            <div class="center-h">
                                 <image style="width: 160px; height: 160px; border-radius: 50%; margin: 30px 0" :src="user.avatar" mode="aspectFill"></image>
                             </div>
                             <app-title type="h3" bold="true">{{ user.nickname }}</app-title>
@@ -74,7 +74,7 @@
                             </div>
                             <p style="margin-bottom: 10px">{{ user.servantData.bio }}</p>
                         </app-container>
-                        <div style="width: 70%;" class="center_h">
+                        <div style="width: 70%;" class="center-h">
                             <app-button type="small" @click="selectServant(user.nickname)" shaped>
                                 {{ $t('profile>order>orderDetail.selectCandidate') }}
                             </app-button>

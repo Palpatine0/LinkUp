@@ -2,8 +2,8 @@
 <div class="page" style="background-color: #f3f2f6;">
     <!-- Profile Section -->
     <div v-if="isUserLogin" class="profile-section">
-        <div class="profile-header center_h">
-            <div class="center_h">
+        <div class="profile-header center-h">
+            <div class="center-h">
                 <img :src="user.avatar" alt="Profile Photo" class="profile-photo"/>
             </div>
             <div class="profile-info">
@@ -12,8 +12,8 @@
         </div>
     </div>
     <div v-if="!isUserLogin" class="profile-section">
-        <div class="profile-header center_h">
-            <div class="center_h">
+        <div class="profile-header center-h">
+            <div class="center-h">
                 <img src="/static/page/profile/logo.jpg" alt="Profile Photo" class="profile-photo"/>
             </div>
             <div class="profile-info">

@@ -1,4 +1,4 @@
-
+/* Margins */
 .mt-1 {
     margin-top: 10px !important;
 }
@@ -43,17 +43,24 @@
     margin-right: 20px !important;
 }
 
+
 .flex {
     display: flex;
 }
 
-.center_h {
+.center-h {
     max-width: fit-content;
     margin-left: auto;
     margin-right: auto;
 }
 
-/* page */
+.center-v {
+    display: flex;
+    align-items: center;
+}
+
+
+/* Page */
 .page {
     display: flex;
     flex-direction: column;
@@ -64,7 +71,7 @@
 }
 
 
-/* common components */
+/* Common components */
 .app-container {
     padding: 15px;
     border-radius: 15px;
@@ -84,7 +91,7 @@
     margin-bottom: 10px;
 }
 
-.app-button{
+.app-button {
     background-color: #007BFF;
     color: white;
     text-align: center;
@@ -121,7 +128,7 @@
 }
 
 
-/* mask */
+/* Mask */
 .mask {
     position: fixed;
     top: 0;
@@ -152,8 +159,8 @@
     text-align: center;
 }
 
-/*positioning*/
-.fix-bottom{
+/* Positioning */
+.fix-bottom {
     position: fixed;
     bottom: 20px;
     left: 20px;
@@ -165,12 +172,13 @@
 }
 
 
-/* miscellaneous */
+/* Miscellaneous */
 .gender-icon {
     width: 20px;
     height: 20px;
     margin: 4px 8px 0px 6px;
 }
+
 .gradient-overlay {
     position: absolute;
     bottom: 0;
@@ -180,15 +188,18 @@
     background: linear-gradient(to bottom, rgba(0, 0, 0, 0), rgba(0, 0, 0, 0.7)); /* Gradient */
     z-index: 1; /* Make sure it's above the background */
 }
+
 .no-more-data-container-list {
     text-align: center;
     color: gainsboro;
     margin: 10px 0;
 }
+
 .no-more-data-text {
     color: #9e9e9e;
     margin-top: 4px;
 }
-.hint{
+
+.hint {
     color: #949393;
 }

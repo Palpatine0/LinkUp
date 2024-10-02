@@ -7,13 +7,13 @@
         </div>
         <div class="header-register">
             <app-title type="h1" bold>{{ $t('register.step0Title') }}</app-title>
-            <p class="center_h">{{ $t('register.step0Desc') }}</p>
+            <p class="center-h">{{ $t('register.step0Desc') }}</p>
         </div>
 
         <!-- Input Field Styled as Button -->
         <div class="button-wrapper">
             <input
-                class="input-register center_h"
+                class="input-register center-h"
                 type="text"
                 v-model="referralCode"
                 :placeholder="$t('register.step0Placeholder')"
@@ -30,7 +30,7 @@
         <div class="back" @click="backToHome()">
             <img src="/static/page/register/back.svg">
         </div>
-        <div class="center_h">
+        <div class="center-h">
             <img style="width: 100px;height: 100px;margin-top: 80vh" src="/static/page/register/logo-trans.png">
         </div>
     </div>
@@ -42,7 +42,7 @@
         </div>
         <div class="header-register">
             <app-title type="h1" bold>👋{{ $t('register.step2Title') }}</app-title>
-            <p class="center_h">{{ $t('register.step2Desc') }}</p>
+            <p class="center-h">{{ $t('register.step2Desc') }}</p>
         </div>
         <!-- Gender Selection Buttons -->
         <div class="button-wrapper">
@@ -72,7 +72,7 @@
         </div>
         <div class="header-register">
             <app-title type="h1" bold>{{ $t('register.step3Title') }}</app-title>
-            <p class="center_h">{{ $t('register.step3Desc') }}</p>
+            <p class="center-h">{{ $t('register.step3Desc') }}</p>
         </div>
 
         <!-- Single Button for Age Selection with Picker Integrated -->
@@ -106,13 +106,13 @@
         </div>
         <div class="header-register">
             <app-title type="h1" bold>{{ $t('register.step4Title') }}</app-title>
-            <p class="center_h">{{ $t('register.step4Desc') }}</p>
+            <p class="center-h">{{ $t('register.step4Desc') }}</p>
         </div>
 
         <!-- Input Field Styled as Button -->
         <div class="button-wrapper">
             <input
-                class="input-register center_h"
+                class="input-register center-h"
                 type="text"
                 v-model="userData.nickname"
                 :placeholder="$t('register.step4Placeholder')"
@@ -131,10 +131,10 @@
         </div>
         <div class="header-register">
             <app-title type="h1" bold>{{ $t('register.step5Title') }}</app-title>
-            <p class="center_h">{{ $t('register.step5Desc') }}</p>
+            <p class="center-h">{{ $t('register.step5Desc') }}</p>
         </div>
 
-        <div class="button-wrapper center_h">
+        <div class="button-wrapper center-h">
             <img :src="avatar" class="avatar" @click="changeAvatar">
         </div>
         <app-button shaped size="very-large" class="button-continuation-register" @click="setUserInfo()" width="85vw">
