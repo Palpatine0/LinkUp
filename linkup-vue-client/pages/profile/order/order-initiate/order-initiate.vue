@@ -1,7 +1,9 @@
 <template>
 <div>
     <div class="page">
-        <app-title type="h1" bold="true">{{ $t('profile>order>orderInitiate.publishOrder') }}</app-title>
+        <app-title type="h1" bold="true">
+            {{ orderId ? $t('profile>order>orderInitiate.repostOrder') : $t('profile>order>orderInitiate.postOrder') }}
+        </app-title>
 
         <!-- Gender -->
         <app-title bold="true">{{ $t('profile>order>orderInitiate.serviceGender') }}</app-title>
@@ -16,7 +18,7 @@
         </div>
 
         <!-- Age Range -->
-        <app-title bold="true">{{ $t('profile>order>orderInitiate.serviceAge') }}</app-title>
+        <app-title bold="true">{{ $t('profile>order>orderInitiate.requiredAge') }}</app-title>
         <div class="app-input">
             <picker
                 :key="dropdownOptions.age[0][ageRangeIndex[0]] + '-' + dropdownOptions.age[1][0]"
@@ -80,17 +82,13 @@
         <!-- Service Schedule -->
         <app-title bold="true">{{ $t('profile>order>orderInitiate.serviceSchedule') }}</app-title>
         <div class="app-input">
-            <div v-if="common.isEmpty(this.formData.serviceScheduleStart) || common.isEmpty(this.formData.serviceScheduleEnd)" @click="open">
+            <div v-if="common.isEmpty(this.formData.serviceScheduleStart) || common.isEmpty(this.formData.serviceScheduleEnd)" @click="serviceScheduleToggle">
                 {{ $t('profile>order>orderInitiate.selectServiceSchedule') }}
             </div>
-            <div v-else @click="open">
-                {{
-                    common.stampToTime(this.formData.serviceScheduleStart, {yyyy: false, ss: false})
-                }}
+            <div v-else @click="serviceScheduleToggle">
+                {{ common.stampToTime(this.formData.serviceScheduleStart, {yyyy: false, ss: false}) }}
                 -
-                {{
-                    common.stampToTime(this.formData.serviceScheduleEnd, {yyyy: false, ss: false, MM: false, dd: false})
-                }}
+                {{ common.stampToTime(this.formData.serviceScheduleEnd, {yyyy: false, ss: false, MM: false, dd: false}) }}
             </div>
         </div>
 
@@ -108,7 +106,9 @@
 
         <!-- Submit Button -->
         <div name="submit form" class="center_h">
-            <div class="app-button" @click="paymentMethodSelectionToggle">{{ $t('profile>order>orderInitiate.publishOrder') }}</div>
+            <div class="app-button" @click="paymentMethodSelectionToggle">
+                {{ orderId ? $t('profile>order>orderInitiate.repostOrder') : $t('profile>order>orderInitiate.postOrder') }}
+            </div>
         </div>
 
     </div>
@@ -124,6 +124,7 @@ import PaymentMethodSelection from "../../../../components/page/payment/payment-
 import ServiceSchedule from "../../../../components/page/order/service-schedule.vue";
 import AddressSelector from "../../../../components/page/address/address-selector.vue";
 import common from "../../../../utils/common";
+import $common from "../../../../utils/common";
 
 export default {
     computed: {
@@ -134,6 +135,9 @@ export default {
     components: {PaymentMethodSelection, ServiceSchedule, AddressSelector},
     data() {
         return {
+            orderId: null,
+            postOrder: this.$t('profile>order>orderInitiate.postOrder'),
+            repostOrder: this.$t('profile>order>orderInitiate.repostOrder'),
             formData: {
                 title: "",
                 clientId: uni.getStorageSync(getApp().globalData.data.userInfoKey).id,
@@ -189,13 +193,110 @@ export default {
         };
     },
     onLoad(param) {
+        console.log("param")
+        console.log(param)
         this.formData.requiredServantType = param.serviceType;
         this.serviceName = param.serviceName;
-        this.updatePriceOptions();
-        this.generateTitle();
+        if (param.orderId) {
+            this.orderId = param.orderId;
+            this.getOrderDetail(this.orderId);
+        } else {
+            this.updatePriceOptions();
+            this.generateTitle();
+        }
     },
     methods: {
-        // basic info
+
+        // Open as repost order
+        getOrderDetail(orderId) {
+            uni.request({
+                url: getApp().globalData.data.requestUrl + this.$API.order.search,
+                method: 'POST',
+                data: {id: orderId},
+                success: (res) => {
+                    const order = res.data.list[0];
+
+                    // Update formData with the fetched order details
+                    this.formData = {
+                        title: order.title,
+                        clientId: order.clientId,
+                        requiredServantType: order.requiredServantType,
+                        requiredGender: order.requiredGender,
+                        requiredAgeMin: order.requiredAgeMin,
+                        requiredAgeMax: order.requiredAgeMax,
+                        serviceDuration: order.serviceDuration,
+                        price: order.price,
+                        status: order.status,
+                        paymentMethod: order.paymentMethod,
+                        serviceScheduleStart: null,
+                        serviceScheduleEnd: null,
+                        addressId: order.addressId,
+                    };
+
+                    // Update dropdown indices and other variables based on order data
+                    this.setFormIndices(order);
+
+                    // Fetch the address details if needed
+                    if (order.addressId) {
+                        this.getAddressDetail(order.addressId);
+                    }
+
+                    // Fetch user data to validate balance
+                    this.getUser().then(() => {
+                        this.balanceAdequateValidation();
+                    });
+
+                    this.updatePriceOptions();
+                },
+                fail: (err) => {
+                    // Handle error
+                    uni.showToast({title: 'Failed to load order details', icon: 'none'});
+                }
+            });
+        },
+        setFormIndices(order) {
+            // Set genderIndex
+            if (this.formData.requiredGender === null) {
+                this.genderIndex = 0;
+            } else if (order.requiredGender === "1") {
+                this.genderIndex = 1;
+            } else if (order.requiredGender === "2") {
+                this.genderIndex = 2;
+            }
+
+            // Set ageRangeIndex
+            this.ageRangeIndex = [
+                this.dropdownOptions.age[0].indexOf(order.requiredAgeMin !== null ? order.requiredAgeMin : this.$t('profile>order>orderInitiate.options.all')),
+                this.dropdownOptions.age[1].indexOf(order.requiredAgeMax !== null ? order.requiredAgeMax : this.$t('profile>order>orderInitiate.options.all'))
+            ];
+
+            // Set serviceDurationIndex
+            this.serviceDurationIndex = this.dropdownOptions.serviceDuration.indexOf(`${order.serviceDuration}h`);
+
+            // Set service schedule
+            this.serviceScheduleStart = null;
+            this.serviceScheduleEnd = null;
+
+            // Generate title
+            this.generateTitle();
+        },
+        getAddressDetail(addressId) {
+            uni.request({
+                url: getApp().globalData.data.requestUrl + this.$API.address.search,
+                method: 'POST',
+                data: {id: addressId},
+                success: (res) => {
+                    this.address = res.data.list[0];
+                    this.addressSelected = true;
+                },
+                fail: (err) => {
+                    // Handle error
+                    uni.showToast({title: 'Failed to load address', icon: 'none'});
+                }
+            });
+        },
+
+        // Basic info
         getUser() {
             return new Promise((resolve, reject) => {
                 uni.request({
@@ -216,23 +317,28 @@ export default {
             });
         },
 
-        // gender
+        // Gender
         bindGenderPickerChange(e) {
             this.genderIndex = e.detail.value;
-            if (this.dropdownOptions.gender[this.genderIndex] === this.$t('pub.gender.m')) {
+            const selectedGender = this.dropdownOptions.gender[this.genderIndex];
+            if (selectedGender === this.$t('profile>order>orderInitiate.options.all')) {
+                this.formData.requiredGender = null;
+            } else if (selectedGender === this.$t('pub.gender.m')) {
                 this.formData.requiredGender = 1;
-            } else if (this.dropdownOptions.gender[this.genderIndex] === this.$t('pub.gender.f')) {
+            } else if (selectedGender === this.$t('pub.gender.f')) {
                 this.formData.requiredGender = 2;
             }
+            this.generateTitle();
         },
 
-        // age
+        // Age
         bindAgeRangePickerChange(e) {
             this.ageRangeIndex = e.detail.value;
             const ageMinStr = this.dropdownOptions.age[0][this.ageRangeIndex[0]];
             const ageMaxStr = this.dropdownOptions.age[1][this.ageRangeIndex[1]];
-            this.formData.requiredAgeMax = ageMinStr === this.$t('profile>order>orderInitiate.options.all') ? null : parseInt(ageMinStr);
-            this.formData.requiredAgeMin = ageMaxStr === this.$t('profile>order>orderInitiate.options.all') ? null : parseInt(ageMaxStr);
+            this.formData.requiredAgeMin = ageMinStr === this.$t('profile>order>orderInitiate.options.all') ? null : parseInt(ageMinStr);
+            this.formData.requiredAgeMax = ageMaxStr === this.$t('profile>order>orderInitiate.options.all') ? null : parseInt(ageMaxStr);
+            this.generateTitle();
         },
         bindAgeRangeColumnChange(e) {
             const column = e.detail.column;
@@ -265,17 +371,22 @@ export default {
                 this.ageRangeIndex[1] = value; // Update second column index
             }
         },
-
-        // service duration
         bindServiceDurationPickerChange(e) {
             this.serviceDurationIndex = e.detail.value;
             this.formData.serviceDuration = parseInt(this.dropdownOptions.serviceDuration[this.serviceDurationIndex]);
             this.updatePriceOptions();
+            this.generateTitle();
         },
 
-        // price
-        updatePriceOptions() {
-            const selectedDuration = this.dropdownOptions.serviceDuration[this.serviceDurationIndex];
+        // Price
+        updatePriceOptions(orderPrice = null) {
+            var selectedDuration = 0;
+            if (!$common.isEmpty(this.dropdownOptions.serviceDuration[this.serviceDurationIndex])) {
+                selectedDuration = this.dropdownOptions.serviceDuration[this.serviceDurationIndex];
+            } else {
+                selectedDuration = this.formData.serviceDuration;
+            }
+
             const durationNumber = parseInt(selectedDuration); // Extract numeric value
             let prices = [];
 
@@ -290,17 +401,28 @@ export default {
                 prices = [basePrice, basePrice + 100, basePrice + 200, basePrice + 300];
             }
 
+            // Include orderPrice if it's not already in the prices array
+            if (orderPrice !== null && !prices.includes(orderPrice)) {
+                prices.push(orderPrice);
+                prices.sort((a, b) => a - b); // Sort the prices in ascending order
+            }
+
             // No '¥' in the data, only for display
             this.priceOptions = prices;
-            this.priceIndex = 0;
+            // Set priceIndex to 0 only when creating a new order
+            if (!this.orderId) {
+                this.priceIndex = 0;
+            }
+            this.formData.price = this.priceOptions[this.priceIndex];
         },
-
         bindPricePickerChange(e) {
             this.priceIndex = e.detail.value;
-            this.formData.price = this.priceOptions[this.priceIndex];  // Just store the number
+            this.formData.price = this.priceOptions[this.priceIndex];
+            this.balanceAdequateValidation();
+            this.generateTitle();
         },
 
-        // location
+        // Address
         addressPickerToggle() {
             this.addressPickerVisible = !this.addressPickerVisible;
         },
@@ -311,19 +433,19 @@ export default {
             this.addressPickerToggle();
         },
 
-        // service time
-        open() {
+        // Service time
+        serviceScheduleToggle() {
             this.$refs.chooseTime.open()
         },
         bindServiceTimeChange(e) {
             this.serviceScheduleStart = this.$common.timeToStamp(`${e.day} ${e.startHour}`);
             this.serviceScheduleEnd = this.$common.timeToStamp(`${e.day} ${e.endHour}`);
-            this.formData.serviceScheduleStart = this.$common.timeToStamp(this.serviceScheduleStart);
-            this.formData.serviceScheduleEnd = this.$common.timeToStamp(this.serviceScheduleEnd);
+            this.formData.serviceScheduleStart = this.serviceScheduleStart;
+            this.formData.serviceScheduleEnd = this.serviceScheduleEnd;
+            this.generateTitle();
         },
 
-
-        // payment
+        // Payment
         paymentMethodSelectionToggle() {
             this.getUser().then(() => {
                 // Then toggle the visibility after user data has been fetched
@@ -348,7 +470,7 @@ export default {
             }
         },
 
-        // submit
+        // Submit
         generateTitle() {
             // Destructure values for easier access
             const {gender, age, serviceDuration} = this.dropdownOptions;
@@ -367,27 +489,21 @@ export default {
         },
         formSubmit(paymentMethod) {
             this.generateTitle();
-            const param = {
-                ...this.formData,
-                title: this.title,
-                paymentMethod: paymentMethod,
-            };
             uni.request({
                 url: getApp().globalData.data.requestUrl + this.$API.order.save,
                 method: 'POST',
-                data: param,
+                data: {
+                    ...this.formData,
+                    title: this.title,
+                    paymentMethod: paymentMethod,
+                },
                 success: (res) => {
-                    uni.showToast({title: '添加成功', icon: 'none'});
-                    uni.navigateTo({
+                    uni.redirectTo({
                         url: '/pages/profile/order/order'
                     });
                 },
-                fail: (err) => {
-                    // Handle error response
-                }
             });
         }
-
 
     },
 };

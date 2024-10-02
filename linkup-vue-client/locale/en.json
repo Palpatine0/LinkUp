@@ -85,9 +85,10 @@
         "selectServantType": "Select your Servant Type"
     },
     "profile>order>orderInitiate": {
-        "publishOrder": "Publish Order",
+        "postOrder": "Post Order",
+        "repostOrder": "Repost Order",
         "serviceGender": "Service Provider Gender",
-        "serviceAge": "Service Provider Age",
+        "requiredAge": "Service Provider Age",
         "ageRangeUnlimited": "Unlimited",
         "ageRange": "Age Range",
         "selectLocation": "Select Location",
@@ -112,8 +113,6 @@
         "selectCandidate":"Select Candidate",
         "noCandidate": "No one responded yet",
 
-
-
         "selectedBeforeCountdown": "Please select a candidate before the countdown is over",
         "orderClosed": "This order has been closed",
         "refunded": "The cost of your order has been refunded",
@@ -135,8 +134,6 @@
             "title": "Repost Order",
             "content": "Are you sure you want repost this order?"
         },
-
-
 
         "orderInfoDetail": {
             "orderId": "Order ID",

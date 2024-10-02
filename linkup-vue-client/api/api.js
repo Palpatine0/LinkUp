@@ -39,6 +39,11 @@ var $API = {
     // User Servant
     userServant: {
         search: '/user-servant/search',
+    },
+    // Transaction
+    transaction: {
+        search: '/transaction/search',
+        save: '/transaction/save',
     }
 }
 export default $API;

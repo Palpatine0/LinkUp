@@ -125,7 +125,7 @@
 
         <!-- Repost order -->
         <div v-if="order.status==3" class="fix-bottom">
-            <app-button  shaped @click="repostOrder">
+            <app-button shaped @click="repostOrder">
                 {{ $t('profile>order>orderDetail.repostOrder') }}
             </app-button>
         </div>
@@ -160,7 +160,6 @@ export default {
     onLoad(params) {
         this.orderId = params.orderId;
         this.getOrder();
-        this.getServantList();
     },
     onUnLoad() {
         if (this.countdownInterval) {
@@ -182,6 +181,9 @@ export default {
                     }
                     this.getRemainingFreeOrderPostingQuota();
                     this.getOrderAddress();
+                    if (this.order.status == 0) {
+                        this.getServantList();
+                    }
                 },
             });
         },
@@ -261,28 +263,29 @@ export default {
                 },
                 success: (res) => {
                     this.servantList = res.data.list;
-
-                    // Fetch servantData for all users in parallel
-                    const promises = this.servantList.map((user) => {
-                        return new Promise((resolve) => {
-                            uni.request({
-                                url: getApp().globalData.data.requestUrl + this.$API.userServant.search,
-                                method: 'POST',
-                                data: {
-                                    userId: user.id
-                                },
-                                success: (res) => {
-                                    user.servantData = res.data.list[0];
-                                    resolve();
-                                }
+                    if (!this.$common.isEmpty(this.servantList)) {
+                        // Fetch servantData for all users in parallel
+                        const promises = this.servantList.map((user) => {
+                            return new Promise((resolve) => {
+                                uni.request({
+                                    url: getApp().globalData.data.requestUrl + this.$API.userServant.search,
+                                    method: 'POST',
+                                    data: {
+                                        userId: user.id
+                                    },
+                                    success: (res) => {
+                                        user.servantData = res.data.list[0];
+                                        resolve();
+                                    }
+                                });
                             });
                         });
-                    });
+                        // Wait for all servantData to be fetched
+                        Promise.all(promises).then(() => {
+                            this.$forceUpdate(); // Trigger Vue to re-render with updated servantData
+                        });
+                    }
 
-                    // Wait for all servantData to be fetched
-                    Promise.all(promises).then(() => {
-                        this.$forceUpdate(); // Trigger Vue to re-render with updated servantData
-                    });
                 },
             });
         },
@@ -355,37 +358,43 @@ export default {
 
         },
 
-        repostOrder(){
+        repostOrder() {
             uni.showModal({
                 title: this.$t('profile>order>orderDetail.repostModal.title'),
                 content: this.$t('profile>order>orderDetail.repostModal.content'),
                 showCancel: true,
                 confirmText: this.$t('pub.button.confirm'),
                 cancelText: this.$t('pub.button.cancel'),
-                success: (res) => {
+                success: async (res) => {
                     if (res.confirm) {
-                        uni.request({
-                            url: getApp().globalData.data.requestUrl + this.$API.order.updateStatus,
-                            method: 'POST',
-                            data: {
-                                orderId: this.order.id,
-                                status: 3
-                            },
-                            success: (res) => {
-                                uni.redirectTo({
-                                    url: '/pages/profile/order/order',
-                                })
-                            },
+                        const serviceType = () => {
+                            return new Promise(
+                                (resolve, reject) => {
+                                    uni.request({
+                                        url: getApp().globalData.data.requestUrl + this.$API.serviceType.search,
+                                        method: 'POST',
+                                        data: {
+                                            id: this.order.requiredServantType
+                                        },
+                                        success: (res) => {
+                                            resolve(res.data.list[0])
+                                        },
+                                    });
+                                }
+                            )
+                        }
+                        const serviceTypeData = await serviceType()
+                        uni.redirectTo({
+                            url: '/pages/profile/order/order-initiate/order-initiate?serviceType=' + serviceTypeData.id + '&serviceName=' + serviceTypeData.name + '&orderId=' + this.orderId,
                         });
                     }
-
                 },
             });
         },
 
-        userDetailRedirect(userId) {
+        async userDetailRedirect(userId) {
             uni.navigateTo({
-                url: '/pages/components/user/user-detail/user-detail?userId=' + userId,
+                url: '/pages/components/user/user-detail/user-detail?userId=' + userId + '?serviceType=' + serviceType + '&serviceName=' + serviceName,
             });
         }
     }

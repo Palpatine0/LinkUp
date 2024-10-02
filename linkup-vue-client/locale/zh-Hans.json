@@ -89,9 +89,10 @@
         "selectServantType": "选择你的服务者类型"
     },
     "profile>order>orderInitiate": {
-        "publishOrder": "发布订单",
+        "postOrder": "发布订单",
+        "repostOrder": "重新发布订单",
         "serviceGender": "服务者性别",
-        "serviceAge": "服务者年龄",
+        "requiredAge": "服务者年龄",
         "ageRangeUnlimited": "不限",
         "ageRange": "年龄范围",
         "selectLocation": "服务地点",
@@ -115,8 +116,6 @@
         "candidates": "已抢单用户",
         "selectCandidate":"选择达人",
         "noCandidate": "暂时无人抢单",
-
-
 
         "selectedBeforeCountdown": "请在剩余时间内选择一个达人",
         "orderExpired": "订单关闭",
@@ -154,7 +153,7 @@
     "profile>balance": {
         "balance":"您的领客币",
         "deposit":"充值",
-        "withdraw": "提款"
+        "withdraw": "提现"
     },
 
     "//////": "profile > address",
@@ -209,8 +208,8 @@
         "withdrawBtn": "确认提现",
         "placeholder": "请输入提现金额",
         "invalidAmount": "请输入有效的提现金额",
-        "clientMinWithdrawAmount": "最低提款金额为100元",
-        "servantMinWithdrawAmount": "最低提款金额为200元",
+        "clientMinWithdrawAmount": "最低提现金额为100元",
+        "servantMinWithdrawAmount": "最低提现金额为200元",
         "success": "提现成功",
         "fail": "提现失败"
     },
