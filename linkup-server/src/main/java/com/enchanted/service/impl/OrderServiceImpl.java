@@ -85,21 +85,19 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         }
 
         boolean isSaved = orderMapper.insert(order) > 0;
-        if (isSaved) {
-            if (StringUtils.equals(order.getPaymentMethod(), OrderConstant.BALANCE)) {
-                startAutoRefundMonitor(order.getId());
-                // Record the transaction
-                Transaction transaction = new Transaction();
-                transaction.setUserId(user.getId());
-                transaction.setOrderId(order.getId());
-                transaction.setAmount(order.getPrice().negate());
-                transaction.setBalanceAfter(user.getBalance());
-                transaction.setTransactionType(TransactionConstant.DEDUCTION);
-                transaction.setDescription(TransactionConstant.CLIENT_ORDER_PAYMENT);
-                transaction.setDescriptionCn(TransactionConstant.CLIENT_ORDER_PAYMENT_CN);
-                transactionService.save(transaction);
-            }
+        if (StringUtils.equals(order.getPaymentMethod(), OrderConstant.BALANCE)) {
+            // Record the transaction
+            Transaction transaction = new Transaction();
+            transaction.setUserId(user.getId());
+            transaction.setOrderId(order.getId());
+            transaction.setAmount(order.getPrice().negate());
+            transaction.setBalanceAfter(user.getBalance());
+            transaction.setTransactionType(TransactionConstant.DEDUCTION);
+            transaction.setDescription(TransactionConstant.CLIENT_ORDER_PAYMENT);
+            transaction.setDescriptionCn(TransactionConstant.CLIENT_ORDER_PAYMENT_CN);
+            transactionService.save(transaction);
         }
+        startAutoRefundMonitor(order.getId());
         return isSaved;
     }
 
@@ -193,7 +191,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     @Override
     public int getRemainingFreePostingQuota(Long userId) {
         int freeAttemptsToday = countFreeAttemptsToday(userId);
-        return Math.max(0, OrderConstant.FREE_POSTING_QUOTA - freeAttemptsToday) + 1;
+        int quota = Math.max(0, OrderConstant.FREE_POSTING_QUOTA - freeAttemptsToday);
+        return quota;
     }
 
     private int countFreeAttemptsToday(Long userId) {
@@ -205,6 +204,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         // Query the order table to count free attempts
         QueryWrapper<Order> queryWrapper = new QueryWrapper<>();
         queryWrapper.eq("client_id", userId);
+        queryWrapper.eq("status", OrderConstant.CANCELED);
         queryWrapper.isNull("servant_id"); // No servant matched
         queryWrapper.isNotNull("countdown_start_at"); // No servant matched
         queryWrapper.between("created_at", startOfDay, endOfDay); // Only orders from today

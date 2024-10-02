@@ -122,7 +122,7 @@
         "refunded": "您的订单费用已退回至您的余额",
         "orderExpiredExplanation": "由于您未在规定时间内选择达人，订单已失效",
         "orderCanceledManuallyExplanation": "您取消了订单",
-        "orderCanceledExplanation": "因订单发布半小时内无人抢单,订单已关闭",
+        "orderCanceledExplanation": "因订单发布半小时内无人抢单(或您在这个时间内自行取消了订单),订单已关闭",
 
         "cancelOrder": "取消订单",
         "NoCandidateCancelModal": {

@@ -24,7 +24,9 @@
     </div>
 
     <!-- Countdown Timer -->
+    <!-- Has candidates -->
     <div v-if="order.countdownStartAt">
+        <!-- Alert: Choose while still can -->
         <div v-if="countdown > 0&&order.status==0" class="app-container" style="background-color: #feb327">
             <div>
                 <app-title type="h3" bold="true">{{ $t('profile>order>orderDetail.selectedBeforeCountdown') }}</app-title>
@@ -34,17 +36,20 @@
                 {{ $t('profile>order>orderDetail.cancelOrder') }}
             </app-button>
         </div>
+        <!-- Alert: Overtime -->
         <div v-if="!countdown > 0&&order.status==0" class="app-container" style="background-color: white !important;">
             <app-title type="h3" bold="true">{{ $t('profile>order>orderDetail.orderClosed') }}</app-title>
             <p>{{ $t('profile>order>orderDetail.orderExpiredExplanation') }}</p>
             <p>{{ $t('profile>order>orderDetail.refunded') }}</p>
         </div>
+        <!-- Alert: Cancel with countdown -->
         <div v-if="order.status==3" class="app-container" style="background-color: white !important;">
             <app-title type="h3" bold="true">{{ $t('profile>order>orderDetail.orderClosed') }}</app-title>
             <p>{{ $t('profile>order>orderDetail.orderCanceledManuallyExplanation') }}</p>
             <p>{{ $t('profile>order>orderDetail.refunded') }}</p>
         </div>
     </div>
+    <!-- No candidates -->
     <div v-else>
         <div v-if="order.status==3" class="app-container" style="background-color: white !important;">
             <app-title type="h3" bold="true">{{ $t('profile>order>orderDetail.orderClosed') }}</app-title>
@@ -116,14 +121,13 @@
             </div>
         </div>
 
-        <!-- Cancel order (no candidates) -->
+        <!-- Cancel order opt (no candidates) -->
         <div v-if="order.status==0&&common.isEmpty(this.servantList)" class="fix-bottom">
             <app-button color="red" shaped @click="cancelOrder">
                 {{ $t('profile>order>orderDetail.cancelOrder') }}
             </app-button>
         </div>
-
-        <!-- Repost order -->
+        <!-- Repost order opt -->
         <div v-if="order.status==3" class="fix-bottom">
             <app-button shaped @click="repostOrder">
                 {{ $t('profile>order>orderDetail.repostOrder') }}

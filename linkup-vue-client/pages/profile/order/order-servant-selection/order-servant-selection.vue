@@ -34,7 +34,7 @@ export default {
             });
         },
         orderInitiateRedirect(serviceType, serviceName) {
-            uni.navigateTo({
+            uni.redirectTo({
                 url: '/pages/profile/order/order-initiate/order-initiate?serviceType=' + serviceType + '&serviceName=' + serviceName,
             });
         },

@@ -27,5 +27,11 @@ mybatis-plus:
   mapper-locations: classpath:mybatis/mapper/*.xml
 
 
+logging:
+  level:
+    com.zaxxer.hikari: DEBUG
+    com.alibaba.druid: DEBUG
+    org.springframework.jdbc: DEBUG
+    org.mybatis: DEBUG
 
 

@@ -118,7 +118,7 @@
         "refunded": "The cost of your order has been refunded",
         "orderExpiredExplanation": "Failure in selecting candidate in designated time. This order has been closed",
         "orderCanceledManuallyExplanation": "You canceled this order",
-        "orderCanceledExplanation": "The order has been closed due to the fact that no one has taken the order within half an hour of its release",
+        "orderCanceledExplanation": "The order has been closed due to the fact that no one has taken the order within half an hour of its release (or you manually close it within this duration)",
 
         "cancelOrder": "Cancel Order",
         "noCandidateCancelModal": {
