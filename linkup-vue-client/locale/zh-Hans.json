@@ -213,18 +213,22 @@
         "createAddress": "新增地址"
     },
     "component>balance>deposit": {
+        "success": "充值成功",
+        "fail": "充值失败",
         "depositTitle": "余额充值",
         "depositBtn": "确认充值"
     },
     "component>balance>withdraw": {
+        "success": "提现成功",
+        "fail": "提现失败",
         "withdrawTitle": "余额提现",
         "withdrawBtn": "确认提现",
         "placeholder": "请输入提现金额",
         "invalidAmount": "请输入有效的提现金额",
         "clientMinWithdrawAmount": "最低提现金额为100元",
         "servantMinWithdrawAmount": "最低提现金额为200元",
-        "success": "提现成功",
-        "fail": "提现失败"
+        "weekendError": "仅可以在工作日提现",
+        "oneWithdrawPerDay": "一天只能提现一次"
     },
     "component>balance>referralQRCode": {
         "yourReferralQRCode": "您的分享二维码",

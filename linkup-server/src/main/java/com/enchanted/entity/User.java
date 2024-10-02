@@ -70,6 +70,9 @@ public class User {
     @TableField("longitude_fuzzy")
     private Double longitudeFuzzy;
 
+    @TableField("last_withdrawal_date")
+    private Date lastWithdrawalDate;
+
     @TableField("is_deleted")
     private Boolean isDeleted;
 

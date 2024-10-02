@@ -136,7 +136,7 @@ export default {
                 // Use the search endpoint
                 url = getApp().globalData.data.requestUrl + this.$API.order.search;
                 data = {
-                    userId: uni.getStorageSync(getApp().globalData.data.userInfoKey).id,
+                    clientId: uni.getStorageSync(getApp().globalData.data.userInfoKey).id,
                     keyword: this.searchKeyword,
                     page: this.page,
                     size: this.size,
@@ -146,7 +146,7 @@ export default {
                 url = getApp().globalData.data.requestUrl + this.$API.order.search;
                 method = 'POST';
                 data = {
-                    userId: uni.getStorageSync(getApp().globalData.data.userInfoKey).id,
+                    clientId: uni.getStorageSync(getApp().globalData.data.userInfoKey).id,
                     page: this.page,
                     size: this.size,
                 };

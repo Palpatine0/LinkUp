@@ -96,13 +96,13 @@ export default {
                     },
                     success: (res) => {
                         console.log(res);
-                        uni.showToast({title: '充值成功', icon: 'none'});
+                        uni.showToast({title: this.$t('component>balance>deposit.success'), icon: 'none'});
                         this.$parent.getUser();
                         this.close();
                     },
                     fail: (err) => {
                         console.log(err);
-                        uni.showToast({title: '充值失败', icon: 'none'});
+                        uni.showToast({title: this.$t('component>balance>deposit.fail'), icon: 'none'});
                     }
                 });
                 uni.request({

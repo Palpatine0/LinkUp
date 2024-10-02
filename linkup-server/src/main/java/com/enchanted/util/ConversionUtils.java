@@ -1,6 +1,9 @@
 package com.enchanted.util;
 
 import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class ConversionUtils {
 
@@ -49,6 +52,20 @@ public class ConversionUtils {
                 return new BigDecimal((String) value);
             } else if (value instanceof Number) {
                 return BigDecimal.valueOf(((Number) value).doubleValue());
+            }
+        }
+
+        if (targetType.equals(Date.class)) {
+            if (value instanceof String) {
+                // Parse date in ISO 8601 format
+                try {
+                    SimpleDateFormat isoFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX");
+                    return isoFormat.parse((String) value);
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            } else if (value instanceof Long) {
+                return new Date((Long) value);
             }
         }
 

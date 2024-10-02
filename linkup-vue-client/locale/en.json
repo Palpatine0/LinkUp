@@ -208,18 +208,22 @@
         "createAddress": "Create an Address"
     },
     "component>balance>deposit": {
+        "success": "Deposit successful",
+        "fail": "Deposit failed",
         "depositTitle": "Deposit",
         "depositBtn": "Deposit"
     },
     "component>balance>withdraw": {
+        "success": "Withdrawal successful",
+        "fail": "Withdrawal failed",
         "withdrawTitle": "Withdraw",
         "withdrawBtn": "Withdraw",
         "placeholder": "Enter amount to withdraw",
         "invalidAmount": "Please enter a valid withdrawal amount",
         "clientMinWithdrawAmount": "The minimum withdrawal amount is ¥100",
         "servantMinWithdrawAmount": "The minimum withdrawal amount is ¥200",
-        "success": "Withdrawal successful",
-        "fail": "Withdrawal failed"
+        "weekendError": "Withdrawals are not allowed on Saturdays and Sundays",
+        "oneWithdrawPerDay": "You can only withdraw once per day"
     },
     "component>balance>referralQRCode": {
         "yourReferralQRCode": "Your Referral QR Code",

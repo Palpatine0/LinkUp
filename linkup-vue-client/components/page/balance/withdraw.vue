@@ -41,7 +41,7 @@ export default {
             balance: this.userInfo.balance || 0, // user's current balance
         };
     },
-    props: { userInfo: Object },
+    props: {userInfo: Object},
     methods: {
         close() {
             this.$parent.withdrawToggle(false);
@@ -49,11 +49,8 @@ export default {
         validateAmount() {
             // Ensure valid input and limit to two decimal places
             let amount = this.withdrawAmount.toString();
-
-            // Remove any non-numeric characters except the decimal point
             amount = amount.replace(/[^0-9.]/g, '');
 
-            // Limit to two decimal places
             if (amount.includes('.')) {
                 const parts = amount.split('.');
                 if (parts[1].length > 2) {
@@ -62,36 +59,59 @@ export default {
             }
 
             this.withdrawAmount = parseFloat(amount) || 0;
-
-            // Ensure the entered amount is not greater than the user's balance
             if (this.withdrawAmount > this.balance) {
                 this.withdrawAmount = this.balance;
             }
         },
 
         confirmWithdraw() {
+            const today = new Date();
+            const dayOfWeek = today.getDay();  // 0 = Sunday, 6 = Saturday
+            const userlastWithdrawDate = new Date(this.userInfo.lastWithdrawalDate);
+            const sameDayWithdraw = userlastWithdrawDate.toDateString() === today.toDateString();
+
+            if (dayOfWeek === 0 || dayOfWeek === 6) {
+                uni.showToast({title: this.$t('component>balance>withdraw.weekendError'), icon: 'none'});
+                return;
+            }
+
+            if (sameDayWithdraw) {
+                uni.showToast({title: this.$t('component>balance>withdraw.oneWithdrawPerDay'), icon: 'none'});
+                return;
+            }
+
             if (this.withdrawAmount <= 0 || this.withdrawAmount > this.balance) {
-                uni.showToast({ title: this.$t('component>balance>withdraw.invalidAmount'), icon: 'none' });
+                uni.showToast({title: this.$t('component>balance>withdraw.invalidAmount'), icon: 'none'});
             } else if (this.withdrawAmount < 100) {
-                uni.showToast({ title: this.$t('component>balance>withdraw.clientMinWithdrawAmount'), icon: 'none' });
+                uni.showToast({title: this.$t('component>balance>withdraw.clientMinWithdrawAmount'), icon: 'none'});
             } else {
                 const updatedBalance = parseFloat((this.balance - this.withdrawAmount).toFixed(2));
+
+                // Update the user's balance and withdrawal date
                 uni.request({
                     url: getApp().globalData.data.requestUrl + this.$API.user.update,
                     method: 'POST',
                     data: {
                         id: this.userInfo.id,
                         balance: updatedBalance,
+                        lastWithdrawalDate: today,
                     },
                     success: (res) => {
-                        uni.showToast({ title: this.$t('component>balance>withdraw.success'), icon: 'none' });
-                        this.$parent.getUser(); // Refresh user data after successful update
-                        this.close(); // Close the withdraw dialog
+                        if (res.data.code == 0) {
+                            uni.showToast({title: this.$t('component>balance>withdraw.success'), icon: 'none'});
+                            this.$parent.getUser();
+                            this.close();
+                        } else {
+                            uni.showToast({title: this.$t('component>balance>withdraw.fail'), icon: 'none'});
+                            console.log(res.data.message)
+                        }
                     },
                     fail: (err) => {
-                        uni.showToast({ title: this.$t('component>balance>withdraw.fail'), icon: 'none' });
+                        uni.showToast({title: this.$t('component>balance>withdraw.fail'), icon: 'none'});
                     },
                 });
+
+                // Log the transaction
                 uni.request({
                     url: getApp().globalData.data.requestUrl + this.$API.transaction.save,
                     method: 'POST',
@@ -107,11 +127,11 @@ export default {
                     },
                 });
             }
-        }
-
+        },
     },
 };
 </script>
+
 
 <style scoped>
 .withdraw-container {
