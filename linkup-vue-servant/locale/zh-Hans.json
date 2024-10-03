@@ -81,8 +81,7 @@
 
     "//////": "home",
     "home": {
-        "nearby": "附近",
-        "tourGuideServices": "导游服务"
+        "nearby": "附近的订单"
     },
 
 
