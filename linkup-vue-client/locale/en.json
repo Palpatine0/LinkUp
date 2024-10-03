@@ -25,10 +25,15 @@
         "status": {
             "loading": "Loading..."
         },
-        "tips": {
-            "submit": "Submit",
-            "continue": "Continue",
-            "successSignUp": "Sign Up Complete!"
+        "modal": {
+            "button": {
+                "confirm": "Confirm",
+                "cancel": "Cancel",
+                "submit": "Submit",
+                "continue": "Continue"
+            },
+            "successSignUp": "Sign Up Complete!",
+            "auth": "Authorization"
         }
     },
 
