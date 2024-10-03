@@ -22,20 +22,42 @@
         "unit": {
             "cny": "元"
         },
-        "status": {
+
+        "showToast": {
+            "success": "操作成功",
+            "fail": "操作失败",
+            "loadingFail": "加载失败"
+        },
+        "showLoading": {
             "loading": "加载中..."
         },
-        "tips": {
-            "submit": "提交",
-            "continue": "继续",
-            "successSignUp": "注册成功!"
+        "modal": {
+            "title": {
+                "auth": "授权"
+            },
+            "content": {
+                "auth": "请授权您的个人信息以使用完整服务"
+            },
+            "button": {
+                "confirm": "确认",
+                "cancel": "取消",
+                "submit": "提交",
+                "continue": "继续"
+            }
         }
     },
 
+    "//////": "App.vue",
+    "app": {
+        "showToast": {
+            "codeAuthFail": "用户code获取失败",
+            "authFail": "授权失败",
+            "loginFail": "登陆失败"
+        }
+    },
 
     "//////": "register",
     "register": {
-        "incorrectRC": "邀请码异常",
         "step0Title": "您的邀请人?",
         "step0Desc": "请输入一个六位的邀请码以完成注册",
         "step0Placeholder": "输入6位邀请码",
@@ -48,7 +70,13 @@
         "step4Desc": "请输入您的用户名，让我们更好地了解您",
         "step4Placeholder": "请输入您的用户名",
         "step5Title": "您的头像?",
-        "step5Desc": "点击下方图片以切换不同的头像"
+        "step5Desc": "点击下方图片以切换不同的头像",
+        "successSignUp": "注册成功!",
+        "showToast": {
+            "incorrectRC": "邀请码异常",
+            "authSuccess": "授权成功",
+            "authFailed": "授权失败"
+        }
     },
 
     "//////": "home",
@@ -66,12 +94,12 @@
 
     "//////": "profile",
     "profile": {
-        "order":"订单",
-        "balance":"余额",
-        "address":"地址信息",
-        "myFavorite":"我的收藏",
-        "data":"数据与存储",
-        "tag":"标签",
+        "order": "订单",
+        "balance": "余额",
+        "address": "地址信息",
+        "myFavorite": "我的收藏",
+        "data": "数据与存储",
+        "tag": "标签",
         "signIn": "微信一键登录",
         "signOut": "退出登录"
     },
@@ -114,22 +142,22 @@
         },
 
         "candidates": "已抢单用户",
-        "selectCandidate":"选择达人",
+        "selectCandidate": "选择达人",
         "noCandidate": "暂时无人抢单",
 
         "selectedBeforeCountdown": "请在剩余时间内选择一个达人",
-        "orderExpired": "订单关闭",
+        "orderClosed": "订单关闭",
         "refunded": "您的订单费用已退回至您的余额",
         "orderExpiredExplanation": "由于您未在规定时间内选择达人，订单已失效",
         "orderCanceledManuallyExplanation": "您取消了订单",
         "orderCanceledExplanation": "因订单发布半小时内无人抢单(或您在这个时间内自行取消了订单),订单已关闭",
 
         "cancelOrder": "取消订单",
-        "NoCandidateCancelModal": {
+        "noCandidateCancelModal": {
             "title": "确认取消订单",
             "content": "确定要取消订单?"
         },
-        "HasCandidateCancelModal": {
+        "hasCandidateCancelModal": {
             "title": "确认取消订单",
             "content": "您的订单已经被选择，是否确认取消？超出今日的免费发单额度后本订单只能回退定价的80%。您今日的免费发单额度次数: "
         },
@@ -151,8 +179,8 @@
 
     "//////": "profile > balance",
     "profile>balance": {
-        "balance":"您的领客币",
-        "deposit":"充值",
+        "balance": "您的领客币",
+        "deposit": "充值",
         "withdraw": "提现",
         "transactionHistory": "交易记录",
         "qrCode": "我的分享码",
@@ -187,6 +215,7 @@
         "saveBtn": "保存地址",
         "updateBtn": "更新地址"
     },
+
     "//////": "profile > data",
     "profile>data": {
         "ds": "数据与存储"
@@ -202,10 +231,10 @@
     "componentPage>service>serviceDetail>servantList": {},
     "componentPage>chat>chatWindow": {
         "messageInput": {
-            "enterMsg":""
+            "enterMsg": ""
         }
     },
-    "componentPage>register": {},
+
 
     "//////": "components",
     "component>address>addressSelector": {
@@ -213,10 +242,11 @@
         "createAddress": "新增地址"
     },
     "component>balance>deposit": {
-        "success": "充值成功",
-        "fail": "充值失败",
         "depositTitle": "余额充值",
-        "depositBtn": "确认充值"
+        "depositBtn": "确认充值",
+        "showToast": {
+            "selectAmount": "请选择或输入一个充值金额"
+        }
     },
     "component>balance>withdraw": {
         "success": "提现成功",
@@ -224,19 +254,26 @@
         "withdrawTitle": "余额提现",
         "withdrawBtn": "确认提现",
         "placeholder": "请输入提现金额",
-        "invalidAmount": "请输入有效的提现金额",
-        "clientMinWithdrawAmount": "最低提现金额为100元",
-        "servantMinWithdrawAmount": "最低提现金额为200元",
-        "weekendError": "仅可以在工作日提现",
-        "oneWithdrawPerDay": "一天只能提现一次"
+        "showToast": {
+            "weekendError": "仅可以在工作日提现",
+            "oneWithdrawPerDay": "一天只能提现一次",
+            "invalidAmount": "请输入有效的提现金额",
+            "clientMinWithdrawAmount": "最低提现金额为100元",
+            "servantMinWithdrawAmount": "最低提现金额为200元"
+        }
     },
     "component>balance>referralQRCode": {
         "yourReferralQRCode": "您的分享二维码",
         "descA": "如果一个用户通过您的二维码进入该小程序，如果他们成功完成了一个订单，该订单价格的5%会被存到您的余额里。",
         "descB": "登陆后分享该小程序给其他用户也可获得该收益"
     },
-    "component>chat>message-input": {
-        "takePhoto":"拍照",
+    "component>chat>messageInput": {
+        "takePhoto": "拍照",
         "choseFromAlbum": "从相册选择"
+    },
+    "component>order>serviceSchedule": {
+        "showToast": {
+            "selectServiceSchedule": "请选择预约时间段"
+        }
     }
 }

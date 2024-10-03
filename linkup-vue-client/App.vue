@@ -33,7 +33,7 @@ export default {
                             resolve(res.code);
                         },
                         fail: () => {
-                            uni.showToast({title: '用户code获取失败', icon: 'none'});
+                            uni.showToast({title: this.$t('pub.app.showToast.codeAuthFail'), icon: 'none'});
                         },
                     })
                 );
@@ -55,13 +55,13 @@ export default {
                                     if (res.data.code == 0) {
                                         resolve(res.data.data);
                                     } else {
-                                        uni.showToast({title: '授权失败', icon: 'none'});
+                                        uni.showToast({title: this.$t('pub.app.showToast.authFail'), icon: 'none'});
                                     }
                                 },
                             });
                         },
                         fail: () => {
-                            uni.showToast({title: '授权请求失败', icon: 'none'});
+                            uni.showToast({title: this.$t('pub.app.showToast.authFail'), icon: 'none'});
                         },
                     })
 
@@ -83,7 +83,7 @@ export default {
                                     uni.setStorageSync(app.globalData.data.userLoginKey, true);
                                     resolve(res)
                                 }else {
-                                    uni.showToast({title: 'Login error', icon: 'none'});
+                                    uni.showToast({title: this.$t('pub.app.showToast.loginFail'), icon: 'none'});
                                 }
                             },
                         });

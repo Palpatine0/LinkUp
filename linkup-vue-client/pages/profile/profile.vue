@@ -98,7 +98,7 @@ export default {
         },
 
         async signIn() {
-            uni.showLoading({title: this.$t('pub.status.loading')});
+            uni.showLoading({title: this.$t('pub.showLoading.loading')});
             await getApp().globalData.signIn()
             this.user = uni.getStorageSync(getApp().globalData.data.userInfoKey)
             this.isUserLogin = uni.getStorageSync(getApp().globalData.data.userLoginKey)

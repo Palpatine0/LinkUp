@@ -22,24 +22,42 @@
         "unit": {
             "cny": "CNY"
         },
-        "status": {
+
+        "showToast": {
+            "success": "Success",
+            "fail": "Operation failed",
+            "loadingFail": "Loading failed"
+        },
+        "showLoading": {
             "loading": "Loading..."
         },
         "modal": {
+            "title": {
+                "auth": "Authorization"
+            },
+            "content": {
+                "auth": "To use the full version of this app, place allow us to access some of your account info"
+            },
             "button": {
                 "confirm": "Confirm",
                 "cancel": "Cancel",
                 "submit": "Submit",
                 "continue": "Continue"
-            },
-            "successSignUp": "Sign Up Complete!",
-            "auth": "Authorization"
+            }
+        }
+    },
+
+    "//////": "App.vue",
+    "app": {
+        "showToast": {
+            "codeAuthFail": "Failed to fetch user code",
+            "authFail": "Auth failed",
+            "loginFail": "Login failed"
         }
     },
 
     "//////": "register",
     "register": {
-        "incorrectRC": "Referral Code Not Found",
         "step0Title": "Your referrer?",
         "step0Desc": "Please enter a 6 characters referral code to continue",
         "step0Placeholder": "Enter a referral code",
@@ -52,13 +70,22 @@
         "step4Desc": "Other users will refer to you by this name",
         "step4Placeholder": "Enter your username",
         "step5Title": "Choose an awesome avatar!",
-        "step5Desc": "Select an avatar by clicking the img below"
+        "step5Desc": "Select an avatar by clicking the img below",
+        "successSignUp": "Sign Up Complete!",
+        "showToast": {
+            "incorrectRC": "Referral Code Not Found",
+            "authSuccess": "Auth success",
+            "authFailed": "Auth failed"
+        }
     },
+
     "//////": "home",
     "home": {
         "nearby": "Nearby",
         "tourGuideServices": "Tour Guide Services"
     },
+
+
     "//////": "chat",
     "chat": {
         "chats": "Chats"
@@ -115,7 +142,7 @@
         },
 
         "candidates": "Candidates",
-        "selectCandidate":"Select Candidate",
+        "selectCandidate": "Select Candidate",
         "noCandidate": "No one responded yet",
 
         "selectedBeforeCountdown": "Please select a candidate before the countdown is over",
@@ -165,7 +192,7 @@
         "pending": "Pending",
         "completed": "Completed",
         "failed": "Failed",
-        "identifier": "Transaction ID",
+        "identifier": "ID",
         "income": "Income",
         "expanse": "Expanse"
     },
@@ -195,6 +222,7 @@
     },
 
 
+
     "//////": "components(page)",
     "componentPage>user>userDetail": {
         "startChatting": "Start Chatting"
@@ -206,37 +234,44 @@
             "enterMsg": ""
         }
     },
-    "componentPage>register": {},
+
+
     "//////": "components",
     "component>address>addressSelector": {
         "selectorServiceAddress": "Selector an Address",
         "createAddress": "Create an Address"
     },
     "component>balance>deposit": {
-        "success": "Deposit successful",
-        "fail": "Deposit failed",
         "depositTitle": "Deposit",
-        "depositBtn": "Deposit"
+        "depositBtn": "Deposit",
+        "showToast": {
+            "selectAmount": "Please select a amount"
+        }
     },
     "component>balance>withdraw": {
-        "success": "Withdrawal successful",
-        "fail": "Withdrawal failed",
         "withdrawTitle": "Withdraw",
         "withdrawBtn": "Withdraw",
         "placeholder": "Enter amount to withdraw",
-        "invalidAmount": "Please enter a valid withdrawal amount",
-        "clientMinWithdrawAmount": "The minimum withdrawal amount is ¥100",
-        "servantMinWithdrawAmount": "The minimum withdrawal amount is ¥200",
-        "weekendError": "Withdrawals are not allowed on Saturdays and Sundays",
-        "oneWithdrawPerDay": "You can only withdraw once per day"
+        "showToast": {
+            "weekendError": "Withdrawals are not allowed on Saturdays and Sundays",
+            "oneWithdrawPerDay": "You can only withdraw once per day",
+            "invalidAmount": "Please enter a valid withdrawal amount",
+            "clientMinWithdrawAmount": "The minimum withdrawal amount is ¥100",
+            "servantMinWithdrawAmount": "The minimum withdrawal amount is ¥200"
+        }
     },
     "component>balance>referralQRCode": {
         "yourReferralQRCode": "Your Referral QR Code",
         "descA": "If a user opens this mini program by scanning your QR code, you will receive 5% of their order price stored in your balance each time they successfully complete an order.",
         "descB": "This also applies if you share this mini program with users after signing in."
     },
-    "component>chat>message-input": {
+    "component>chat>messageInput": {
         "takePhoto": "Take Photo",
         "choseFromAlbum": "Choose From Album"
+    },
+    "component>order>serviceSchedule": {
+        "showToast": {
+            "selectServiceSchedule": "Please make a schedule"
+        }
     }
 }

@@ -311,8 +311,8 @@ export default {
                     title: this.$t('profile>order>orderDetail.noCandidateCancelModal.title'),
                     content: this.$t('profile>order>orderDetail.noCandidateCancelModal.content'),
                     showCancel: true,
-                    confirmText: this.$t('pub.button.confirm'),
-                    cancelText: this.$t('pub.button.cancel'),
+                    confirmText: this.$t('pub.modal.button.confirm'),
+                    cancelText: this.$t('pub.modal.button.cancel'),
                     success: (res) => {
                         if (res.confirm) {
                             uni.request({
@@ -337,8 +337,8 @@ export default {
                     title: this.$t('profile>order>orderDetail.hasCandidateCancelModal.title'),
                     content: this.$t('profile>order>orderDetail.hasCandidateCancelModal.content') + `${this.freeOrderPostingQuota}`,
                     showCancel: true,
-                    confirmText: this.$t('pub.button.confirm'),
-                    cancelText: this.$t('pub.button.cancel'),
+                    confirmText: this.$t('pub.modal.button.confirm'),
+                    cancelText: this.$t('pub.modal.button.cancel'),
                     success: (res) => {
                         if (res.confirm) {
                             uni.request({
@@ -367,8 +367,8 @@ export default {
                 title: this.$t('profile>order>orderDetail.repostModal.title'),
                 content: this.$t('profile>order>orderDetail.repostModal.content'),
                 showCancel: true,
-                confirmText: this.$t('pub.button.confirm'),
-                cancelText: this.$t('pub.button.cancel'),
+                confirmText: this.$t('pub.modal.button.confirm'),
+                cancelText: this.$t('pub.modal.button.cancel'),
                 success: async (res) => {
                     if (res.confirm) {
                         const serviceType = () => {

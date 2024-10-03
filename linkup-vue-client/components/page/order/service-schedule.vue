@@ -239,10 +239,7 @@ export default {
         },
         confirm() {
             if (this.selectedTimeIndex === null) {
-                uni.showToast({
-                    title: '请选择预约时间段',
-                    icon: 'none',
-                });
+                uni.showToast({title: this.$t('component>order>serviceSchedule.showToast.selectServiceSchedule'), icon: 'none',});
                 return;
             }
             const time = this.selectedDay.timeList[this.selectedTimeIndex];

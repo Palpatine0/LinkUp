@@ -71,19 +71,19 @@ export default {
             const sameDayWithdraw = userlastWithdrawDate.toDateString() === today.toDateString();
 
             if (dayOfWeek === 0 || dayOfWeek === 6) {
-                uni.showToast({title: this.$t('component>balance>withdraw.weekendError'), icon: 'none'});
+                uni.showToast({title: this.$t('component>balance>withdraw.showToast.weekendError'), icon: 'none'});
                 return;
             }
 
             if (sameDayWithdraw) {
-                uni.showToast({title: this.$t('component>balance>withdraw.oneWithdrawPerDay'), icon: 'none'});
+                uni.showToast({title: this.$t('component>balance>withdraw.showToast.oneWithdrawPerDay'), icon: 'none'});
                 return;
             }
 
             if (this.withdrawAmount <= 0 || this.withdrawAmount > this.balance) {
-                uni.showToast({title: this.$t('component>balance>withdraw.invalidAmount'), icon: 'none'});
+                uni.showToast({title: this.$t('component>balance>withdraw.showToast.invalidAmount'), icon: 'none'});
             } else if (this.withdrawAmount < 100) {
-                uni.showToast({title: this.$t('component>balance>withdraw.clientMinWithdrawAmount'), icon: 'none'});
+                uni.showToast({title: this.$t('component>balance>withdraw.showToast.clientMinWithdrawAmount'), icon: 'none'});
             } else {
                 const updatedBalance = parseFloat((this.balance - this.withdrawAmount).toFixed(2));
 
@@ -98,16 +98,16 @@ export default {
                     },
                     success: (res) => {
                         if (res.data.code == 0) {
-                            uni.showToast({title: this.$t('component>balance>withdraw.success'), icon: 'none'});
+                            uni.showToast({title: this.$t('pub.showToast.success'), icon: 'none'});
                             this.$parent.getUser();
                             this.close();
                         } else {
-                            uni.showToast({title: this.$t('component>balance>withdraw.fail'), icon: 'none'});
+                            uni.showToast({title: this.$t('pub.showToast.fail'), icon: 'none'});
                             console.log(res.data.message)
                         }
                     },
                     fail: (err) => {
-                        uni.showToast({title: this.$t('component>balance>withdraw.fail'), icon: 'none'});
+                        uni.showToast({title: this.$t('pub.showToast.fail'), icon: 'none'});
                     },
                 });
 

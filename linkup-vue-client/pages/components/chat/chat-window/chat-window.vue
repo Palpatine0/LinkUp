@@ -190,10 +190,7 @@ export default {
                     this.scrollTop = 0; // Scroll to the bottom after sending a new message
                 },
                 fail: () => {
-                    uni.showToast({
-                        title: 'Network error',
-                        icon: 'none'
-                    });
+                    uni.showToast({title: 'Network error', icon: 'none'});
                 }
             });
         },

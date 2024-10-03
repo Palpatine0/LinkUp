@@ -96,13 +96,13 @@ export default {
                     },
                     success: (res) => {
                         console.log(res);
-                        uni.showToast({title: this.$t('component>balance>deposit.success'), icon: 'none'});
+                        uni.showToast({title: this.$t('pub.showToast.success'), icon: 'none'});
                         this.$parent.getUser();
                         this.close();
                     },
                     fail: (err) => {
                         console.log(err);
-                        uni.showToast({title: this.$t('component>balance>deposit.fail'), icon: 'none'});
+                        uni.showToast({title: this.$t('pub.showToast.fail'), icon: 'none'});
                     }
                 });
                 uni.request({
@@ -120,7 +120,7 @@ export default {
                     },
                 });
             } else {
-                uni.showToast({title: '请选择或输入一个充值金额', icon: 'none'});
+                uni.showToast({title: this.$t('component>balance>deposit.showToast.selectAmount'), icon: 'none'});
             }
         },
     },

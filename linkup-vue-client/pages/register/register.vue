@@ -21,7 +21,7 @@
             />
         </div>
         <app-button shaped size="very-large" class="button-continuation-register" @click="referralCodeValidation()" width="85vw">
-            {{ $t('pub.tips.submit') }}
+            {{ $t('pub.button.submit') }}
         </app-button>
     </div>
 
@@ -95,7 +95,7 @@
             </picker>
         </div>
         <app-button v-if="!common.isEmpty(userData.age)" shaped size="very-large" class="button-continuation-register" @click="advance()" width="85vw">
-            {{ $t('pub.tips.continue') }}
+            {{ $t('pub.modal.button.continue') }}
         </app-button>
     </div>
 
@@ -120,7 +120,7 @@
             />
         </div>
         <app-button shaped size="very-large" class="button-continuation-register" @click="advance()" width="85vw">
-            {{ $t('pub.tips.continue') }}
+            {{ $t('pub.modal.button.continue') }}
         </app-button>
     </div>
 
@@ -138,7 +138,7 @@
             <img :src="avatar" class="avatar" @click="changeAvatar">
         </div>
         <app-button shaped size="very-large" class="button-continuation-register" @click="setUserInfo()" width="85vw">
-            {{ $t('pub.tips.successSignUp') }}
+            {{ $t('register.successSignUp') }}
         </app-button>
     </div>
 
@@ -229,11 +229,11 @@ export default {
                         this.advance()
                         this.authRequest();
                     } else {
-                        uni.showToast({title: this.$t('register.incorrectRC'), icon: 'none'});
+                        uni.showToast({title: this.$t('register.showToast.incorrectRC'), icon: 'none'});
                     }
                 },
                 fail: (res) => {
-                    uni.showToast({title: this.$t('register.incorrectRC'), icon: 'none'});
+                    uni.showToast({title: this.$t('register.showToast.incorrectRC'), icon: 'none'});
                 }
             });
         },
@@ -258,10 +258,11 @@ export default {
         // step 1
         authRequest() {
             uni.showModal({
-                title: '授权',
-                content: '请授权您的个人信息以使用完整服务',
+                title: this.$t('pub.modal.title.auth'),
+                content: this.$t('pub.modal.content.auth'),
                 showCancel: true,
-                confirmText: '授权',
+                confirmText: this.$t('pub.modal.button.confirm'),
+                cancelText: this.$t('pub.modal.button.cancel'),
                 success: (res) => {
                     if (res.confirm) {
                         this.getUserInfo();
@@ -273,7 +274,7 @@ export default {
             });
         },
         async getUserInfo(e) {
-            uni.showLoading({title: this.$t('pub.status.loading')});
+            uni.showLoading({title: this.$t('pub.showLoading.loading')});
 
             // fetch user config data (openid)
             this.userData = {
@@ -380,10 +381,10 @@ export default {
                     this.userData.id = res.data.data.id;
                     uni.setStorageSync(app.globalData.data.userLoginKey, true);
                     uni.setStorageSync(app.globalData.data.userInfoKey, this.userData);
-                    uni.showToast({title: '授权成功', icon: 'none'});
+                    uni.showToast({title: this.$t('register.showToast.authSuccess'), icon: 'none'});
                 },
                 fail: () => {
-                    uni.showToast({title: '授权失败', icon: 'none'});
+                    uni.showToast({title: this.$t('register.showToast.authFailed'), icon: 'none'});
                 },
             });
             this.backToHome()

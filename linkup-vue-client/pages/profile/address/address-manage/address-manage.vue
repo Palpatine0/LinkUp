@@ -97,7 +97,7 @@ export default {
                     this.address = res.data.list[0];
                 },
                 fail: (err) => {
-                    uni.showToast({title: '加载失败', icon: 'none'});
+                    uni.showToast({title: this.$t('pub.showToast.loadingFail'), icon: 'none'});
                 }
             });
         },
@@ -174,13 +174,13 @@ export default {
                 method: method,
                 data: addressData,
                 success: (res) => {
-                    uni.showToast({title: '地址保存成功', icon: 'none'});
+                    uni.showToast({title: this.$t('pub.showToast.success'), icon: 'none'});
                     uni.navigateTo({
                         url: '/pages/profile/address/address'
                     });
                 },
                 fail: (err) => {
-                    uni.showToast({title: '保存失败', icon: 'none'});
+                    uni.showToast({title: this.$t('pub.showToast.fail'), icon: 'none'});
                 }
             });
         }

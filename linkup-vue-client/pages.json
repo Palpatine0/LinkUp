@@ -179,22 +179,22 @@
         "spacing": "3px",
         "list": [
             {
-                "iconPath": "static/tab-bar/home.png",
-                "selectedIconPath": "static/tab-bar/home-active.png",
+                "iconPath": "static/tab-bar/home.jpg",
+                "selectedIconPath": "static/tab-bar/home-active.jpg",
                 "pagePath": "pages/home/home",
                 // "text": "我的订单"
                 "text": ""
             },
             {
-                "iconPath": "static/tab-bar/chat.png",
-                "selectedIconPath": "static/tab-bar/chat-active.png",
+                "iconPath": "static/tab-bar/chat.jpg",
+                "selectedIconPath": "static/tab-bar/chat-active.jpg",
                 "pagePath": "pages/chat/chat",
                 // "text": "我的消息"
                 "text": ""
             },
             {
-                "iconPath": "static/tab-bar/setting.png",
-                "selectedIconPath": "static/tab-bar/setting-active.png",
+                "iconPath": "static/tab-bar/profile.jpg",
+                "selectedIconPath": "static/tab-bar/profile-active.jpg",
                 "pagePath": "pages/profile/profile",
                 // "text": "设置"
                 "text": ""

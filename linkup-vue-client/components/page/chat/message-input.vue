@@ -30,8 +30,8 @@ export default {
         selectFileType() {
             uni.showActionSheet({
                 itemList: [
-                    this.$t('component>chat>message-input.choseFromAlbum'),
-                    this.$t('component>chat>message-input.takePhoto'),
+                    this.$t('component>chat>messageInput.choseFromAlbum'),
+                    this.$t('component>chat>messageInput.takePhoto'),
                 ],
                 success: (res) => {
                     console.log(res.tapIndex);
