@@ -1,0 +1,279 @@
+{
+    "//////": "pub",
+    "pub": {
+        "lang": {
+            "en": "English",
+            "zh": "中文",
+            "curLang": "中文"
+        },
+        "page": {
+            "search": "搜索",
+            "loading": "加载中...",
+            "noMoreData": "已加载全部数据"
+        },
+        "button": {
+            "confirm": "确认",
+            "cancel": "取消"
+        },
+        "gender": {
+            "m": "男",
+            "f": "女"
+        },
+        "unit": {
+            "cny": "元"
+        },
+
+        "showToast": {
+            "success": "操作成功",
+            "fail": "操作失败",
+            "loadingFail": "加载失败"
+        },
+        "showLoading": {
+            "loading": "加载中..."
+        },
+        "modal": {
+            "title": {
+                "auth": "授权"
+            },
+            "content": {
+                "auth": "请授权您的个人信息以使用完整服务"
+            },
+            "button": {
+                "confirm": "确认",
+                "cancel": "取消",
+                "submit": "提交",
+                "continue": "继续"
+            }
+        }
+    },
+
+    "//////": "App.vue",
+    "app": {
+        "showToast": {
+            "codeAuthFail": "用户code获取失败",
+            "authFail": "授权失败",
+            "loginFail": "登陆失败"
+        }
+    },
+
+    "//////": "register",
+    "register": {
+        "step0Title": "您的邀请人?",
+        "step0Desc": "请输入一个六位的邀请码以完成注册",
+        "step0Placeholder": "输入6位邀请码",
+        "step2Title": "欢迎来到领客",
+        "step2Desc": "指定您的性别，以便更好地进行个性化互动",
+        "step3Title": "您的年龄?",
+        "step3Desc": "指定您的年龄，以便更好地进行个性化互动",
+        "step3Placeholder": "选择您的年龄",
+        "step4Title": "您的显示名称?",
+        "step4Desc": "请输入您的用户名，让我们更好地了解您",
+        "step4Placeholder": "请输入您的用户名",
+        "step5Title": "您的头像?",
+        "step5Desc": "点击下方图片以切换不同的头像",
+        "successSignUp": "注册成功!",
+        "showToast": {
+            "incorrectRC": "邀请码异常",
+            "authSuccess": "授权成功",
+            "authFailed": "授权失败"
+        }
+    },
+
+    "//////": "home",
+    "home": {
+        "nearby": "附近",
+        "tourGuideServices": "导游服务"
+    },
+
+
+    "//////": "chat",
+    "chat": {
+        "chats": "聊天"
+    },
+
+
+    "//////": "profile",
+    "profile": {
+        "order": "订单",
+        "balance": "余额",
+        "address": "地址信息",
+        "myFavorite": "我的收藏",
+        "data": "数据与存储",
+        "tag": "标签",
+        "signIn": "微信一键登录",
+        "signOut": "退出登录"
+    },
+
+    "//////": "profile > order",
+    "profile>order": {
+        "myOrders": "我的订单",
+        "candidates": "抢单人数",
+        "pending": "已发布",
+        "processing": "订单开始",
+        "completed": "订单完成",
+        "canceled": "订单取消"
+    },
+    "profile>order>orderServantSelection": {
+        "selectServantType": "选择你的服务者类型"
+    },
+    "profile>order>orderInitiate": {
+        "postOrder": "发布订单",
+        "repostOrder": "重新发布订单",
+        "serviceGender": "服务者性别",
+        "requiredAge": "服务者年龄",
+        "ageRangeUnlimited": "不限",
+        "ageRange": "年龄范围",
+        "selectLocation": "服务地点",
+        "serviceDuration": "服务时长",
+        "serviceSchedule": "服务时间",
+        "selectServiceSchedule": "请选择服务时间",
+        "price": "价格",
+        "saveOrder": "保存订单",
+        "options": {
+            "all": "不限",
+            "allGender": "不限性别",
+            "allAge": "不限年龄"
+        }
+    },
+    "profile>order>orderDetail": {
+        "orderInfoBasic": {
+            "price": "报价",
+            "totalCandidates": "已抢单"
+        },
+
+        "candidates": "已抢单用户",
+        "selectCandidate": "选择达人",
+        "noCandidate": "暂时无人抢单",
+
+        "selectedBeforeCountdown": "请在剩余时间内选择一个达人",
+        "orderClosed": "订单关闭",
+        "refunded": "您的订单费用已退回至您的余额",
+        "orderExpiredExplanation": "由于您未在规定时间内选择达人，订单已失效",
+        "orderCanceledManuallyExplanation": "您取消了订单",
+        "orderCanceledExplanation": "因订单发布半小时内无人抢单(或您在这个时间内自行取消了订单),订单已关闭",
+
+        "cancelOrder": "取消订单",
+        "noCandidateCancelModal": {
+            "title": "确认取消订单",
+            "content": "确定要取消订单?"
+        },
+        "hasCandidateCancelModal": {
+            "title": "确认取消订单",
+            "content": "您的订单已经被选择，是否确认取消？超出今日的免费发单额度后本订单只能回退定价的80%。您今日的免费发单额度次数: "
+        },
+        "repostOrder": "重新发布订单",
+        "repostModal": {
+            "title": "重新发布订单",
+            "content": "您确定要重新发布订单?"
+        },
+
+        "orderInfoDetail": {
+            "orderId": "订单编号",
+            "orderTime": "下单时间",
+            "paymentMethod": "支付方式",
+            "balance": "余额",
+            "weChat": "微信支付",
+            "address": "地址"
+        }
+    },
+
+    "//////": "profile > balance",
+    "profile>balance": {
+        "balance": "您的领客币",
+        "deposit": "充值",
+        "withdraw": "提现",
+        "transactionHistory": "交易记录",
+        "qrCode": "我的分享码",
+        "viewMore": "查看更多"
+    },
+    "profile>balance>transactionHistory": {
+        "transactionHistory": "交易历史",
+        "amount": "金额",
+        "pending": "待处理",
+        "completed": "已完成",
+        "failed": "失败",
+        "identifier": "ID",
+        "income": "收入",
+        "expanse": "支出"
+    },
+
+    "//////": "profile > address",
+    "profile>address": {
+        "addressManage": "地址管理"
+    },
+    "profile>address>addressManage": {
+        "createAddress": "添加地址",
+        "editAddress": "编辑地址",
+        "consignee": "收货人",
+        "consigneePlaceholder": "请输入收货人姓名",
+        "phoneNumber": "联系电话",
+        "phonePlaceholder": "请输入联系电话",
+        "serviceLocation": "服务地点",
+        "selectLocation": "请选择服务地点",
+        "detailedAddress": "详细地址",
+        "detailPlaceholder": "请输入详细地址",
+        "saveBtn": "保存地址",
+        "updateBtn": "更新地址"
+    },
+
+    "//////": "profile > data",
+    "profile>data": {
+        "ds": "数据与存储"
+    },
+
+
+
+    "//////": "components(page)",
+    "componentPage>user>userDetail": {
+        "startChatting": "发起聊天"
+    },
+    "componentPage>service>serviceDetail": {},
+    "componentPage>service>serviceDetail>servantList": {},
+    "componentPage>chat>chatWindow": {
+        "messageInput": {
+            "enterMsg": ""
+        }
+    },
+
+
+    "//////": "components",
+    "component>address>addressSelector": {
+        "selectorServiceAddress": "选择服务地点",
+        "createAddress": "新增地址"
+    },
+    "component>balance>deposit": {
+        "depositTitle": "余额充值",
+        "depositBtn": "确认充值",
+        "showToast": {
+            "selectAmount": "请选择或输入一个充值金额"
+        }
+    },
+    "component>balance>withdraw": {
+        "success": "提现成功",
+        "fail": "提现失败",
+        "withdrawTitle": "余额提现",
+        "withdrawBtn": "确认提现",
+        "placeholder": "请输入提现金额",
+        "showToast": {
+            "weekendError": "仅可以在工作日提现",
+            "oneWithdrawPerDay": "一天只能提现一次",
+            "invalidAmount": "请输入有效的提现金额",
+            "clientMinWithdrawAmount": "最低提现金额为100元",
+            "servantMinWithdrawAmount": "最低提现金额为200元"
+        }
+    },
+    "component>balance>referralQRCode": {
+        "yourReferralQRCode": "您的分享二维码",
+        "descA": "如果一个用户通过您的二维码进入该小程序，如果他们成功完成了一个订单，该订单价格的5%会被存到您的余额里。",
+        "descB": "登陆后分享该小程序给其他用户也可获得该收益"
+    },
+    "component>chat>messageInput": {
+        "takePhoto": "拍照",
+        "choseFromAlbum": "从相册选择"
+    },
+    "component>order>serviceSchedule": {
+        "showToast": {
+            "selectServiceSchedule": "请选择预约时间段"
+        }
+    }
+}

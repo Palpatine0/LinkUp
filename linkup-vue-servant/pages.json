@@ -1,0 +1,204 @@
+{
+    "pages": [
+        //home
+        {
+            "path": "pages/home/home",
+            "style": {
+                "navigationBarTitleText": "",
+                "navigationBarBackgroundColor": "#fefefe"
+            }
+        },
+
+        //chat
+        {
+            "path": "pages/chat/chat",
+            "style": {
+                "navigationBarTitleText": "",
+                "navigationBarBackgroundColor": "#fefefe"
+            }
+        },
+
+        //profile
+        {
+            "path": "pages/profile/profile",
+            "style": {
+                "navigationBarTitleText": "",
+                "navigationBarBackgroundColor": "#f3f2f6"
+            }
+        },
+
+        // register
+        {
+            "path": "pages/register/register",
+            "style": {
+                "navigationBarTitleText": "",
+                "navigationBarBackgroundColor": "#fefefe",
+                "navigationStyle":"custom"
+            }
+        }
+    ],
+    "subPackages": [
+        // profile > order
+        {
+            "root": "pages/profile/order",
+            "pages": [
+                {
+                    "path": "order",
+                    "style": {
+                        "navigationBarTitleText": "",
+                        "navigationBarBackgroundColor": "#fefefe"
+                    }
+                },
+                {
+                    "path": "order-servant-selection/order-servant-selection",
+                    "style": {
+                        "navigationBarTitleText": "",
+                        "navigationBarBackgroundColor": "#fefefe"
+                    }
+                },
+                {
+                    "path": "order-initiate/order-initiate",
+                    "style": {
+                        "navigationBarTitleText": "",
+                        "navigationBarBackgroundColor": "#fefefe"
+                    }
+                },
+                {
+                    "path": "order-detail/order-detail",
+                    "style": {
+                        "navigationBarTitleText": "",
+                        "navigationBarBackgroundColor": "#f3f2f6"
+                    }
+                }
+            ]
+        },
+        // profile > balance
+        {
+            "root": "pages/profile/balance",
+            "pages": [
+                {
+                    "path": "balance",
+                    "style": {
+                        "navigationBarTitleText": "",
+                        "navigationBarBackgroundColor": "#fefefe"
+                    }
+                },
+                {
+                    "path": "transaction-history/transaction-history",
+                    "style": {
+                        "navigationBarTitleText": "",
+                        "navigationBarBackgroundColor": "#ffffff"
+                    }
+                }
+            ]
+        },
+        // profile > address
+        {
+            "root": "pages/profile/address",
+            "pages": [
+                {
+                    "path": "address",
+                    "style": {
+                        "navigationBarTitleText": "",
+                        "navigationBarBackgroundColor": "#fefefe"
+                    }
+                },
+                {
+                    "path": "address-manage/address-manage",
+                    "style": {
+                        "navigationBarTitleText": "",
+                        "navigationBarBackgroundColor": "#fefefe"
+                    }
+                }
+            ]
+        },
+        // profile > data
+        {
+            "root": "pages/profile/data",
+            "pages": [
+                {
+                    "path": "data",
+                    "style": {
+                        "navigationBarTitleText": "",
+                        "navigationBarBackgroundColor": "#fefefe"
+                    }
+                }
+            ]
+        },
+
+        //components
+        {
+            "root": "pages/components",
+            "pages": [
+                // user
+                {
+                    "path": "user/user-detail/user-detail",
+                    "style": {
+                        "navigationBarTitleText": "",
+                        "navigationBarBackgroundColor": "#fefefe"
+                    }
+                },
+                // service
+                {
+                    "path": "service/service-detail/service-detail",
+                    "style": {
+                        "navigationBarTitleText": "",
+                        "navigationBarBackgroundColor": "#fefefe",
+                        "navigationStyle":"custom"
+                    }
+                },
+                {
+                    "path": "service/service-detail/servant-list/servant-list",
+                    "style": {
+                        "navigationBarTitleText": "",
+                        "navigationBarBackgroundColor": "#fefefe"
+                    }
+                },
+                // chat
+                {
+                    "path": "chat/chat-window/chat-window",
+                    "style": {
+                        "navigationBarTitleText": "",
+                        "navigationBarBackgroundColor": "#fefefe"
+                    }
+                }
+            ]
+        }
+    ],
+    "globalStyle": {
+        "navigationBarTextStyle": "black",
+        "navigationBarTitleText": "uni-app",
+        "navigationBarBackgroundColor": "#F8F8F8",
+        "backgroundColor": "#F8F8F8"
+    },
+    "tabBar": {
+        "color": "#909399",
+        "selectedColor": "#2676f7",
+        "borderStyle": "white",
+        "fontSize": "10px",
+        "spacing": "3px",
+        "list": [
+            {
+                "iconPath": "static/tab-bar/home.jpg",
+                "selectedIconPath": "static/tab-bar/home-active.jpg",
+                "pagePath": "pages/home/home",
+                // "text": "我的订单"
+                "text": ""
+            },
+            {
+                "iconPath": "static/tab-bar/chat.jpg",
+                "selectedIconPath": "static/tab-bar/chat-active.jpg",
+                "pagePath": "pages/chat/chat",
+                // "text": "我的消息"
+                "text": ""
+            },
+            {
+                "iconPath": "static/tab-bar/profile.jpg",
+                "selectedIconPath": "static/tab-bar/profile-active.jpg",
+                "pagePath": "pages/profile/profile",
+                // "text": "设置"
+                "text": ""
+            }
+        ]
+    }
+}

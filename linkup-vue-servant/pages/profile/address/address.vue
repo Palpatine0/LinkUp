@@ -1,0 +1,163 @@
+<template>
+<div class="page">
+    <!-- Heading section -->
+    <div style="display: flex; align-items: center; justify-content: space-between;">
+        <app-title type="h1" bold="true">{{$t('profile>address.addressManage')}}</app-title>
+        <img src="/static/common/create.svg" style="width: 28px; height: 28px;" @click="addressCreateRedirect"/>
+    </div>
+
+
+    <!-- Addresses Container using app-container -->
+    <scroll-view
+        :scroll-top="0"
+        scroll-y="true"
+        style="height: 80vh"
+        class="mt-4"
+        @scrolltolower="onReachBottom"
+    >
+        <div
+            class="app-container"
+            v-for="address in addressList"
+            :key="address.id"
+            @click="addressDetailRedirect(address.id)"
+        >
+            <div class="address-content">
+                <div style="width: 100%;">
+                    <div style="display: flex; align-items: center; justify-content: space-between;">
+                        <app-title bold="true" type="h3" style="width: 330px;">{{ address.consignee }}</app-title>
+                        <span class="phone-number">{{ address.phoneNumber }}</span>
+                    </div>
+                    <div class="address-info">
+                        <div class="address-details">
+                            {{ address.addressName }}
+                        </div>
+                        <span style="font-size: 14px; color: gray;">{{ address.detail }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div v-if="loading" style="color: gainsboro; margin-left: 10px;">{{$t('pub.page.loading')}}</div>
+        <!-- No More Data Message -->
+        <div v-else-if="!hasMore" class="no-more-data-container-list">{{$t('pub.page.noMoreData')}}</div>
+    </scroll-view>
+</div>
+</template>
+
+<script>
+import paginationMixin from '../../../utils/paginationMixin'; // Adjust the path as necessary
+
+export default {
+    mixins: [paginationMixin],
+    data() {
+        return {
+            addressList: [],
+            searchKeyword: '',
+        };
+    },
+    onShow() {
+        this.resetPagination();
+        this.getAddressList();
+    },
+    methods: {
+        // Fetch address list
+        getAddressList() {
+            if (this.loading || !this.hasMore||this.$common.isEmpty(uni.getStorageSync(getApp().globalData.data.userInfoKey).id)) return;
+
+            this.loading = true;
+
+            const {url, method, data} = this.buildApiParams();
+
+            uni.request({
+                url: url,
+                method: method,
+                data: data,
+                success: (res) => {
+                    const addresses = res.data.list;
+                    if (this.page === 1) {
+                        this.addressList = [];
+                    }
+                    if (addresses.length < this.size) {
+                        this.hasMore = false;
+                    }
+                    // Append new addresses to the list
+                    this.addressList = this.addressList.concat(addresses);
+                    // Process 'createdAt' fields
+                    this.addressList.forEach((address) => {
+                        address.createdAt = address.createdAt ? this.$common.stampToTime(address.createdAt) : '';
+                    });
+                    this.page += 1;
+                },
+                complete: () => {
+                    this.loading = false;
+                },
+            });
+        },
+
+        // Build API parameters based on search keyword
+        buildApiParams() {
+            let url = getApp().globalData.data.requestUrl + this.$API.address.search;
+            let method = 'POST';
+            let data = {
+                userId: uni.getStorageSync(getApp().globalData.data.userInfoKey).id,
+                page: this.page,
+                size: this.size,
+            };
+
+            if (this.searchKeyword && this.searchKeyword.trim() !== '') {
+                data.keyword = this.searchKeyword;
+            }
+
+            return {url, method, data};
+        },
+
+        // Handle search input changes
+        onSearchInput() {
+            this.resetPagination();
+            this.getAddressList();
+        },
+
+        // Redirect to create address page
+        addressCreateRedirect() {
+            uni.navigateTo({
+                url: '/pages/profile/address/address-manage/address-manage',
+            });
+        },
+
+        // Redirect to address details (can be used for editing)
+        addressDetailRedirect(addressId) {
+            console.log("addressDetailRedirect(addressId) {addressDetailRedirect(addressId) {")
+            uni.navigateTo({
+                url: '/pages/profile/address/address-manage/address-manage?addressId=' + addressId,
+            });
+        },
+    },
+};
+</script>
+
+<style scoped>
+.address-content {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.address-info {
+    margin-top: 5px;
+}
+
+.address-details {
+    color: #555;
+}
+
+.phone-number {
+    font-size: 14px;
+    color: gray;
+    margin-left: 10px;
+}
+
+.no-more-data-container-list {
+    text-align: center;
+    color: gray;
+    margin: 10px 0;
+}
+</style>
