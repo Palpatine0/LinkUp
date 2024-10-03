@@ -75,7 +75,7 @@ export default {
                             url: getApp().globalData.data.requestUrl + $API.user.search,
                             method: 'POST',
                             data: {
-                                openid: userConfigData.openid
+                                id: userConfigData.id,
                             },
                             success: (res) => {
                                 if(!$common.isEmpty(res.data.list)){

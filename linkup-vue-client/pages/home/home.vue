@@ -57,6 +57,7 @@ export default {
                 data: {
                     page: this.page,
                     size: this.size,
+                    role: 2
                 },
                 success: (res) => {
                     let users = res.data.list;

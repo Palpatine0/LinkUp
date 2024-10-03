@@ -21,7 +21,7 @@
             />
         </div>
         <app-button shaped size="very-large" class="button-continuation-register" @click="referralCodeValidation()" width="85vw">
-            {{ $t('pub.button.submit') }}
+            {{ $t('pub.button.confirm') }}
         </app-button>
     </div>
 
@@ -45,7 +45,7 @@
             <p class="center-h">{{ $t('register.step2Desc') }}</p>
         </div>
         <!-- Gender Selection Buttons -->
-        <div class="button-wrapper">
+        <div class="button-wrapper" style="margin-top: 15vh;">
             <div class="button-register" @click="selectGender(0)">
                 <span>
                     <span class="button-register-icon">
@@ -134,7 +134,7 @@
             <p class="center-h">{{ $t('register.step5Desc') }}</p>
         </div>
 
-        <div class="button-wrapper center-h">
+        <div class="button-wrapper center-h" style="margin-top: 5vh;">
             <img :src="avatar" class="avatar" @click="changeAvatar">
         </div>
         <app-button shaped size="very-large" class="button-continuation-register" @click="setUserInfo()" width="85vw">
@@ -222,6 +222,7 @@ export default {
                 method: 'POST',
                 data: {
                     referralCode: this.referralCode,
+                    role: 1,
                 },
                 success: (res) => {
                     if (res.data.data.validRC == "1") {

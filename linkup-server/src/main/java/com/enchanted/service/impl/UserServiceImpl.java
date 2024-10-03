@@ -108,7 +108,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     }
 
 
-
     @Override
     public Page<User> search(Map<String, Object> params, int page, int size) {
         IPage<User> userPage = new Page<>(page, size);
@@ -124,14 +123,18 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     }
 
     @Override
-    public Map<String, String> getConfigInfo(String code) {
+    public Map<String, String> getConfigInfo(String code, String role) {
         HashMap<String, String> map = new HashMap<>();
         JSONObject object = WeChatUtil.getUserConfigInfo(code);
         map.put("openid", object.get("openid").toString());
         map.put("sessionKey", object.get("session_key").toString());
-        User existingUser = userMapper.selectOne(new QueryWrapper<User>().eq("openid", object.get("openid").toString()));
+        QueryWrapper<User> wrapper = new QueryWrapper<>();
+        wrapper.eq("openid", object.get("openid").toString());
+        wrapper.eq("role", role);
+        User existingUser = userMapper.selectOne(wrapper);
         if (existingUser != null) {
             map.put("isNewUser", "0");
+            map.put("id", String.valueOf(existingUser.getId()));
         } else {
             map.put("isNewUser", "1");
         }
@@ -139,16 +142,17 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     }
 
     @Override
-    public Map referralCodeValidation(String referralCode) {
+    public Map referralCodeValidation(String referralCode,String role) {
         HashMap<String, String> map = new HashMap<>();
         QueryWrapper<User> wrapper = new QueryWrapper<>();
         wrapper.eq("referral_code", referralCode);
+        wrapper.eq("role", role);
         wrapper.eq("is_deleted", "0");
         User user = userMapper.selectOne(wrapper);
         if (user != null) {
             map.put("referrerId", String.valueOf(user.getId()));
             map.put("validRC", "1");
-        }else {
+        } else {
             map.put("validRC", "0");
         }
         return map;

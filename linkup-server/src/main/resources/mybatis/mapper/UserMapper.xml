@@ -13,6 +13,9 @@
             <if test="params.id != null and params.id != ''">
                 AND id = #{params.id}
             </if>
+            <if test="params.role != null and params.role != ''">
+                AND role = #{params.role}
+            </if>
             <if test="params.openid != null and params.openid != ''">
                 AND openid = #{params.openid}
             </if>

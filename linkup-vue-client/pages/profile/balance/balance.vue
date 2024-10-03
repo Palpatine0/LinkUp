@@ -156,7 +156,7 @@ export default {
 /* Wallet and Balance Section */
 .wallet-balance {
     background-color: #2676f7;
-    padding: 20rpx;
+    padding: 2px;
     border-radius: 70rpx;
     margin-bottom: 20rpx;
     height: 210px;

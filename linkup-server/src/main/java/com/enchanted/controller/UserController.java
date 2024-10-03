@@ -52,13 +52,15 @@ public class UserController {
     @PostMapping("/user-config")
     public R getConfigInfo(@RequestBody Map<String, String> dto) {
         String code = dto.get("code");
-        return R.ok().put("data", userService.getConfigInfo(code));
+        String role = dto.get("role");
+        return R.ok().put("data", userService.getConfigInfo(code,role));
     }
 
     @PostMapping("/referral-code-validation")
     public R referralCodeValidation(@RequestBody Map<String, String> dto) {
         String referralCode = dto.get("referralCode");
-        return R.ok().put("data", userService.referralCodeValidation(referralCode));
+        String role = dto.get("role");
+        return R.ok().put("data", userService.referralCodeValidation(referralCode,role));
     }
 
     /*U*/
