@@ -1,3 +1,6 @@
+/linkup-server/.env
+/linkup-server/.idea
+
 /linkup-vue-client/.hbuilderx/*
 /linkup-vue-client/node_modules/*
 /linkup-vue-client/unpackage
@@ -5,5 +8,12 @@
 /linkup-vue-client/yarn-error.log
 /linkup-vue-client/npminstall-debug.log
 /linkup-vue-client/.idea/*
-/linkup-server/.env
-/linkup-vue-client/.evn
+
+/linkup-vue-servant/.hbuilderx/*
+/linkup-vue-servant/node_modules/*
+/linkup-vue-servant/unpackage
+/linkup-vue-servant/package-lock.json
+/linkup-vue-servant/yarn-error.log
+/linkup-vue-servant/npminstall-debug.log
+/linkup-vue-servant/.idea/*
+
