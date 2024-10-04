@@ -30,18 +30,10 @@
 
 <script>
 import app from "../../App.vue";
-import common from "../../utils/common";
 
 export default {
     data() {
         return {
-            // ** page vars ** //
-            page: 1,
-            size: 10,
-            hasMore: true,
-            loading: false,
-            // ** /page vars ** //
-
             userId: uni.getStorageSync(app.globalData.data.userInfoKey).id,
             contactList: [],
         };

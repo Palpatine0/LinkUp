@@ -71,7 +71,7 @@ export default {
     },
     onShow() {
         this.resetPagination();
-        this.getOrderList();
+        this.getDataList();
     },
     computed: {
         orderDetail() {
@@ -79,8 +79,34 @@ export default {
         },
     },
     methods: {
-        // Fetch order list
-        getOrderList() {
+        buildApiParams() {
+            let url = getApp().globalData.data.requestUrl + this.$API.order.search;
+            let method = 'POST';
+            let baseData = {
+                page: this.page,
+                size: this.size,
+                status: "0",
+            };
+            let data = {};
+
+            if (this.searchKeyword && this.searchKeyword.trim() !== '') {
+                data = {
+                    ...baseData,
+                    keyword: this.searchKeyword,
+                };
+            } else {
+                data = {
+                    ...baseData
+                };
+            }
+
+            return {url, method, data};
+        },
+        onSearchInput() {
+            this.resetPagination();
+            this.getDataList();
+        },
+        getDataList() {
             if (this.loading || !this.hasMore||this.$common.isEmpty(uni.getStorageSync(getApp().globalData.data.userInfoKey).id)) return;
 
             this.loading = true;
@@ -99,12 +125,13 @@ export default {
                     if (orders.length < this.size) {
                         this.hasMore = false;
                     }
+                    const processedOrders = orders.map((order) => ({
+                        ...order,
+                        createdAt: order.createdAt ? this.$common.stampToTime(order.createdAt) : '',
+                    }));
                     // Append new orders to the list
-                    this.orderList = this.orderList.concat(orders);
-                    // Process 'createdAt' fields
-                    this.orderList.forEach((order) => {
-                        order.createdAt = order.createdAt ? this.$common.stampToTime(order.createdAt) : '';
-                    });
+                    this.orderList = this.orderList.concat(processedOrders);
+
                     this.page += 1;
                 },
                 complete: () => {
@@ -113,47 +140,7 @@ export default {
             });
         },
 
-        // Build API parameters based on search keyword
-        buildApiParams() {
-            let url = '';
-            let method = 'POST';
-            let data = {};
-
-            if (this.searchKeyword && this.searchKeyword.trim() !== '') {
-                // Use the search endpoint
-                url = getApp().globalData.data.requestUrl + this.$API.order.search;
-                data = {
-                    keyword: this.searchKeyword,
-                    page: this.page,
-                    size: this.size,
-                    
-
-                };
-            } else {
-                // Use the get-all-by-user-id endpoint
-                url = getApp().globalData.data.requestUrl + this.$API.order.search;
-                method = 'POST';
-                data = {
-                    page: this.page,
-                    size: this.size,
-                };
-            }
-
-            return {url, method, data};
-        },
-
-        // Handle search input changes
-        onSearchInput() {
-            this.resetPagination();
-            this.getOrderList();
-        },
-
         // Redirects
-        orderInitiateRedirect() {
-            uni.navigateTo({
-                url: '/pages/profile/order/order-servant-selection/order-servant-selection',
-            });
-        },
         orderDetailRedirect(orderId) {
             uni.navigateTo({
                 url: '/pages/profile/order/order-detail/order-detail?orderId=' + orderId,

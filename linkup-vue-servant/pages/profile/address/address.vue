@@ -2,17 +2,25 @@
 <div class="page">
     <!-- Heading section -->
     <div style="display: flex; align-items: center; justify-content: space-between;">
-        <app-title type="h1" bold="true">{{$t('profile>address.addressManage')}}</app-title>
+        <app-title type="h1" bold="true">{{ $t('profile>address.addressManage') }}</app-title>
         <img src="/static/common/create.svg" style="width: 28px; height: 28px;" @click="addressCreateRedirect"/>
     </div>
 
+    <!-- Search input -->
+    <app-input
+        mode="text"
+        :placeholder="$t('pub.page.search')"
+        col="12"
+        class="mb-2"
+        v-model="searchKeyword"
+        @input="onSearchInput"
+    />
 
     <!-- Addresses Container using app-container -->
     <scroll-view
         :scroll-top="0"
         scroll-y="true"
         style="height: 80vh"
-        class="mt-4"
         @scrolltolower="onReachBottom"
     >
         <div
@@ -36,18 +44,16 @@
                 </div>
             </div>
         </div>
-        <div v-if="loading" style="color: gainsboro; margin-left: 10px;">{{$t('pub.page.loading')}}</div>
+        <div v-if="loading" style="color: gainsboro; margin-left: 10px;">{{ $t('pub.page.loading') }}</div>
         <!-- No More Data Message -->
-        <div v-else-if="!hasMore" class="no-more-data-container-list">{{$t('pub.page.noMoreData')}}</div>
+        <div v-else-if="!hasMore" class="no-more-data-container-list">{{ $t('pub.page.noMoreData') }}</div>
     </scroll-view>
 </div>
 </template>
 
 <script>
-import paginationMixin from '../../../utils/paginationMixin'; // Adjust the path as necessary
 
 export default {
-    mixins: [paginationMixin],
     data() {
         return {
             addressList: [],
@@ -56,17 +62,39 @@ export default {
     },
     onShow() {
         this.resetPagination();
-        this.getAddressList();
+        this.getDataList();
     },
     methods: {
-        // Fetch address list
-        getAddressList() {
-            if (this.loading || !this.hasMore||this.$common.isEmpty(uni.getStorageSync(getApp().globalData.data.userInfoKey).id)) return;
+        buildApiParams() {
+            let url = getApp().globalData.data.requestUrl + this.$API.address.search;
+            let method = 'POST';
+            let baseData = {
+                page: this.page,
+                size: this.size,
+            };
+            let data = {};
 
+            if (this.searchKeyword && this.searchKeyword.trim() !== '') {
+                data = {
+                    ...baseData,
+                    keyword: this.searchKeyword
+                }
+            } else {
+                data = {
+                    ...baseData,
+                };
+            }
+
+            return {url, method, data};
+        },
+        onSearchInput() {
+            this.resetPagination();
+            this.getDataList();
+        },
+        getDataList() {
+            if (this.loading || !this.hasMore || this.$common.isEmpty(uni.getStorageSync(getApp().globalData.data.userInfoKey).id)) return;
             this.loading = true;
-
             const {url, method, data} = this.buildApiParams();
-
             uni.request({
                 url: url,
                 method: method,
@@ -91,29 +119,6 @@ export default {
                     this.loading = false;
                 },
             });
-        },
-
-        // Build API parameters based on search keyword
-        buildApiParams() {
-            let url = getApp().globalData.data.requestUrl + this.$API.address.search;
-            let method = 'POST';
-            let data = {
-                userId: uni.getStorageSync(getApp().globalData.data.userInfoKey).id,
-                page: this.page,
-                size: this.size,
-            };
-
-            if (this.searchKeyword && this.searchKeyword.trim() !== '') {
-                data.keyword = this.searchKeyword;
-            }
-
-            return {url, method, data};
-        },
-
-        // Handle search input changes
-        onSearchInput() {
-            this.resetPagination();
-            this.getAddressList();
         },
 
         // Redirect to create address page

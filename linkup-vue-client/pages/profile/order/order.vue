@@ -71,29 +71,46 @@
 
 <script>
 import orderDetail from './order-detail/order-detail.vue';
-import paginationMixin from '../../../utils/paginationMixin';
 
 export default {
-    mixins: [paginationMixin],
     data() {
         return {
-            userProfileAvailable: false,
             orderList: [],
             searchKeyword: '',
         };
     },
     onShow() {
         this.resetPagination();
-        this.getOrderList();
-    },
-    computed: {
-        orderDetail() {
-            return orderDetail;
-        },
+        this.getDataList();
     },
     methods: {
-        // Fetch order list
-        getOrderList() {
+        buildApiParams() {
+            let url = getApp().globalData.data.requestUrl + this.$API.order.search;
+            let method = 'POST';
+            let baseData = {
+                clientId: uni.getStorageSync(getApp().globalData.data.userInfoKey).id,
+                page: this.page,
+                size: this.size,
+            };
+            let data = {};
+
+            if (this.searchKeyword && this.searchKeyword.trim() !== '') {
+                data = {
+                    ...baseData,
+                    keyword: this.searchKeyword,
+                };
+            } else {
+                data = {
+                    ...baseData,
+                };
+            }
+            return {url, method, data};
+        },
+        onSearchInput() {
+            this.resetPagination();
+            this.getDataList();
+        },
+        getDataList() {
             if (this.loading || !this.hasMore||this.$common.isEmpty(uni.getStorageSync(getApp().globalData.data.userInfoKey).id)) return;
 
             this.loading = true;
@@ -124,41 +141,6 @@ export default {
                     this.loading = false;
                 },
             });
-        },
-
-        // Build API parameters based on search keyword
-        buildApiParams() {
-            let url = '';
-            let method = 'POST';
-            let data = {};
-
-            if (this.searchKeyword && this.searchKeyword.trim() !== '') {
-                // Use the search endpoint
-                url = getApp().globalData.data.requestUrl + this.$API.order.search;
-                data = {
-                    clientId: uni.getStorageSync(getApp().globalData.data.userInfoKey).id,
-                    keyword: this.searchKeyword,
-                    page: this.page,
-                    size: this.size,
-                };
-            } else {
-                // Use the get-all-by-user-id endpoint
-                url = getApp().globalData.data.requestUrl + this.$API.order.search;
-                method = 'POST';
-                data = {
-                    clientId: uni.getStorageSync(getApp().globalData.data.userInfoKey).id,
-                    page: this.page,
-                    size: this.size,
-                };
-            }
-
-            return {url, method, data};
-        },
-
-        // Handle search input changes
-        onSearchInput() {
-            this.resetPagination();
-            this.getOrderList();
         },
 
         // Redirects

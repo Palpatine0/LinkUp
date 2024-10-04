@@ -1,3 +1,4 @@
+//paginationMixin.js
 export default {
     data() {
         return {
@@ -15,7 +16,7 @@ export default {
             this.hasMore = true;
         },
         onReachBottom() {
-            this.getOrderList();
+            this.getDataList();
         },
     },
 };

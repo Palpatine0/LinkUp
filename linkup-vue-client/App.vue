@@ -2,6 +2,7 @@
 import app from "./App.vue";
 import $common from "./utils/common";
 import $API from "./api/api";
+import _ from 'lodash'
 
 export default {
     globalData: {

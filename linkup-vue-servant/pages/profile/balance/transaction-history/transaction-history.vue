@@ -77,12 +77,38 @@ export default {
     },
     onLoad() {
         this.resetPagination();
-        this.getTransactionList();
+        this.getDataList();
     },
     methods: {
-        // Fetch transaction list
-        getTransactionList() {
-            if (this.loading || !this.hasMore||this.$common.isEmpty(uni.getStorageSync(getApp().globalData.data.userInfoKey).id)) return;
+        buildApiParams() {
+            let url = getApp().globalData.data.requestUrl + this.$API.transaction.search;
+            let method = 'POST';
+            let baseData = {
+                userId: uni.getStorageSync(getApp().globalData.data.userInfoKey).id,
+                page: this.page,
+                size: this.size,
+            };
+            let data = {};
+
+            if (this.searchKeyword && this.searchKeyword.trim() !== '') {
+                data = {
+                    ...baseData,
+                    keyword: this.searchKeyword,
+                };
+            } else {
+                data = {
+                    ...baseData,
+                };
+            }
+
+            return {url, method, data};
+        },
+        onSearchInput() {
+            this.resetPagination();
+            this.getDataList();
+        },
+        getDataList() {
+            if (this.loading || !this.hasMore || this.$common.isEmpty(uni.getStorageSync(getApp().globalData.data.userInfoKey).id)) return;
 
             this.loading = true;
 
@@ -114,40 +140,7 @@ export default {
             });
         },
 
-        // Build API parameters based on search keyword
-        buildApiParams() {
-            let url = '';
-            let method = 'POST';
-            let data = {};
 
-            if (this.searchKeyword && this.searchKeyword.trim() !== '') {
-                // Use the search endpoint
-                url = getApp().globalData.data.requestUrl + this.$API.transaction.search;
-                data = {
-                    userId: uni.getStorageSync(getApp().globalData.data.userInfoKey).id,
-                    keyword: this.searchKeyword,
-                    page: this.page,
-                    size: this.size,
-                };
-            } else {
-                // Use the get-all-by-user-id endpoint
-                url = getApp().globalData.data.requestUrl + this.$API.transaction.search;
-                method = 'POST';
-                data = {
-                    userId: uni.getStorageSync(getApp().globalData.data.userInfoKey).id,
-                    page: this.page,
-                    size: this.size,
-                };
-            }
-
-            return {url, method, data};
-        },
-
-        // Handle search input changes
-        onSearchInput() {
-            this.resetPagination();
-            this.getTransactionList();
-        },
     },
 };
 </script>
@@ -163,7 +156,7 @@ export default {
     border-radius: 10px;
 }
 
-.transaction-icon{
+.transaction-icon {
     padding: 6px;
     background-color: #2196f338;
     width: 40px;
@@ -173,6 +166,7 @@ export default {
     display: flex;
     align-items: center;
 }
+
 .transaction-icon img {
     width: 32px;
     height: 25px;

@@ -1,3 +1,4 @@
+import $API from "api/api"
 if (!String.prototype.replaceAll) {
     String.prototype.replaceAll = function (s1, s2) {
         return this.replace(new RegExp(s1, "gm"), s2);
