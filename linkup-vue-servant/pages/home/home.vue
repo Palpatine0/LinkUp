@@ -21,10 +21,12 @@
             <div class="order-content">
                 <div style="width: 100%;">
                     <div style="display: flex; align-items: center;">
-                        <app-title bold="true" type="h3" style="width: 330px;">{{ order.title }}</app-title>
+                        <app-title bold="true" type="h3" style="width: 330px;">
+                            {{ language != "zh-Hans" ? order.title : order.titleCn }}
+                        </app-title>
                     </div>
                     <div class="order-detail">
-                        <div class="candidates-count">
+                        <div class="highlight-blue">
                             {{ $t('profile>order.candidates') }}: {{ order.candidateCount }}
                         </div>
                         <span style="font-size: 14px; color: gray;">{{ order.createdAt }}</span>
@@ -67,22 +69,21 @@ export default {
             userProfileAvailable: false,
             orderList: [],
             searchKeyword: '',
+
+            user: uni.getStorageSync(getApp().globalData.data.userInfoKey)
         };
     },
     onShow() {
         this.resetPagination();
         this.getDataList();
     },
-    computed: {
-        orderDetail() {
-            return orderDetail;
-        },
-    },
     methods: {
         buildApiParams() {
             let url = getApp().globalData.data.requestUrl + this.$API.order.search;
             let method = 'POST';
             let baseData = {
+                userGender: this.user.gender,
+                userAge: this.user.age,
                 page: this.page,
                 size: this.size,
                 status: "0",
@@ -107,7 +108,7 @@ export default {
             this.getDataList();
         },
         getDataList() {
-            if (this.loading || !this.hasMore||this.$common.isEmpty(uni.getStorageSync(getApp().globalData.data.userInfoKey).id)) return;
+            if (this.loading || !this.hasMore || this.$common.isEmpty(uni.getStorageSync(getApp().globalData.data.userInfoKey).id)) return;
 
             this.loading = true;
 
@@ -143,7 +144,7 @@ export default {
         // Redirects
         orderDetailRedirect(orderId) {
             uni.navigateTo({
-                url: '/pages/profile/order/order-detail/order-detail?orderId=' + orderId,
+                url: '/pages/home/order-detail/order-detail?orderId=' + orderId,
             });
         },
     },
@@ -202,7 +203,7 @@ export default {
     margin-right: 10px;
 }
 
-.candidates-count {
+.highlight-blue {
     color: white;
     background-color: #007aff;
     border-radius: 5px;

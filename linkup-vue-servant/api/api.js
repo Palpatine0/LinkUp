@@ -26,6 +26,8 @@ var $API = {
     },
     // Order Candidate
     orderCandidate: {
+        save: '/order-candidate/save',
+        search: '/order-candidate/search',
         servants: '/order-candidate/servants',
     },
     // User

@@ -1,8 +1,9 @@
 <template>
 <div class="page" style="background-color: #f3f2f6">
     <!-- Title -->
-    <app-title type="h2" bold="true">{{ order.title }}</app-title>
-
+    <app-title type="h2" bold="true">
+        {{ language != "zh-Hans" ? order.title : order.titleCn }}
+    </app-title>
 
 
     <!-- ORDER BASIC INFO CONTAINER-->
@@ -25,7 +26,6 @@
         </div>
     </div>
     <!-- /ORDER BASIC INFO CONTAINER-->
-
 
 
     <!-- DYNAMIC STATUS CONTAINER -->
@@ -65,7 +65,6 @@
     <!-- /DYNAMIC STATUS CONTAINER -->
 
 
-
     <!-- SERVANT CONTAINER  -->
     <div v-if="countdown > 0&&order.status==0" class="mt-4">
         <app-title bold="true">{{ $t('profile>order>orderDetail.candidates') }}</app-title>
@@ -83,6 +82,9 @@
                                     {{ user.gender === 0 ? '👨‍💻' : '👩‍💻' }}
                                 </span>
                                 <app-title type="h3" bold="true">{{ user.age }}</app-title>
+                            </div>
+                            <div class="highlight-blue">
+                                {{ $t('profile>order>orderDetail.quotedPrice') }}: {{ user.quotedPrice }}
                             </div>
                             <p style="margin-bottom: 10px">{{ user.servantData.bio }}</p>
                         </app-container>
@@ -102,7 +104,7 @@
         </div>
     </div>
 
-    <div v-if="order.status==1" style="width: 65vw;margin: 0 auto" >
+    <div v-if="order.status==1" style="width: 65vw;margin: 0 auto">
         <app-container color="#fff" col="12" @click="userDetailRedirect(orderServant.id)">
             <div class="center-h">
                 <image style="width: 160px; height: 160px; border-radius: 50%; margin: 30px 0" :src="orderServant.avatar" mode="aspectFill"></image>
@@ -123,7 +125,6 @@
         </div>
     </div>
     <!-- /SERVANT CONTAINER  -->
-
 
 
     <!-- ORDER DETAIL -->
@@ -153,7 +154,6 @@
         </div>
     </div>
     <!-- /ORDER DETAIL -->
-
 
 
     <!-- Cancel order opt (no candidates) -->
@@ -310,10 +310,14 @@ export default {
                     orderId: this.orderId
                 },
                 success: (res) => {
+                    console.log("this.servantList");
+                    console.log(res.data.list);
                     this.servantList = res.data.list;
+
                     if (!this.$common.isEmpty(this.servantList)) {
-                        // Fetch servantData for all users in parallel
+                        // Use Promise.all for concurrent requests
                         const promises = this.servantList.map((user) => {
+                            console.log("Fetching data for user:", user);
                             return new Promise((resolve) => {
                                 uni.request({
                                     url: getApp().globalData.data.requestUrl + this.$API.userServant.search,
@@ -322,19 +326,27 @@ export default {
                                         userId: user.id
                                     },
                                     success: (res) => {
-                                        user.servantData = res.data.list[0];
+                                        user.servantData = res.data.list[0] || {}; // Default to empty object if no data
+                                        user.servantData.quotedPrice = user.quotedPrice; // Assign quotedPrice directly
+                                        resolve();
+                                    },
+                                    fail: () => {
+                                        user.servantData = {}; // Handle failure case by assigning empty object
                                         resolve();
                                     }
                                 });
                             });
                         });
+
                         // Wait for all servantData to be fetched
                         Promise.all(promises).then(() => {
                             this.$forceUpdate(); // Trigger Vue to re-render with updated servantData
                         });
                     }
-
                 },
+                fail: (error) => {
+                    console.error("Failed to fetch servant list:", error);
+                }
             });
         },
         selectServant(servantName, servantId) {
@@ -445,7 +457,7 @@ export default {
                         }
                         const serviceTypeData = await serviceType()
                         uni.redirectTo({
-                            url: '/pages/profile/order/order-initiate/order-initiate?serviceType=' + serviceTypeData.id + '&serviceName=' + serviceTypeData.name + '&orderId=' + this.orderId,
+                            url: '/pages/profile/order/order-initiate/order-initiate?serviceType=' + serviceTypeData.id + '&serviceName=' + serviceTypeData.name + '&serviceNameCn=' + serviceTypeData.nameCn + '&orderId=' + this.orderId,
                         });
                     }
                 },
@@ -537,5 +549,19 @@ export default {
     height: 48px;
     margin-top: 5px;
     margin-left: 25px
+}
+
+.highlight-blue {
+    color: white;
+    background-color: #007aff;
+    border-radius: 5px;
+    font-weight: bold;
+    padding: 2px;
+    font-size: 14px;
+    margin-bottom: 4px;
+    display: flex;
+    max-width: fit-content;
+    margin-left: auto;
+    margin-right: auto;
 }
 </style>

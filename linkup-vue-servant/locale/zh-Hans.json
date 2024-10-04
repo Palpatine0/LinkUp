@@ -83,6 +83,24 @@
     "home": {
         "nearby": "附近的订单"
     },
+    "home>orderDetail": {
+        "orderInfoBasic": {
+            "price": "报价",
+            "totalCandidates": "已抢单"
+        },
+
+        "acceptOrder": "报价",
+        "acceptOrderSent": "报价已发送",
+
+        "orderInfoDetail": {
+            "orderId": "订单编号",
+            "orderTime": "下单时间",
+            "paymentMethod": "支付方式",
+            "balance": "余额",
+            "weChat": "微信支付",
+            "address": "地址"
+        }
+    },
 
 
     "//////": "chat",
@@ -111,69 +129,6 @@
         "processing": "订单开始",
         "completed": "订单完成",
         "canceled": "订单取消"
-    },
-    "profile>order>orderServantSelection": {
-        "selectServantType": "选择你的服务者类型"
-    },
-    "profile>order>orderInitiate": {
-        "postOrder": "发布订单",
-        "repostOrder": "重新发布订单",
-        "serviceGender": "服务者性别",
-        "requiredAge": "服务者年龄",
-        "ageRangeUnlimited": "不限",
-        "ageRange": "年龄范围",
-        "selectLocation": "服务地点",
-        "serviceDuration": "服务时长",
-        "serviceSchedule": "服务时间",
-        "selectServiceSchedule": "请选择服务时间",
-        "price": "价格",
-        "saveOrder": "保存订单",
-        "options": {
-            "all": "不限",
-            "allGender": "不限性别",
-            "allAge": "不限年龄"
-        }
-    },
-    "profile>order>orderDetail": {
-        "orderInfoBasic": {
-            "price": "报价",
-            "totalCandidates": "已抢单"
-        },
-
-        "candidates": "已抢单用户",
-        "selectCandidate": "选择达人",
-        "noCandidate": "暂时无人抢单",
-
-        "selectedBeforeCountdown": "请在剩余时间内选择一个达人",
-        "orderClosed": "订单关闭",
-        "refunded": "您的订单费用已退回至您的余额",
-        "orderExpiredExplanation": "由于您未在规定时间内选择达人，订单已失效",
-        "orderCanceledManuallyExplanation": "您取消了订单",
-        "orderCanceledExplanation": "因订单发布半小时内无人抢单(或您在这个时间内自行取消了订单),订单已关闭",
-
-        "cancelOrder": "取消订单",
-        "noCandidateCancelModal": {
-            "title": "确认取消订单",
-            "content": "确定要取消订单?"
-        },
-        "hasCandidateCancelModal": {
-            "title": "确认取消订单",
-            "content": "您的订单已经被选择，是否确认取消？超出今日的免费发单额度后本订单只能回退定价的80%。您今日的免费发单额度次数: "
-        },
-        "repostOrder": "重新发布订单",
-        "repostModal": {
-            "title": "重新发布订单",
-            "content": "您确定要重新发布订单?"
-        },
-
-        "orderInfoDetail": {
-            "orderId": "订单编号",
-            "orderTime": "下单时间",
-            "paymentMethod": "支付方式",
-            "balance": "余额",
-            "weChat": "微信支付",
-            "address": "地址"
-        }
     },
 
     "//////": "profile > balance",
@@ -248,8 +203,6 @@
         }
     },
     "component>balance>withdraw": {
-        "success": "提现成功",
-        "fail": "提现失败",
         "withdrawTitle": "余额提现",
         "withdrawBtn": "确认提现",
         "placeholder": "请输入提现金额",
@@ -273,6 +226,15 @@
     "component>order>serviceSchedule": {
         "showToast": {
             "selectServiceSchedule": "请选择预约时间段"
+        }
+    },
+    "component>order>increasedQuotedPriceRequest": {
+        "requestHigherPay": "报价",
+        "tips": "有效报价范围为大于等于订单初始价格与小于等于订单初始价格的两倍",
+        "sendRequest": "发送请求",
+        "showToast": {
+            "priceRange": "有效报价范围为",
+            "sent": "报价发送成功!"
         }
     }
 }

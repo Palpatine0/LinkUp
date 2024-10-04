@@ -11,7 +11,11 @@ public class ServiceType {
 
     private Long id;
 
+    @TableField("name")
     private String name;
+
+    @TableField("name_cn")
+    private String nameCn;
 
     @TableField("cover_img")
     private String coverImg;

@@ -16,14 +16,12 @@ import com.enchanted.service.IOrderService;
 import com.enchanted.service.ITransactionService;
 import com.enchanted.service.IUserService;
 import com.enchanted.util.ConversionUtils;
-import com.enchanted.util.StringUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.scheduling.TaskScheduler;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskScheduler;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
@@ -35,7 +33,6 @@ import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
-import java.util.concurrent.TimeUnit;
 
 @Service
 public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements IOrderService {
@@ -260,11 +257,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
                 completeOrder(order);
                 break;
             case OrderConstant.CANCELED:
-                stopAutoRefundMonitor(order.getId());
                 cancelOrder(order);
                 break;
             case OrderConstant.PROCESSING:
-                stopAutoRefundMonitor(order.getId());
                 processingOrder(order);
                 break;
             default:
@@ -272,6 +267,34 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         }
         return true;
     }
+
+    @Override
+    @Transactional
+    public boolean assignServant(Long orderId, Long servantId) {
+        Order order = orderMapper.selectById(orderId);
+        if (order == null) {
+            return false;
+        }
+
+        // Check if the order is in a state that allows assignment
+        if (order.getStatus() != OrderConstant.PENDING) {
+            return false;
+        }
+
+        // Assign the servant to the order
+        order.setServantId(servantId);
+
+        // Update the order status to PROCESSING
+        boolean statusUpdated = updateStatus(orderId, OrderConstant.PROCESSING);
+        if (!statusUpdated) {
+            return false;
+        }
+
+        // Save the updated order with the servantId
+        int updated = orderMapper.updateById(order);
+        return updated > 0;
+    }
+
 
     /**
      * Complete Order
@@ -426,6 +449,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
         // Mark the order as canceled
         order.setStatus(OrderConstant.CANCELED);
+        order.setCanceledAt(new Date());
         orderMapper.updateById(order);
 
         stopAutoRefundMonitor(order.getId());
@@ -449,13 +473,14 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
      * @param order
      */
     public void processingOrder(Order order) {
+        stopAutoRefundMonitor(order.getId());
         order.setStatus(OrderConstant.PROCESSING);
         orderMapper.updateById(order);
     }
 
     @Override
     @Transactional
-    public boolean rateOrder(Long orderId, Integer rating) {
+    public boolean rate(Long orderId, Integer rating) {
         Order order = orderMapper.selectById(orderId);
         if (order == null || order.getStatus() != OrderConstant.COMPLETED) {
             return false;
@@ -529,7 +554,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         Runnable task = () -> {
             Order order = this.getById(orderId);
             if (order != null && order.getPerformanceRating() == null) {
-                rateOrder(orderId, OrderConstant.GOOD);
+                rate(orderId, OrderConstant.GOOD);
             }
             // Remove the task from the map after execution
             autoRatingTasks.remove(orderId);

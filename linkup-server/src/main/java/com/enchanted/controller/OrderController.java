@@ -76,20 +76,32 @@ public class OrderController {
         }
     }
 
+    @PostMapping("/assign-servant")
+    public R assignServant(@RequestBody Map<String, Object> requestData) {
+        Long orderId = Long.parseLong(requestData.get("orderId").toString());
+        Long servantId = Long.parseLong(requestData.get("servantId").toString());
+
+        boolean isAssigned = orderService.assignServant(orderId, servantId);
+        if (isAssigned) {
+            return R.ok("Servant assigned to order successfully");
+        } else {
+            return R.error("Failed to assign servant to order");
+        }
+    }
+
 
     @PostMapping("/rate")
     public R rateOrder(@RequestBody Map<String, Object> requestData) {
         Long orderId = Long.parseLong(requestData.get("orderId").toString());
         Integer rating = Integer.parseInt(requestData.get("rating").toString());
 
-        boolean isRated = orderService.rateOrder(orderId, rating);
+        boolean isRated = orderService.rate(orderId, rating);
         if (isRated) {
             return R.ok("Order rated successfully");
         } else {
             return R.error("Failed to rate order");
         }
     }
-
 
 
     /*D*/

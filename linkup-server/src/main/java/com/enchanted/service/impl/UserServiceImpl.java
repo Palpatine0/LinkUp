@@ -46,6 +46,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     private HttpClientUtil httpClientUtil;
 
 
+    /*C*/
     public Map<String, String> saveInfo(User user) {
         HashMap<String, String> map = new HashMap<>();
         int insert = userMapper.insert(user);
@@ -62,6 +63,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         }
         map.put("id", user.getId().toString());
         return map;
+    }
+
+    /*R*/
+    @Override
+    public Page<User> search(Map<String, Object> params, int page, int size) {
+        IPage<User> userPage = new Page<>(page, size);
+        userPage = userMapper.search(userPage, params);
+        return (Page<User>) userPage;
     }
 
     private String getAccessToken() {
@@ -107,21 +116,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         return null;
     }
 
-
-    @Override
-    public Page<User> search(Map<String, Object> params, int page, int size) {
-        IPage<User> userPage = new Page<>(page, size);
-        userPage = userMapper.search(userPage, params);
-        return (Page<User>) userPage;
-    }
-
-    @Override
-    public Page<User> searchServant(Map<String, Object> params, int page, int size) {
-        IPage<User> userPage = new Page<>(page, size);
-        userPage = userMapper.searchServant(userPage, params);
-        return (Page<User>) userPage;
-    }
-
     @Override
     public Map<String, String> getConfigInfo(String code, String role) {
         HashMap<String, String> map = new HashMap<>();
@@ -158,7 +152,14 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         return map;
     }
 
+    @Override
+    public Page<User> searchServant(Map<String, Object> params, int page, int size) {
+        IPage<User> userPage = new Page<>(page, size);
+        userPage = userMapper.searchServant(userPage, params);
+        return (Page<User>) userPage;
+    }
 
+    /*D*/
     @Override
     public boolean update(Long id, Map<String, Object> changes) {
         User user = userMapper.selectById(id);
@@ -184,6 +185,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         return retBool(updated);
     }
 
+    /*U*/
     @Override
     public boolean delete(Long id) {
         int deleted = userMapper.deleteById(id);

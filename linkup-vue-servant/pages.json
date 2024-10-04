@@ -8,6 +8,13 @@
                 "navigationBarBackgroundColor": "#fefefe"
             }
         },
+        {
+            "path": "pages/home/order-detail/order-detail",
+            "style": {
+                "navigationBarTitleText": "",
+                "navigationBarBackgroundColor": "#f3f2f6"
+            }
+        },
 
         //chat
         {

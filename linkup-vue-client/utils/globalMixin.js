@@ -1,5 +1,10 @@
 // utils/globalMixin.js
 export default {
+    data() {
+        return {
+            language: uni.getStorageSync("language"),
+        }
+    },
     onShareAppMessage() {
         let shareTitle = "Come check this app!!";
         let referrerId = uni.getStorageSync(getApp().globalData.data.userInfoKey)?.id || 'default_id';

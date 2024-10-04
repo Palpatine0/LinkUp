@@ -99,19 +99,22 @@ export default {
             });
         },
 
+        // Toggle
         qeShareToggle() {
             this.referralQRVisible = !this.referralQRVisible
-        },
-        orderHistoryRedirect() {
-            uni.navigateTo({
-                url: '/pages/profile/balance/transaction-history/transaction-history'
-            })
         },
         depositToggle() {
             this.depositVisible = !this.depositVisible
         },
         withdrawToggle() {
             this.withdrawVisible = !this.withdrawVisible
+        },
+
+        // Redirect
+        orderHistoryRedirect() {
+            uni.navigateTo({
+                url: '/pages/profile/balance/transaction-history/transaction-history'
+            })
         },
     },
 

@@ -125,6 +125,7 @@ import ServiceSchedule from "../../../../components/page/order/service-schedule.
 import AddressSelector from "../../../../components/page/address/address-selector.vue";
 import common from "../../../../utils/common";
 import $common from "../../../../utils/common";
+import app from "../../../../App.vue";
 
 export default {
     computed: {
@@ -132,7 +133,11 @@ export default {
             return common
         }
     },
-    components: {PaymentMethodSelection, ServiceSchedule, AddressSelector},
+    components: {
+        PaymentMethodSelection,
+        ServiceSchedule,
+        AddressSelector
+    },
     data() {
         return {
             orderId: null,
@@ -140,6 +145,7 @@ export default {
             repostOrder: this.$t('profile>order>orderInitiate.repostOrder'),
             formData: {
                 title: "",
+                titleCn: "",
                 clientId: uni.getStorageSync(getApp().globalData.data.userInfoKey).id,
                 requiredServantType: null,
                 requiredGender: null,
@@ -156,6 +162,7 @@ export default {
 
             // basic info
             title: "",
+            titleCn: "",
 
             // gender
             genderIndex: 0,
@@ -188,8 +195,8 @@ export default {
 
             // payment
             user: {},
-            paymentMethodSelectionVisible: false,
             balanceAdequate: false,
+            paymentMethodSelectionVisible: false,
         };
     },
     onLoad(param) {
@@ -197,6 +204,7 @@ export default {
         console.log(param)
         this.formData.requiredServantType = param.serviceType;
         this.serviceName = param.serviceName;
+        this.serviceNameCn = param.serviceNameCn;
         if (param.orderId) {
             this.orderId = param.orderId;
             this.getOrderDetail(this.orderId);
@@ -303,7 +311,7 @@ export default {
                     url: getApp().globalData.data.requestUrl + this.$API.user.search,
                     method: 'POST',
                     data: {
-                        id: uni.getStorageSync("userId")
+                        id: uni.getStorageSync(app.globalData.data.userInfoKey).id
                     },
                     success: (res) => {
                         this.user = res.data.list[0]
@@ -438,6 +446,8 @@ export default {
             this.$refs.chooseTime.open()
         },
         bindServiceTimeChange(e) {
+            console.log("bindServiceTimeChange(e) {bindServiceTimeChange(e) {")
+            console.log(e)
             this.serviceScheduleStart = this.$common.timeToStamp(`${e.day} ${e.startHour}`);
             this.serviceScheduleEnd = this.$common.timeToStamp(`${e.day} ${e.endHour}`);
             this.formData.serviceScheduleStart = this.serviceScheduleStart;
@@ -472,20 +482,39 @@ export default {
 
         // Submit
         generateTitle() {
-            // Destructure values for easier access
             const {gender, age, serviceDuration} = this.dropdownOptions;
             const {genderIndex, ageRangeIndex, serviceDurationIndex} = this;
-
-            const genderText = gender[genderIndex] === this.$t('profile>order>orderInitiate.options.all') ? this.$t('profile>order>orderInitiate.options.allGender') : gender[genderIndex] === this.$t('pub.gender.m') ? this.$t('pub.gender.m') : this.$t('pub.gender.f');
-            const ageMin = age[0][ageRangeIndex[0]] === this.$t('profile>order>orderInitiate.options.all') ? this.$t('profile>order>orderInitiate.options.all') : `${age[0][ageRangeIndex[0]]}岁以上`;
-            const ageMax = age[1][ageRangeIndex[1]] === this.$t('profile>order>orderInitiate.options.all') ? this.$t('profile>order>orderInitiate.options.all') : `${age[1][ageRangeIndex[1]]}岁以下`;
-            const ageText = ageMin === this.$t('profile>order>orderInitiate.options.all') && ageMax === this.$t('profile>order>orderInitiate.options.all') ? this.$t('profile>order>orderInitiate.options.allAge') : `${ageMin} - ${ageMax}`;
+            const schedule = common.stampToTime(this.formData.serviceScheduleStart, {yyyy: false, ss: false}) + " -" + common.stampToTime(this.formData.serviceScheduleEnd, {yyyy: false, ss: false, MM: false, dd: false})
+            // International version
+            const genderText = gender[genderIndex] === this.$t('profile>order>orderInitiate.options.all') ? "All gender" : gender[genderIndex] === this.$t('pub.gender.m') ? "Male" : "Female";
+            const ageMin = age[0][ageRangeIndex[0]] === this.$t('profile>order>orderInitiate.options.all') ? "All" : `${age[0][ageRangeIndex[0]]} and Above`;
+            const ageMax = age[1][ageRangeIndex[1]] === this.$t('profile>order>orderInitiate.options.all') ? "All" : `${age[1][ageRangeIndex[1]]} and Below`;
+            var ageText = ""
+            if (age[0][ageRangeIndex[0]] === age[1][ageRangeIndex[1]]) {
+                ageText = `Age ${age[0][ageRangeIndex[0]]}`;
+            } else {
+                ageText = ageMin === "All" && ageMax === "All" ? "All age" : `${ageMin} - ${ageMax}`;
+            }
             const durationText = serviceDuration[serviceDurationIndex];
             const price = this.priceOptions[this.priceIndex];
-            const location = !this.common.isEmpty(this.address) ? this.address.addressName : '不限地区';
+            const location = !this.common.isEmpty(this.address) ? this.address.addressName : 'All Location';
+            this.title = `${this.serviceName}: ${genderText} / ${ageText} / ${durationText} / ${location} / ${schedule} / ¥${price}`;
 
-            // Update the title with the concatenated values
-            this.title = `${this.serviceName}服务: ${genderText} / ${ageText} / ${durationText} / ${location} / ¥${price}`;
+            // CN version
+            const genderTextCn = gender[genderIndex] === this.$t('profile>order>orderInitiate.options.all') ? "不限性别" : gender[genderIndex] === this.$t('pub.gender.m') ? "男性" : "女性";
+            const ageMinCn = age[0][ageRangeIndex[0]] === this.$t('profile>order>orderInitiate.options.all') ? "不限" : `${age[0][ageRangeIndex[0]]}岁以上`;
+            const ageMaxCn = age[1][ageRangeIndex[1]] === this.$t('profile>order>orderInitiate.options.all') ? "不限" : `${age[1][ageRangeIndex[1]]}岁以下`;
+            var ageTextCn = ""
+            if (age[0][ageRangeIndex[0]] === age[1][ageRangeIndex[1]]) {
+                ageTextCn = `${age[0][ageRangeIndex[0]]}岁`;
+            } else {
+                ageTextCn =  ageMinCn === "不限" && ageMaxCn === "不限" ? "不限年龄" : `${ageMinCn} - ${ageMaxCn}`;
+            }
+            const durationTextCn = serviceDuration[serviceDurationIndex];
+            const priceCn = this.priceOptions[this.priceIndex];
+            const locationCn = !this.common.isEmpty(this.address) ? this.address.addressName : '不限地区';
+            this.titleCn = `${this.serviceNameCn}服务: ${genderTextCn} / ${ageTextCn} / ${durationTextCn} / ${locationCn} / ${schedule} / ¥${priceCn}`;
+
         },
         formSubmit(paymentMethod) {
             this.generateTitle();
@@ -495,6 +524,7 @@ export default {
                 data: {
                     ...this.formData,
                     title: this.title,
+                    titleCn: this.titleCn,
                     paymentMethod: paymentMethod,
                 },
                 success: (res) => {

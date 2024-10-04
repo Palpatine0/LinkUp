@@ -1,6 +1,7 @@
 package com.enchanted.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.enchanted.constant.OrderConstant;
@@ -17,6 +18,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
+import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -79,24 +82,9 @@ public class OrderCandidateServiceImpl extends ServiceImpl<OrderCandidateMapper,
 
     @Override
     public Page<OrderCandidate> search(Map<String, Object> params, int page, int size) {
-        QueryWrapper<OrderCandidate> queryWrapper = new QueryWrapper<>();
-
-        // Dynamically add conditions based on params
-        params.forEach((key, value) -> {
-            if (value != null && !value.toString().trim().isEmpty()) {
-                if ("keyword".equals(key)) {
-                    // Implement keyword search if applicable
-                    // For example: queryWrapper.like("some_field", value.toString());
-                } else {
-                    queryWrapper.eq(key, value);
-                }
-            }
-        });
-
-        queryWrapper.orderByDesc("created_at"); // Adjust as per your requirements
-
-        Page<OrderCandidate> orderCandidatePage = new Page<>(page, size);
-        return this.page(orderCandidatePage, queryWrapper);
+        IPage<OrderCandidate> orderPage = new Page<>(page, size);
+        orderPage = orderCandidateMapper.search(orderPage, params);
+        return (Page<OrderCandidate>) orderPage;
     }
 
     @Override
@@ -110,18 +98,25 @@ public class OrderCandidateServiceImpl extends ServiceImpl<OrderCandidateMapper,
             return new Page<>();
         }
 
-        // Extract servantIds from OrderCandidates
-        List<Long> servantIds = orderCandidates.stream()
-            .map(OrderCandidate::getServantId)
-            .collect(Collectors.toList());
+        // Extract servantIds and map them to their corresponding quoted prices
+        Map<Long, BigDecimal> servantQuotedPriceMap = orderCandidates.stream()
+            .collect(Collectors.toMap(OrderCandidate::getServantId, OrderCandidate::getQuotedPrice));
 
         // Fetch User entities using servantIds with pagination
+        List<Long> servantIds = new ArrayList<>(servantQuotedPriceMap.keySet());
         Page<User> userPage = new Page<>(page, size);
         QueryWrapper<User> userQueryWrapper = new QueryWrapper<>();
         userQueryWrapper.in("id", servantIds);  // Find users with the given servantIds
 
         // Perform paginated query for users
-        return userService.page(userPage, userQueryWrapper);
+        Page<User> paginatedUsers = userService.page(userPage, userQueryWrapper);
+
+        // Set the quotedPrice for each user
+        paginatedUsers.getRecords().forEach(user -> {
+            user.setQuotedPrice(servantQuotedPriceMap.get(user.getId()));
+        });
+
+        return paginatedUsers;
     }
 
     @Override

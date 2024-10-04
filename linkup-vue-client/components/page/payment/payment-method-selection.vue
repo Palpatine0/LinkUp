@@ -20,7 +20,10 @@
 
 <script>
 export default {
-    props: {user: Object, balanceAdequate: Boolean},
+    props: {
+        user: Object,
+        balanceAdequate: Boolean
+    },
     methods: {
         close() {
             this.$parent.paymentMethodSelectionToggle(false);

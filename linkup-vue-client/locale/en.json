@@ -115,7 +115,7 @@
         "canceled": "Canceled"
     },
     "profile>order>orderServantSelection": {
-        "selectServantType": "Select your Servant Type"
+        "selectServantType": "Select a Servant Type"
     },
     "profile>order>orderInitiate": {
         "postOrder": "Post Order",
@@ -141,6 +141,8 @@
             "price": "Order Price",
             "totalCandidates": "Total Candidates"
         },
+
+        "quotedPrice":"Quoted Price",
 
         "candidates": "Candidates",
         "selectCandidate": "Select Candidate",

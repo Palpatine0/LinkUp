@@ -2,9 +2,11 @@
 <div class="page">
     <app-title type="h1" bold="true">{{ $t('profile>order>orderServantSelection.selectServantType') }}</app-title>
     <div v-for="item in servantTypeList" :key="item.id">
-        <app-container color="#f3f2f6" col="12" @click="orderInitiateRedirect(item.id,item.name)">
+        <app-container color="#f3f2f6" col="12" @click="orderInitiateRedirect(item.id,item.name,item.nameCn)">
             <div style="height: 100px">
-                <app-title type="h1" style="position: relative;bottom: -55px">{{ item.name }}</app-title>
+                <app-title type="h1" style="position: relative;bottom: -55px">
+                    {{  language != "zh-Hans" ? item.name : item.nameCn }}
+                </app-title>
             </div>
         </app-container>
     </div>
@@ -33,9 +35,9 @@ export default {
                 },
             });
         },
-        orderInitiateRedirect(serviceType, serviceName) {
+        orderInitiateRedirect(serviceType, serviceName, serviceNameCn) {
             uni.redirectTo({
-                url: '/pages/profile/order/order-initiate/order-initiate?serviceType=' + serviceType + '&serviceName=' + serviceName,
+                url: '/pages/profile/order/order-initiate/order-initiate?serviceType=' + serviceType + '&serviceName=' + serviceName + '&serviceNameCn=' + serviceNameCn,
             });
         },
 

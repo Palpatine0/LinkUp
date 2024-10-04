@@ -83,6 +83,24 @@
     "home": {
         "nearby": "Order Nearby"
     },
+    "home>orderDetail": {
+        "orderInfoBasic": {
+            "price": "Order Price",
+            "totalCandidates": "Total Candidates"
+        },
+
+        "acceptOrder": "Accept",
+        "acceptOrderSent": "Accept Request Sent",
+
+        "orderInfoDetail": {
+            "orderId": "Order ID",
+            "orderTime": "Order Time",
+            "paymentMethod": "Payment Method",
+            "balance": "Balance",
+            "weChat": "WeChat",
+            "address": "Address"
+        }
+    },
 
 
     "//////": "chat",
@@ -111,69 +129,6 @@
         "processing": "Processing",
         "completed": "Completed",
         "canceled": "Canceled"
-    },
-    "profile>order>orderServantSelection": {
-        "selectServantType": "Select your Servant Type"
-    },
-    "profile>order>orderInitiate": {
-        "postOrder": "Post Order",
-        "repostOrder": "Repost Order",
-        "serviceGender": "Service Provider Gender",
-        "requiredAge": "Service Provider Age",
-        "ageRangeUnlimited": "Unlimited",
-        "ageRange": "Age Range",
-        "selectLocation": "Select Location",
-        "serviceDuration": "Service Location",
-        "serviceSchedule": "Service Schedule",
-        "selectServiceSchedule": "Select Service Schedule",
-        "price": "Price",
-        "saveOrder": "Save Order",
-        "options": {
-            "all": "All",
-            "allGender": "All Genders",
-            "allAge": "All Ages"
-        }
-    },
-    "profile>order>orderDetail": {
-        "orderInfoBasic": {
-            "price": "Order Price",
-            "totalCandidates": "Total Candidates"
-        },
-
-        "candidates": "Candidates",
-        "selectCandidate": "Select Candidate",
-        "noCandidate": "No one responded yet",
-
-        "selectedBeforeCountdown": "Please select a candidate before the countdown is over",
-        "orderClosed": "This order has been closed",
-        "refunded": "The cost of your order has been refunded",
-        "orderExpiredExplanation": "Failure in selecting candidate in designated time. This order has been closed",
-        "orderCanceledManuallyExplanation": "You canceled this order",
-        "orderCanceledExplanation": "The order has been closed due to the fact that no one has taken the order within half an hour of its release (or you manually close it within this duration)",
-
-        "cancelOrder": "Cancel Order",
-        "noCandidateCancelModal": {
-            "title": "Cancel Order",
-            "content": "Are you sure you want to cancel this order?"
-        },
-        "hasCandidateCancelModal": {
-            "title": "Cancel Order",
-            "content": "Are you sure you want to cancel this order that has been selected by users? This order can only be refunded 80% of the pricing after exceeding today's free posting quota. Your free posting quota today: "
-        },
-        "repostOrder": "Repost Order",
-        "repostModal": {
-            "title": "Repost Order",
-            "content": "Are you sure you want repost this order?"
-        },
-
-        "orderInfoDetail": {
-            "orderId": "Order ID",
-            "orderTime": "Order Time",
-            "paymentMethod": "Payment Method",
-            "balance": "Balance",
-            "weChat": "WeChat",
-            "address": "Address"
-        }
     },
 
     "//////": "profile > balance",
@@ -271,6 +226,15 @@
     "component>order>serviceSchedule": {
         "showToast": {
             "selectServiceSchedule": "Please make a schedule"
+        }
+    },
+    "component>order>increasedQuotedPriceRequest": {
+        "requestHigherPay": "Request Higher Pay",
+        "tips": "The range of the quoted price will be lager equal than initial order price and smaller equal than 2 times of the initial order price",
+        "sendRequest": "Send Request",
+        "showToast": {
+            "priceRange": "Available price range is ",
+            "sent": "Quoted price request sent successfully!"
         }
     }
 }

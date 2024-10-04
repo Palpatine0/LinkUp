@@ -3,6 +3,8 @@ package com.enchanted.entity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
+
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
@@ -16,6 +18,9 @@ public class OrderCandidate {
 
     @TableField("servant_id")
     private Long servantId;
+
+    @TableField("quoted_price")
+    private BigDecimal quotedPrice;
 
     @TableField("is_closed")
     private Boolean isClosed;

@@ -24,6 +24,16 @@
             <if test="params.status != null and params.status != ''">
                 AND status = #{params.status}
             </if>
+            <if test="params.userGender != null and params.userGender != ''">
+                AND (required_gender IS NULL OR required_gender = '' OR required_gender = #{params.userGender})
+            </if>
+            <if test="params.userAge != null and params.userAge != ''">
+                AND (
+                (required_age_min IS NULL OR required_age_min &lt;= #{params.userAge})
+                AND
+                (required_age_max IS NULL OR required_age_max &gt;= #{params.userAge})
+                )
+            </if>
         </where>
         ORDER BY created_at DESC
     </select>

@@ -38,7 +38,9 @@
                     <span>{{ transaction.transactionType === 1 ? income : expanse }}</span>
                 </div>
                 <div class="transaction-detail">
-                    <span>{{ language != "en" ? transaction.descriptionCn : transaction.description}}</span>
+                    <span>
+                        {{  language != "zh-Hans" ? transaction.description : transaction.descriptionCn}}
+                    </span>
                 </div>
             </div>
             <div style="text-align: right">
@@ -67,7 +69,6 @@ export default {
     },
     data() {
         return {
-            language: uni.getStorageSync("language"),
             userProfileAvailable: false,
             transactionList: [],
             searchKeyword: '',

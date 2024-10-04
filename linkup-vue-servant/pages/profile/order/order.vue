@@ -35,7 +35,7 @@
                         <app-title bold="true" type="h3" style="width: 330px;">{{ order.title }}</app-title>
                     </div>
                     <div class="order-detail">
-                        <div class="candidates-count">
+                        <div class="highlight-blue">
                             {{ $t('profile>order.candidates') }}: {{ order.candidateCount }}
                         </div>
                         <span style="font-size: 14px; color: gray;">{{ order.createdAt }}</span>
@@ -228,7 +228,7 @@ export default {
     margin-right: 10px;
 }
 
-.candidates-count {
+.highlight-blue {
     color: white;
     background-color: #007aff;
     border-radius: 5px;

@@ -32,10 +32,12 @@
             <div class="order-content">
                 <div style="width: 100%;">
                     <div style="display: flex; align-items: center;">
-                        <app-title bold="true" type="h3" style="width: 330px;">{{ order.title }}</app-title>
+                        <app-title bold="true" type="h3" style="width: 330px;">
+                            {{ language != "zh-Hans" ? order.title : order.titleCn }}
+                        </app-title>
                     </div>
                     <div class="order-detail">
-                        <div class="candidates-count">
+                        <div class="highlight-blue">
                             {{ $t('profile>order.candidates') }}: {{ order.candidateCount }}
                         </div>
                         <span style="font-size: 14px; color: gray;">{{ order.createdAt }}</span>
@@ -210,7 +212,7 @@ export default {
     margin-right: 10px;
 }
 
-.candidates-count {
+.highlight-blue {
     color: white;
     background-color: #007aff;
     border-radius: 5px;
@@ -219,6 +221,8 @@ export default {
     width: 100px;
     font-size: 14px;
     margin-bottom: 4px;
+    align-items: center;
+    display: flex;
 }
 
 </style>

@@ -8,7 +8,7 @@
         <div class="price-respondent-container">
             <!-- Price Section -->
             <div class="price-section">
-                <app-title bold="true">{{ $t('profile>order>orderDetail.orderInfoBasic.price') }}</app-title>
+                <app-title bold="true">{{ $t('home>orderDetail.orderInfoBasic.price') }}</app-title>
                 <p>¥{{ order.price }}</p>
             </div>
 
@@ -17,7 +17,7 @@
 
             <!-- Respondent Section -->
             <div class="respondent-section">
-                <app-title bold="true">{{ $t('profile>order>orderDetail.orderInfoBasic.totalCandidates') }}</app-title>
+                <app-title bold="true">{{ $t('home>orderDetail.orderInfoBasic.totalCandidates') }}</app-title>
                 <p>{{ order.candidateCount }}</p>
             </div>
         </div>
@@ -29,39 +29,39 @@
         <!-- Alert: Choose while still can -->
         <div v-if="countdown > 0&&order.status==0" class="app-container" style="background-color: #feb327">
             <div>
-                <app-title type="h3" bold="true">{{ $t('profile>order>orderDetail.selectedBeforeCountdown') }}</app-title>
+                <app-title type="h3" bold="true">{{ $t('home>orderDetail.selectedBeforeCountdown') }}</app-title>
                 <p>{{ formatTime(countdown) }}</p>
             </div>
             <app-button type="small" color="red" shaped size="small" @click="cancelOrder">
-                {{ $t('profile>order>orderDetail.cancelOrder') }}
+                {{ $t('home>orderDetail.cancelOrder') }}
             </app-button>
         </div>
         <!-- Alert: Overtime -->
         <div v-if="!countdown > 0&&order.status==0" class="app-container" style="background-color: white !important;">
-            <app-title type="h3" bold="true">{{ $t('profile>order>orderDetail.orderClosed') }}</app-title>
-            <p>{{ $t('profile>order>orderDetail.orderExpiredExplanation') }}</p>
-            <p>{{ $t('profile>order>orderDetail.refunded') }}</p>
+            <app-title type="h3" bold="true">{{ $t('home>orderDetail.orderClosed') }}</app-title>
+            <p>{{ $t('home>orderDetail.orderExpiredExplanation') }}</p>
+            <p>{{ $t('home>orderDetail.refunded') }}</p>
         </div>
         <!-- Alert: Cancel with countdown -->
         <div v-if="order.status==3" class="app-container" style="background-color: white !important;">
-            <app-title type="h3" bold="true">{{ $t('profile>order>orderDetail.orderClosed') }}</app-title>
-            <p>{{ $t('profile>order>orderDetail.orderCanceledManuallyExplanation') }}</p>
-            <p>{{ $t('profile>order>orderDetail.refunded') }}</p>
+            <app-title type="h3" bold="true">{{ $t('home>orderDetail.orderClosed') }}</app-title>
+            <p>{{ $t('home>orderDetail.orderCanceledManuallyExplanation') }}</p>
+            <p>{{ $t('home>orderDetail.refunded') }}</p>
         </div>
     </div>
     <!-- No candidates -->
     <div v-else>
         <div v-if="order.status==3" class="app-container" style="background-color: white !important;">
-            <app-title type="h3" bold="true">{{ $t('profile>order>orderDetail.orderClosed') }}</app-title>
-            <p>{{ $t('profile>order>orderDetail.orderCanceledExplanation') }}</p>
-            <p>{{ $t('profile>order>orderDetail.refunded') }}</p>
+            <app-title type="h3" bold="true">{{ $t('home>orderDetail.orderClosed') }}</app-title>
+            <p>{{ $t('home>orderDetail.orderCanceledExplanation') }}</p>
+            <p>{{ $t('home>orderDetail.refunded') }}</p>
         </div>
     </div>
 
 
     <!-- Respondent Users Title -->
     <div v-if="countdown > 0&&order.status==0" class="mt-4">
-        <app-title bold="true">{{ $t('profile>order>orderDetail.candidates') }}</app-title>
+        <app-title bold="true">{{ $t('home>orderDetail.candidates') }}</app-title>
         <div v-if="servantList.length > 0">
             <z-swiper v-model="servantList" :options="{slidesPerView: 'auto', centeredSlides: true, spaceBetween: 14}" style="width: 100%">
                 <z-swiper-item v-for="(user, index) in servantList" :key="index" :custom-style="{width: '500rpx'}">
@@ -81,7 +81,7 @@
                         </app-container>
                         <div style="width: 70%;" class="center-h">
                             <app-button type="small" @click="selectServant(user.nickname)" shaped>
-                                {{ $t('profile>order>orderDetail.selectCandidate') }}
+                                {{ $t('home>orderDetail.selectCandidate') }}
                             </app-button>
                         </div>
                     </demo-item>
@@ -90,7 +90,7 @@
         </div>
         <div v-else>
             <div class="no-more-data-text" style="margin-bottom: 60vh;">
-                {{ $t('profile>order>orderDetail.noCandidate') }}
+                {{ $t('home>orderDetail.noCandidate') }}
             </div>
         </div>
     </div>
@@ -98,13 +98,13 @@
     <!-- Order Detail -->
     <div class="mt-4" style="color: grey">
         <div class="order-detail">
-            <span>{{ $t('profile>order>orderDetail.orderInfoDetail.orderId') }}:</span> {{ order.identifier }}
+            <span>{{ $t('home>orderDetail.orderInfoDetail.orderId') }}:</span> {{ order.identifier }}
         </div>
         <div class="order-detail">
-            <span>{{ $t('profile>order>orderDetail.orderInfoDetail.orderTime') }}:</span> {{ common.stampToTime(order.createdAt) }}
+            <span>{{ $t('home>orderDetail.orderInfoDetail.orderTime') }}:</span> {{ common.stampToTime(order.createdAt) }}
         </div>
         <div class="order-detail">
-            <span>{{ $t('profile>order>orderDetail.orderInfoDetail.paymentMethod') }}:</span>
+            <span>{{ $t('home>orderDetail.orderInfoDetail.paymentMethod') }}:</span>
             <div v-if="order.paymentMethod==0">
                 {{ balanceText }}
             </div>
@@ -113,7 +113,7 @@
             </div>
         </div>
         <div class="order-detail">
-            <span>{{ $t('profile>order>orderDetail.orderInfoDetail.address') }}:</span>
+            <span>{{ $t('home>orderDetail.orderInfoDetail.address') }}:</span>
             <div style="flex-direction: column;text-align: end;width: 70vw;">
                 <div>{{ orderAddress.address }}</div>
                 <div>{{ orderAddress.addressName }}</div>
@@ -124,13 +124,13 @@
         <!-- Cancel order opt (no candidates) -->
         <div v-if="order.status==0&&common.isEmpty(this.servantList)" class="fix-bottom">
             <app-button color="red" shaped @click="cancelOrder">
-                {{ $t('profile>order>orderDetail.cancelOrder') }}
+                {{ $t('home>orderDetail.cancelOrder') }}
             </app-button>
         </div>
         <!-- Repost order opt -->
         <div v-if="order.status==3" class="fix-bottom">
             <app-button shaped @click="repostOrder">
-                {{ $t('profile>order>orderDetail.repostOrder') }}
+                {{ $t('home>orderDetail.repostOrder') }}
             </app-button>
         </div>
     </div>
@@ -157,8 +157,8 @@ export default {
             countdown: 0, // Countdown in seconds
             countdownInterval: null,
             freeOrderPostingQuota: 0,
-            balanceText: this.$t('profile>order>orderDetail.orderInfoDetail.balance'),
-            weChatText: this.$t('profile>order>orderDetail.orderInfoDetail.weChat'),
+            balanceText: this.$t('home>orderDetail.orderInfoDetail.balance'),
+            weChatText: this.$t('home>orderDetail.orderInfoDetail.weChat'),
         };
     },
     onLoad(params) {
@@ -308,8 +308,8 @@ export default {
         cancelOrder() {
             if (this.$common.isEmpty(this.servantList)) {
                 uni.showModal({
-                    title: this.$t('profile>order>orderDetail.noCandidateCancelModal.title'),
-                    content: this.$t('profile>order>orderDetail.noCandidateCancelModal.content'),
+                    title: this.$t('home>orderDetail.noCandidateCancelModal.title'),
+                    content: this.$t('home>orderDetail.noCandidateCancelModal.content'),
                     showCancel: true,
                     confirmText: this.$t('pub.modal.button.confirm'),
                     cancelText: this.$t('pub.modal.button.cancel'),
@@ -334,8 +334,8 @@ export default {
                 });
             } else {
                 uni.showModal({
-                    title: this.$t('profile>order>orderDetail.hasCandidateCancelModal.title'),
-                    content: this.$t('profile>order>orderDetail.hasCandidateCancelModal.content') + `${this.freeOrderPostingQuota}`,
+                    title: this.$t('home>orderDetail.hasCandidateCancelModal.title'),
+                    content: this.$t('home>orderDetail.hasCandidateCancelModal.content') + `${this.freeOrderPostingQuota}`,
                     showCancel: true,
                     confirmText: this.$t('pub.modal.button.confirm'),
                     cancelText: this.$t('pub.modal.button.cancel'),
@@ -364,8 +364,8 @@ export default {
 
         repostOrder() {
             uni.showModal({
-                title: this.$t('profile>order>orderDetail.repostModal.title'),
-                content: this.$t('profile>order>orderDetail.repostModal.content'),
+                title: this.$t('home>orderDetail.repostModal.title'),
+                content: this.$t('home>orderDetail.repostModal.content'),
                 showCancel: true,
                 confirmText: this.$t('pub.modal.button.confirm'),
                 cancelText: this.$t('pub.modal.button.cancel'),

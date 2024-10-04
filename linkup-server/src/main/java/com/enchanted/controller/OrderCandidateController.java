@@ -51,6 +51,7 @@ public class OrderCandidateController {
         requestData.remove("page");
         requestData.remove("size");
         Long orderId = Long.parseLong(requestData.get("orderId").toString());
+
         // Fetch paginated list of users (servants) based on order ID
         Page<User> userPage = orderCandidateService.getAllServants(orderId, page, size);
 
@@ -59,6 +60,7 @@ public class OrderCandidateController {
         }
         return R.paginate(userPage);
     }
+
 
     @PostMapping("/has-candidates")
     public R hasCandidatesForOrder(@RequestBody Map<String, Object> requestData) {

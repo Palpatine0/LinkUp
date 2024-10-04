@@ -78,4 +78,9 @@ public class User {
 
     @TableField("created_at")
     private Date createdAt;
+
+
+    // Transient fields
+    @TableField(exist = false)
+    private BigDecimal quotedPrice;
 }

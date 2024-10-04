@@ -14,7 +14,11 @@ public class Order {
 
     private String identifier;
 
+    @TableField("title")
     private String title;
+
+    @TableField("title_cn")
+    private String titleCn;
 
     @TableField("client_id")
     private Long clientId;
@@ -45,7 +49,6 @@ public class Order {
 
     @TableField("service_schedule_end")
     private Date serviceScheduleEnd;
-
 
     private BigDecimal price;
 
@@ -80,6 +83,9 @@ public class Order {
 
     @TableField("countdown_start_at")
     private Date countdownStartAt;
+
+    @TableField("canceled_at")
+    private Date canceledAt;
 
     @TableField("completed_at")
     private Date completedAt;
