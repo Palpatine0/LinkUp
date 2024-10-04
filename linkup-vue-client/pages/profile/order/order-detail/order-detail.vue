@@ -3,7 +3,9 @@
     <!-- Title -->
     <app-title type="h2" bold="true">{{ order.title }}</app-title>
 
-    <!-- Price and Respondent Container -->
+
+
+    <!-- ORDER BASIC INFO CONTAINER-->
     <div class="app-container" style="background-color: white !important;">
         <div class="price-respondent-container">
             <!-- Price Section -->
@@ -22,8 +24,11 @@
             </div>
         </div>
     </div>
+    <!-- /ORDER BASIC INFO CONTAINER-->
 
-    <!-- Countdown Timer -->
+
+
+    <!-- DYNAMIC STATUS CONTAINER -->
     <!-- Has candidates -->
     <div v-if="order.countdownStartAt">
         <!-- Alert: Choose while still can -->
@@ -57,9 +62,11 @@
             <p>{{ $t('profile>order>orderDetail.refunded') }}</p>
         </div>
     </div>
+    <!-- /DYNAMIC STATUS CONTAINER -->
 
 
-    <!-- Respondent Users Title -->
+
+    <!-- SERVANT CONTAINER  -->
     <div v-if="countdown > 0&&order.status==0" class="mt-4">
         <app-title bold="true">{{ $t('profile>order>orderDetail.candidates') }}</app-title>
         <div v-if="servantList.length > 0">
@@ -80,7 +87,7 @@
                             <p style="margin-bottom: 10px">{{ user.servantData.bio }}</p>
                         </app-container>
                         <div style="width: 70%;" class="center-h">
-                            <app-button type="small" @click="selectServant(user.nickname)" shaped>
+                            <app-button type="small" @click="selectServant(user.nickname,user.id)" shaped>
                                 {{ $t('profile>order>orderDetail.selectCandidate') }}
                             </app-button>
                         </div>
@@ -95,7 +102,31 @@
         </div>
     </div>
 
-    <!-- Order Detail -->
+    <div v-if="order.status==1" style="width: 65vw;margin: 0 auto" >
+        <app-container color="#fff" col="12" @click="userDetailRedirect(orderServant.id)">
+            <div class="center-h">
+                <image style="width: 160px; height: 160px; border-radius: 50%; margin: 30px 0" :src="orderServant.avatar" mode="aspectFill"></image>
+            </div>
+            <app-title type="h3" bold="true">{{ orderServant.nickname }}</app-title>
+            <div class="flex" style="margin: 3px 0 30px -6px">
+            <span style="font-size: 27px; margin: 0 10px; position: relative; top: -8px; left: 2px;">
+                {{ orderServant.gender === 0 ? '👨‍💻' : '👩‍💻' }}
+            </span>
+                <app-title type="h3" bold="true">{{ orderServant.age }}</app-title>
+            </div>
+            <p style="margin-bottom: 10px">{{ orderServant.servantData.bio }}</p>
+        </app-container>
+        <div style="width: 70%;" class="center-h">
+            <app-button type="small" @click="chatWindowRedirect(orderServant.id)" shaped>
+                {{ $t('profile>order>orderDetail.startChatting') }}
+            </app-button>
+        </div>
+    </div>
+    <!-- /SERVANT CONTAINER  -->
+
+
+
+    <!-- ORDER DETAIL -->
     <div class="mt-4" style="color: grey">
         <div class="order-detail">
             <span>{{ $t('profile>order>orderDetail.orderInfoDetail.orderId') }}:</span> {{ order.identifier }}
@@ -120,20 +151,28 @@
                 <div>{{ orderAddress.detail }}</div>
             </div>
         </div>
+    </div>
+    <!-- /ORDER DETAIL -->
 
-        <!-- Cancel order opt (no candidates) -->
-        <div v-if="order.status==0&&common.isEmpty(this.servantList)" class="fix-bottom">
+
+
+    <!-- Cancel order opt (no candidates) -->
+    <div v-if="order.status==0&&common.isEmpty(this.servantList)" class="fix-bottom flex">
+        <div style="width: 100%">
             <app-button color="red" shaped @click="cancelOrder">
                 {{ $t('profile>order>orderDetail.cancelOrder') }}
             </app-button>
         </div>
-        <!-- Repost order opt -->
-        <div v-if="order.status==3" class="fix-bottom">
-            <app-button shaped @click="repostOrder">
-                {{ $t('profile>order>orderDetail.repostOrder') }}
-            </app-button>
-        </div>
+        <img class="reload-btn center-v" @click="reload()" src="/static/page/profile/order/rotate-right-solid.svg">
     </div>
+    <!-- Repost order opt -->
+    <div v-if="order.status==3" class="fix-bottom">
+        <app-button shaped @click="repostOrder">
+            {{ $t('profile>order>orderDetail.repostOrder') }}
+        </app-button>
+    </div>
+
+
 </div>
 </template>
 
@@ -141,6 +180,7 @@
 
 import common from "../../../../utils/common";
 import $common from "../../../../utils/common";
+import order from "../order.vue";
 
 export default {
     computed: {
@@ -154,6 +194,7 @@ export default {
             order: {},
             orderAddress: {},
             servantList: [],
+            orderServant: {},
             countdown: 0, // Countdown in seconds
             countdownInterval: null,
             freeOrderPostingQuota: 0,
@@ -187,6 +228,9 @@ export default {
                     this.getOrderAddress();
                     if (this.order.status == 0) {
                         this.getServantList();
+                    }
+                    if (this.order.status == 1) {
+                        this.getOrderServant();
                     }
                 },
             });
@@ -293,14 +337,27 @@ export default {
                 },
             });
         },
-        selectServant(servantName) {
+        selectServant(servantName, servantId) {
             uni.showModal({
-                title: '选择达人',
-                content: `确定选择${servantName}?`,
+                title: this.$t('profile>order>orderDetail.selectServantModal.title'),
+                content: this.$t('profile>order>orderDetail.selectServantModal.content1') + servantName + this.$t('profile>order>orderDetail.selectServantModal.content2'),
                 showCancel: true,
-                confirmText: '确定',
+                confirmText: this.$t('pub.modal.button.confirm'),
+                cancelText: this.$t('pub.modal.button.cancel'),
                 success: (res) => {
-                    // Handle confirmation
+                    if (res.confirm) {
+                        uni.request({
+                            url: getApp().globalData.data.requestUrl + this.$API.order.assignServant,
+                            method: 'POST',
+                            data: {
+                                orderId: this.order.id,
+                                servantId: servantId
+                            },
+                            success: (res) => {
+                                this.reload();
+                            },
+                        });
+                    }
                 },
             });
         },
@@ -329,7 +386,6 @@ export default {
                                 },
                             });
                         }
-
                     },
                 });
             } else {
@@ -396,11 +452,34 @@ export default {
             });
         },
 
+
+        getOrderServant() {
+            uni.request({
+                url: getApp().globalData.data.requestUrl + this.$API.user.search,
+                method: 'POST',
+                data: {
+                    id: this.order.servantId
+                },
+                success: (res) => {
+                    this.orderServant = res.data.list[0]
+                },
+            });
+        },
+
+        reload() {
+            this.getOrder()
+        },
+
         async userDetailRedirect(userId) {
             uni.navigateTo({
                 url: '/pages/components/user/user-detail/user-detail?userId=' + userId + '?serviceType=' + serviceType + '&serviceName=' + serviceName,
             });
-        }
+        },
+        chatWindowRedirect(userId) {
+            uni.navigateTo({
+                url: '/pages/components/chat/chat-window/chat-window?contactId=' + userId
+            });
+        },
     }
 };
 </script>
@@ -451,5 +530,12 @@ export default {
 
 .order-detail span {
     font-weight: bold
+}
+
+.reload-btn {
+    width: 48px;
+    height: 48px;
+    margin-top: 5px;
+    margin-left: 25px
 }
 </style>

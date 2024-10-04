@@ -33,7 +33,7 @@
 
         <!-- Button Section (Fixed at Bottom) -->
         <div class="fix-bottom">
-            <div class="app-button" @click="contactRedirect">{{$t('componentPage>user>userDetail.startChatting')}}</div>
+            <div class="app-button" @click="chatWindowRedirect">{{$t('componentPage>user>userDetail.startChatting')}}</div>
         </div>
     </div>
 </div>
@@ -107,7 +107,7 @@ export default {
         },
 
         // Handle contact redirect
-        contactRedirect() {
+        chatWindowRedirect() {
             uni.navigateTo({
                 url: '/pages/components/chat/chat-window/chat-window?contactId=' + this.userId
             });

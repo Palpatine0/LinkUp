@@ -21,7 +21,9 @@
             <if test="params.clientId != null and params.clientId != ''">
                 AND client_id = #{params.clientId}
             </if>
-            <!-- Add more conditions as needed -->
+            <if test="params.status != null and params.status != ''">
+                AND status = #{params.status}
+            </if>
         </where>
         ORDER BY created_at DESC
     </select>

@@ -263,7 +263,7 @@
     },
     "component>balance>referralQRCode": {
         "yourReferralQRCode": "您的分享二维码",
-        "descA": "如果一个用户通过您的二维码进入该小程序，如果他们成功完成了一个订单，该订单价格的5%会被存到您的余额里。",
+        "descA": "如果一个用户通过您的二维码进入该小程序，在他们成功完成一个订单后，该订单总价格的5%会被存到您的余额",
         "descB": "登陆后分享该小程序给其他用户也可获得该收益"
     },
     "component>chat>messageInput": {

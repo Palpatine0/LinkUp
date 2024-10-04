@@ -23,9 +23,11 @@ var $API = {
         update: '/order/update',
         updateStatus: '/order/update-status',
         remainingFreePostingQuota: '/order/remaining-free-posting-quota',
+        assignServant: '/order/assign-servant   ',
     },
     // Order Candidate
     orderCandidate: {
+        save: '/order-candidate/save',
         servants: '/order-candidate/servants',
     },
     // User

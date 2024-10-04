@@ -47,7 +47,7 @@
                             </div>
                             <div v-if="order.status==1" class="flex">
                                 <span class="status-dot green-dot"></span>
-                                <div class="status-text">{{ $t('profile>order.processing') }}</div>
+                                <div class="status-text">{{ $t('profile>order.confirmed') }}</div>
                             </div>
                             <div v-if="order.status==2" class="flex">
                                 <span class="status-dot gray-dot"></span>

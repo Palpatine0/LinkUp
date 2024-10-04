@@ -109,6 +109,7 @@
         "myOrders": "My Orders",
         "candidates": "Candidates",
         "pending": "Pending",
+        "confirmed": "Confirmed",
         "processing": "Processing",
         "completed": "Completed",
         "canceled": "Canceled"
@@ -144,6 +145,7 @@
         "candidates": "Candidates",
         "selectCandidate": "Select Candidate",
         "noCandidate": "No one responded yet",
+        "startChatting": "Start Chatting!",
 
         "selectedBeforeCountdown": "Please select a candidate before the countdown is over",
         "orderClosed": "This order has been closed",
@@ -153,6 +155,11 @@
         "orderCanceledExplanation": "The order has been closed due to the fact that no one has taken the order within half an hour of its release (or you manually close it within this duration)",
 
         "cancelOrder": "Cancel Order",
+        "selectServantModal": {
+            "title": "Confirm your selection",
+            "content1": "Are you sure you want to choose",
+            "content2": "as your accompany?"
+        },
         "noCandidateCancelModal": {
             "title": "Cancel Order",
             "content": "Are you sure you want to cancel this order?"
