@@ -222,7 +222,7 @@ export default {
     font-size: 14px;
     margin-bottom: 4px;
     align-items: center;
-    display: flex;
+    display: f;
 }
 
 </style>
