@@ -133,7 +133,7 @@
 
     "//////": "profile > balance",
     "profile>balance": {
-        "balance": "Your Looking Coins",
+        "balance": "Looking Card Balance",
         "deposit": "Deposit",
         "withdraw": "Withdraw",
         "transactionHistory": "Transaction History",

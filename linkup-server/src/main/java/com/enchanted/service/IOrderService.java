@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.enchanted.entity.Order;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
 public interface IOrderService extends IService<Order> {
@@ -21,7 +22,7 @@ public interface IOrderService extends IService<Order> {
 
     boolean updateStatus(Long orderId, int newStatus);
 
-    boolean assignServant(Long orderId, Long servantId);
+    boolean assignServant(Long orderId, Long servantId, BigDecimal quotedPrice);
 
     boolean rate(Long orderId, Integer rating);
 

@@ -92,7 +92,7 @@
                             <p style = "margin-bottom: 10px">{{ user.servantData.bio }}</p>
                         </app-container>
                         <div style = "width: 70%;" class = "center-h">
-                            <app-button type = "small" @click = "selectServant(user.nickname,user.id)" shaped>
+                            <app-button type = "small" @click = "selectServant(user.nickname,user.id,user.quotedPrice)" shaped>
                                 {{ $t('profile>order>orderDetail.selectCandidate') }}
                             </app-button>
                         </div>
@@ -204,6 +204,8 @@ export default {
             isCancelByTimeout: false,
             isCancelManuallyWithinSelection: false,
             isCancelByTimeoutWithinSelection: false,
+
+            isServiceOnGoing: false,
 
             orderConstant: {
                 PENDING: 0,
@@ -380,7 +382,7 @@ export default {
                 }
             });
         },
-        selectServant(servantName, servantId) {
+        selectServant(servantName, servantId,quotedPrice) {
             uni.showModal({
                 title: this.$t('profile>order>orderDetail.selectServantModal.title'),
                 content: this.$t('profile>order>orderDetail.selectServantModal.content1') + servantName + this.$t('profile>order>orderDetail.selectServantModal.content2'),
@@ -394,7 +396,8 @@ export default {
                             method: 'POST',
                             data: {
                                 orderId: this.order.id,
-                                servantId: servantId
+                                servantId: servantId,
+                                quotedPrice: quotedPrice
                             },
                             success: (res) => {
                                 this.reload();

@@ -270,7 +270,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
     @Override
     @Transactional
-    public boolean assignServant(Long orderId, Long servantId) {
+    public boolean assignServant(Long orderId, Long servantId, BigDecimal quotedPrice) {
         Order order = orderMapper.selectById(orderId);
         if (order == null) {
             return false;
@@ -283,6 +283,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
         // Assign the servant to the order
         order.setServantId(servantId);
+        order.setPrice(quotedPrice);
 
         // Update the order status to PROCESSING
         boolean statusUpdated = updateStatus(orderId, OrderConstant.PROCESSING);

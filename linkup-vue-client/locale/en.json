@@ -125,7 +125,7 @@
         "ageRangeUnlimited": "Unlimited",
         "ageRange": "Age Range",
         "selectLocation": "Select Location",
-        "serviceDuration": "Service Location",
+        "serviceDuration": "Service Duration",
         "serviceSchedule": "Service Schedule",
         "selectServiceSchedule": "Select Service Schedule",
         "price": "Price",
@@ -134,6 +134,10 @@
             "all": "All",
             "allGender": "All Genders",
             "allAge": "All Ages"
+        },
+        "showToast": {
+            "selectAddr": "please select an address",
+            "selectSchedule": "please select a schedule"
         }
     },
     "profile>order>orderDetail": {
@@ -189,7 +193,7 @@
 
     "//////": "profile > balance",
     "profile>balance": {
-        "balance": "Your Looking Coins",
+        "balance": "Looking Card Balance",
         "deposit": "Deposit",
         "withdraw": "Withdraw",
         "transactionHistory": "Transaction History",

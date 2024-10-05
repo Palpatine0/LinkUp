@@ -457,8 +457,15 @@ export default {
 
         // Payment
         paymentMethodSelectionToggle() {
+            if(this.formData.addressId===0){
+                uni.showToast({title: this.$t('profile>order>orderInitiate.showToast.selectAddr'), icon: 'none'});
+                return
+            }
+            if(this.$common.isEmpty(this.formData.serviceScheduleStart)||this.$common.isEmpty(this.formData.serviceScheduleEnd)){
+                uni.showToast({title: this.$t('profile>order>orderInitiate.showToast.selectSchedule'), icon: 'none'});
+                return
+            }
             this.getUser().then(() => {
-                // Then toggle the visibility after user data has been fetched
                 this.paymentMethodSelectionVisible = !this.paymentMethodSelectionVisible;
             });
         },
@@ -484,7 +491,7 @@ export default {
         generateTitle() {
             const {gender, age, serviceDuration} = this.dropdownOptions;
             const {genderIndex, ageRangeIndex, serviceDurationIndex} = this;
-            const schedule = common.stampToTime(this.formData.serviceScheduleStart, {yyyy: false, ss: false}) + " -" + common.stampToTime(this.formData.serviceScheduleEnd, {yyyy: false, ss: false, MM: false, dd: false})
+            const schedule = this.$common.stampToTime(this.formData.serviceScheduleStart, {yyyy: false, ss: false}) + " -" + this.$common.stampToTime(this.formData.serviceScheduleEnd, {yyyy: false, ss: false, MM: false, dd: false})
             // International version
             const genderText = gender[genderIndex] === this.$t('profile>order>orderInitiate.options.all') ? "All gender" : gender[genderIndex] === this.$t('pub.gender.m') ? "Male" : "Female";
             const ageMin = age[0][ageRangeIndex[0]] === this.$t('profile>order>orderInitiate.options.all') ? "All" : `${age[0][ageRangeIndex[0]]} and Above`;
@@ -497,7 +504,7 @@ export default {
             }
             const durationText = serviceDuration[serviceDurationIndex];
             const price = this.priceOptions[this.priceIndex];
-            const location = !this.common.isEmpty(this.address) ? this.address.addressName : 'All Location';
+            const location = !this.$common.isEmpty(this.address) ? this.address.addressName : 'All Location';
             this.title = `${this.serviceName}: ${genderText} / ${ageText} / ${durationText} / ${location} / ${schedule} / ¥${price}`;
 
             // CN version
@@ -512,7 +519,7 @@ export default {
             }
             const durationTextCn = serviceDuration[serviceDurationIndex];
             const priceCn = this.priceOptions[this.priceIndex];
-            const locationCn = !this.common.isEmpty(this.address) ? this.address.addressName : '不限地区';
+            const locationCn = !this.$common.isEmpty(this.address) ? this.address.addressName : '不限地区';
             this.titleCn = `${this.serviceNameCn}服务: ${genderTextCn} / ${ageTextCn} / ${durationTextCn} / ${locationCn} / ${schedule} / ¥${priceCn}`;
 
         },

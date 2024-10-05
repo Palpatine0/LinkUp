@@ -134,6 +134,10 @@
             "all": "不限",
             "allGender": "不限性别",
             "allAge": "不限年龄"
+        },
+        "showToast": {
+            "selectAddr": "请选择一个地址",
+            "selectSchedule": "请选择一个时间段"
         }
     },
     "profile>order>orderDetail": {
@@ -189,7 +193,7 @@
 
     "//////": "profile > balance",
     "profile>balance": {
-        "balance": "您的领客币",
+        "balance": "领客卡余额",
         "deposit": "充值",
         "withdraw": "提现",
         "transactionHistory": "交易记录",

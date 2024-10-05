@@ -7,6 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import com.enchanted.vo.R;
 
+import java.math.BigDecimal;
 import java.util.Map;
 
 @CrossOrigin
@@ -80,8 +81,9 @@ public class OrderController {
     public R assignServant(@RequestBody Map<String, Object> requestData) {
         Long orderId = Long.parseLong(requestData.get("orderId").toString());
         Long servantId = Long.parseLong(requestData.get("servantId").toString());
+        BigDecimal quotedPrice = BigDecimal.valueOf(Long.parseLong(requestData.get("quotedPrice").toString()));
 
-        boolean isAssigned = orderService.assignServant(orderId, servantId);
+        boolean isAssigned = orderService.assignServant(orderId, servantId,quotedPrice);
         if (isAssigned) {
             return R.ok("Servant assigned to order successfully");
         } else {
