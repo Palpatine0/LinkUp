@@ -20,6 +20,7 @@
         :scroll-top="0"
         scroll-y="true"
         style="height: 80vh"
+        @scrolltoupper="reload"
         @scrolltolower="onReachBottom"
     >
         <div
@@ -141,6 +142,12 @@ export default {
                 },
             });
         },
+        reload(){
+            uni.showLoading({title: this.$t('pub.showLoading.loading')});
+            this.resetPagination();
+            this.getDataList();
+            uni.hideLoading();
+        }
 
 
     },

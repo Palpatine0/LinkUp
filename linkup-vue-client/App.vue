@@ -21,6 +21,7 @@ export default {
                 warning: '#E6A23C',
                 danger: '#F56C6C',
                 info: '#909399',
+                navyBlue: '#192C77',
             }
         },
 

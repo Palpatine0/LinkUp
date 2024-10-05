@@ -161,7 +161,13 @@
         "orderCanceledManuallyWithinSelection": "您取消了订单",
         "orderCanceledByTimeoutWithinSelection": "由于您未在规定时间内选择达人，订单已失效",
 
+        "serviceInProgress": "您的订单已经开始",
+        "serviceComplete": "您的订单已经结束",
+        "rateRequest": "请给您的达人评个分",
+
         "cancelOrder": "取消订单",
+        "completeOrder": "完成订单",
+
         "selectServantModal": {
             "title": "确认选择",
             "content1": "您确认要选择",
@@ -180,6 +186,10 @@
             "title": "重新发布订单",
             "content": "您确定要重新发布订单?"
         },
+        "completeOrderModal": {
+            "title": "提前结束订单",
+            "content": "您确定现在就要结束订单?"
+        },
 
         "orderInfoDetail": {
             "orderId": "订单编号",
@@ -188,6 +198,11 @@
             "balance": "余额",
             "weChat": "微信支付",
             "address": "地址"
+        },
+
+        "showToast": {
+            "selectRate": "请选择一个评分再提交",
+            "rated": "您已评价过该订单"
         }
     },
 
@@ -266,12 +281,12 @@
         "withdrawTitle": "余额提现",
         "withdrawBtn": "确认提现",
         "placeholder": "请输入提现金额",
+        "minWithdrawAmount": "最低提现金额为100元",
+        "hint": "仅可在工作日提现，且一天只能提现一次",
         "showToast": {
             "weekendError": "仅可以在工作日提现",
             "oneWithdrawPerDay": "一天只能提现一次",
-            "invalidAmount": "请输入有效的提现金额",
-            "clientMinWithdrawAmount": "最低提现金额为100元",
-            "servantMinWithdrawAmount": "最低提现金额为200元"
+            "invalidAmount": "请输入有效的提现金额"
         }
     },
     "component>balance>referralQRCode": {
