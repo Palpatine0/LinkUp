@@ -10,6 +10,7 @@
         :scroll-top="0"
         scroll-y="true"
         style="height: 90vh"
+        @scrolltoupper="reload"
         @scrolltolower="onReachBottom"
     >
         <div
@@ -53,7 +54,7 @@
                 </div>
             </div>
         </div>
-        <div v-if="loading" style="color: gainsboro; margin-left: 10px;">{{ $t('pub.page.loading') }}</div>
+        <div v-if="loading" class="loading-text">{{ $t('pub.page.loading') }}</div>
         <div v-else-if="!hasMore" class="no-more-data-container-list">{{ $t('pub.page.noMoreData') }}</div>
     </scroll-view>
 </div>
@@ -74,10 +75,15 @@ export default {
         };
     },
     onShow() {
-        this.resetPagination();
-        this.getDataList();
+        this.reload();
     },
     methods: {
+        reload(){
+            uni.showLoading({title: this.$t('pub.showLoading.loading')});
+            this.resetPagination();
+            this.getDataList();
+            uni.hideLoading();
+        },
         buildApiParams() {
             let url = getApp().globalData.data.requestUrl + this.$API.order.search;
             let method = 'POST';

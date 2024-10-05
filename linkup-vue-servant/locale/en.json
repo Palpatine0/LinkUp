@@ -206,12 +206,12 @@
         "withdrawTitle": "Withdraw",
         "withdrawBtn": "Withdraw",
         "placeholder": "Enter amount to withdraw",
+        "minWithdrawAmount": "The minimum withdrawal amount is ¥200",
+        "hint": "You can only perform this operation during weekdays, and only once each day",
         "showToast": {
             "weekendError": "Withdrawals are not allowed on Saturdays and Sundays",
             "oneWithdrawPerDay": "You can only withdraw once per day",
-            "invalidAmount": "Please enter a valid withdrawal amount",
-            "clientMinWithdrawAmount": "The minimum withdrawal amount is ¥100",
-            "servantMinWithdrawAmount": "The minimum withdrawal amount is ¥200"
+            "invalidAmount": "Please enter a valid withdrawal amount"
         }
     },
     "component>balance>referralQRCode": {

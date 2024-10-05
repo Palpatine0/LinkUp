@@ -17,7 +17,10 @@
         </div>
 
         <div class="hint">
-            {{ $t('component>balance>withdraw.clientMinWithdrawAmount') }}
+            {{ $t('component>balance>withdraw.minWithdrawAmount') }}
+        </div>
+        <div class="hint">
+            {{ $t('component>balance>withdraw.hint') }}
         </div>
 
         <!-- Display Selected Amount -->
@@ -83,7 +86,7 @@ export default {
             if (this.withdrawAmount <= 0 || this.withdrawAmount > this.balance) {
                 uni.showToast({title: this.$t('component>balance>withdraw.showToast.invalidAmount'), icon: 'none'});
             } else if (this.withdrawAmount < 100) {
-                uni.showToast({title: this.$t('component>balance>withdraw.showToast.clientMinWithdrawAmount'), icon: 'none'});
+                uni.showToast({title: this.$t('component>balance>withdraw.showToast.minWithdrawAmount'), icon: 'none'});
             } else {
                 const updatedBalance = parseFloat((this.balance - this.withdrawAmount).toFixed(2));
 

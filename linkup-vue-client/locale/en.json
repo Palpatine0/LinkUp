@@ -13,7 +13,8 @@
         },
         "button": {
             "confirm": "Confirm",
-            "cancel": "Cancel"
+            "cancel": "Cancel",
+            "submit": "Submit"
         },
         "gender": {
             "m": "Male",
@@ -161,7 +162,13 @@
         "orderCanceledManuallyWithinSelection": "You canceled this order",
         "orderCanceledByTimeoutWithinSelection": "Failure in selecting candidate in designated time. This order has been closed",
 
+        "serviceInProgress": "Your service is now in progress",
+        "serviceComplete": "Your service is now completed",
+        "rateRequest": "Please provide your feedback on your experience.",
+
         "cancelOrder": "Cancel Order",
+        "completeOrder": "Mark order as completed",
+
         "selectServantModal": {
             "title": "Confirm your selection",
             "content1": "Are you sure you want to choose",
@@ -180,6 +187,10 @@
             "title": "Repost Order",
             "content": "Are you sure you want repost this order?"
         },
+        "completeOrderModal": {
+            "title": "Complete Order Advance",
+            "content": "Are you certain you wish to proceed with completing this order ahead of the designated schedule?"
+        },
 
         "orderInfoDetail": {
             "orderId": "Order ID",
@@ -188,6 +199,11 @@
             "balance": "Balance",
             "weChat": "WeChat",
             "address": "Address"
+        },
+
+        "showToast": {
+            "selectRate": "Please select a rating before submitting.",
+            "rated": "You have rated this order already"
         }
     },
 
@@ -266,12 +282,12 @@
         "withdrawTitle": "Withdraw",
         "withdrawBtn": "Withdraw",
         "placeholder": "Enter amount to withdraw",
+        "minWithdrawAmount": "The minimum withdrawal amount is ¥100",
+        "hint": "You can only perform this operation during weekdays, and only once each day",
         "showToast": {
             "weekendError": "Withdrawals are not allowed on Saturdays and Sundays",
             "oneWithdrawPerDay": "You can only withdraw once per day",
-            "invalidAmount": "Please enter a valid withdrawal amount",
-            "clientMinWithdrawAmount": "The minimum withdrawal amount is ¥100",
-            "servantMinWithdrawAmount": "The minimum withdrawal amount is ¥200"
+            "invalidAmount": "Please enter a valid withdrawal amount"
         }
     },
     "component>balance>referralQRCode": {

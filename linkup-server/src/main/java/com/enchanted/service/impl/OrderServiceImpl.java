@@ -54,8 +54,10 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
     // Maps to keep track of scheduled tasks
     private final Map<Long, ScheduledFuture<?>> autoRefundTasks = new ConcurrentHashMap<>();
-    private final Map<Long, ScheduledFuture<?>> servantSelectionTasks = new ConcurrentHashMap<>();
+    private final Map<Long, ScheduledFuture<?>> autoSelectionRefundTasks = new ConcurrentHashMap<>();
     private final Map<Long, ScheduledFuture<?>> autoRatingTasks = new ConcurrentHashMap<>();
+    private final Map<Long, ScheduledFuture<?>> autoCompletionTasks = new ConcurrentHashMap<>();
+
 
     /*C*/
     @Override
@@ -156,7 +158,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             }
 
             // Remove the task from the map after execution
-            servantSelectionTasks.remove(orderId);
+            autoSelectionRefundTasks.remove(orderId);
         };
 
         // Schedule the task with the delay from constants
@@ -165,15 +167,15 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             new Date(System.currentTimeMillis() + OrderConstant.SERVANT_SELECTION_MONITOR_DELAY)
         );
 
-        servantSelectionTasks.put(orderId, future);
+        autoSelectionRefundTasks.put(orderId, future);
     }
 
     @Override
     public void stopServantSelectionMonitor(Long orderId) {
-        ScheduledFuture<?> future = servantSelectionTasks.get(orderId);
+        ScheduledFuture<?> future = autoSelectionRefundTasks.get(orderId);
         if (future != null && !future.isCancelled()) {
             future.cancel(true);
-            servantSelectionTasks.remove(orderId);
+            autoSelectionRefundTasks.remove(orderId);
         }
     }
 
@@ -293,8 +295,34 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
         // Save the updated order with the servantId
         int updated = orderMapper.updateById(order);
+        if (updated > 0) {
+            startOrderCompletionMonitor(orderId, order.getServiceScheduleEnd());
+        }
+
         return updated > 0;
     }
+
+    public void startOrderCompletionMonitor(Long orderId, Date serviceScheduleEnd) {
+        Runnable task = () -> {
+            Order order = this.getById(orderId);
+            if (order != null && order.getStatus() == OrderConstant.PROCESSING) {
+                updateStatus(orderId,OrderConstant.COMPLETED);
+            }
+            autoCompletionTasks.remove(orderId);
+        };
+        ScheduledFuture<?> future = taskScheduler.schedule(task, serviceScheduleEnd);
+        autoCompletionTasks.put(orderId, future);
+    }
+    public void stopOrderCompletionMonitor(Long orderId) {
+        ScheduledFuture<?> future = autoCompletionTasks.get(orderId);
+        if (future != null && !future.isCancelled()) {
+            future.cancel(true);
+            autoCompletionTasks.remove(orderId);
+        }
+    }
+
+
+
 
 
     /**
@@ -318,8 +346,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         sendServantReferrerCommission(order);
         payServantInitialAmount(order);
 
-        // Start monitoring for auto-rating
-        monitorAutoRating(order.getId());
+        // monitor control
+        stopAutoRefundMonitor(order.getId());
+        startAutoRatingMonitor(order.getId());
     }
 
     private void sendClientReferrerCommission(Order order) {
@@ -486,6 +515,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         if (order == null || order.getStatus() != OrderConstant.COMPLETED) {
             return false;
         }
+        if (order.getPerformanceRating() != null) {
+            throw new IllegalArgumentException("Rated");
+        }
 
         // Update the order's performance rating
         order.setPerformanceRating(rating);
@@ -540,18 +572,21 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         orderMapper.updateById(order);
 
         // Record the transaction
-        Transaction transaction = new Transaction();
-        transaction.setUserId(servant.getId());
-        transaction.setOrderId(order.getId());
-        transaction.setAmount(additionalPayment);
-        transaction.setBalanceAfter(servant.getBalance());
-        transaction.setTransactionType(TransactionConstant.ADDITION);
-        transaction.setDescription(TransactionConstant.SERVANT_PERFORMANCE_PAYMENT);
-        transaction.setDescriptionCn(TransactionConstant.SERVANT_PERFORMANCE_PAYMENT_CN);
-        transactionService.save(transaction);
+        if (additionalPayment.compareTo(BigDecimal.ZERO) != 0) {
+            Transaction transaction = new Transaction();
+            transaction.setUserId(servant.getId());
+            transaction.setOrderId(order.getId());
+            transaction.setAmount(additionalPayment);
+            transaction.setBalanceAfter(servant.getBalance());
+            transaction.setTransactionType(TransactionConstant.ADDITION);
+            transaction.setDescription(TransactionConstant.SERVANT_PERFORMANCE_PAYMENT);
+            transaction.setDescriptionCn(TransactionConstant.SERVANT_PERFORMANCE_PAYMENT_CN);
+            transactionService.save(transaction);
+        }
     }
 
-    public void monitorAutoRating(Long orderId) {
+    public void startAutoRatingMonitor(Long orderId) {
+
         Runnable task = () -> {
             Order order = this.getById(orderId);
             if (order != null && order.getPerformanceRating() == null) {

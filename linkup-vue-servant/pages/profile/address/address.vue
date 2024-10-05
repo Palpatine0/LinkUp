@@ -44,7 +44,7 @@
                 </div>
             </div>
         </div>
-        <div v-if="loading" style="color: gainsboro; margin-left: 10px;">{{ $t('pub.page.loading') }}</div>
+        <div v-if="loading" class="loading-text">{{ $t('pub.page.loading') }}</div>
         <!-- No More Data Message -->
         <div v-else-if="!hasMore" class="no-more-data-container-list">{{ $t('pub.page.noMoreData') }}</div>
     </scroll-view>

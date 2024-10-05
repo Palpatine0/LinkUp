@@ -192,11 +192,15 @@
 }
 
 .no-more-data-container-list {
-    text-align: center;
     color: gainsboro;
+    text-align: center;
     margin: 10px 0;
 }
-
+.loading-text{
+    color: gainsboro;
+    text-align: center;
+    margin: 10px 0;
+}
 .no-more-data-text {
     color: #9e9e9e;
     margin-top: 4px;
