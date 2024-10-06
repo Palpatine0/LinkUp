@@ -4,7 +4,7 @@ if (!String.prototype.replaceAll) {
     }
 }
 var $common = {
-    generateUniqueCodes: function (pattern, numCodes) {
+    generateUniqueCode: function (pattern, numCodes) {
         const bases = [];
         let totalPermutations = 1;
 
@@ -43,6 +43,7 @@ var $common = {
         }
         return Array.from(coupons).join('');
     },
+
     getRandom: function (v) {
         v = v || 999999;
         return Math.floor(Math.random() * v);

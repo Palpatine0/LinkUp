@@ -15,6 +15,7 @@
 
 <script>
 export default {
+    name: "message-input",
     data() {
         return {
             message: '',

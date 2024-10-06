@@ -13,6 +13,8 @@ public class User {
 
     private Long id;
 
+    private String identifier;
+
     /**
      * 0: admin;
      * 1: client;

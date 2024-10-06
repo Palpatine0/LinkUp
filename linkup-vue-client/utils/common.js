@@ -1,19 +1,20 @@
 import $API from "api/api"
-if (!String.prototype.replaceAll) {
+
+if(!String.prototype.replaceAll) {
     String.prototype.replaceAll = function (s1, s2) {
         return this.replace(new RegExp(s1, "gm"), s2);
     }
 }
 var $common = {
-    generateUniqueCodes: function (pattern, numCodes) {
+    generateUniqueCode: function (pattern, numCodes) {
         const bases = [];
         let totalPermutations = 1;
 
         // Determine the base for each character in the pattern
         for (const char of pattern) {
-            if (char === 'a') {
+            if(char === 'a') {
                 bases.push('ABCDEFGHIJKLMNOPQRSTUVWXYZ'); // Base for letters
-            } else if (char === '1') {
+            } else if(char === '1') {
                 bases.push('1234567890'); // Base for numbers
             }
         }
@@ -24,7 +25,7 @@ var $common = {
         });
 
         // Check if the requested number of coupons exceeds the possible permutations
-        if (numCodes > totalPermutations) {
+        if(numCodes > totalPermutations) {
             throw new Error('Requested number of coupons exceeds possible permutations.');
         }
 
@@ -44,6 +45,7 @@ var $common = {
         }
         return Array.from(coupons).join('');
     },
+
     getRandom: function (v) {
         v = v || 999999;
         return Math.floor(Math.random() * v);
@@ -61,14 +63,14 @@ var $common = {
         var now = new Date();
 
         // Check if the given date is today
-        if (date.toDateString() === now.toDateString()) {
+        if(date.toDateString() === now.toDateString()) {
             return date.getHours() + ':' + date.getMinutes(); // Return hour and min for today
         }
 
         // Check if the given date is yesterday
         var yesterday = new Date(now);
         yesterday.setDate(now.getDate() - 1);
-        if (date.toDateString() === yesterday.toDateString()) {
+        if(date.toDateString() === yesterday.toDateString()) {
             return 'Yesterday';
         }
 
@@ -105,17 +107,17 @@ var $common = {
 
         // Build the output string based on excluded components
         let parts = [];
-        if (yyyy) parts.push(Y);
-        if (MM) parts.push(M);
-        if (dd) parts.push(D);
+        if(yyyy) parts.push(Y);
+        if(MM) parts.push(M);
+        if(dd) parts.push(D);
 
         let datePart = parts.join('-'); // Date portion
 
         // Time portion (only if none of these are excluded)
         parts = [];
-        if (HH) parts.push(h);
-        if (mm) parts.push(m);
-        if (ss) parts.push(s);
+        if(HH) parts.push(h);
+        if(mm) parts.push(m);
+        if(ss) parts.push(s);
 
         let timePart = parts.join(':'); // Time portion
 
@@ -133,7 +135,7 @@ var $common = {
     },
     useDefined: function (...option) {
         for (let i = 0; i < option.length; i++) {
-            if (
+            if(
                 option[i] === "undefined" ||
                 option[i] === undefined ||
                 option[i] === null
@@ -145,10 +147,10 @@ var $common = {
         return undefined;
     },
     isEmpty: function (v) {
-        if (v === "" || v === "undefined" || v === undefined || v === null) {
+        if(v === "" || v === "undefined" || v === undefined || v === null) {
             return true;
         }
-        if (
+        if(
             JSON.stringify(v) == "{}" ||
             JSON.stringify(v) == "[]" ||
             JSON.stringify(v) == "[{}]"
@@ -158,13 +160,13 @@ var $common = {
         return false;
     },
     removeSpace: function (v, filterKeyArr) {
-        if (this.isString(v)) {
+        if(this.isString(v)) {
             return v.trim();
-        } else if (this.isObject(v)) {
+        } else if(this.isObject(v)) {
             let obj = this.copy(v);
             let arr = this.toArray(filterKeyArr);
             for (let key in obj) {
-                if (this.isString(obj[key]) && arr.indexOf(key) == -1) {
+                if(this.isString(obj[key]) && arr.indexOf(key) == -1) {
                     obj[key] = obj[key].trim();
                     console.log("key", obj[key]);
                 }
@@ -184,34 +186,34 @@ var $common = {
         return v;
     },
     isArray: function (obj) {
-        if (this.useDefined(obj) === undefined) {
+        if(this.useDefined(obj) === undefined) {
             return false;
         }
         return Array.isArray(obj);
     },
     isJson: function (obj) {
-        if (this.useDefined(obj) === undefined) {
+        if(this.useDefined(obj) === undefined) {
             return false;
         }
         return obj.constructor == Object;
     },
     isObject: function (obj) {
-        if (this.useDefined(obj) === undefined) {
+        if(this.useDefined(obj) === undefined) {
             return false;
         }
         return typeof obj == "object" ? true : false;
     },
     toArray: function (obj) {
-        if (this.useDefined(obj) === undefined) {
+        if(this.useDefined(obj) === undefined) {
             return [];
         }
-        if (obj === true || obj === false) {
+        if(obj === true || obj === false) {
             return [obj];
         }
-        if (this.isArray(obj) === true) {
+        if(this.isArray(obj) === true) {
             return obj;
         }
-        if (this.isString(obj) === true) {
+        if(this.isString(obj) === true) {
             return [obj];
         }
         return [];
@@ -227,7 +229,7 @@ var $common = {
     },
     setObject(object, item, value) {
         var obj = this.copy(object);
-        if (this.isEmpty(item)) {
+        if(this.isEmpty(item)) {
             for (let item in obj) {
                 obj[item] = value;
             }
@@ -239,12 +241,12 @@ var $common = {
     copy: function (val) {
         const tool = {
             deepCopy: (obj, newObj) => {
-                if (typeof obj != "object" && typeof newObj == "undefined") {
+                if(typeof obj != "object" && typeof newObj == "undefined") {
                     return obj;
                 }
                 let copyJson = newObj || {};
                 for (let key in obj) {
-                    if (typeof obj[key] == "object") {
+                    if(typeof obj[key] == "object") {
                         copyJson[key] = this.isEmpty(obj[key])
                             ? obj[key]
                             : Array.isArray(obj[key])
@@ -279,7 +281,7 @@ var $common = {
         let obj = {};
         for (let item of arryObject) {
             let value = item[prop];
-            if (!obj[value]) {
+            if(!obj[value]) {
                 result.push(item);
                 obj[value] = 1;
             }
@@ -288,17 +290,17 @@ var $common = {
     },
     getFileSize: function (fileByte) {
         var fileSizeByte = Number(fileByte);
-        if (fileSizeByte >= 0) {
+        if(fileSizeByte >= 0) {
             var fileSizeMsg = "";
-            if (fileSizeByte < 1048576) {
+            if(fileSizeByte < 1048576) {
                 fileSizeMsg = (fileSizeByte / 1024).toFixed(2) + "KB";
-            } else if (fileSizeByte == 1048576) {
+            } else if(fileSizeByte == 1048576) {
                 fileSizeMsg = "1MB";
-            } else if (fileSizeByte > 1048576 && fileSizeByte < 1073741824) {
+            } else if(fileSizeByte > 1048576 && fileSizeByte < 1073741824) {
                 fileSizeMsg = (fileSizeByte / (1024 * 1024)).toFixed(2) + "MB";
-            } else if (fileSizeByte > 1048576 && fileSizeByte == 1073741824) {
+            } else if(fileSizeByte > 1048576 && fileSizeByte == 1073741824) {
                 fileSizeMsg = "1GB";
-            } else if (fileSizeByte > 1073741824 && fileSizeByte < 1099511627776) {
+            } else if(fileSizeByte > 1073741824 && fileSizeByte < 1099511627776) {
                 fileSizeMsg = (fileSizeByte / (1024 * 1024 * 1024)).toFixed(2) + "GB";
             } else {
                 fileSizeMsg = "文件超过1TB";
@@ -309,7 +311,7 @@ var $common = {
         }
     },
     toNumber(value, type = 'float') {
-        if (value === undefined || value === null) return 0;
+        if(value === undefined || value === null) return 0;
 
         switch (type.toLowerCase()) {
             case 'int':
@@ -329,7 +331,7 @@ var $common = {
 // new Date('2019/7/9').Format('yyyy-MM-dd'): 2019-07-09
 // new Date('2019/7/9').Format('MM-dd'): 07-09
 Date.prototype.Format = function (formatValue) {
-    if (this == "Invalid Date") {
+    if(this == "Invalid Date") {
         return "Invalid Date";
     }
     var o = {
@@ -341,14 +343,14 @@ Date.prototype.Format = function (formatValue) {
         "q+": Math.floor((this.getMonth() + 3) / 3),
         S: this.getMilliseconds()
     };
-    if (/(y+)/.test(formatValue)) {
+    if(/(y+)/.test(formatValue)) {
         formatValue = formatValue.replace(
             RegExp.$1,
             (this.getFullYear() + "").substr(4 - RegExp.$1.length)
         );
     }
     for (var k in o) {
-        if (new RegExp("(" + k + ")").test(formatValue)) {
+        if(new RegExp("(" + k + ")").test(formatValue)) {
             formatValue = formatValue.replace(
                 RegExp.$1,
                 RegExp.$1.length == 1 ? o[k] : ("00" + o[k]).substr(("" + o[k]).length)
