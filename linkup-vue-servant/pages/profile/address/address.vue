@@ -70,7 +70,7 @@ export default {
             let method = 'POST';
             let baseData = {
                 page: this.page,
-                size: this.size,
+                size: this.pageSize,
             };
             let data = {};
 
@@ -104,7 +104,7 @@ export default {
                     if (this.page === 1) {
                         this.addressList = [];
                     }
-                    if (addresses.length < this.size) {
+                    if (addresses.length < this.pageSize) {
                         this.hasMore = false;
                     }
                     // Append new addresses to the list

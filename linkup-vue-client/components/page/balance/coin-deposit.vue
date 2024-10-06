@@ -35,13 +35,13 @@ export default {
         return {
             selectedAmount: 0,
             balance: '',
-            predefinedAmounts: [100, 500, 1000, 3000, 5000, 10000], // Array of predefined amounts
+            predefinedAmounts: [30, 50, 100, 200, 500], // Array of predefined amounts
         };
     },
     props: { userInfo: Object },
     methods: {
         close() {
-            this.$parent.depositToggle(false);
+            this.$parent.coinDepositToggle(false);
         },
         setAmount(amount) {
             this.selectedAmount = amount;

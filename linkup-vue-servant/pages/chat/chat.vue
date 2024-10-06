@@ -68,7 +68,7 @@ export default {
                 data: {
                     senderId: this.userId,  // Fetch messages where current user is the sender
                     page: this.page,
-                    size: this.size,
+                    size: this.pageSize,
                 },
                 success: (resR) => {
                     const sentMessages = resR.data.list;
@@ -87,7 +87,7 @@ export default {
                         data: {
                             recipientId: this.userId,  // Fetch messages where current user is the recipient
                             page: this.page,
-                            size: this.size,
+                            size: this.pageSize,
                         },
                         success: (resS) => {
                             const receivedMessages = resS.data.list;

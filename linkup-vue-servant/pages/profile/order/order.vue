@@ -109,7 +109,7 @@ export default {
                     if (this.page === 1) {
                         this.orderList = [];
                     }
-                    if (orders.length < this.size) {
+                    if (orders.length < this.pageSize) {
                         this.hasMore = false;
                     }
                     // Append new orders to the list
@@ -139,7 +139,7 @@ export default {
                     clientId: uni.getStorageSync(getApp().globalData.data.userInfoKey).id,
                     keyword: this.searchKeyword,
                     page: this.page,
-                    size: this.size,
+                    size: this.pageSize,
                 };
             } else {
                 // Use the get-all-by-user-id endpoint
@@ -148,7 +148,7 @@ export default {
                 data = {
                     clientId: uni.getStorageSync(getApp().globalData.data.userInfoKey).id,
                     page: this.page,
-                    size: this.size,
+                    size: this.pageSize,
                 };
             }
 

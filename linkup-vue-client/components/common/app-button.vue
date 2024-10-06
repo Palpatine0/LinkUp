@@ -1,18 +1,20 @@
 <template>
-<div :class="['button-common', shaped ? 'button-shaped' : 'button-normal', sizeClass]"
-     @click="$emit('click')"
-     :style="{ width: width, backgroundColor: color }">
-    <slot/>
+<div
+    :class="['button-common', shaped ? 'button-shaped' : 'button-normal', sizeClass]"
+    @click="$emit('click')"
+    :style="{ width: width, backgroundColor: color }"
+>
+    <slot />
 </div>
 </template>
 
 <script>
 export default {
     props: {
-        shaped: { type: Boolean, default: false }, // Determines if the div has a "shaped" appearance
-        size: { type: String, default: 'medium' }, // small, medium, large
-        width: { type: String, default: '100%' },  // Button width, default is 100%
-        color: { type: String, default: '#007BFF' } // Button background color, default is blue
+        shaped: { type: Boolean, default: false },
+        size: { type: String, default: 'medium' },
+        width: { type: String, default: '100%' },
+        color: { type: String, default: '#007BFF' },
     },
     computed: {
         sizeClass() {
@@ -32,9 +34,15 @@ export default {
                 default:
                     return 'button-medium'; // Default size
             }
-        }
-    }
-}
+        },
+    },
+    // Ensure there's no 'size' in data
+    data() {
+        return {
+            // other data properties
+        };
+    },
+};
 </script>
 
 <style>
