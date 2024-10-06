@@ -3,7 +3,7 @@ export default {
     data() {
         return {
             page: 1,
-            size: 10,
+            pageSize: 10,
             global: false,
             hasMore: true,
             loading: false,
@@ -12,7 +12,7 @@ export default {
     methods: {
         resetPagination() {
             this.page = 1;
-            this.size = 10;
+            this.pageSize = 10;
             this.hasMore = true;
         },
         onReachBottom() {

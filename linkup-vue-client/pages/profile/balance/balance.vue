@@ -34,7 +34,7 @@
             </div>
             <div class="lc-balance-amount justify-SB">
                 <div>{{ user.lookingCoins }}</div>
-                <img class="looking-coin-transfer" src="/static/page/balance/down.svg">
+                <img class="looking-coin-transfer" src="/static/page/balance/down.svg" @click="coinDepositToggle">
             </div>
         </div>
     </div>
@@ -72,28 +72,32 @@
     <Deposit v-if="depositVisible" :userInfo="user"></Deposit>
     <Withdraw v-if="withdrawVisible" :userInfo="user"></Withdraw>
     <ReferralQRCode v-if="referralQRVisible" :userInfo="user"></ReferralQRCode>
+    <CoinDeposit v-if="coinDepositVisible" :userInfo="user"></CoinDeposit>
 </div>
 </template>
 
 <script>
-import ReferralQRCode from "../../../components/page/balance/referralQRCode.vue";
 import Deposit from "../../../components/page/balance/deposit.vue";
 import Withdraw from "../../../components/page/balance/withdraw.vue";
+import ReferralQRCode from "../../../components/page/balance/referralQRCode.vue";
+import CoinDeposit from "../../../components/page/balance/coin-deposit.vue";
 
 export default {
     components: {
         Deposit,
         Withdraw,
         ReferralQRCode,
+        CoinDeposit,
     },
     data() {
         return {
             user: {},
             userBalance: 0.00,
 
-            referralQRVisible: false,
             depositVisible: false,
             withdrawVisible: false,
+            referralQRVisible: false,
+            coinDepositVisible: false,
         };
     },
     onLoad() {
@@ -113,7 +117,7 @@ export default {
             });
         },
 
-        lookingCoinTips(){
+        lookingCoinTips() {
             uni.showModal({
                 title: this.$t('profile>balance.lCoinTipsModal.title'),
                 content: this.$t('profile>balance.lCoinTipsModal.content'),
@@ -123,14 +127,17 @@ export default {
         },
 
         // Toggle
-        qeShareToggle() {
-            this.referralQRVisible = !this.referralQRVisible
-        },
         depositToggle() {
             this.depositVisible = !this.depositVisible
         },
         withdrawToggle() {
             this.withdrawVisible = !this.withdrawVisible
+        },
+        qeShareToggle() {
+            this.referralQRVisible = !this.referralQRVisible
+        },
+        coinDepositToggle() {
+            this.coinDepositVisible = !this.coinDepositVisible
         },
 
         // Redirect

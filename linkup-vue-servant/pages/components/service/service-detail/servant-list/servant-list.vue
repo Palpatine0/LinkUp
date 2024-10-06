@@ -35,7 +35,7 @@ export default {
                 method: "POST",
                 data: {
                     page: this.page,
-                    size: this.size,
+                    size: this.pageSize,
                     serviceType: this.serviceTypeId
                 },
                 success: (res) => {
@@ -45,7 +45,7 @@ export default {
                         this.servantList = [];
                     }
 
-                    if (users.length < this.size) {
+                    if (users.length < this.pageSize) {
                         this.hasMore = false;
                     }
 

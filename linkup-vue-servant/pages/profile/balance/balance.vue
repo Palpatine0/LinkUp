@@ -34,7 +34,7 @@
             </div>
             <div class="lc-balance-amount justify-SB">
                 <div>{{ user.lookingCoins }}</div>
-                <img class="looking-coin-transfer" src="/static/page/balance/up.svg">
+                <img class="looking-coin-transfer" src="/static/page/balance/up.svg" @click="coinWithdrawToggle">
             </div>
         </div>
     </div>
@@ -72,28 +72,32 @@
     <Deposit v-if="depositVisible" :userInfo="user"></Deposit>
     <Withdraw v-if="withdrawVisible" :userInfo="user"></Withdraw>
     <ReferralQRCode v-if="referralQRVisible" :userInfo="user"></ReferralQRCode>
+    <CoinWithdraw v-if="coinWithdrawVisible" :userInfo="user"></CoinWithdraw>
 </div>
 </template>
 
 <script>
-import ReferralQRCode from "../../../components/page/balance/referralQRCode.vue";
 import Deposit from "../../../components/page/balance/deposit.vue";
 import Withdraw from "../../../components/page/balance/withdraw.vue";
+import ReferralQRCode from "../../../components/page/balance/referralQRCode.vue";
+import CoinWithdraw from "../../../components/page/balance/coin-withdraw.vue";
 
 export default {
     components: {
         Deposit,
         Withdraw,
         ReferralQRCode,
+        CoinWithdraw
     },
     data() {
         return {
             user: {},
             userBalance: 0.00,
 
-            referralQRVisible: false,
             depositVisible: false,
             withdrawVisible: false,
+            referralQRVisible: false,
+            coinWithdrawVisible: false,
         };
     },
     onLoad() {
@@ -123,14 +127,17 @@ export default {
         },
 
         // Toggle
-        qeShareToggle() {
-            this.referralQRVisible = !this.referralQRVisible
-        },
         depositToggle() {
             this.depositVisible = !this.depositVisible
         },
         withdrawToggle() {
             this.withdrawVisible = !this.withdrawVisible
+        },
+        qeShareToggle() {
+            this.referralQRVisible = !this.referralQRVisible
+        },
+        coinWithdrawToggle(){
+            this.coinWithdrawVisible=!this.coinWithdrawVisible
         },
 
         // Redirect

@@ -88,7 +88,7 @@ export default {
                 userId: uni.getStorageSync(getApp().globalData.data.userInfoKey).id,
                 currencyType: 0,
                 page: this.page,
-                size: this.size,
+                size: this.pageSize,
             };
             let data = {};
 
@@ -125,7 +125,7 @@ export default {
                     if (this.page === 1) {
                         this.transactionList = [];
                     }
-                    if (transactions.length < this.size) {
+                    if (transactions.length < this.pageSize) {
                         this.hasMore = false;
                     }
                     // Append new transactions to the list

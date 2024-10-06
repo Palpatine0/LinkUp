@@ -96,7 +96,7 @@ export default {
             let baseData = {
                 clientId: uni.getStorageSync(getApp().globalData.data.userInfoKey).id,
                 page: this.page,
-                size: this.size,
+                size: this.pageSize,
             };
             let data = {};
 
@@ -131,7 +131,7 @@ export default {
                     if (this.page === 1) {
                         this.orderList = [];
                     }
-                    if (orders.length < this.size) {
+                    if (orders.length < this.pageSize) {
                         this.hasMore = false;
                     }
                     // Append new orders to the list

@@ -3,25 +3,16 @@
     <view class="mask" @click="close()"></view>
     <view class="widget-center charge-anim">
         <view class="charge-header">{{ $t('component>balance>deposit.depositTitle') }}</view>
+
         <!-- Predefined Amount Buttons -->
         <view class="charge-options">
-            <div class="app-button-outlined" @click="setAmount(100)">
-                ¥100
-            </div>
-            <div class="app-button-outlined" @click="setAmount(500)">
-                ¥500
-            </div>
-            <div class="app-button-outlined" @click="setAmount(1000)">
-                ¥1000
-            </div>
-            <div class="app-button-outlined" @click="setAmount(3000)">
-                ¥3000
-            </div>
-            <div class="app-button-outlined" @click="setAmount(5000)">
-                ¥5000
-            </div>
-            <div class="app-button-outlined" @click="setAmount(10000)">
-                ¥10000
+            <div
+                v-for="amount in predefinedAmounts"
+                :key="amount"
+                class="app-button-outlined"
+                @click="setAmount(amount)"
+            >
+                ¥{{ amount }}
             </div>
         </view>
 
@@ -44,9 +35,10 @@ export default {
         return {
             selectedAmount: 0,
             balance: '',
+            predefinedAmounts: [100, 500, 1000, 3000, 5000, 10000], // Array of predefined amounts
         };
     },
-    props: {userInfo: Object},
+    props: { userInfo: Object },
     methods: {
         close() {
             this.$parent.depositToggle(false);
@@ -96,13 +88,13 @@ export default {
                     },
                     success: (res) => {
                         console.log(res);
-                        uni.showToast({title: this.$t('pub.showToast.success'), icon: 'none'});
+                        uni.showToast({ title: this.$t('pub.showToast.success'), icon: 'none' });
                         this.$parent.getUser();
                         this.close();
                     },
                     fail: (err) => {
                         console.log(err);
-                        uni.showToast({title: this.$t('pub.showToast.fail'), icon: 'none'});
+                        uni.showToast({ title: this.$t('pub.showToast.fail'), icon: 'none' });
                     }
                 });
                 uni.request({
@@ -117,11 +109,10 @@ export default {
                         description: "Deposit",
                         descriptionCn: "存款",
                     },
-                    success: (res) => {
-                    },
+                    success: (res) => {},
                 });
             } else {
-                uni.showToast({title: this.$t('component>balance>deposit.showToast.selectAmount'), icon: 'none'});
+                uni.showToast({ title: this.$t('component>balance>deposit.showToast.selectAmount'), icon: 'none' });
             }
         },
     },

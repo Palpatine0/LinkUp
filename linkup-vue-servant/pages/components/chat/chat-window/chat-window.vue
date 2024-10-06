@@ -107,13 +107,13 @@ export default {
                         senderId: this.userId,    // Current user's ID
                         recipientId: this.contactId,  // Contact's ID
                         page: this.page,
-                        size: this.size
+                        size: this.pageSize
                     },
                     success: (res) => {
                         const fetchedMessages = res.data.list;
 
                         // If fewer messages are returned than requested, assume no more to load
-                        if (fetchedMessages.length < this.size) {
+                        if (fetchedMessages.length < this.pageSize) {
                             this.hasMoreMessages = false;
                         }
 

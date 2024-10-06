@@ -55,7 +55,7 @@ export default {
                 method: "POST",
                 data: {
                     page: this.page,
-                    size: this.size,
+                    size: this.pageSize,
                     role: 2
                 },
                 success: (res) => {
@@ -66,7 +66,7 @@ export default {
                         this.userList = [];
                     }
 
-                    if (users.length < this.size) {
+                    if (users.length < this.pageSize) {
                         this.hasMore = false;
                     }
 

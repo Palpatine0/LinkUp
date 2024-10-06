@@ -91,7 +91,7 @@ export default {
                 userGender: this.user.gender,
                 userAge: this.user.age,
                 page: this.page,
-                size: this.size,
+                size: this.pageSize,
                 status: "0",
             };
             let data = {};
@@ -129,7 +129,7 @@ export default {
                     if (this.page === 1) {
                         this.orderList = [];
                     }
-                    if (orders.length < this.size) {
+                    if (orders.length < this.pageSize) {
                         this.hasMore = false;
                     }
                     const processedOrders = orders.map((order) => ({
