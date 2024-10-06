@@ -373,7 +373,8 @@ export default {
                 url: getApp().globalData.data.requestUrl + this.$API.user.save,
                 method: 'POST',
                 data: {
-                    referralCode: this.$common.generateUniqueCodes('a1a', 2),
+                    identifier:this.$common.generateUniqueCode('1', 8),
+                    referralCode: this.$common.generateUniqueCode('a1a', 2),
                     role: 1,
                     referrerId: this.referrerId,
                     ...this.userData

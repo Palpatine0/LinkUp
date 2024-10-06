@@ -31,6 +31,7 @@ import MessageInput from '../../../../components/page/chat/message-input.vue';
 import app from "../../../../App.vue";
 
 export default {
+    name: "chat-window",
     components: {
         ChatHeader,
         MessageBubble,
@@ -97,7 +98,7 @@ export default {
         // Fetch initial messages
         getMessages() {
             return new Promise(async (resolve, reject) => {
-                if (this.loading || !this.hasMoreMessages) return;
+                if(this.loading || !this.hasMoreMessages) return;
                 this.loading = true;
 
                 uni.request({
@@ -113,7 +114,7 @@ export default {
                         const fetchedMessages = res.data.list;
 
                         // If fewer messages are returned than requested, assume no more to load
-                        if (fetchedMessages.length < this.size) {
+                        if(fetchedMessages.length < this.size) {
                             this.hasMoreMessages = false;
                         }
 
@@ -139,7 +140,7 @@ export default {
             .filter(msg => msg.senderId === this.contactId && !msg.isRead)
             .map(msg => msg.id);
 
-            if (unreadMessageIds.length > 0) {
+            if(unreadMessageIds.length > 0) {
                 await uni.request({
                     url: getApp().globalData.data.requestUrl + this.$API.message.markAsRead,
                     method: 'POST',
@@ -149,7 +150,7 @@ export default {
                     success: (res) => {
                         // Update local messages
                         this.messages.forEach(msg => {
-                            if (unreadMessageIds.includes(msg.id)) {
+                            if(unreadMessageIds.includes(msg.id)) {
                                 msg.isRead = true;
                             }
                         });
