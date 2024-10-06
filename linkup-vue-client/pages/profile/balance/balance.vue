@@ -101,10 +101,10 @@ export default {
         };
     },
     onLoad() {
-        this.getUser();
+        this.reload();
     },
     methods: {
-        getUser() {
+        reload() {
             uni.request({
                 url: getApp().globalData.data.requestUrl + this.$API.user.search,
                 method: 'POST',

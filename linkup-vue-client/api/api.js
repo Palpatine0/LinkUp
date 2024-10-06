@@ -48,6 +48,7 @@ var $API = {
     transaction: {
         search: '/transaction/search',
         save: '/transaction/save',
+        updateLookingCoin: '/transaction/update-looking-coin',
     }
 }
 export default $API;

@@ -300,6 +300,14 @@
         "descA": "If a user opens this mini program by scanning your QR code, you will receive 5% of their order price stored in your balance each time they successfully complete an order.",
         "descB": "This also applies if you share this mini program with users after signing in."
     },
+    "component>balance>coinDeposit": {
+        "depositTitle": "Purchase Looking Coins",
+        "depositBtn": "Purchase",
+        "inputCustomAmount": "Input a Custom Amount",
+        "showToast": {
+            "selectAmount": "Please select or enter a valid amount"
+        }
+    },
     "component>chat>messageInput": {
         "takePhoto": "Take Photo",
         "choseFromAlbum": "Choose From Album"

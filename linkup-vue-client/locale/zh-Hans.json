@@ -299,6 +299,14 @@
         "descA": "如果一个用户通过您的二维码进入该小程序，在他们成功完成一个订单后，该订单总价格的5%会被存到您的余额",
         "descB": "登陆后分享该小程序给其他用户也可获得该收益"
     },
+    "component>balance>coinDeposit": {
+        "depositTitle": "购买领客币",
+        "depositBtn": "购买",
+        "inputCustomAmount": "请输入一个充值金额",
+        "showToast": {
+            "selectAmount": "请选择或输入一个充值金额"
+        }
+    },
     "component>chat>messageInput": {
         "takePhoto": "拍照",
         "choseFromAlbum": "从相册选择"

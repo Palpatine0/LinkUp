@@ -1,11 +1,11 @@
 <template>
-<view class="charge-container">
-    <view class="mask" @click="close()"></view>
-    <view class="widget-center charge-anim">
-        <view class="charge-header">{{ $t('component>balance>deposit.depositTitle') }}</view>
+<div class="charge-container">
+    <div class="mask" @click="close()"></div>
+    <div class="widget-center charge-anim">
+        <div class="charge-header">{{ $t('component>balance>coinDeposit.depositTitle') }}</div>
 
         <!-- Predefined Amount Buttons -->
-        <view class="charge-options">
+        <div class="charge-options">
             <div
                 v-for="amount in predefinedAmounts"
                 :key="amount"
@@ -14,31 +14,39 @@
             >
                 ¥{{ amount }}
             </div>
-        </view>
+        </div>
 
-        <!-- Display Selected Amount -->
-        <view class="no-more-data">
-            <div class="credit">¥{{ selectedAmount.toFixed(2) }}</div>
-        </view>
+        <!-- Custom Amount Input -->
+        <div class="center-h" style="border-radius: 25px">
+            <app-input mode="number" :placeholder="$t('component>balance>coinDeposit.inputCustomAmount')" v-model="selectedAmount" col="12" class="mb-2"/>
+        </div>
 
         <!-- Confirm Button -->
         <div class="center-h" style="width: 60%;">
-            <app-button @click="confirmCharge" shaped>{{ $t('component>balance>deposit.depositBtn') }}</app-button>
+            <app-button @click="paymentMethodSelectionToggle" shaped>{{ $t('component>balance>coinDeposit.depositBtn') }}</app-button>
         </div>
-    </view>
-</view>
+    </div>
+
+    <PaymentMethodSelection v-if="paymentMethodSelectionVisible" :user="userInfo" :balanceAdequate="balanceAdequate"></PaymentMethodSelection>
+</div>
 </template>
 
+
 <script>
+import PaymentMethodSelection from "../payment/payment-method-selection.vue";
+
 export default {
+    components: {PaymentMethodSelection},
     data() {
         return {
-            selectedAmount: 0,
+            selectedAmount: '',
+            predefinedAmounts: [30, 50, 100, 200, 500],
             balance: '',
-            predefinedAmounts: [30, 50, 100, 200, 500], // Array of predefined amounts
+            paymentMethodSelectionVisible: false,
+            balanceAdequate: false
         };
     },
-    props: { userInfo: Object },
+    props: {userInfo: Object},
     methods: {
         close() {
             this.$parent.coinDepositToggle(false);
@@ -47,74 +55,47 @@ export default {
             this.selectedAmount = amount;
             this.balance = amount.toFixed(2); // Update balance to match selected amount
         },
-        validateAmount() {
-            // Limit input to two decimal places
-            const amount = this.balance;
-            if (amount.includes('.')) {
-                const parts = amount.split('.');
-                if (parts[1].length > 2) {
-                    this.balance = parts[0] + '.' + parts[1].slice(0, 2);
-                }
-            }
-            // Update selectedAmount immediately based on the balance
-            const amountValue = parseFloat(this.balance);
-            if (!isNaN(amountValue) && amountValue > 0) {
-                this.selectedAmount = amountValue;
-            } else {
-                this.selectedAmount = 0;
-            }
-        },
-        setCustomAmount() {
-            // Ensure balance is correctly converted to a number with two decimals
-            const amount = parseFloat(this.balance).toFixed(2);
-            if (!isNaN(amount) && amount > 0) {
-                this.selectedAmount = parseFloat(amount);
-                console.log("Custom Amount Set: ", this.selectedAmount);
-            } else {
-                this.$message.error("请输入有效的金额");
-                console.log("Invalid Amount: ", this.balance);
-            }
-        },
-        confirmCharge() {
-            console.log("Selected Amount: ", this.selectedAmount);
-            if (this.selectedAmount > 0) {
+
+        formSubmit(paymentMethod) {
+            if(this.selectedAmount > 0) {
                 const updatedBalance = parseFloat((this.selectedAmount + this.userInfo.balance).toFixed(2));
                 uni.request({
-                    url: getApp().globalData.data.requestUrl + this.$API.user.update,
-                    method: 'POST',
-                    data: {
-                        id: this.userInfo.id,
-                        balance: updatedBalance
-                    },
-                    success: (res) => {
-                        console.log(res);
-                        uni.showToast({ title: this.$t('pub.showToast.success'), icon: 'none' });
-                        this.$parent.getUser();
-                        this.close();
-                    },
-                    fail: (err) => {
-                        console.log(err);
-                        uni.showToast({ title: this.$t('pub.showToast.fail'), icon: 'none' });
-                    }
-                });
-                uni.request({
-                    url: getApp().globalData.data.requestUrl + this.$API.transaction.save,
+                    url: getApp().globalData.data.requestUrl + this.$API.transaction.updateLookingCoin,
                     method: 'POST',
                     data: {
                         userId: this.userInfo.id,
                         amount: this.selectedAmount,
                         balanceAfter: updatedBalance,
-                        currencyType: 0,
+                        currencyType: 1,
                         transactionType: 1,
-                        description: "Deposit",
-                        descriptionCn: "存款",
+                        description: "Purchase Looking Coins",
+                        descriptionCn: "购买领克币",
+                        paymentMethod: paymentMethod
                     },
-                    success: (res) => {},
+                    success: (res) => {
+                        if(res.data.code == 0) {
+                            uni.showToast({title: this.$t('pub.showToast.success'), icon: 'none'});
+                        } else {
+                            uni.showToast({title: this.$t('pub.showToast.fail'), icon: 'none'});
+                        }
+                        this.$parent.reload();
+                        this.close();
+                    },
                 });
             } else {
-                uni.showToast({ title: this.$t('component>balance>deposit.showToast.selectAmount'), icon: 'none' });
+                uni.showToast({title: this.$t('component>balance>coinDeposit.showToast.selectAmount'), icon: 'none'});
             }
         },
+
+        paymentMethodSelectionToggle() {
+            if(this.selectedAmount <= 0) {
+                uni.showToast({title: this.$t('component>balance>coinDeposit.showToast.selectAmount'), icon: 'none'});
+            }else{
+                this.balanceAdequate = this.$common.balanceAdequateValidation(this.selectedAmount, this.userInfo.balance)
+                this.paymentMethodSelectionVisible = !this.paymentMethodSelectionVisible
+            }
+
+        }
     },
 };
 </script>
@@ -155,21 +136,6 @@ export default {
     margin-bottom: 30rpx;
 }
 
-.charge-button {
-    background-color: #812740;
-    color: white;
-    padding: 20rpx 0;
-    border-radius: 30rpx;
-    flex: 1;
-    margin: 0 10rpx;
-    font-size: 32rpx;
-}
-
-
-.charge-button:hover {
-    background-color: #812740;
-}
-
 .custom-charge {
     display: flex;
     justify-content: space-between;
@@ -198,12 +164,50 @@ export default {
     background-color: #f8be23;
 }
 
-.no-more-data {
-    margin: 20px 0;
+
+.custom-charge {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30rpx;
 }
+
+.custom-amount-input {
+    flex: 1;
+    padding: 20rpx;
+    border-radius: 30rpx;
+    border: 1px solid #ccc;
+    margin-right: 10rpx;
+    font-size: 30rpx;
+}
+
+.custom-charge-button {
+    background-color: #f8be23;
+    color: white;
+    padding: 20rpx 0;
+    border-radius: 30rpx;
+    width: 100px;
+    font-size: 16rpx;
+}
+
 
 .credit {
     font-size: 28rpx;
     color: #666;
 }
+
+.custom-charge {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 30rpx;
+}
+
+.custom-amount-input {
+    flex: 1;
+    padding: 20rpx;
+    border-radius: 30rpx;
+    border: 1px solid #ccc;
+    margin-right: 10rpx;
+    font-size: 30rpx;
+}
+
 </style>

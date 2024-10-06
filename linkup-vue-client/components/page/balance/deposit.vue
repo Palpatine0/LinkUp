@@ -41,7 +41,7 @@ export default {
     props: { userInfo: Object },
     methods: {
         close() {
-            this.$parent.depositToggle(false);
+            this.$parent.coinDepositToggle(false);
         },
         setAmount(amount) {
             this.selectedAmount = amount;
@@ -89,7 +89,7 @@ export default {
                     success: (res) => {
                         console.log(res);
                         uni.showToast({ title: this.$t('pub.showToast.success'), icon: 'none' });
-                        this.$parent.getUser();
+                        this.$parent.reload();
                         this.close();
                     },
                     fail: (err) => {

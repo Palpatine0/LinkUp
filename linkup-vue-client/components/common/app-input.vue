@@ -26,7 +26,7 @@
 
     <!-- Number Input -->
     <input
-        v-else-if="mode === 'number'"
+        v-if="mode === 'number'"
         type="number"
         :value="value"
         :class="{'input-focused': isFocused}"
@@ -42,6 +42,7 @@
 
 <script>
 export default {
+    name: "app-input",
     data() {
         return {
             isFocused: false,
@@ -68,9 +69,10 @@ export default {
         },
         onNumberInput(event) {
             const value = event.target.value;
-            // Ensure the input is numeric only
-            const numericValue = value.replace(/[^0-9]/g, ''); // Removes any non-numeric characters
-            this.$emit('input', numericValue); // Emit only numeric value
+            const numericValue = parseFloat(value); // Convert to a float
+            if(!isNaN(numericValue)) {
+                this.$emit('input', numericValue); // Emit the numeric value directly
+            }
         }
     }
 };

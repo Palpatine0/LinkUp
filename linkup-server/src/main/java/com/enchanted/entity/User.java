@@ -73,7 +73,7 @@ public class User {
     private BigDecimal balance;
 
     @TableField("looking_coins")
-    private Integer lookingCoins;
+    private BigDecimal lookingCoins;
 
     @TableField("last_withdrawal_date")
     private Date lastWithdrawalDate;

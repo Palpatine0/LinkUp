@@ -7,8 +7,8 @@ public class TransactionConstant {
     public static final int ADDITION = 1;
 
     // Currency types
-    public static final int BAlANCE = 0;
-    public static final int LOOKING_COIN = 1;
+    public static final int BALANCE_CURRENCY = 0;
+    public static final int LOOKING_COIN_CURRENCY = 1;
 
     // Description
     public static final String WITHDRAW = "Withdraw";

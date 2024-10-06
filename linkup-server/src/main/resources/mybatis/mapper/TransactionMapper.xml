@@ -23,7 +23,7 @@
             <if test="params.transactionType != null and params.transactionType != ''">
                 AND transaction_type = #{params.transactionType}
             </if>
-            <if test="params.currencyType != null and params.currencyType != ''">
+            <if test="params.currencyType != null">
                 AND currency_type = #{params.currencyType}
             </if>
         </where>

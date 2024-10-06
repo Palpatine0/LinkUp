@@ -31,9 +31,11 @@ export default {
 
         payWithWeChat() {
             this.$parent.formSubmit(1);
+            this.close()
         },
         payWithBalance() {
             this.$parent.formSubmit(0);
+            this.close()
         },
 
     },
@@ -42,7 +44,7 @@ export default {
 
 <style scoped>
 .payment-container {
-    z-index: 1000;
+    z-index: 1100;
     display: flex;
     flex-direction: column;
     align-items: center;
