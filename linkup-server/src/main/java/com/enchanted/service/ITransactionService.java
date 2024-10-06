@@ -17,6 +17,8 @@ public interface ITransactionService extends IService<Transaction> {
     /*U*/
     boolean update(Long id, Map<String, Object> changes);
 
+    boolean updateLookingCoin(Transaction transaction);
+
     /*D*/
     boolean delete(Long id);
 }

@@ -56,6 +56,16 @@ public class TransactionController {
         }
     }
 
+    @PostMapping("/update-looking-coin")
+    public R updateLookingCoin(@RequestBody Transaction transaction) {
+        boolean isUpdated = transactionService.updateLookingCoin(transaction);
+        if (isUpdated) {
+            return R.ok("Transaction updated successfully");
+        } else {
+            return R.error("Failed to update transaction");
+        }
+    }
+
     /*D*/
     @PostMapping("/delete")
     public R delete(@RequestBody Map<String, Object> requestData) {
