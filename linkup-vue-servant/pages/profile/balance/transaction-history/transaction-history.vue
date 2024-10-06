@@ -93,6 +93,7 @@ export default {
             let method = 'POST';
             let baseData = {
                 userId: uni.getStorageSync(getApp().globalData.data.userInfoKey).id,
+                currencyType: 0,
                 page: this.page,
                 size: this.size,
             };

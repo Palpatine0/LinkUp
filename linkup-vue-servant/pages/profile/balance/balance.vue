@@ -10,9 +10,9 @@
     </div>
 
     <!-- Wallet and Balance Section -->
-    <div class="wallet-balance">
+    <div class="wallet-looking-card-balance">
         <div class="balance-info">
-            <div style="font-size: 24px;font-weight: bold">{{ $t('profile>balance.balance') }}</div>
+            <div style="font-size: 24px;font-weight: bold">{{ $t('profile>balance.lookingCardBalance') }}</div>
             <div class="balance-amount">{{ $common.toNumber(user.balance, 'bigdecimal').toFixed(2) }}</div>
         </div>
         <div class="balance-opts">
@@ -26,6 +26,19 @@
             </div>
         </div>
     </div>
+    <div class="wallet-looking-coin-balance">
+        <div class="balance-info">
+            <div style="font-size: 24px;font-weight: bold;justify-content: space-between;display: flex">
+                <div>{{ $t('profile>balance.lookingCoinsBalance') }}</div>
+                <img class="looking-coin-qa" src="/static/miscellaneous/question.svg" @click="lookingCoinTips">
+            </div>
+            <div class="lc-balance-amount justify-SB">
+                <div>{{ user.lookingCoins }}</div>
+                <img class="looking-coin-transfer" src="/static/page/balance/up.svg">
+            </div>
+        </div>
+    </div>
+
 
     <!-- Orders and Share QR Code Section -->
     <div class="transactions-shareqrcode">
@@ -77,6 +90,7 @@ export default {
         return {
             user: {},
             userBalance: 0.00,
+
             referralQRVisible: false,
             depositVisible: false,
             withdrawVisible: false,
@@ -96,6 +110,15 @@ export default {
                 success: (res) => {
                     this.user = res.data.list[0]
                 },
+            });
+        },
+
+        lookingCoinTips(){
+            uni.showModal({
+                title: this.$t('profile>balance.lCoinTipsModal.title'),
+                content: this.$t('profile>balance.lCoinTipsModal.content'),
+                confirmText: this.$t('pub.modal.button.confirm'),
+                showCancel: false
             });
         },
 
@@ -157,10 +180,19 @@ export default {
 
 
 /* Wallet and Balance Section */
-.wallet-balance {
+.wallet-looking-coin-balance {
+    background-color: #0a2342;
+    padding: 2px;
+    border-radius: 34px;
+    margin-bottom: 20rpx;
+    height: 110px;
+    color: white;
+}
+
+.wallet-looking-card-balance {
     background-color: #2676f7;
     padding: 2px;
-    border-radius: 70rpx;
+    border-radius: 34px;
     margin-bottom: 20rpx;
     height: 210px;
     color: white;
@@ -184,6 +216,12 @@ export default {
     margin-top: 10rpx;
 }
 
+.lc-balance-amount {
+    font-size: 62rpx;
+    font-weight: bold;
+    margin-top: 10rpx;
+}
+
 .pay-button {
     display: flex;
     background-color: white;
@@ -195,7 +233,7 @@ export default {
     margin-top: 20rpx;
 }
 
-.pay-button-icon{
+.pay-button-icon {
     width: 24px;
     height: 24px;
     margin: 2px 0 0 32px;
@@ -239,5 +277,23 @@ export default {
     width: 1px;
     background: #d0d0d0;
     align-self: stretch; /* This makes the vertical line match the parent’s height */
+}
+
+.looking-coin-qa {
+    background-color: white;
+    border-radius: 50px;
+    width: 20px;
+    height: 20px;
+    padding: 2px;
+    position: relative;
+    top: 3px;
+}
+
+.looking-coin-transfer {
+    width: 20px;
+    height: 20px;
+    padding: 2px;
+    position: relative;
+    top: 20px;
 }
 </style>

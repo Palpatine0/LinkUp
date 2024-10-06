@@ -6,6 +6,10 @@ public class TransactionConstant {
     public static final int DEDUCTION = 0;
     public static final int ADDITION = 1;
 
+    // Currency types
+    public static final int BAlANCE = 0;
+    public static final int LOOKING_COIN = 1;
+
     // Description
     public static final String WITHDRAW = "Withdraw";
     public static final String WITHDRAW_CN = "提现";

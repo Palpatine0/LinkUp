@@ -46,8 +46,13 @@
 .hidden{
     display: none;
 }
+
 .flex {
     display: flex;
+}
+.justify-SB{
+    display: flex;
+    justify-content: space-between
 }
 
 .center-h {

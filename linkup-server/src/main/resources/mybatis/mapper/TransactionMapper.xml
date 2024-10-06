@@ -23,7 +23,9 @@
             <if test="params.transactionType != null and params.transactionType != ''">
                 AND transaction_type = #{params.transactionType}
             </if>
-            <!-- Add more conditions as needed -->
+            <if test="params.currencyType != null and params.currencyType != ''">
+                AND currency_type = #{params.currencyType}
+            </if>
         </where>
         ORDER BY created_at DESC
     </select>

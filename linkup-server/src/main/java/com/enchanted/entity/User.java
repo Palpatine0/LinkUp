@@ -55,8 +55,6 @@ public class User {
     @TableField("completed_order_count")
     private Integer completedOrderCount;
 
-    private BigDecimal balance;
-
     @TableField("location")
     private String location;
 
@@ -72,6 +70,11 @@ public class User {
     @TableField("longitude_fuzzy")
     private Double longitudeFuzzy;
 
+    private BigDecimal balance;
+
+    @TableField("looking_coins")
+    private Integer lookingCoins;
+
     @TableField("last_withdrawal_date")
     private Date lastWithdrawalDate;
 
@@ -80,7 +83,6 @@ public class User {
 
     @TableField("created_at")
     private Date createdAt;
-
 
     // Transient fields
     @TableField(exist = false)

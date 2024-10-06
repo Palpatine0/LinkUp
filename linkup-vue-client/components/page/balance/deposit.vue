@@ -112,6 +112,7 @@ export default {
                         userId: this.userInfo.id,
                         amount: this.selectedAmount,
                         balanceAfter: updatedBalance,
+                        currencyType: 0,
                         transactionType: 1,
                         description: "Deposit",
                         descriptionCn: "存款",

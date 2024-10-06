@@ -122,6 +122,7 @@ export default {
                         userId: this.userInfo.id,
                         amount: -this.withdrawAmount,
                         balanceAfter: updatedBalance,
+                        currencyType: 0,
                         transactionType: 0,
                         description: "Withdraw",
                         descriptionCn: "提现",

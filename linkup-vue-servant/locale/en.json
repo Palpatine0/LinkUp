@@ -133,12 +133,17 @@
 
     "//////": "profile > balance",
     "profile>balance": {
-        "balance": "Looking Card Balance",
+        "lookingCardBalance": "Looking Card Balance",
+        "lookingCoinsBalance": "My Looking Coins",
         "deposit": "Deposit",
         "withdraw": "Withdraw",
         "transactionHistory": "Transaction History",
         "qrCode": "Referral QR Code",
-        "viewMore": "View More"
+        "viewMore": "View More",
+        "lCoinTipsModal": {
+            "title": "Looking Coins",
+            "content": "Engage in effective conversations with users and earn Looking Coins as a reward. These coins can be withdrawn to your balance."
+        }
     },
     "profile>balance>transactionHistory": {
         "transactionHistory": "Transaction History",

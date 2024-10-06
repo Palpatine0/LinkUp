@@ -87,6 +87,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         if (StringUtils.equals(order.getPaymentMethod(), OrderConstant.BALANCE)) {
             // Record the transaction
             Transaction transaction = new Transaction();
+            transaction.setCurrencyType(Integer.valueOf(OrderConstant.BALANCE));
             transaction.setUserId(user.getId());
             transaction.setOrderId(order.getId());
             transaction.setAmount(order.getPrice().negate());
@@ -373,6 +374,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
         // Record the transaction
         Transaction transaction = new Transaction();
+        transaction.setCurrencyType(Integer.valueOf(OrderConstant.BALANCE));
         transaction.setUserId(referrer.getId());
         transaction.setOrderId(order.getId());
         transaction.setAmount(commission);
@@ -404,6 +406,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
         // Record the transaction
         Transaction transaction = new Transaction();
+        transaction.setCurrencyType(Integer.valueOf(OrderConstant.BALANCE));
         transaction.setUserId(referrer.getId());
         transaction.setOrderId(order.getId());
         transaction.setAmount(commission);
@@ -435,6 +438,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         orderMapper.updateById(order);
 
         Transaction transaction = new Transaction();
+        transaction.setCurrencyType(Integer.valueOf(OrderConstant.BALANCE));
         transaction.setUserId(servant.getId());
         transaction.setOrderId(order.getId());
         transaction.setAmount(initialPayment);
@@ -486,6 +490,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
         // Store the transaction
         Transaction transaction = new Transaction();
+        transaction.setCurrencyType(Integer.valueOf(OrderConstant.BALANCE));
         transaction.setUserId(user.getId());
         transaction.setOrderId(order.getId());
         transaction.setAmount(refundAmount);
@@ -574,6 +579,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         // Record the transaction
         if (additionalPayment.compareTo(BigDecimal.ZERO) != 0) {
             Transaction transaction = new Transaction();
+            transaction.setCurrencyType(Integer.valueOf(OrderConstant.BALANCE));
             transaction.setUserId(servant.getId());
             transaction.setOrderId(order.getId());
             transaction.setAmount(additionalPayment);

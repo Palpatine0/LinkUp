@@ -208,12 +208,17 @@
 
     "//////": "profile > balance",
     "profile>balance": {
-        "balance": "领客卡余额",
+        "lookingCardBalance": "领客卡余额",
+        "lookingCoinsBalance": "我的领客币",
         "deposit": "充值",
         "withdraw": "提现",
         "transactionHistory": "交易记录",
         "qrCode": "我的分享码",
-        "viewMore": "查看更多"
+        "viewMore": "查看更多",
+        "lCoinTipsModal": {
+            "title": "领客币",
+            "content": "您可以通过支付方式为余额充值，或将领克卡中的资金转换为领克币。使用领克币解锁聊天功能。请注意，领克币无法提现。"
+        }
     },
     "profile>balance>transactionHistory": {
         "transactionHistory": "交易历史",

@@ -22,6 +22,7 @@ export default {
                 danger: '#F56C6C',
                 info: '#909399',
                 navyBlue: '#192C77',
+                oxfordBlue: '#0A2342',
             }
         },
 

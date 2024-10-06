@@ -15,6 +15,13 @@ public class Transaction {
 
     private String identifier;
 
+    /**
+     * 0: balance;
+     * 1: looking coin;
+     */
+    @TableField("currency_type")
+    private Integer currencyType;
+
     @TableField("user_id")
     private Long userId;
 

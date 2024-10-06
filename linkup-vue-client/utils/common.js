@@ -45,7 +45,21 @@ var $common = {
         }
         return Array.from(coupons).join('');
     },
+    balanceAdequateValidation: function(price, balance) {
+        const selectedPrice = parseInt(price);
+        const balanceValue = parseFloat(balance);
 
+        if (
+            this.isEmpty(selectedPrice) ||
+            this.isEmpty(balanceValue) ||
+            isNaN(selectedPrice) ||
+            isNaN(balanceValue)
+        ) {
+            return false;
+        }
+        // Check if the user's balance is sufficient to cover the required amount
+        return balanceValue >= selectedPrice;
+    },
     getRandom: function (v) {
         v = v || 999999;
         return Math.floor(Math.random() * v);

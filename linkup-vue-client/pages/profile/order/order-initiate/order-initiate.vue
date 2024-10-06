@@ -130,13 +130,13 @@ import app from "../../../../App.vue";
 export default {
     computed: {
         common() {
-            return common
-        }
+            return common;
+        },
     },
     components: {
         PaymentMethodSelection,
         ServiceSchedule,
-        AddressSelector
+        AddressSelector,
     },
     data() {
         return {
@@ -200,8 +200,8 @@ export default {
         };
     },
     onLoad(param) {
-        console.log("param")
-        console.log(param)
+        console.log("param");
+        console.log(param);
         this.formData.requiredServantType = param.serviceType;
         this.serviceName = param.serviceName;
         this.serviceNameCn = param.serviceNameCn;
@@ -214,13 +214,12 @@ export default {
         }
     },
     methods: {
-
         // Open as repost order
         getOrderDetail(orderId) {
             uni.request({
                 url: getApp().globalData.data.requestUrl + this.$API.order.search,
                 method: 'POST',
-                data: {id: orderId},
+                data: { id: orderId },
                 success: (res) => {
                     const order = res.data.list[0];
 
@@ -251,7 +250,10 @@ export default {
 
                     // Fetch user data to validate balance
                     this.getUser().then(() => {
-                        this.balanceAdequateValidation();
+                        this.balanceAdequate = this.$common.balanceAdequateValidation(
+                            this.priceOptions[this.priceIndex],
+                            this.user.balance
+                        );
                     });
 
                     this.updatePriceOptions();
@@ -292,15 +294,15 @@ export default {
             uni.request({
                 url: getApp().globalData.data.requestUrl + this.$API.address.search,
                 method: 'POST',
-                data: {id: addressId},
+                data: { id: addressId },
                 success: (res) => {
                     this.address = res.data.list[0];
                     this.addressSelected = true;
                 },
                 fail: (err) => {
                     // Handle error
-                    uni.showToast({title: 'Failed to load address', icon: 'none'});
-                }
+                    uni.showToast({ title: 'Failed to load address', icon: 'none' });
+                },
             });
         },
 
@@ -311,16 +313,19 @@ export default {
                     url: getApp().globalData.data.requestUrl + this.$API.user.search,
                     method: 'POST',
                     data: {
-                        id: uni.getStorageSync(app.globalData.data.userInfoKey).id
+                        id: uni.getStorageSync(app.globalData.data.userInfoKey).id,
                     },
                     success: (res) => {
-                        this.user = res.data.list[0]
-                        this.balanceAdequateValidation();
+                        this.user = res.data.list[0];
+                        this.balanceAdequate = this.$common.balanceAdequateValidation(
+                            this.priceOptions[this.priceIndex],
+                            this.user.balance
+                        );
                         resolve();
                     },
                     fail: (err) => {
                         reject(err);
-                    }
+                    },
                 });
             });
         },
@@ -361,7 +366,7 @@ export default {
                 if (selectedFromAge === this.$t('profile>order>orderInitiate.options.all')) {
                     // If "不限" is selected, the second column includes "不限" and all ages
                     newSecondColumn = [this.$t('profile>order>orderInitiate.options.all')].concat(
-                        Array.from({length: 83}, (_, i) => i + 18)
+                        Array.from({ length: 83 }, (_, i) => i + 18)
                     );
                 } else {
                     // Second column options start from selectedFromAge to 100
@@ -422,11 +427,20 @@ export default {
                 this.priceIndex = 0;
             }
             this.formData.price = this.priceOptions[this.priceIndex];
+
+            // Update balanceAdequate
+            this.balanceAdequate = this.$common.balanceAdequateValidation(
+                this.priceOptions[this.priceIndex],
+                this.user.balance
+            );
         },
         bindPricePickerChange(e) {
             this.priceIndex = e.detail.value;
             this.formData.price = this.priceOptions[this.priceIndex];
-            this.balanceAdequateValidation();
+            this.balanceAdequate = this.$common.balanceAdequateValidation(
+                this.priceOptions[this.priceIndex],
+                this.user.balance
+            );
             this.generateTitle();
         },
 
@@ -437,13 +451,13 @@ export default {
         handleAddressSelect(address) {
             this.address = address;
             this.addressSelected = true;
-            this.formData.addressId = address.id
+            this.formData.addressId = address.id;
             this.addressPickerToggle();
         },
 
         // Service time
         serviceScheduleToggle() {
-            this.$refs.chooseTime.open()
+            this.$refs.chooseTime.open();
         },
         bindServiceTimeChange(e) {
             console.log("bindServiceTimeChange(e) {bindServiceTimeChange(e) {")
@@ -457,34 +471,23 @@ export default {
 
         // Payment
         paymentMethodSelectionToggle() {
-            if(this.formData.addressId===0){
-                uni.showToast({title: this.$t('profile>order>orderInitiate.showToast.selectAddr'), icon: 'none'});
-                return
+            if(this.formData.addressId === 0) {
+                uni.showToast({
+                    title: this.$t('profile>order>orderInitiate.showToast.selectAddr'),
+                    icon: 'none',
+                });
+                return;
             }
-            if(this.$common.isEmpty(this.formData.serviceScheduleStart)||this.$common.isEmpty(this.formData.serviceScheduleEnd)){
-                uni.showToast({title: this.$t('profile>order>orderInitiate.showToast.selectSchedule'), icon: 'none'});
-                return
+            if(this.$common.isEmpty(this.formData.serviceScheduleStart) || this.$common.isEmpty(this.formData.serviceScheduleEnd)) {
+                uni.showToast({
+                    title: this.$t('profile>order>orderInitiate.showToast.selectSchedule'),
+                    icon: 'none',
+                });
+                return;
             }
             this.getUser().then(() => {
                 this.paymentMethodSelectionVisible = !this.paymentMethodSelectionVisible;
             });
-        },
-        balanceAdequateValidation() {
-            // Convert the amount and balance to floats to ensure accurate comparison
-            const selectedPrice = parseInt(this.priceOptions[this.priceIndex]);
-            const balance = parseFloat(this.user.balance);
-
-            // Ensure both amount and balance are valid numbers (not NaN)
-            if (this.$common.isEmpty(selectedPrice) || this.$common.isEmpty(balance)) {
-                this.balanceAdequate = false;
-                return;
-            }
-            // Check if the user's balance is sufficient to cover the required amount
-            if (balance >= selectedPrice) {
-                this.balanceAdequate = true;
-            } else {
-                this.balanceAdequate = false;
-            }
         },
 
         // Submit
@@ -521,7 +524,6 @@ export default {
             const priceCn = this.priceOptions[this.priceIndex];
             const locationCn = !this.$common.isEmpty(this.address) ? this.address.addressName : '不限地区';
             this.titleCn = `${this.serviceNameCn}服务: ${genderTextCn} / ${ageTextCn} / ${durationTextCn} / ${locationCn} / ${schedule} / ¥${priceCn}`;
-
         },
         formSubmit(paymentMethod) {
             this.generateTitle();
@@ -536,12 +538,11 @@ export default {
                 },
                 success: (res) => {
                     uni.redirectTo({
-                        url: '/pages/profile/order/order'
+                        url: '/pages/profile/order/order',
                     });
                 },
             });
-        }
-
+        },
     },
 };
 </script>
