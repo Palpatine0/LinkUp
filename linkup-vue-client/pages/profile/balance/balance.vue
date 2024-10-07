@@ -12,7 +12,10 @@
     <!-- Wallet and Balance Section -->
     <div class="wallet-looking-card-balance">
         <div class="balance-info">
-            <div style="font-size: 24px;font-weight: bold">{{ $t('profile>balance.lookingCardBalance') }}</div>
+            <div class="justify-SB" style="font-size: 24px;font-weight: bold">
+                {{ $t('profile>balance.lookingCardBalance') }}
+                <img class="looking-coin-qa" src="/static/page/balance/balance-question.svg" @click="lookingCardBalanceTips">
+            </div>
             <div class="balance-amount">{{ $common.toNumber(user.balance, 'bigdecimal').toFixed(2) }}</div>
         </div>
         <div class="balance-opts">
@@ -30,7 +33,7 @@
         <div class="balance-info">
             <div class="justify-SB" style="font-size: 24px;font-weight: bold">
                 <div>{{ $t('profile>balance.lookingCoinsBalance') }}</div>
-                <img class="looking-coin-qa" src="/static/miscellaneous/question.svg" @click="lookingCoinTips">
+                <img class="looking-coin-qa" src="/static/page/balance/looking-coin-question.svg" @click="lookingCoinTips">
             </div>
             <div class="lc-balance-amount justify-SB">
                 <div>{{ user.lookingCoins }}</div>
@@ -117,6 +120,14 @@ export default {
             });
         },
 
+        lookingCardBalanceTips(){
+            uni.showModal({
+                title: this.$t('profile>balance.lCardBalanceTipsModal.title'),
+                content: this.$t('profile>balance.lCardBalanceTipsModal.content'),
+                confirmText: this.$t('pub.modal.button.confirm'),
+                showCancel: false
+            });
+        },
         lookingCoinTips() {
             uni.showModal({
                 title: this.$t('profile>balance.lCoinTipsModal.title'),

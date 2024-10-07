@@ -140,6 +140,10 @@
         "transactionHistory": "Transaction History",
         "qrCode": "Referral QR Code",
         "viewMore": "View More",
+        "lCardBalanceTipsModal": {
+            "title": "Looking Card Balance",
+            "content": "The balance of the Looking card can be used to place orders and purchase Looking coins."
+        },
         "lCoinTipsModal": {
             "title": "Looking Coins",
             "content": "Engage in effective conversations with users and earn Looking Coins as a reward. These coins can be withdrawn to your balance."

@@ -17,10 +17,12 @@
         </div>
 
         <!-- Custom Amount Input -->
-        <div class="center-h" style="border-radius: 25px">
-            <app-input mode="number" :placeholder="$t('component>balance>coinDeposit.inputCustomAmount')" v-model="selectedAmount" col="12" class="mb-2"/>
+        <div class="center-h">
+            <app-input mode="number" :placeholder="$t('component>balance>coinDeposit.inputCustomAmount')" v-model="selectedAmount" class="mb-2"/>
         </div>
-
+        <div class="tips">
+            {{ $t('component>balance>coinDeposit.customAmountRange') }}
+        </div>
         <!-- Confirm Button -->
         <div class="center-h" style="width: 60%;">
             <app-button @click="paymentMethodSelectionToggle" shaped>{{ $t('component>balance>coinDeposit.depositBtn') }}</app-button>

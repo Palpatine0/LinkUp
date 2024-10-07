@@ -215,6 +215,10 @@
         "transactionHistory": "交易记录",
         "qrCode": "我的分享码",
         "viewMore": "查看更多",
+        "lCardBalanceTipsModal": {
+            "title": "领客卡余额",
+            "content": "领客卡余额可用于下单与购买领客币"
+        },
         "lCoinTipsModal": {
             "title": "领客币",
             "content": "您可以通过支付方式为余额充值，或将领客卡中的资金转换为领客币。使用领客币解锁聊天功能。请注意，领客币无法提现。"
@@ -305,6 +309,7 @@
         "depositTitle": "购买领客币",
         "depositBtn": "购买",
         "inputCustomAmount": "请输入一个充值金额",
+        "customAmountRange": "自定义金额范围¥1~499800",
         "showToast": {
             "selectAmount": "请选择或输入一个充值金额"
         }

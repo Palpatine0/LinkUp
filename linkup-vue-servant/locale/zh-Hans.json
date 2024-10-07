@@ -140,6 +140,10 @@
         "transactionHistory": "交易记录",
         "qrCode": "我的分享码",
         "viewMore": "查看更多",
+        "lCardBalanceTipsModal": {
+            "title": "领客卡余额",
+            "content": "领客卡余额可用于下单与购买领客币"
+        },
         "lCoinTipsModal": {
             "title": "领客币",
             "content": "与用户进行有效对话以获得领客币奖励。领客币可以提现到您的余额。"

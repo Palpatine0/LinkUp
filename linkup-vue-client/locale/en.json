@@ -131,6 +131,7 @@
         "selectServiceSchedule": "Select Service Schedule",
         "price": "Price",
         "saveOrder": "Save Order",
+        "orderAndPay":"Order and Pay",
         "options": {
             "all": "All",
             "allGender": "All Genders",
@@ -216,6 +217,10 @@
         "transactionHistory": "Transaction History",
         "qrCode": "Referral QR Code",
         "viewMore": "View More",
+        "lCardBalanceTipsModal": {
+            "title": "Looking Card Balance",
+            "content": "The balance of the Looking card can be used to place orders and purchase Looking coins."
+        },
         "lCoinTipsModal": {
             "title": "Looking Coins",
             "content": "Charge your balance using payment methods or convert funds from your Looking Card to Looking Coins. Use Looking Coins to access chat features. Please note, Looking Coins are non-withdrawable."
@@ -306,6 +311,7 @@
         "depositTitle": "Purchase Looking Coins",
         "depositBtn": "Purchase",
         "inputCustomAmount": "Input a Custom Amount",
+        "customAmountRange": "Custom amount range: ¥1–¥499,800",
         "showToast": {
             "selectAmount": "Please select or enter a valid amount"
         }
