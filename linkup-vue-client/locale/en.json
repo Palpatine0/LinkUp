@@ -223,6 +223,8 @@
     },
     "profile>balance>transactionHistory": {
         "transactionHistory": "Transaction History",
+        "balance": "Balance",
+        "lookingCoin": "Looking Coin",
         "amount": "Amount",
         "pending": "Pending",
         "completed": "Completed",

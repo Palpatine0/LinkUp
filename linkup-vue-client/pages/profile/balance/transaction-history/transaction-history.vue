@@ -15,6 +15,22 @@
         @input="onSearchInput"
     />
 
+    <!-- Toggle buttons for All Transactions / Income / Outcome -->
+    <div class="transaction-toggle">
+        <button
+            :class="{ active: currencyType === 0 }"
+            @click="setCurrencyType(0)"
+        >
+            {{ $t('profile>balance>transactionHistory.balance') }}
+        </button>
+        <button
+            :class="{ active: currencyType === 1 }"
+            @click="setCurrencyType(1)"
+        >
+            {{ $t('profile>balance>transactionHistory.lookingCoin') }}
+        </button>
+    </div>
+
     <!-- Transactions Container using app-container -->
     <scroll-view
         :scroll-top="0"
@@ -39,13 +55,13 @@
                 </div>
                 <div class="transaction-detail">
                     <span>
-                        {{  language != "zh-Hans" ? transaction.description : transaction.descriptionCn}}
+                        {{ language != "zh-Hans" ? transaction.description : transaction.descriptionCn }}
                     </span>
                 </div>
             </div>
             <div style="text-align: right">
-                <div class="transaction-amount" :class="{'positive': transaction.transactionType === 1, 'negative': transaction.transactionType === 0}">
-                    {{ transaction.transactionType === 1 ? '' : '' }}{{ transaction.amount.toFixed(2) }}
+                <div class="transaction-amount" :class="{ 'positive': transaction.transactionType === 1, 'negative': transaction.transactionType === 0 }">
+                    {{ transaction.amount.toFixed(2) }}
                 </div>
                 <div class="transaction-datetime">
                     <span>{{ common.timeToStampRecord(transaction.createdAt) }}</span>
@@ -64,7 +80,7 @@ import common from "../../../../utils/common";
 export default {
     computed: {
         common() {
-            return common
+            return common;
         }
     },
     data() {
@@ -73,7 +89,8 @@ export default {
             transactionList: [],
             searchKeyword: '',
             income: this.$t('profile>balance>transactionHistory.income'),
-            expanse: this.$t('profile>balance>transactionHistory.expanse')
+            expanse: this.$t('profile>balance>transactionHistory.expanse'),
+            currencyType: 0 // 0 for All, 1 for Income, 2 for Outcome
         };
     },
     onLoad() {
@@ -81,12 +98,17 @@ export default {
         this.getDataList();
     },
     methods: {
+        setCurrencyType(type) {
+            this.currencyType = type;
+            this.resetPagination();
+            this.getDataList();
+        },
         buildApiParams() {
             let url = getApp().globalData.data.requestUrl + this.$API.transaction.search;
             let method = 'POST';
             let baseData = {
                 userId: uni.getStorageSync(getApp().globalData.data.userInfoKey).id,
-                currencyType: 0,
+                currencyType: this.currencyType,
                 page: this.page,
                 size: this.pageSize,
             };
@@ -103,18 +125,18 @@ export default {
                 };
             }
 
-            return {url, method, data};
+            return { url, method, data };
         },
         onSearchInput() {
             this.resetPagination();
             this.getDataList();
         },
         getDataList() {
-            if (this.loading || !this.hasMore||this.$common.isEmpty(uni.getStorageSync(getApp().globalData.data.userInfoKey).id)) return;
+            if (this.loading || !this.hasMore || this.$common.isEmpty(uni.getStorageSync(getApp().globalData.data.userInfoKey).id)) return;
 
             this.loading = true;
 
-            const {url, method, data} = this.buildApiParams();
+            const { url, method, data } = this.buildApiParams();
 
             uni.request({
                 url: url,
@@ -141,13 +163,48 @@ export default {
                 },
             });
         },
-
-
-    },
+    }
 };
 </script>
 
 <style scoped>
+.transaction-toggle {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 10px;
+    background-color: #0A2342;
+    border-radius: 50px;
+    padding: 4px;
+    margin-top: -14px;
+}
+
+.transaction-toggle button {
+    flex: 1;
+    background-color: transparent;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    margin: 0 5px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.transaction-toggle button.active {
+    background-color: white;
+    color: #0f172a;
+}
+
+.transaction-toggle button:not(.active) {
+    color: white;
+}
+
+.transaction-toggle button:not(.active):hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Existing styles */
 .transaction-item {
     display: flex;
     align-items: center;
@@ -158,7 +215,7 @@ export default {
     border-radius: 10px;
 }
 
-.transaction-icon{
+.transaction-icon {
     padding: 6px;
     background-color: #2196f338;
     width: 40px;
@@ -168,6 +225,7 @@ export default {
     display: flex;
     align-items: center;
 }
+
 .transaction-icon img {
     width: 32px;
     height: 25px;

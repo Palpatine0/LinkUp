@@ -142,11 +142,13 @@
         "viewMore": "查看更多",
         "lCoinTipsModal": {
             "title": "领客币",
-            "content": "与用户进行有效对话以获得领克币奖励。领克币可以提现到您的余额。"
+            "content": "与用户进行有效对话以获得领客币奖励。领客币可以提现到您的余额。"
         }
     },
     "profile>balance>transactionHistory": {
         "transactionHistory": "交易历史",
+        "balance": "余额",
+        "lookingCoin": "领克币",
         "amount": "金额",
         "pending": "待处理",
         "completed": "已完成",

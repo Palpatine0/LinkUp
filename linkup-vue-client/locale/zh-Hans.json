@@ -217,11 +217,13 @@
         "viewMore": "查看更多",
         "lCoinTipsModal": {
             "title": "领客币",
-            "content": "您可以通过支付方式为余额充值，或将领克卡中的资金转换为领克币。使用领克币解锁聊天功能。请注意，领克币无法提现。"
+            "content": "您可以通过支付方式为余额充值，或将领客卡中的资金转换为领客币。使用领客币解锁聊天功能。请注意，领客币无法提现。"
         }
     },
     "profile>balance>transactionHistory": {
         "transactionHistory": "交易历史",
+        "balance": "余额",
+        "lookingCoin": "领克币",
         "amount": "金额",
         "pending": "待处理",
         "completed": "已完成",

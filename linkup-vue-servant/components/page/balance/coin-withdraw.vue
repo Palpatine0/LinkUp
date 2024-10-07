@@ -51,7 +51,7 @@ export default {
                         currencyType: 1,
                         transactionType: 0,
                         description: "Withdraw Looking Coins",
-                        descriptionCn: "提现领克币",
+                        descriptionCn: "提现领客币",
                     },
                     success: (res) => {
                         if(res.data.code==0){

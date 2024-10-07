@@ -41,7 +41,7 @@ export default {
     props: { userInfo: Object },
     methods: {
         close() {
-            this.$parent.coinDepositToggle(false);
+            this.$parent.depositToggle(false);
         },
         setAmount(amount) {
             this.selectedAmount = amount;

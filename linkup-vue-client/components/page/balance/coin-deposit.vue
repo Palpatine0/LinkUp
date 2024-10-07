@@ -69,7 +69,7 @@ export default {
                         currencyType: 1,
                         transactionType: 1,
                         description: "Purchase Looking Coins",
-                        descriptionCn: "购买领克币",
+                        descriptionCn: "购买领客币",
                         paymentMethod: paymentMethod
                     },
                     success: (res) => {
