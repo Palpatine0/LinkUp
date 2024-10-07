@@ -31,6 +31,7 @@ import MessageInput from '../../../../components/page/chat/message-input.vue';
 import app from "../../../../App.vue";
 
 export default {
+    name: "chat-window",
     components: {
         ChatHeader,
         MessageBubble,
@@ -44,18 +45,26 @@ export default {
             contact: {},
             isUserInfoLoaded: false,
             messages: [],
-            scrollTop: 0, // Scroll position, will be updated when messages are loaded
-            page: 1, // For pagination
-            size: 10, // Number of messages to load per request
-            hasMoreMessages: true, // Check if there are more messages to load
-            loading: false, // Prevent multiple requests at once
+            scrollTop: 0,
+            page: 1,
+            size: 10,
+            hasMoreMessages: true,
+            loading: false,
+            socketOpen: false,
+            socketTask: null,
         };
     },
     async onLoad(params) {
         this.contactId = params.contactId;
         await this.getUser();
         await this.getContact();
-        await this.getMessages(); // Load the initial set of messages
+        await this.getMessages();
+        this.connectWebSocket();
+    },
+    onUnload() {
+        if (this.socketTask) {
+            this.socketTask.close();
+        }
     },
     methods: {
         getUser() {
@@ -97,7 +106,7 @@ export default {
         // Fetch initial messages
         getMessages() {
             return new Promise(async (resolve, reject) => {
-                if (this.loading || !this.hasMoreMessages) return;
+                if(this.loading || !this.hasMoreMessages) return;
                 this.loading = true;
 
                 uni.request({
@@ -113,7 +122,7 @@ export default {
                         const fetchedMessages = res.data.list;
 
                         // If fewer messages are returned than requested, assume no more to load
-                        if (fetchedMessages.length < this.pageSize) {
+                        if(fetchedMessages.length < this.pageSize) {
                             this.hasMoreMessages = false;
                         }
 
@@ -139,7 +148,7 @@ export default {
             .filter(msg => msg.senderId === this.contactId && !msg.isRead)
             .map(msg => msg.id);
 
-            if (unreadMessageIds.length > 0) {
+            if(unreadMessageIds.length > 0) {
                 await uni.request({
                     url: getApp().globalData.data.requestUrl + this.$API.message.markAsRead,
                     method: 'POST',
@@ -149,7 +158,7 @@ export default {
                     success: (res) => {
                         // Update local messages
                         this.messages.forEach(msg => {
-                            if (unreadMessageIds.includes(msg.id)) {
+                            if(unreadMessageIds.includes(msg.id)) {
                                 msg.isRead = true;
                             }
                         });
@@ -170,31 +179,87 @@ export default {
         },
         // Handle sending a new message
         handleSend(messageContent) {
-            const messageData = {
-                senderId: this.userId,
-                recipientId: this.contactId,
-                content: messageContent,
-                mediaType: 0
-            };
-            uni.request({
-                url: getApp().globalData.data.requestUrl + this.$API.message.save,
-                method: 'POST',
-                data: messageData,
-                success: (res) => {
-                    this.messages.push({
-                        id: res.data.id,
-                        content: messageContent,
-                        senderId: this.userId,
-                        createdAt: new Date().toISOString(),
-                    });
-                    this.scrollTop = 0; // Scroll to the bottom after sending a new message
+            if (this.socketOpen) {
+                const messageData = {
+                    senderId: this.userId,
+                    recipientId: this.contactId,
+                    content: messageContent,
+                    mediaType: 0,
+                };
+                const messageStr = JSON.stringify(messageData);
+                this.socketTask.send({
+                    data: messageStr,
+                    success: () => {
+                        console.log('Message sent via WebSocket.');
+                    },
+                    fail: () => {
+                        console.error('Failed to send message via WebSocket.');
+                    },
+                });
+                // Add the message to the local messages array
+                this.messages.push({
+                    id: Date.now(),
+                    content: messageContent,
+                    senderId: this.userId,
+                    createdAt: new Date().toISOString(),
+                });
+                this.scrollTop = 0;
+            } else {
+                console.error('WebSocket is not connected.');
+            }
+        },
+        connectWebSocket() {
+            const socketUrl = getApp().globalData.data.socketUrl + '/chat?userId=' + this.userId;
+            console.log('Connecting to WebSocket URL:', socketUrl); // For debugging
+            this.socketTask = uni.connectSocket({
+                url: socketUrl,
+                success: () => {
+                    console.log('WebSocket connection created.');
                 },
-                fail: () => {
-                    uni.showToast({title: 'Network error', icon: 'none'});
+                fail: (err) => {
+                    console.error('WebSocket connection failed:', err);
+                    setTimeout(() => {
+                        this.connectWebSocket();
+                    }, 5000); // Retry after 5 seconds
+                },
+            });
+
+            // Add the onOpen event handler
+            this.socketTask.onOpen(() => {
+                console.log('WebSocket connection opened.');
+                this.socketOpen = true;
+            });
+
+            // Add the onMessage event handler
+            this.socketTask.onMessage((res) => {
+                console.log('Received message:', res.data);
+                const messageData = JSON.parse(res.data);
+                if (messageData.senderId == this.contactId || messageData.recipientId == this.contactId) {
+                    this.messages.push({
+                        id: messageData.id,
+                        content: messageData.content,
+                        senderId: messageData.senderId,
+                        createdAt: messageData.createdAt,
+                    });
+                    this.scrollTop = 0;
                 }
             });
-        },
 
+            // Existing onClose handler
+            this.socketTask.onClose(() => {
+                console.log('WebSocket connection closed.');
+                this.socketOpen = false;
+                setTimeout(() => {
+                    this.connectWebSocket();
+                }, 5000);
+            });
+
+            // Add the onError event handler
+            this.socketTask.onError((err) => {
+                console.error('WebSocket error:', err);
+                this.socketOpen = false;
+            });
+        }
 
     }
 };

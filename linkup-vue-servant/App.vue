@@ -8,8 +8,10 @@ export default {
         data: {
             // dev
             requestUrl: "http://localhost:8090",
+            socketUrl: "ws://localhost:8090",
             // prd
             // request_url:"http://111.231.19.137:8090"
+            // socketUrl: "ws://111.231.19.137:8090",
 
             userLoginKey: "userLoginKey",
             userInfoKey: "userInfoKey",
