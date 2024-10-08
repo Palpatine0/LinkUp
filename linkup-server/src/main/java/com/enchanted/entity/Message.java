@@ -36,15 +36,16 @@ public class Message {
     /**
      * 0: sending;
      * 1: sent;
+     * 2: send failed;
      */
     private Integer status;
 
     /**
-     * false: unread;
-     * true: read;
+     * 0: unread;
+     * 1: read;
      */
     @TableField("is_read")
-    private Boolean isRead;
+    private Integer isRead;
 
     @TableField("created_at")
     private Date createdAt;

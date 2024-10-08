@@ -3,7 +3,7 @@
     <ChatHeader :username="contact.nickname" :avatar="contact.avatar"/>
 
     <scroll-view
-        v-if="isUserInfoLoaded"
+        v-show="isUserInfoLoaded"
         class="message-list"
         :scroll-top="scrollTop"
         scroll-y="true"
@@ -41,15 +41,13 @@ export default {
         return {
             userId: uni.getStorageSync(app.globalData.data.userInfoKey).id,
             user: {},
+            isUserInfoLoaded: false,
             contactId: '',
             contact: {},
-            isUserInfoLoaded: false,
             messages: [],
+
             scrollTop: 0,
-            page: 1,
-            size: 10,
-            hasMoreMessages: true,
-            loading: false,
+
             socketOpen: false,
             socketTask: null,
         };
@@ -103,7 +101,6 @@ export default {
                 });
             });
         },
-        // Fetch initial messages
         getMessages() {
             return new Promise(async (resolve, reject) => {
                 if(this.loading || !this.hasMoreMessages) return;
@@ -143,37 +140,8 @@ export default {
                 await this.markMessagesAsRead();
             });
         },
-        async markMessagesAsRead() {
-            const unreadMessageIds = this.messages
-            .filter(msg => msg.senderId === this.contactId && !msg.isRead)
-            .map(msg => msg.id);
-
-            if(unreadMessageIds.length > 0) {
-                await uni.request({
-                    url: getApp().globalData.data.requestUrl + this.$API.message.markAsRead,
-                    method: 'POST',
-                    data: {
-                        messageIds: unreadMessageIds,
-                    },
-                    success: (res) => {
-                        // Update local messages
-                        this.messages.forEach(msg => {
-                            if(unreadMessageIds.includes(msg.id)) {
-                                msg.isRead = true;
-                            }
-                        });
-                    },
-                    fail: (err) => {
-                        console.error('Failed to mark messages as read:', err);
-                    },
-                });
-            }
-        },
-
-        // Load more messages when scrolling to the top
         loadMoreMessages() {
             this.getMessages().then(() => {
-                // Adjust scrollTop to maintain current view after loading older messages
                 this.scrollTop += 100; // Adjust this value based on how many messages are loaded and the estimated height
             });
         },
@@ -209,8 +177,11 @@ export default {
             }
         },
         connectWebSocket() {
+            if (this.socketTask) {
+                console.log('WebSocket task already exists.');
+                return;
+            }
             const socketUrl = getApp().globalData.data.socketUrl + '/chat?userId=' + this.userId;
-            console.log('Connecting to WebSocket URL:', socketUrl); // For debugging
             this.socketTask = uni.connectSocket({
                 url: socketUrl,
                 success: () => {
@@ -218,19 +189,17 @@ export default {
                 },
                 fail: (err) => {
                     console.error('WebSocket connection failed:', err);
+                    this.socketTask = null;
                     setTimeout(() => {
                         this.connectWebSocket();
-                    }, 5000); // Retry after 5 seconds
+                    }, 5000);
                 },
             });
 
-            // Add the onOpen event handler
             this.socketTask.onOpen(() => {
                 console.log('WebSocket connection opened.');
                 this.socketOpen = true;
             });
-
-            // Add the onMessage event handler
             this.socketTask.onMessage((res) => {
                 console.log('Received message:', res.data);
                 const messageData = JSON.parse(res.data);
@@ -244,8 +213,6 @@ export default {
                     this.scrollTop = 0;
                 }
             });
-
-            // Existing onClose handler
             this.socketTask.onClose(() => {
                 console.log('WebSocket connection closed.');
                 this.socketOpen = false;
@@ -253,14 +220,11 @@ export default {
                     this.connectWebSocket();
                 }, 5000);
             });
-
-            // Add the onError event handler
             this.socketTask.onError((err) => {
                 console.error('WebSocket error:', err);
                 this.socketOpen = false;
             });
         }
-
     }
 };
 
@@ -279,9 +243,4 @@ export default {
     display: flex;
     flex-direction: column-reverse; /* Helps keep new messages at the bottom */
 }
-
-.message-input-container {
-    border-top: 1px solid #ddd;
-}
-
 </style>

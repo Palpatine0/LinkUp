@@ -48,7 +48,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         chatMessage.setContent(content);
         chatMessage.setMediaType(mediaType);
         chatMessage.setStatus(1);
-        chatMessage.setIsRead(false);
+        chatMessage.setIsRead(0);
         chatMessage.setCreatedAt(new Date());
         messageService.save(chatMessage);
 

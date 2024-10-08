@@ -40,8 +40,6 @@ export default {
     },
     onShow() {
         this.contactList = []
-        console.log("uni.getStorageSync(app.globalData.data.userInfoKey)")
-        console.log(uni.getStorageSync(app.globalData.data.userInfoKey))
         if (!this.$common.isEmpty(this.userId)) {
             this.getUserList();
         }
@@ -64,8 +62,6 @@ export default {
                 },
                 success: (resR) => {
                     const sentMessages = resR.data.list;
-                    console.log("sentMessages")
-                    console.log(sentMessages)
                     // Gather all recipient IDs
                     sentMessages.forEach(message => {
                         uniqueUserIds.add(message.recipientId);
