@@ -107,11 +107,13 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
     }
 
     @Override
-    public boolean markMessagesAsRead(List<Long> messageIds) {
-        return messageMapper.updateMessagesAsRead(messageIds) > 0;
+    public boolean markAsRead(List<Long> messageIds) {
+        if (messageIds == null || messageIds.isEmpty()) {
+            return false;
+        }
+        int updated = messageMapper.markMessagesAsRead(messageIds);
+        return updated > 0;
     }
-
-
 
     /*D*/
     @Override

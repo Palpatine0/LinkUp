@@ -60,7 +60,7 @@ export default {
         this.connectWebSocket();
     },
     onUnload() {
-        if (this.socketTask) {
+        if(this.socketTask) {
             this.socketTask.close();
         }
     },
@@ -103,7 +103,7 @@ export default {
         },
         getMessages() {
             return new Promise(async (resolve, reject) => {
-                if(this.loading || !this.hasMoreMessages) return;
+                if(this.loading || !this.hasMore) return;
                 this.loading = true;
 
                 uni.request({
@@ -115,12 +115,12 @@ export default {
                         page: this.page,
                         size: this.pageSize
                     },
-                    success: (res) => {
+                    success: async (res) => {
                         const fetchedMessages = res.data.list;
 
                         // If fewer messages are returned than requested, assume no more to load
                         if(fetchedMessages.length < this.pageSize) {
-                            this.hasMoreMessages = false;
+                            this.hasMore = false;
                         }
 
                         // Prepend the newly fetched messages and sort by createdAt
@@ -129,6 +129,10 @@ export default {
                         this.page += 1;
                         this.isUserInfoLoaded = true;
                         this.loading = false;
+
+                        // Mark messages as read after fetching
+                        await this.markMessagesAsRead();
+
                         resolve();
                     },
                     fail: (err) => {
@@ -136,9 +140,34 @@ export default {
                         reject(err);
                     }
                 });
-
-                await this.markMessagesAsRead();
             });
+        },
+        async markMessagesAsRead() {
+            const unreadMessageIds = this.messages
+            .filter(msg => msg.senderId == this.contactId && msg.isRead == 0)
+            .map(msg => msg.id);
+
+            if (unreadMessageIds.length > 0) {
+
+                await uni.request({
+                    url: getApp().globalData.data.requestUrl + this.$API.message.markAsRead,
+                    method: 'POST',
+                    data: {
+                        messageIds: unreadMessageIds,
+                    },
+                    success: (res) => {
+                        // Update local messages
+                        this.messages.forEach(msg => {
+                            if (unreadMessageIds.includes(msg.id)) {
+                                msg.isRead = 1; // Update the read status locally
+                            }
+                        });
+                    },
+                    fail: (err) => {
+                        console.error('Failed to mark messages as read:', err);
+                    },
+                });
+            }
         },
         loadMoreMessages() {
             this.getMessages().then(() => {

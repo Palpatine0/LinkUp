@@ -25,7 +25,7 @@ public interface IMessageService extends IService<Message> {
     /*U*/
     boolean update(Long id, Map<String, Object> changes);
 
-    boolean markMessagesAsRead(List<Long> messageIds);
+    boolean markAsRead(List<Long> messageIds);
 
     /*D*/
     boolean delete(Long id);

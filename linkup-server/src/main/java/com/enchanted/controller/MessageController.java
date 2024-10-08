@@ -51,7 +51,7 @@ public class MessageController {
         message.setSenderId(senderId);
         message.setRecipientId(recipientId);
         message.setStatus(0); // Sending
-        message.setIsRead(false);
+        message.setIsRead(0);
         message.setCreatedAt(new Date());
 
         if (mediaType == null || mediaType == 0) {
@@ -144,19 +144,13 @@ public class MessageController {
     @PostMapping("/mark-read")
     public R markAsRead(@RequestBody Map<String, Object> requestData) {
         List<Long> messageIds = (List<Long>) requestData.get("messageIds");
-        if (messageIds == null || messageIds.isEmpty()) {
-            return R.error("No messages to update");
-        }
-
-        boolean isUpdated = messageService.markMessagesAsRead(messageIds);
+        boolean isUpdated = messageService.markAsRead(messageIds);
         if (isUpdated) {
             return R.ok("Messages marked as read successfully");
         } else {
             return R.error("Failed to mark messages as read");
         }
     }
-
-
 
     /*D*/
     @PostMapping("/delete")

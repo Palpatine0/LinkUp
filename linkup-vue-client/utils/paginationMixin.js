@@ -1,5 +1,5 @@
-//paginationMixin.js
 export default {
+    name: "paginationMixin.js",
     data() {
         return {
             page: 1,
