@@ -62,7 +62,7 @@
         ORDER BY created_at DESC
     </select>
 
-    <update id="markMessagesAsRead">
+    <update id="markAsRead">
         UPDATE `message`
         SET is_read = 1
         WHERE id IN

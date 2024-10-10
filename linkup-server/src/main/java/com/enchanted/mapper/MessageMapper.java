@@ -15,5 +15,5 @@ public interface MessageMapper extends BaseMapper<Message> {
 
     IPage<Message> searchContacts(IPage<Message> page, @Param("params") Map<String, Object> params);
 
-    int markMessagesAsRead(@Param("messageIds") List<Long> messageIds);
+    int markAsRead(@Param("messageIds") List<Long> messageIds);
 }

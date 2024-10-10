@@ -11,6 +11,7 @@ import org.springframework.web.socket.handler.TextWebSocketHandler;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
 
 @Component
 public class ChatWebSocketHandler extends TextWebSocketHandler {
@@ -34,12 +35,32 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     }
 
     @Override
+    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
+        Long userId = getUserIdFromSession(session);
+        if (userId != null) {
+            userSessions.remove(userId);
+            System.out.println("User " + userId + " disconnected.");
+        }
+    }
+
+    @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
         Map<String, Object> messageData = objectMapper.readValue(message.getPayload(), Map.class);
-        Long senderId = Long.valueOf(messageData.get("senderId").toString());
-        Long recipientId = Long.valueOf(messageData.get("recipientId").toString());
-        String content = messageData.get("content").toString();
-        Integer mediaType = messageData.get("mediaType") != null ? Integer.valueOf(messageData.get("mediaType").toString()) : 0;
+        String type = (String) messageData.get("type");
+        Map<String, Object> data = (Map<String, Object>) messageData.get("data");
+
+        if ("message".equals(type)) {
+            handleChatMessage(session, data);
+        } else if ("readReceipt".equals(type)) {
+            handleReadReceipt(session, data);
+        }
+    }
+
+    private void handleChatMessage(WebSocketSession session, Map<String, Object> data) throws Exception {
+        Long senderId = Long.valueOf(data.get("senderId").toString());
+        Long recipientId = Long.valueOf(data.get("recipientId").toString());
+        String content = data.get("content").toString();
+        Integer mediaType = data.get("mediaType") != null ? Integer.valueOf(data.get("mediaType").toString()) : 0;
 
         // Save message to the database
         Message chatMessage = new Message();
@@ -54,12 +75,16 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
 
         // Prepare message to send
         Map<String, Object> sendMessageData = new HashMap<>();
-        sendMessageData.put("id", chatMessage.getId());
-        sendMessageData.put("senderId", senderId);
-        sendMessageData.put("recipientId", recipientId);
-        sendMessageData.put("content", content);
-        sendMessageData.put("mediaType", mediaType);
-        sendMessageData.put("createdAt", chatMessage.getCreatedAt().toString());
+        sendMessageData.put("type", "message");
+        Map<String, Object> sendData = new HashMap<>();
+        sendData.put("id", chatMessage.getId());
+        sendData.put("senderId", senderId);
+        sendData.put("recipientId", recipientId);
+        sendData.put("content", content);
+        sendData.put("mediaType", mediaType);
+        sendData.put("createdAt", chatMessage.getCreatedAt().toString());
+        sendData.put("isRead", chatMessage.getIsRead());
+        sendMessageData.put("data", sendData);
         String sendMessageStr = objectMapper.writeValueAsString(sendMessageData);
 
         // Send message to recipient if online
@@ -69,14 +94,32 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         }
     }
 
-    @Override
-    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
-        Long userId = getUserIdFromSession(session);
-        if (userId != null) {
-            userSessions.remove(userId);
-            System.out.println("User " + userId + " disconnected.");
+    private void handleReadReceipt(WebSocketSession session, Map<String, Object> data) throws Exception {
+        List<Integer> messageIdIntegers = (List<Integer>) data.get("messageIds");
+        List<Long> messageIds = messageIdIntegers.stream().map(Integer::longValue).collect(Collectors.toList());
+        Long readerId = Long.valueOf(data.get("senderId").toString());
+        Long originalSenderId = Long.valueOf(data.get("recipientId").toString());
+
+        // Update database to mark messages as read
+        messageService.markAsRead(messageIds);
+
+        // Prepare read receipt to send
+        Map<String, Object> sendReadReceiptData = new HashMap<>();
+        sendReadReceiptData.put("type", "readReceipt");
+        Map<String, Object> readReceiptData = new HashMap<>();
+        readReceiptData.put("messageIds", messageIds);
+        readReceiptData.put("readerId", readerId);
+        sendReadReceiptData.put("data", readReceiptData);
+
+        String readReceiptStr = objectMapper.writeValueAsString(sendReadReceiptData);
+
+        // Send read receipt to original sender if online
+        WebSocketSession senderSession = userSessions.get(originalSenderId);
+        if (senderSession != null && senderSession.isOpen()) {
+            senderSession.sendMessage(new TextMessage(readReceiptStr));
         }
     }
+
 
     private Long getUserIdFromSession(WebSocketSession session) {
         Map<String, String> params = parseQueryParams(session.getUri().getQuery());

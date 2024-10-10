@@ -56,7 +56,6 @@ export default {
         this.contactId = params.contactId;
         await this.getUser();
         await this.getContact();
-        await this.getMessages();
         this.connectWebSocket();
     },
     onUnload() {
@@ -132,7 +131,7 @@ export default {
 
                         // Mark messages as read after fetching
                         await this.markMessagesAsRead();
-
+                        this.sendReadReceipt();
                         resolve();
                     },
                     fail: (err) => {
@@ -147,26 +146,37 @@ export default {
             .filter(msg => msg.senderId == this.contactId && msg.isRead == 0)
             .map(msg => msg.id);
 
-            if (unreadMessageIds.length > 0) {
-
-                await uni.request({
-                    url: getApp().globalData.data.requestUrl + this.$API.message.markAsRead,
-                    method: 'POST',
-                    data: {
-                        messageIds: unreadMessageIds,
-                    },
-                    success: (res) => {
-                        // Update local messages
-                        this.messages.forEach(msg => {
-                            if (unreadMessageIds.includes(msg.id)) {
-                                msg.isRead = 1; // Update the read status locally
-                            }
-                        });
-                    },
-                    fail: (err) => {
-                        console.error('Failed to mark messages as read:', err);
-                    },
-                });
+            if(unreadMessageIds.length > 0) {
+                console.log("if(this.socketOpen) {")
+                console.log(this.socketOpen)
+                if(this.socketOpen) {
+                    const readReceiptData = {
+                        type: 'readReceipt',
+                        data: {
+                            messageIds: unreadMessageIds,
+                            recipientId: this.userId, // The user who read the messages
+                            senderId: this.contactId   // The user who sent the messages
+                        }
+                    };
+                    const messageStr = JSON.stringify(readReceiptData);
+                    this.socketTask.send({
+                        data: messageStr,
+                        success: () => {
+                            console.log('Read receipt sent via WebSocket.');
+                            // Update local messages
+                            this.messages.forEach(msg => {
+                                if(unreadMessageIds.includes(msg.id)) {
+                                    msg.isRead = 1; // Update the read status locally
+                                }
+                            });
+                        },
+                        fail: () => {
+                            console.error('Failed to send read receipt via WebSocket.');
+                        },
+                    });
+                } else {
+                    console.error('WebSocket is not connected.');
+                }
             }
         },
         loadMoreMessages() {
@@ -178,10 +188,13 @@ export default {
         handleSend(messageContent) {
             if(this.socketOpen) {
                 const messageData = {
-                    senderId: this.userId,
-                    recipientId: this.contactId,
-                    content: messageContent,
-                    mediaType: 0,
+                    type: 'message',
+                    data: {
+                        senderId: this.userId,
+                        recipientId: this.contactId,
+                        content: messageContent,
+                        mediaType: 0,
+                    },
                 };
                 const messageStr = JSON.stringify(messageData);
                 this.socketTask.send({
@@ -199,20 +212,54 @@ export default {
                     content: messageContent,
                     senderId: this.userId,
                     createdAt: new Date().toISOString(),
+                    isRead: 0,
                 });
                 this.scrollTop = 0;
             } else {
                 console.error('WebSocket is not connected.');
             }
         },
+        sendReadReceipt() {
+            // Collect unread message IDs from messages sent by the contact
+            const unreadMessageIds = this.messages
+            .filter(msg => msg.senderId === this.contactId && msg.isRead === 0)
+            .map(msg => msg.id);
+
+            if(unreadMessageIds.length > 0 && this.socketOpen) {
+                const readReceiptData = {
+                    type: 'readReceipt',
+                    data: {
+                        senderId: this.userId,
+                        recipientId: this.contactId,
+                        messageIds: unreadMessageIds,
+                    },
+                };
+                this.socketTask.send({
+                    data: JSON.stringify(readReceiptData),
+                    success: () => {
+                        console.log('Read receipt sent via WebSocket.');
+                        // Update local messages to mark as read
+                        this.messages.forEach(msg => {
+                            if(unreadMessageIds.includes(msg.id)) {
+                                msg.isRead = 1;
+                            }
+                        });
+                    },
+                    fail: () => {
+                        console.error('Failed to send read receipt via WebSocket.');
+                    },
+                });
+            }
+        },
+
         connectWebSocket() {
             if(this.socketTask) {
                 console.log('WebSocket task already exists.');
                 return;
             }
-            const socketUrl = getApp().globalData.data.socketUrl + '/chat?userId=' + this.userId;
+
             this.socketTask = uni.connectSocket({
-                url: socketUrl,
+                url: getApp().globalData.data.socketUrl + '/chat?userId=' + this.userId,
                 success: () => {
                     console.log('WebSocket connection created.');
                 },
@@ -228,26 +275,35 @@ export default {
             this.socketTask.onOpen(() => {
                 console.log('WebSocket connection opened.');
                 this.socketOpen = true;
+                this.getMessages();
             });
             this.socketTask.onMessage((res) => {
-                console.log('Received message:', res.data);
-                const messageData = JSON.parse(res.data);
-                if(messageData.senderId == this.contactId || messageData.recipientId == this.contactId) {
-                    this.messages.push({
-                        id: messageData.id,
-                        content: messageData.content,
-                        senderId: messageData.senderId,
-                        createdAt: messageData.createdAt,
+                console.log('Received message:', JSON.parse(res.data))
+                const messageObject = JSON.parse(res.data);
+                const messageData = messageObject.data
+                const messageType = messageObject.type
+                if(messageType === 'message') {
+                    // Handle incoming chat message
+                    if(messageData.senderId == this.contactId || messageData.recipientId == this.contactId) {
+                        this.messages.push({
+                            id: messageData.id,
+                            content: messageData.content,
+                            senderId: messageData.senderId,
+                            createdAt: messageData.createdAt,
+                            isRead: messageData.isRead,
+                        });
+                        this.scrollTop = 0;
+                    }
+                } else if(messageType === 'readReceipt') {
+                    // Handle read receipt
+                    const {messageIds} = messageData;
+                    // Update messages to mark them as read
+                    this.messages.forEach(msg => {
+                        if(messageIds.includes(msg.id)) {
+                            msg.isRead = 1;
+                        }
                     });
-                    this.scrollTop = 0;
                 }
-            });
-            this.socketTask.onClose(() => {
-                console.log('WebSocket connection closed.');
-                this.socketOpen = false;
-                setTimeout(() => {
-                    this.connectWebSocket();
-                }, 5000);
             });
             this.socketTask.onError((err) => {
                 console.error('WebSocket error:', err);

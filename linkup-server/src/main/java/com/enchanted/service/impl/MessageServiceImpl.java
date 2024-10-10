@@ -111,7 +111,7 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
         if (messageIds == null || messageIds.isEmpty()) {
             return false;
         }
-        int updated = messageMapper.markMessagesAsRead(messageIds);
+        int updated = messageMapper.markAsRead(messageIds);
         return updated > 0;
     }
 
