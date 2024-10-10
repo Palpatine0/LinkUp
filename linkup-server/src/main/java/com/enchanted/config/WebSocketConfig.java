@@ -1,4 +1,3 @@
-// src/main/java/com/enchanted/config/WebSocketConfig.java
 package com.enchanted.config;
 
 import com.enchanted.handler.ChatWebSocketHandler;

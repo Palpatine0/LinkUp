@@ -147,8 +147,6 @@ export default {
             .map(msg => msg.id);
 
             if(unreadMessageIds.length > 0) {
-                console.log("if(this.socketOpen) {")
-                console.log(this.socketOpen)
                 if(this.socketOpen) {
                     const readReceiptData = {
                         type: 'readReceipt',
@@ -187,9 +185,11 @@ export default {
         // Handle sending a new message
         handleSend(messageContent) {
             if(this.socketOpen) {
+                const tempId = Date.now();
                 const messageData = {
                     type: 'message',
                     data: {
+                        tempId: tempId,
                         senderId: this.userId,
                         recipientId: this.contactId,
                         content: messageContent,
@@ -208,7 +208,8 @@ export default {
                 });
                 // Add the message to the local messages array
                 this.messages.push({
-                    id: Date.now(),
+                    id: tempId,
+                    tempId: tempId,
                     content: messageContent,
                     senderId: this.userId,
                     createdAt: new Date().toISOString(),
@@ -253,7 +254,6 @@ export default {
         },
         sendImmediateReadReceipt(messageIds) {
             if(this.socketOpen) {
-                console.log('Sending immediate read receipt for message IDs:', messageIds);
                 const readReceiptData = {
                     type: 'readReceipt',
                     data: {
@@ -330,11 +330,8 @@ export default {
                         }
                     }
                 } else if(messageType === 'readReceipt') {
-                    // Handle read receipt
-                    const { messageIds } = messageData;
-                    // Update messages to mark them as read
                     this.messages.forEach(msg => {
-                        if(messageIds.includes(msg.id)) {
+                        if(messageData.tempMessageIds.includes(msg.id)||messageData.messageIds.includes(msg.id)) {
                             msg.isRead = 1;
                         }
                     });

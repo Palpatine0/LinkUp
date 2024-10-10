@@ -1,6 +1,7 @@
 package com.enchanted.handler;
 
 import com.enchanted.entity.Message;
+import com.enchanted.mapper.MessageMapper;
 import com.enchanted.service.IMessageService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +19,9 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
 
     @Autowired
     private IMessageService messageService;
+
+    @Autowired
+    private MessageMapper messageMapper;
 
     // Map to track user sessions
     private static Map<Long, WebSocketSession> userSessions = new ConcurrentHashMap<>();
@@ -57,6 +61,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     }
 
     private void handleChatMessage(WebSocketSession session, Map<String, Object> data) throws Exception {
+        Long tempId = Long.valueOf(data.get("tempId").toString());
         Long senderId = Long.valueOf(data.get("senderId").toString());
         Long recipientId = Long.valueOf(data.get("recipientId").toString());
         String content = data.get("content").toString();
@@ -64,6 +69,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
 
         // Save message to the database
         Message chatMessage = new Message();
+        chatMessage.setTempId(tempId);
         chatMessage.setSenderId(senderId);
         chatMessage.setRecipientId(recipientId);
         chatMessage.setContent(content);
@@ -103,11 +109,18 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         // Update database to mark messages as read
         messageService.markAsRead(messageIds);
 
-        // Prepare read receipt to send
+        // Fetch corresponding tempIds from the message table
+        List<Message> messages = messageMapper.selectBatchIds(messageIds);
+        List<Long> tempIds = messages.stream()
+            .map(Message::getTempId)
+            .collect(Collectors.toList());
+
+        // Prepare read receipt to send with both messageIds and tempIds
         Map<String, Object> sendReadReceiptData = new HashMap<>();
         sendReadReceiptData.put("type", "readReceipt");
         Map<String, Object> readReceiptData = new HashMap<>();
-        readReceiptData.put("messageIds", messageIds);
+        readReceiptData.put("messageIds", messageIds);  // Real database IDs
+        readReceiptData.put("tempMessageIds", tempIds);        // Corresponding temp IDs
         readReceiptData.put("readerId", readerId);
         sendReadReceiptData.put("data", readReceiptData);
 

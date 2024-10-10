@@ -12,6 +12,9 @@ public class Message {
 
     private Long id;
 
+    @TableField("temp_id")
+    private Long tempId;
+
     @TableField("sender_id")
     private Long senderId;
 
