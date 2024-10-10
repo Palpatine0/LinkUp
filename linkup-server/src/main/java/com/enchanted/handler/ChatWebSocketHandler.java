@@ -120,7 +120,6 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         }
     }
 
-
     private Long getUserIdFromSession(WebSocketSession session) {
         Map<String, String> params = parseQueryParams(session.getUri().getQuery());
         String userIdStr = params.get("userId");

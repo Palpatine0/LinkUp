@@ -251,6 +251,36 @@ export default {
                 });
             }
         },
+        sendImmediateReadReceipt(messageIds) {
+            if(this.socketOpen) {
+                console.log('Sending immediate read receipt for message IDs:', messageIds);
+                const readReceiptData = {
+                    type: 'readReceipt',
+                    data: {
+                        senderId: this.userId,
+                        recipientId: this.contactId,
+                        messageIds: messageIds,
+                    },
+                };
+                this.socketTask.send({
+                    data: JSON.stringify(readReceiptData),
+                    success: () => {
+                        console.log('Immediate read receipt sent via WebSocket.');
+                        // Update local messages to mark as read
+                        this.messages.forEach((msg, index) => {
+                            if(messageIds.map(id => String(id)).includes(String(msg.id))) {
+                                this.$set(this.messages[index], 'isRead', 1);
+                            }
+                        });
+                    },
+                    fail: () => {
+                        console.error('Failed to send immediate read receipt via WebSocket.');
+                    },
+                });
+            } else {
+                console.error('WebSocket is not connected.');
+            }
+        },
 
         connectWebSocket() {
             if(this.socketTask) {
@@ -278,10 +308,10 @@ export default {
                 this.getMessages();
             });
             this.socketTask.onMessage((res) => {
-                console.log('Received message:', JSON.parse(res.data))
+                console.log('Received message:', res.data);
                 const messageObject = JSON.parse(res.data);
-                const messageData = messageObject.data
-                const messageType = messageObject.type
+                const messageData = messageObject.data;
+                const messageType = messageObject.type;
                 if(messageType === 'message') {
                     // Handle incoming chat message
                     if(messageData.senderId == this.contactId || messageData.recipientId == this.contactId) {
@@ -293,6 +323,11 @@ export default {
                             isRead: messageData.isRead,
                         });
                         this.scrollTop = 0;
+
+                        // Send read receipt immediately
+                        if(messageData.senderId == this.contactId) {
+                            this.sendImmediateReadReceipt([messageData.id]);
+                        }
                     }
                 } else if(messageType === 'readReceipt') {
                     // Handle read receipt
@@ -305,6 +340,7 @@ export default {
                     });
                 }
             });
+
             this.socketTask.onError((err) => {
                 console.error('WebSocket error:', err);
                 this.socketOpen = false;
