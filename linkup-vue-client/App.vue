@@ -22,7 +22,8 @@ export default {
                 success: '#67C23A',
                 warning: '#E6A23C',
                 danger: '#F56C6C',
-                info: '#909399',
+                info: '#939393',
+                antiFlashWhite: '#f3f2f6',
                 navyBlue: '#192C77',
                 oxfordBlue: '#0A2342',
             }

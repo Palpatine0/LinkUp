@@ -1,15 +1,15 @@
 <template>
 <scroll-view :scroll-top="0" scroll-y="true" :style="{ height: height }" class="mt-4">
-    <div class="contact-grid">
+    <div class="grid">
         <div
             v-for="(user, index) in userList"
             :key="user.id"
             :class="{'contact-item': true, 'last-item': index === userList.length - 1}"
             @click="userDetailRedirect(user.id)"
         >
-            <img :src="user.avatar" alt="user.name" class="contact-avatar">
-            <div class="contact-info">
-                <h2 class="contact-name">{{ user.nickname }}</h2>
+            <img :src="user.avatar" alt="user.name" class="avatar">
+            <div class="info">
+                <h2 class="name">{{ user.nickname }}</h2>
                 <p class="contact-number">{{ user.currentLocation }}</p>
             </div>
         </div>
@@ -39,7 +39,7 @@ export default {
 </script>
 
 <style scoped>
-.contact-grid {
+.grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr); /* Two items per row */
     gap: 16px; /* Adjust spacing between the grid items */
@@ -52,7 +52,7 @@ export default {
     text-align: center;
 }
 
-.contact-avatar {
+.avatar {
     width: 100px;
     height: 100px;
     object-fit: cover;
@@ -60,11 +60,11 @@ export default {
     margin-bottom: 10px;
 }
 
-.contact-info {
+.info {
     text-align: center;
 }
 
-.contact-name {
+.name {
     font-size: 18px;
     font-weight: bold;
 }

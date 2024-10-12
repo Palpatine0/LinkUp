@@ -95,41 +95,6 @@ export default {
 </script>
 
 <style scoped>
-.contact-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr); /* Two items per row */
-    gap: 16px; /* Adjust spacing between the grid items */
-}
-
-.contact-item {
-    background-color: white;
-    padding: 10px;
-    border-radius: 8px;
-    text-align: center;
-}
-
-.contact-avatar {
-    width: 100px;
-    height: 100px;
-    object-fit: cover;
-    border-radius: 50%;
-    margin-bottom: 10px;
-}
-
-.contact-info {
-    text-align: center;
-}
-
-.contact-name {
-    font-size: 18px;
-    font-weight: bold;
-}
-
-.contact-number {
-    font-size: 14px;
-    color: #666;
-}
-
 .service-info {
     height: 160px;
     position: relative;

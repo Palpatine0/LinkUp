@@ -15,9 +15,9 @@
                 @click="contactRedirect(contact.id)"
                 class="contact-item"
             >
-                <img :src="contact.avatar" alt="contact.name" class="contact-avatar">
-                <div class="contact-info">
-                    <h2 class="contact-name">{{ contact.nickname }}</h2>
+                <img :src="contact.avatar" alt="contact.name" class="avatar">
+                <div class="info">
+                    <h2 class="name">{{ contact.nickname }}</h2>
                     <p class="contact-number">{{ contact.lastMessage }}</p>
                 </div>
             </div>
@@ -150,20 +150,20 @@ export default {
     width: 70vw;
 }
 
-.contact-avatar {
+.avatar {
     width: 50px;
     height: 50px;
     border-radius: 50%;
     margin-right: 10px;
 }
 
-.contact-info .contact-name {
+.info .name {
     font-size: 16px;
     font-weight: bold;
     margin: 0;
 }
 
-.contact-info .contact-number {
+.info .contact-number {
     font-size: 14px;
     color: #666;
 }

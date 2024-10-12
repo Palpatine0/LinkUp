@@ -1,8 +1,8 @@
 package com.enchanted.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
-import com.enchanted.entity.Address;
-import com.enchanted.service.IAddressService;
+import com.enchanted.entity.Gift;
+import com.enchanted.service.IGiftService;
 import com.enchanted.vo.R;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -11,20 +11,20 @@ import java.util.Map;
 
 @CrossOrigin
 @RestController
-@RequestMapping("/address")
-public class AddressController {
+@RequestMapping("/gift")
+public class GiftController {
 
     @Autowired
-    private IAddressService addressService;
+    private IGiftService giftService;
 
     /* C */
     @PostMapping("/save")
-    public R save(@RequestBody Address address) {
-        boolean isSaved = addressService.save(address);
+    public R save(@RequestBody Gift gift) {
+        boolean isSaved = giftService.save(gift);
         if (isSaved) {
-            return R.ok("Address added successfully");
+            return R.ok("Gift added successfully");
         } else {
-            return R.error("Failed to add address");
+            return R.error("Failed to add gift");
         }
     }
 
@@ -37,10 +37,9 @@ public class AddressController {
         requestData.remove("page");
         requestData.remove("size");
 
-        Page<Address> addressPage = addressService.search(requestData, page, size);
-        return R.paginate(addressPage);
+        Page<Gift> giftPage = giftService.search(requestData, page, size);
+        return R.paginate(giftPage);
     }
-
 
     /* U */
     @PostMapping("/update")
@@ -48,11 +47,11 @@ public class AddressController {
         Long id = Long.parseLong(requestData.get("id").toString());
         requestData.remove("id");
 
-        boolean isUpdated = addressService.update(id, requestData);
+        boolean isUpdated = giftService.update(id, requestData);
         if (isUpdated) {
-            return R.ok("Address updated successfully");
+            return R.ok("Gift updated successfully");
         } else {
-            return R.error("Failed to update address");
+            return R.error("Failed to update gift");
         }
     }
 
@@ -60,11 +59,11 @@ public class AddressController {
     @PostMapping("/delete")
     public R delete(@RequestBody Map<String, Object> requestData) {
         Long id = Long.parseLong(requestData.get("id").toString());
-        boolean isDeleted = addressService.delete(id);
+        boolean isDeleted = giftService.delete(id);
         if (isDeleted) {
-            return R.ok("Address deleted successfully");
+            return R.ok("Gift deleted successfully");
         } else {
-            return R.error("Failed to delete address");
+            return R.error("Failed to delete gift");
         }
     }
 }

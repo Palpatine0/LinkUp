@@ -331,7 +331,7 @@ export default {
                     }
                 } else if(messageType === 'readReceipt') {
                     this.messages.forEach(msg => {
-                        if(messageData.tempMessageIds.includes(msg.id)||messageData.messageIds.includes(msg.id)) {
+                        if(messageData.tempMessageIds.includes(msg.id) || messageData.messageIds.includes(msg.id)) {
                             msg.isRead = 1;
                         }
                     });

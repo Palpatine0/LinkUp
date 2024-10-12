@@ -1,11 +1,11 @@
 <template>
-<view class="charge-container">
-    <view class="mask" @click="close()"></view>
-    <view class="widget-center charge-anim">
-        <view class="charge-header">{{ $t('component>balance>deposit.depositTitle') }}</view>
+<div class="charge-container">
+    <div class="mask" @click="close()"></div>
+    <div class="widget-center charge-anim">
+        <div class="charge-header">{{ $t('component>balance>deposit.depositTitle') }}</div>
 
         <!-- Predefined Amount Buttons -->
-        <view class="charge-options">
+        <div class="charge-options">
             <div
                 v-for="amount in predefinedAmounts"
                 :key="amount"
@@ -14,19 +14,19 @@
             >
                 ¥{{ amount }}
             </div>
-        </view>
+        </div>
 
         <!-- Display Selected Amount -->
-        <view class="no-more-data">
+        <div class="no-more-data">
             <div class="credit">¥{{ selectedAmount.toFixed(2) }}</div>
-        </view>
+        </div>
 
         <!-- Confirm Button -->
         <div class="center-h" style="width: 60%;">
             <app-button @click="confirmCharge" shaped>{{ $t('component>balance>deposit.depositBtn') }}</app-button>
         </div>
-    </view>
-</view>
+    </div>
+</div>
 </template>
 
 <script>

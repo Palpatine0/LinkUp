@@ -318,6 +318,15 @@
         "takePhoto": "拍照",
         "choseFromAlbum": "从相册选择"
     },
+    "component>chat>chatItemSelector>gallery": {
+        "panelHeader": "相册",
+        "takePhoto": "拍照",
+        "choseFromAlbum": "从相册选择"
+    },
+    "component>chat>chatItemSelector>gift": {
+        "panelHeader": "礼物",
+        "lc": "领客币"
+    },
     "component>order>serviceSchedule": {
         "showToast": {
             "selectServiceSchedule": "请选择预约时间段"

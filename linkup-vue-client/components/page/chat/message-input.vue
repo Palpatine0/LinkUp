@@ -1,6 +1,7 @@
-"<template>
+"
+<template>
 <div class="message-input-container">
-    <img src="/static/page/chat/upload.svg" alt="Upload" class="upload-button" @click="selectFileType"/>
+    <img src="/static/page/chat/upload.svg" alt="Upload" class="upload-button" @click="chatItemSelectorToggle"/>
     <textarea
         v-model="message"
         class="message-input"
@@ -10,20 +11,27 @@
         auto-height
     ></textarea>
     <img src="/static/page/chat/send.svg" alt="Send" class="send-button" @click="sendMessage"/>
+    <ChatItemSelector v-if="isChatItemSelectorToggleVisible"></ChatItemSelector>
 </div>
 </template>
 
 <script>
+import ChatItemSelector from "./chat-item-selector.vue";
+
 export default {
     name: "message-input",
+    components: {
+        ChatItemSelector
+    },
     data() {
         return {
             message: '',
+            isChatItemSelectorToggleVisible: false
         };
     },
     methods: {
         sendMessage() {
-            if (this.message.trim()) {
+            if(this.message.trim()) {
                 this.$emit('handleSend', this.message.trim());
                 this.message = '';
             }
@@ -36,7 +44,7 @@ export default {
                 ],
                 success: (res) => {
                     console.log(res.tapIndex);
-                    if (res.tapIndex == 0) {
+                    if(res.tapIndex == 0) {
                         // chose from album
                         uni.chooseImage({
                             count: 12,
@@ -65,7 +73,7 @@ export default {
                                 })
                             }
                         })
-                    } else if (res.tapIndex == 1) {
+                    } else if(res.tapIndex == 1) {
                         // take photo
                         uni.chooseImage({
                             count: 12,
@@ -81,6 +89,9 @@ export default {
                 },
             });
         },
+        chatItemSelectorToggle() {
+            this.isChatItemSelectorToggleVisible = !this.isChatItemSelectorToggleVisible
+        }
     },
 };
 </script>
