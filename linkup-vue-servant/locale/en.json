@@ -234,6 +234,11 @@
         "takePhoto": "Take Photo",
         "choseFromAlbum": "Choose From Album"
     },
+    "component>chat>chatItemSelector>gallery": {
+        "panelHeader": "Gallery",
+        "takePhoto": "Take Photo",
+        "choseFromAlbum": "Choose From Album"
+    },
     "component>order>serviceSchedule": {
         "showToast": {
             "selectServiceSchedule": "Please make a schedule"

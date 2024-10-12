@@ -9,8 +9,7 @@
         <!-- Conditional rendering for each panel with limited height -->
         <div class="sub-panel-wrapper">
             <Gallery v-if="selectedChatItem === 'gallery'" class="sub-panel" @select="handleSelection"/>
-            <Gift v-if="selectedChatItem === 'gift'" class="sub-panel" @select="handleSelection"/>
-        </div>
+        </div>`
 
         <!-- Chat item selectors at the bottom -->
         <div class="chat-item-selectors">
@@ -35,11 +34,10 @@
 
 <script>
 import Gallery from "./chat-item-selector/gallery.vue";
-import Gift from "./chat-item-selector/gift.vue";
 
 export default {
     name: "chat-item-selector",
-    components: {Gallery,Gift},
+    components: {Gallery},
     data() {
         return {
             selectedChatItem: 'gallery',
@@ -50,12 +48,6 @@ export default {
                     icon: '/static/page/chat/chat-item-selector/photo-film.svg',
                     iconActive: '/static/page/chat/chat-item-selector/photo-film-active.svg'
                 },
-                {
-                    id: 'gift',
-                    label: this.$t('component>chat>chatItemSelector>gift.panelHeader'),
-                    icon: '/static/page/chat/chat-item-selector/gift.svg',
-                    iconActive: '/static/page/chat/chat-item-selector/gift-active.svg'
-                },
             ],
         };
     },
@@ -64,8 +56,6 @@ export default {
             switch (this.selectedChatItem) {
                 case 'gallery':
                     return this.$t('component>chat>chatItemSelector>gallery.panelHeader');
-                case 'gift':
-                    return this.$t('component>chat>chatItemSelector>gift.panelHeader');
                 default:
                     return 'Select Option';
             }
