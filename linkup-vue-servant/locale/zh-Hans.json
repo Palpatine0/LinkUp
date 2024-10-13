@@ -152,7 +152,7 @@
     "profile>balance>transactionHistory": {
         "transactionHistory": "交易历史",
         "balance": "余额",
-        "lookingCoin": "领克币",
+        "lookingCoin": "领客币",
         "amount": "金额",
         "pending": "待处理",
         "completed": "已完成",

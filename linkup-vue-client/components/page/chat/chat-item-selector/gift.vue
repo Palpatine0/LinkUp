@@ -1,17 +1,18 @@
 <template>
 <div>
-    <scroll-view :scroll-top="0" scroll-y="true" class="mt-4">
+    <scroll-view :scroll-top="0" scroll-y="true">
         <div class="grid">
             <div
                 v-for="(gift, index) in giftList"
                 :key="gift.id"
                 class="option"
-                @click="selectGift(gift.id)"
+                @click="selectGift(gift)"
             >
                 <img style="width: 100px;height: 100px;object-fit: cover;" src="/static/page/chat/chat-item-selector/gift-active.svg"/>
                 <div class="info">
                     <h2 class="name">{{ gift.name }}</h2>
-                    <p class="price">{{ gift.price +" "+ $t('lc')}}</p>
+                    <p class="chat-duration">{{ gift.chatDuration + " " + $t('pub.unit.minutes') }}</p>
+                    <p class="price">{{ gift.price + " " + $t('component>chat>chatItemSelector>gift.lc') }}</p>
                 </div>
             </div>
         </div>
@@ -30,12 +31,10 @@ export default {
         }
     },
     mounted() {
-        console.log("GIFT mounted() {")
         this.getDataList();
     },
     methods: {
         getDataList() {
-            console.log("getDataList() {")
             if(!this.hasMore || this.loading) return;
             this.loading = true;
             uni.request({
@@ -64,21 +63,17 @@ export default {
                 },
             });
         },
-
-        selectGiftOption1() {
-            this.$emit('select', 'giftOption1');
+        selectGift(gift) {
+            this.$emit('select', gift);
         },
-        selectGiftOption2() {
-            this.$emit('select', 'giftOption2');
-        }
     }
 };
 </script>
 <style scoped>
 .grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr); /* Two items per row */
-    gap: 16px; /* Adjust spacing between the grid items */
+    grid-template-columns: repeat(2, 1fr);
+    gap: 16px;
 }
 
 .option {
@@ -105,9 +100,16 @@ export default {
 .name {
     font-size: 18px;
     font-weight: bold;
+    color: #2676f7;
 }
-.price{
+
+.price {
     font-size: 14px;
     color: #666;
 }
+
+.chat-duration {
+    font-size: 16px;
+}
+
 </style>

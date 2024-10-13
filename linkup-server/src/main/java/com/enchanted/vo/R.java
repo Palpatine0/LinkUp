@@ -20,12 +20,14 @@ public class R extends HashMap<String, Object> {
 
     public static R ok(String message) {
         R r = new R();
+        r.put("status", 200);
         r.put("message", message);
         return r;
     }
 
     public static R ok(Map<String, Object> map) {
         R r = new R();
+        r.put("status", 200);
         r.putAll(map);
         return r;
     }
@@ -43,6 +45,7 @@ public class R extends HashMap<String, Object> {
     public static R error(int code, String message) {
         R r = new R();
         r.put("code", code);
+        r.put("status", 500);
         r.put("message", message);
         return r;
     }
@@ -55,6 +58,7 @@ public class R extends HashMap<String, Object> {
 
     public static <T> R paginate(Page<T> page) {
         return R.ok()
+            .put("status", 200)
             .put("list", page.getRecords())
             .put("total", page.getTotal())
             .put("pages", page.getPages())

@@ -21,7 +21,8 @@
             "f": "Female"
         },
         "unit": {
-            "cny": "CNY"
+            "cny": "CNY",
+            "minutes": "Minutes"
         },
         "showToast": {
             "success": "Success",
@@ -292,8 +293,11 @@
         }
     },
     "component>chat>messageInput": {
-        "takePhoto": "Take Photo",
-        "choseFromAlbum": "Choose From Album"
+        "insufficientTimeModal": {
+            "title": "Send a Gift to Start Chatting",
+            "content": "To start a conversation, please send a gift first! Tap the link icon at the bottom to find the gift options. Once you’ve sent a gift, the chat feature will be available for a certain period based on the type of gift you send."
+        }
+
     },
     "component>chat>chatItemSelector>gallery": {
         "panelHeader": "Gallery",
@@ -302,7 +306,7 @@
     },
     "component>chat>chatItemSelector>gift": {
         "panelHeader": "Gift",
-        "lc": "Looking Coin"
+        "lc": "Looking Coins"
     },
     "component>order>serviceSchedule": {
         "showToast": {

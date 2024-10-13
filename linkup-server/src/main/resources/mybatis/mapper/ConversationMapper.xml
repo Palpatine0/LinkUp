@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.enchanted.mapper.ConversationMapper">
+
+    <select id="search" resultType="com.enchanted.entity.Conversation">
+        SELECT * FROM conversation
+        <where>
+            <if test="params.userId != null and params.userId != ''">
+                AND user_id = #{params.userId}
+            </if>
+            <if test="params.servantId != null and params.servantId != ''">
+                AND servant_id = #{params.servantId}
+            </if>
+        </where>
+        ORDER BY start_time DESC
+    </select>
+
+</mapper>

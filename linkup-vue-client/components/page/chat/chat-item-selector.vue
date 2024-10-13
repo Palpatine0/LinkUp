@@ -8,8 +8,8 @@
 
         <!-- Conditional rendering for each panel with limited height -->
         <div class="sub-panel-wrapper">
-            <Gallery v-if="selectedChatItem === 'gallery'" class="sub-panel" @select="handleSelection"/>
-            <Gift v-if="selectedChatItem === 'gift'" class="sub-panel" @select="handleSelection"/>
+            <Gallery v-show="selectedChatItem === 'gallery'" class="sub-panel" @select="handleSelection"/>
+            <Gift v-show="selectedChatItem === 'gift'" class="sub-panel" @select="handleSelection"/>
         </div>
 
         <!-- Chat item selectors at the bottom -->
@@ -39,7 +39,7 @@ import Gift from "./chat-item-selector/gift.vue";
 
 export default {
     name: "chat-item-selector",
-    components: {Gallery,Gift},
+    components: {Gallery, Gift},
     data() {
         return {
             selectedChatItem: 'gallery',
@@ -78,9 +78,9 @@ export default {
         openSubPanel(item) {
             this.selectedChatItem = item;
         },
-        handleSelection(selectedOption) {
-            console.log("Selected:", selectedOption);
-        }
+        handleSelection(selectedGift) {
+            this.$emit('giftSelected', selectedGift); // Emit to parent
+        },
     }
 };
 </script>
@@ -112,7 +112,7 @@ export default {
     z-index: 1100;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: flex-start;
     height: 500px; /* Fixed height for the panel */
     position: fixed;
     bottom: 0;
@@ -123,6 +123,7 @@ export default {
     flex: 1;
     overflow-y: auto;
     padding: 10px;
+    height: calc(100% - 80px); /* Subtract height of chat item selectors */
 }
 
 /* Header */
@@ -143,8 +144,7 @@ export default {
     box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.1);
     width: 100%;
     height: 60px;
-    position: absolute;
-    bottom: 0;
+    position: relative;
 }
 
 /* Each chat item selector */

@@ -28,6 +28,22 @@ public class GiftController {
         }
     }
 
+    @PostMapping("/purchase")
+    public R purchaseGift(@RequestBody Map<String, Object> requestData) {
+        Long senderId = Long.parseLong(requestData.get("senderId").toString());
+        Long recipientId = Long.parseLong(requestData.get("recipientId").toString());
+        Long giftId = Long.parseLong(requestData.get("giftId").toString());
+
+        // Process the gift purchase
+        boolean success = giftService.purchase(senderId, recipientId, giftId);
+        if (success) {
+            return R.ok("Gift purchased successfully");
+        } else {
+            return R.error("Gift purchase failed");
+        }
+    }
+
+
     /* R */
     @PostMapping("/search")
     public R search(@RequestBody Map<String, Object> requestData) {
@@ -66,4 +82,6 @@ public class GiftController {
             return R.error("Failed to delete gift");
         }
     }
+
+
 }

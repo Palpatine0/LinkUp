@@ -10,7 +10,10 @@
         auto-height
     ></textarea>
     <img src="/static/page/chat/send.svg" alt="Send" class="send-button" @click="sendMessage"/>
-    <ChatItemSelector v-if="isChatItemSelectorToggleVisible"></ChatItemSelector>
+    <ChatItemSelector
+        v-show="isChatItemSelectorToggleVisible"
+        @giftSelected="handleGiftSelection"
+    />
 </div>
 </template>
 
@@ -19,13 +22,17 @@ import ChatItemSelector from "./chat-item-selector.vue";
 
 export default {
     name: "message-input",
+    props: {
+        senderId: {type: String},
+        contactId: {type: String},
+    },
     components: {
         ChatItemSelector
     },
     data() {
         return {
             message: '',
-            isChatItemSelectorToggleVisible: false
+            isChatItemSelectorToggleVisible: false,
         };
     },
     methods: {
@@ -37,7 +44,40 @@ export default {
         },
         chatItemSelectorToggle() {
             this.isChatItemSelectorToggleVisible = !this.isChatItemSelectorToggleVisible
-        }
+        },
+        handleGiftSelection(selectedGift) {
+            this.processGiftPurchase(selectedGift);
+        },
+        processGiftPurchase(gift) {
+            uni.request({
+                url: getApp().globalData.data.requestUrl + this.$API.gift.purchase,
+                method: 'POST',
+                data: {
+                    senderId: this.senderId,
+                    recipientId: this.contactId,
+                    giftId: gift.id,
+                },
+                success: (res) => {
+                    if(res.data.status == 200) {
+                        uni.showToast({title: this.$t('pub.showToast.success'), icon: 'none'});
+                        this.enableChatForDuration(gift.chatDuration);
+                    } else if(res.data.status == 500) {
+                        if(res.data.message == "Insufficient looking coins to purchase the gift") {
+                            if(this.language != "zh-Hans") {
+                                uni.showToast({title: res.data.message, icon: 'none'});
+                            } else {
+                                uni.showToast({title: "你的领客币余额不足", icon: 'none'});
+                            }
+                        }
+                    }
+
+                },
+                fail: (error) => {
+                    uni.showToast({title: this.$t('pub.showToast.fail'), icon: 'none'});
+                }
+            });
+
+        },
     },
 };
 </script>

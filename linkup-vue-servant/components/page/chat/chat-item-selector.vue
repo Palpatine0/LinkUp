@@ -102,7 +102,7 @@ export default {
     z-index: 1100;
     display: flex;
     flex-direction: column;
-    justify-content: space-between;
+    justify-content: flex-start;
     height: 500px; /* Fixed height for the panel */
     position: fixed;
     bottom: 0;
@@ -113,6 +113,7 @@ export default {
     flex: 1;
     overflow-y: auto;
     padding: 10px;
+    height: calc(100% - 80px); /* Subtract height of chat item selectors */
 }
 
 /* Header */
@@ -133,8 +134,7 @@ export default {
     box-shadow: 0 -2px 6px rgba(0, 0, 0, 0.1);
     width: 100%;
     height: 60px;
-    position: absolute;
-    bottom: 0;
+    position: relative;
 }
 
 /* Each chat item selector */

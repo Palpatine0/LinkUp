@@ -19,7 +19,11 @@
         </div>
     </scroll-view>
 
-    <MessageInput @handleSend="handleSend"/>
+    <MessageInput
+        :senderId="userId"
+        :contactId="contactId"
+        @handleSend="handleSend"
+    />
 </div>
 </template>
 
@@ -48,15 +52,18 @@ export default {
 
             scrollTop: 0,
 
+            canSendMessage: false,
+
             socketOpen: false,
             socketTask: null,
         };
     },
     async onLoad(params) {
-        this.contactId = params.contactId;
+        this.contactId = parseInt(params.contactId);
         await this.getUser();
         await this.getContact();
         this.connectWebSocket();
+        this.isEligibleSendMsg()
     },
     onUnload() {
         if(this.socketTask) {
@@ -109,8 +116,8 @@ export default {
                     url: getApp().globalData.data.requestUrl + this.$API.message.search,
                     method: 'POST',
                     data: {
-                        senderId: this.userId,    // Current user's ID
-                        recipientId: this.contactId,  // Contact's ID
+                        senderId: this.userId,
+                        recipientId: this.contactId,
                         page: this.page,
                         size: this.pageSize
                     },
@@ -152,8 +159,8 @@ export default {
                         type: 'readReceipt',
                         data: {
                             messageIds: unreadMessageIds,
-                            recipientId: this.userId, // The user who read the messages
-                            senderId: this.contactId   // The user who sent the messages
+                            recipientId: this.userId,
+                            senderId: this.contactId
                         }
                     };
                     const messageStr = JSON.stringify(readReceiptData);
@@ -182,42 +189,109 @@ export default {
                 this.scrollTop += 100; // Adjust this value based on how many messages are loaded and the estimated height
             });
         },
-        // Handle sending a new message
+        isEligibleSendMsg() {
+            console.log("isEligibleSendMsg() {")
+            uni.request({
+                url: getApp().globalData.data.requestUrl + this.$API.conversation.search,
+                method: 'POST',
+                data: {
+                    userId: this.userId,
+                    contactId: this.contactId,
+                },
+                success: (res) => {
+                    if (res.data.status === 200 && res.data.list && res.data.list.length > 0) {
+                        const conversation = res.data.list[0];
+                        const currentTime = new Date().getTime();
+                        const endTime = new Date(conversation.endTime).getTime();
+
+                        // Calculate remaining time in seconds
+                        const remainingTime = Math.floor((endTime - currentTime) / 1000);
+                        console.log("remainingTime")
+                        console.log(remainingTime)
+                        if (remainingTime > 0) {
+                            this.canSendMessage = true;
+                            this.enableChatForDuration(remainingTime);
+                        } else {
+                            this.canSendMessage = false;
+                        }
+                    } else {
+                        this.canSendMessage = false;
+                    }
+                },
+                fail: (err) => {
+                },
+            });
+        },
+        enableChatForDuration(duration) {
+            this.canSendMessage = true;
+            // Start a timer for the chat duration
+            setTimeout(() => {
+                this.canSendMessage = false;
+                // Prompt user to purchase another gift
+            }, duration * 1000); // Assuming duration is in seconds
+        },
         handleSend(messageContent) {
-            if(this.socketOpen) {
-                const tempId = Date.now();
-                const messageData = {
-                    type: 'message',
-                    data: {
+            if(!this.canSendMessage) {
+                uni.showModal({
+                    title: this.$t('component>chat>messageInput.insufficientTimeModal.title'),
+                    content: this.$t('component>chat>messageInput.insufficientTimeModal.content'),
+                    showCancel: false,
+                    confirmText: this.$t('pub.modal.button.confirm'),
+                    cancelText: this.$t('pub.modal.button.cancel'),
+                    success: (res) => {
+                        if(res.confirm) {
+                            uni.request({
+                                url: getApp().globalData.data.requestUrl + this.$API.order.assignServant,
+                                method: 'POST',
+                                data: {
+                                    orderId: this.order.id,
+                                    servantId: servantId,
+                                    quotedPrice: quotedPrice
+                                },
+                                success: (res) => {
+                                    this.reload();
+                                },
+                            });
+                        }
+                    },
+                });
+                return;
+            }else {
+                if(this.socketOpen) {
+                    const tempId = Date.now();
+                    const messageData = {
+                        type: 'message',
+                        data: {
+                            tempId: tempId,
+                            senderId: this.userId,
+                            recipientId: this.contactId,
+                            content: messageContent,
+                            mediaType: 0,
+                        },
+                    };
+                    const messageStr = JSON.stringify(messageData);
+                    this.socketTask.send({
+                        data: messageStr,
+                        success: () => {
+                            console.log('Message sent via WebSocket.');
+                        },
+                        fail: () => {
+                            console.error('Failed to send message via WebSocket.');
+                        },
+                    });
+                    // Add the message to the local messages array
+                    this.messages.push({
+                        id: tempId,
                         tempId: tempId,
-                        senderId: this.userId,
-                        recipientId: this.contactId,
                         content: messageContent,
-                        mediaType: 0,
-                    },
-                };
-                const messageStr = JSON.stringify(messageData);
-                this.socketTask.send({
-                    data: messageStr,
-                    success: () => {
-                        console.log('Message sent via WebSocket.');
-                    },
-                    fail: () => {
-                        console.error('Failed to send message via WebSocket.');
-                    },
-                });
-                // Add the message to the local messages array
-                this.messages.push({
-                    id: tempId,
-                    tempId: tempId,
-                    content: messageContent,
-                    senderId: this.userId,
-                    createdAt: new Date().toISOString(),
-                    isRead: 0,
-                });
-                this.scrollTop = 0;
-            } else {
-                console.error('WebSocket is not connected.');
+                        senderId: this.userId,
+                        createdAt: new Date().toISOString(),
+                        isRead: 0,
+                    });
+                    this.scrollTop = 0;
+                } else {
+                    console.error('WebSocket is not connected.');
+                }
             }
         },
         sendReadReceipt() {

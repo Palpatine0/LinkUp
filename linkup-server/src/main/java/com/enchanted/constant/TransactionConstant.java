@@ -23,6 +23,8 @@ public class TransactionConstant {
     // - Client > DEDUCTION
     public static final String CLIENT_ORDER_PAYMENT = "Order payment";
     public static final String CLIENT_ORDER_PAYMENT_CN = "订单付款";
+    public static final String CLIENT_CONVERSATION_GIFT = "Conversation gift";
+    public static final String CLIENT_CONVERSATION_GIFT_CN = "聊天礼物";
 
     // - Servant > ADDITION
     public static final String SERVANT_REFERRER_COMMISSION = "Referrer commission";
@@ -31,6 +33,9 @@ public class TransactionConstant {
     public static final String SERVANT_INITIAL_PAYMENT_CN = "订单初始收益";
     public static final String SERVANT_PERFORMANCE_PAYMENT = "Order rating income";
     public static final String SERVANT_PERFORMANCE_PAYMENT_CN = "订单评价收益";
+
+    public static final String SERVANT_CONVERSATION_GIFT = "User gift";
+    public static final String SERVANT_CONVERSATION_GIFT_CN = "用户赠礼";
 
     // - Servant > DEDUCTION
 
