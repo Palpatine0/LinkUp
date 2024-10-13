@@ -14,11 +14,13 @@
         v-show="isChatItemSelectorToggleVisible"
         @giftSelected="handleGiftSelection"
     />
+    <Gift v-if="isGiftVisible"/>
 </div>
 </template>
 
 <script>
 import ChatItemSelector from "./chat-item-selector.vue";
+import Gift from "./gift.vue";
 
 export default {
     name: "message-input",
@@ -27,23 +29,93 @@ export default {
         contactId: {type: String},
     },
     components: {
-        ChatItemSelector
+        ChatItemSelector,
+        Gift
+    },
+    mounted() {
+        this.isEligibleSendMsg()
     },
     data() {
         return {
             message: '',
+            canSendMessage: false,
             isChatItemSelectorToggleVisible: false,
+            isGiftVisible: false
         };
     },
     methods: {
-        sendMessage() {
-            if(this.message.trim()) {
-                this.$emit('handleSend', this.message.trim());
-                this.message = '';
-            }
+        isEligibleSendMsg() {
+            uni.request({
+                url: getApp().globalData.data.requestUrl + this.$API.conversation.search,
+                method: 'POST',
+                data: {
+                    userId: this.userId,
+                    contactId: this.contactId,
+                },
+                success: (res) => {
+                    if(res.data.status === 200 && res.data.list && res.data.list.length > 0) {
+                        const conversation = res.data.list[0];
+                        const currentTime = new Date().getTime();
+                        const endTime = new Date(conversation.endTime).getTime();
+
+                        // Calculate remaining time in seconds
+                        const remainingTime = Math.floor((endTime - currentTime) / 1000);
+                        if(remainingTime > 0) {
+                            this.canSendMessage = true;
+                            this.isGiftVisible = false
+                            this.enableChatForDuration(remainingTime);
+                        } else {
+                            this.canSendMessage = false;
+                            this.isGiftVisible = true
+                        }
+                    } else {
+                        this.canSendMessage = false;
+                        this.isGiftVisible = true
+                    }
+                },
+                fail: (err) => {
+                },
+            });
         },
-        chatItemSelectorToggle() {
-            this.isChatItemSelectorToggleVisible = !this.isChatItemSelectorToggleVisible
+        sendMessage() {
+            if(!this.canSendMessage) {
+                uni.showModal({
+                    title: this.$t('componentPage>chat>chatWindow.insufficientTimeModal.title'),
+                    content: this.$t('componentPage>chat>chatWindow.insufficientTimeModal.content'),
+                    showCancel: false,
+                    confirmText: this.$t('pub.modal.button.confirm'),
+                    cancelText: this.$t('pub.modal.button.cancel'),
+                    success: (res) => {
+                        if(res.confirm) {
+                            uni.request({
+                                url: getApp().globalData.data.requestUrl + this.$API.order.assignServant,
+                                method: 'POST',
+                                data: {
+                                    orderId: this.order.id,
+                                    servantId: servantId,
+                                    quotedPrice: quotedPrice
+                                },
+                                success: (res) => {
+                                    this.reload();
+                                },
+                            });
+                        }
+                    },
+                });
+                return;
+            } else {
+                if(this.message.trim()) {
+                    this.$emit('handleSend', this.message.trim());
+                    this.message = '';
+                }
+            }
+
+        },
+        enableChatForDuration(duration) {
+            this.canSendMessage = true;
+            setTimeout(() => {
+                this.canSendMessage = false;
+            }, duration * 1000);
         },
         handleGiftSelection(selectedGift) {
             this.processGiftPurchase(selectedGift);
@@ -60,7 +132,7 @@ export default {
                 success: (res) => {
                     if(res.data.status == 200) {
                         uni.showToast({title: this.$t('pub.showToast.success'), icon: 'none'});
-                        this.enableChatForDuration(gift.chatDuration);
+                        this.isEligibleSendMsg()
                     } else if(res.data.status == 500) {
                         if(res.data.message == "Insufficient looking coins to purchase the gift") {
                             if(this.language != "zh-Hans") {
@@ -78,6 +150,13 @@ export default {
             });
 
         },
+
+        chatItemSelectorToggle() {
+            this.isChatItemSelectorToggleVisible = !this.isChatItemSelectorToggleVisible
+        },
+        giftToggle() {
+            this.isGiftVisible = !this.isGiftVisible
+        }
     },
 };
 </script>

@@ -1,7 +1,7 @@
 <template>
-<div class="file-selection-container">
+<div>
     <div class="mask" @click="close()"></div>
-    <div class="file-selection-panel coup-anim">
+    <div class="widget-popup coup-anim">
         <div class="file-selection-header">
             {{ panelHeader }}
         </div>
@@ -79,51 +79,18 @@ export default {
             this.selectedChatItem = item;
         },
         handleSelection(selectedGift) {
-            this.$emit('giftSelected', selectedGift); // Emit to parent
+            this.$emit('giftSelected', selectedGift);
         },
     }
 };
 </script>
 
 <style scoped>
-/* Mask */
-.file-selection-container {
-    z-index: 1000;
-    position: fixed;
-    top: 0;
-    left: 0;
-    right: 0;
-    bottom: 0;
-    display: flex;
-    justify-content: flex-end;
-    height: 100vh; /* Full-screen height */
-    flex-direction: column;
-    background-color: rgba(0, 0, 0, 0.5); /* Dimmed background */
-}
-
-/* Upper panel for file selection */
-.file-selection-panel {
-    background-color: #fff;
-    border-radius: 30px 30px 0 0;
-    width: 100%;
-    max-width: 400px;
-    text-align: center;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
-    z-index: 1100;
-    display: flex;
-    flex-direction: column;
-    justify-content: flex-start;
-    height: 500px; /* Fixed height for the panel */
-    position: fixed;
-    bottom: 0;
-}
-
-/* Sub-panel wrapper with max height and scroll */
 .sub-panel-wrapper {
     flex: 1;
     overflow-y: auto;
     padding: 10px;
-    height: calc(100% - 80px); /* Subtract height of chat item selectors */
+    height: calc(100% - 80px);
 }
 
 /* Header */

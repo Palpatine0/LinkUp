@@ -18,9 +18,6 @@ public class Conversation {
     @TableField("servant_id")
     private Long servantId;
 
-    @TableField("start_time")
-    private Date startTime;
-
     @TableField("end_time")
     private Date endTime;
 }

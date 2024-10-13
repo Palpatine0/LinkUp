@@ -21,6 +21,9 @@
             <if test="params.clientId != null and params.clientId != ''">
                 AND client_id = #{params.clientId}
             </if>
+            <if test="params.servantId != null and params.servantId != ''">
+                AND servant_id = #{params.servantId}
+            </if>
             <if test="params.status != null and params.status != ''">
                 AND status = #{params.status}
             </if>

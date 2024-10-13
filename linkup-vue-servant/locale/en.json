@@ -130,6 +130,63 @@
         "completed": "Completed",
         "canceled": "Canceled"
     },
+    "profile>order>orderDetail": {
+        "orderInfoBasic": {
+            "price": "Order Price",
+            "totalCandidates": "Total Candidates"
+        },
+        "quotedPrice": "Quoted Price",
+        "candidates": "Candidates",
+        "selectCandidate": "Select Candidate",
+        "noCandidate": "No one responded yet",
+        "startChatting": "Start Chatting!",
+        "orderClosed": "This order has been closed",
+        "refunded": "The cost of your order has been refunded",
+        "selectedBeforeCountdown": "Please select a candidate before the countdown is over",
+        "orderCanceledManuallyExplanation": "You canceled this order",
+        "orderCanceledByTimeoutExplanation": "The order has been closed due to the fact that no one has taken the order within half an hour of its release (or you manually close it within this duration)",
+        "orderCanceledManuallyWithinSelection": "You canceled this order",
+        "orderCanceledByTimeoutWithinSelection": "Failure in selecting candidate in designated time. This order has been closed",
+        "serviceInProgress": "Your service is now in progress",
+        "serviceComplete": "Your service is now completed",
+        "rateRequest": "Please provide your feedback on your experience.",
+        "cancelOrder": "Cancel Order",
+        "completeOrder": "Mark order as completed",
+        "selectServantModal": {
+            "title": "Confirm your selection",
+            "content1": "Are you sure you want to choose",
+            "content2": "as your accompany?"
+        },
+        "noCandidateCancelModal": {
+            "title": "Cancel Order",
+            "content": "Are you sure you want to cancel this order?"
+        },
+        "hasCandidateCancelModal": {
+            "title": "Cancel Order",
+            "content": "Are you sure you want to cancel this order that has been selected by users? This order can only be refunded 80% of the pricing after exceeding today's free quota cancelling after somebody requested a quoted price. Your free quota today: "
+        },
+        "repostOrder": "Repost Order",
+        "repostModal": {
+            "title": "Repost Order",
+            "content": "Are you sure you want repost this order?"
+        },
+        "completeOrderModal": {
+            "title": "Complete Order Advance",
+            "content": "Are you certain you wish to proceed with completing this order ahead of the designated schedule?"
+        },
+        "orderInfoDetail": {
+            "orderId": "Order ID",
+            "orderTime": "Order Time",
+            "paymentMethod": "Payment Method",
+            "balance": "Balance",
+            "weChat": "WeChat",
+            "address": "Address"
+        },
+        "showToast": {
+            "selectRate": "Please select a rating before submitting.",
+            "rated": "You have rated this order already"
+        }
+    },
 
     "//////": "profile > balance",
     "profile>balance": {

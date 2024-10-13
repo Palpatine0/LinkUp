@@ -57,20 +57,6 @@
                     }
                 },
                 {
-                    "path": "order-servant-selection/order-servant-selection",
-                    "style": {
-                        "navigationBarTitleText": "",
-                        "navigationBarBackgroundColor": "#fefefe"
-                    }
-                },
-                {
-                    "path": "order-initiate/order-initiate",
-                    "style": {
-                        "navigationBarTitleText": "",
-                        "navigationBarBackgroundColor": "#fefefe"
-                    }
-                },
-                {
                     "path": "order-detail/order-detail",
                     "style": {
                         "navigationBarTitleText": "",

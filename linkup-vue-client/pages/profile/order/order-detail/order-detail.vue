@@ -170,7 +170,7 @@
     <!-- ORDER DETAIL -->
     <div class="mt-4" style="color: grey">
         <div class="order-detail">
-            <span>{{ $t('profile>order>orderDetail.orderInfoDetail.orderId') }}:</span> {{ order.identifier }}
+            <span>{{ $t('profile>order>orderDetail.orderInfoDetail.orderId') }}:</span> <p @click="common.addToClipboard(order.identifier)">{{ order.identifier }}</p>
         </div>
         <div class="order-detail">
             <span>{{ $t('profile>order>orderDetail.orderInfoDetail.orderTime') }}:</span> {{ common.stampToTime(order.createdAt) }}

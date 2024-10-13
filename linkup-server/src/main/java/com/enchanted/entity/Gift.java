@@ -21,6 +21,9 @@ public class Gift {
     @TableField("price")
     private Double price;
 
+    @TableField("is_deleted")
+    private Boolean isDeleted;
+
     @TableField("created_at")
     private Date createdAt;
 }

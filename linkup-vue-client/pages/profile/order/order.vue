@@ -41,9 +41,9 @@
                         <div class="highlight-blue">
                             {{ $t('profile>order.candidates') }}: {{ order.candidateCount }}
                         </div>
-                        <span style="font-size: 14px; color: gray;">{{ order.createdAt }}</span>
+
                         <div style="display:flex;justify-content: space-between;">
-                            <span style="font-size: 14px; color: gray;">{{ order.identifier }}</span>
+                            <span style="font-size: 14px; color: gray;">{{ order.createdAt }}</span>
                             <div v-if="order.status==0" class="flex">
                                 <span class="status-dot yellow-dot"></span>
                                 <div class="status-text">{{ $t('profile>order.pending') }}</div>

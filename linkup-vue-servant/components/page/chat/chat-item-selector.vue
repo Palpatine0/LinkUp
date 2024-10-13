@@ -1,7 +1,7 @@
 <template>
-<div class="file-selection-container">
+<div >
     <div class="mask" @click="close()"></div>
-    <div class="file-selection-panel coup-anim">
+    <div class="widget-popup coup-anim">
         <div class="file-selection-header">
             {{ panelHeader }}
         </div>

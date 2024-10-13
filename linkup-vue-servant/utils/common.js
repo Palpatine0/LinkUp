@@ -279,14 +279,14 @@ var $common = {
                 : newVal
             : val;
     },
-    addToClipboard(data, callback) {
-        let oInput = document.createElement("textarea");
-        oInput.value = data;
-        document.body.appendChild(oInput);
-        let txt = oInput.select();
-        document.execCommand("Copy");
-        oInput.remove();
-        callback && callback(txt);
+    addToClipboard(data) {
+        uni.setClipboardData({
+            data: data,
+            showToast:false,
+            success: function () {
+                console.log('success');
+            }
+        });
     },
     distinctArrayObject(arryObject, prop) {
         let result = [];

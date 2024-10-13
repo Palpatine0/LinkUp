@@ -15,7 +15,7 @@
                 AND servant_id = #{params.servantId}
             </if>
         </where>
-        ORDER BY start_time DESC
+        ORDER BY created_at DESC
     </select>
 
 </mapper>

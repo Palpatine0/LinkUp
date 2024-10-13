@@ -21,6 +21,7 @@
         :scroll-top="0"
         scroll-y="true"
         style="height: 80vh"
+        @scrolltoupper="reload"
         @scrolltolower="onReachBottom"
     >
         <div
@@ -32,22 +33,24 @@
             <div class="order-content">
                 <div style="width: 100%;">
                     <div style="display: flex; align-items: center;">
-                        <app-title bold="true" type="h3" style="width: 330px;">{{ order.title }}</app-title>
+                        <app-title bold="true" type="h3" style="width: 330px;">
+                            {{ language != "zh-Hans" ? order.title : order.titleCn }}
+                        </app-title>
                     </div>
                     <div class="order-detail">
                         <div class="highlight-blue">
                             {{ $t('profile>order.candidates') }}: {{ order.candidateCount }}
                         </div>
-                        <span style="font-size: 14px; color: gray;">{{ order.createdAt }}</span>
+
                         <div style="display:flex;justify-content: space-between;">
-                            <span style="font-size: 14px; color: gray;">{{ order.identifier }}</span>
+                            <span style="font-size: 14px; color: gray;">{{ order.createdAt }}</span>
                             <div v-if="order.status==0" class="flex">
                                 <span class="status-dot yellow-dot"></span>
                                 <div class="status-text">{{ $t('profile>order.pending') }}</div>
                             </div>
                             <div v-if="order.status==1" class="flex">
                                 <span class="status-dot green-dot"></span>
-                                <div class="status-text">{{ $t('profile>order.processing') }}</div>
+                                <div class="status-text">{{ $t('profile>order.confirmed') }}</div>
                             </div>
                             <div v-if="order.status==2" class="flex">
                                 <span class="status-dot gray-dot"></span>
@@ -71,29 +74,48 @@
 
 <script>
 import orderDetail from './order-detail/order-detail.vue';
-import paginationMixin from '../../../utils/paginationMixin';
 
 export default {
-    mixins: [paginationMixin],
     data() {
         return {
-            userProfileAvailable: false,
             orderList: [],
             searchKeyword: '',
         };
     },
     onShow() {
-        this.resetPagination();
-        this.getOrderList();
-    },
-    computed: {
-        orderDetail() {
-            return orderDetail;
-        },
+        this.reload()
     },
     methods: {
-        // Fetch order list
-        getOrderList() {
+        reload(){
+            this.resetPagination();
+            this.getDataList();
+        },
+        buildApiParams() {
+            let url = getApp().globalData.data.requestUrl + this.$API.order.search;
+            let method = 'POST';
+            let baseData = {
+                servantId: uni.getStorageSync(getApp().globalData.data.userInfoKey).id,
+                page: this.page,
+                size: this.pageSize,
+            };
+            let data = {};
+
+            if (this.searchKeyword && this.searchKeyword.trim() !== '') {
+                data = {
+                    ...baseData,
+                    keyword: this.searchKeyword,
+                };
+            } else {
+                data = {
+                    ...baseData,
+                };
+            }
+            return {url, method, data};
+        },
+        onSearchInput() {
+            this.reload();
+        },
+        getDataList() {
             if (this.loading || !this.hasMore||this.$common.isEmpty(uni.getStorageSync(getApp().globalData.data.userInfoKey).id)) return;
 
             this.loading = true;
@@ -124,41 +146,6 @@ export default {
                     this.loading = false;
                 },
             });
-        },
-
-        // Build API parameters based on search keyword
-        buildApiParams() {
-            let url = '';
-            let method = 'POST';
-            let data = {};
-
-            if (this.searchKeyword && this.searchKeyword.trim() !== '') {
-                // Use the search endpoint
-                url = getApp().globalData.data.requestUrl + this.$API.order.search;
-                data = {
-                    clientId: uni.getStorageSync(getApp().globalData.data.userInfoKey).id,
-                    keyword: this.searchKeyword,
-                    page: this.page,
-                    size: this.pageSize,
-                };
-            } else {
-                // Use the get-all-by-user-id endpoint
-                url = getApp().globalData.data.requestUrl + this.$API.order.search;
-                method = 'POST';
-                data = {
-                    clientId: uni.getStorageSync(getApp().globalData.data.userInfoKey).id,
-                    page: this.page,
-                    size: this.pageSize,
-                };
-            }
-
-            return {url, method, data};
-        },
-
-        // Handle search input changes
-        onSearchInput() {
-            this.resetPagination();
-            this.getOrderList();
         },
 
         // Redirects
@@ -237,6 +224,8 @@ export default {
     width: 100px;
     font-size: 14px;
     margin-bottom: 4px;
+    align-items: center;
+    display: f;
 }
 
 </style>

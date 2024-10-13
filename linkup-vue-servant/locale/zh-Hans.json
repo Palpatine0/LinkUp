@@ -130,6 +130,71 @@
         "completed": "订单完成",
         "canceled": "订单取消"
     },
+    "profile>order>orderDetail": {
+        "orderInfoBasic": {
+            "price": "报价",
+            "totalCandidates": "已抢单"
+        },
+        "quotedPrice": "报价",
+        "candidates": "已抢单用户",
+        "selectCandidate": "选择达人",
+        "noCandidate": "暂时无人抢单",
+        "startChatting": "开始聊天!",
+
+        "orderClosed": "订单关闭",
+        "refunded": "您的订单费用已退回至您的余额",
+
+        "selectedBeforeCountdown": "请在剩余时间内选择一个达人",
+
+        "orderCanceledManuallyExplanation": "您取消了订单",
+        "orderCanceledByTimeoutExplanation": "因订单发布半小时内无人抢单(或您在这个时间内自行取消了订单),订单已关闭",
+        "orderCanceledManuallyWithinSelection": "您取消了订单",
+        "orderCanceledByTimeoutWithinSelection": "由于您未在规定时间内选择达人，订单已失效",
+
+        "serviceInProgress": "您的订单已经开始",
+        "serviceComplete": "您的订单已经结束",
+        "rateRequest": "请给您的达人评个分",
+
+        "cancelOrder": "取消订单",
+        "completeOrder": "完成订单",
+
+        "selectServantModal": {
+            "title": "确认选择",
+            "content1": "您确认要选择",
+            "content2": "吗?"
+        },
+        "noCandidateCancelModal": {
+            "title": "确认取消订单",
+            "content": "确定要取消订单?"
+        },
+        "hasCandidateCancelModal": {
+            "title": "确认取消订单",
+            "content": "您的订单已经被选择，是否确认取消？超出今日的免费额度(收到报价后取消订单)后本订单只能回退定价的80%。您今日的免费发单额度次数: "
+        },
+        "repostOrder": "重新发布订单",
+        "repostModal": {
+            "title": "重新发布订单",
+            "content": "您确定要重新发布订单?"
+        },
+        "completeOrderModal": {
+            "title": "提前结束订单",
+            "content": "您确定现在就要结束订单?"
+        },
+
+        "orderInfoDetail": {
+            "orderId": "订单编号",
+            "orderTime": "下单时间",
+            "paymentMethod": "支付方式",
+            "balance": "余额",
+            "weChat": "微信支付",
+            "address": "地址"
+        },
+
+        "showToast": {
+            "selectRate": "请选择一个评分再提交",
+            "rated": "您已评价过该订单"
+        }
+    },
 
     "//////": "profile > balance",
     "profile>balance": {

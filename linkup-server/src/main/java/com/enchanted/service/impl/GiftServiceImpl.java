@@ -127,12 +127,10 @@ public class GiftServiceImpl extends ServiceImpl<GiftMapper, Gift> implements IG
             Conversation newConversation = new Conversation();
             newConversation.setUserId(senderId);
             newConversation.setServantId(recipientId);
-            newConversation.setStartTime(new Date());
-            newConversation.setEndTime(new Date(System.currentTimeMillis() + chatDuration * 1000));  // chatDuration in seconds
+            newConversation.setEndTime(new Date(System.currentTimeMillis() + (chatDuration * 60 * 1000)));
             conversationService.save(newConversation);
         } else {
-            Date newEndTime = new Date(activeConversation.getEndTime().getTime() + TimeUnit.MINUTES.toMillis(chatDuration));
-            activeConversation.setEndTime(newEndTime);
+            activeConversation.setEndTime(new Date(System.currentTimeMillis() + (chatDuration * 60 * 1000)));
             conversationService.updateById(activeConversation);
         }
 

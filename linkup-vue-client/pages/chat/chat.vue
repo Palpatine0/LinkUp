@@ -40,14 +40,14 @@ export default {
     },
     onShow() {
         this.contactList = []
-        if (!this.$common.isEmpty(this.userId)) {
+        if(!this.$common.isEmpty(this.userId)) {
             this.getUserList();
         }
     },
     methods: {
         // Step 1: Fetch messages to find unique user IDs who sent/received messages
         getUserList() {
-            if (this.loading) return; // Prevent multiple requests
+            if(this.loading) return; // Prevent multiple requests
             this.loading = true;
             const uniqueUserIds = new Set(); // To store all unique contact IDs
 
@@ -56,7 +56,7 @@ export default {
                 url: getApp().globalData.data.requestUrl + this.$API.message.searchContacts,
                 method: 'POST',
                 data: {
-                    senderId: this.userId,  // Fetch messages where current user is the sender
+                    senderId: this.userId,
                     page: this.page,
                     size: this.pageSize,
                 },
@@ -107,7 +107,7 @@ export default {
         // Step 2: Fetch user details for the unique user IDs found in the messages
         getUserDetails(id) {
             uni.request({
-                url: getApp().globalData.data.requestUrl + this.$API.user.search, // The endpoint for fetching user details
+                url: getApp().globalData.data.requestUrl + this.$API.user.search,
                 method: "POST",
                 data: {
                     id: id,  // Pass the array of unique user IDs

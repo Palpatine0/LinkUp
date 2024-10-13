@@ -17,8 +17,6 @@
             </div>
         </div>
     </scroll-view>
-
-
 </div>
 </template>
 
@@ -73,7 +71,6 @@ export default {
 .grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 16px;
 }
 
 .option {
