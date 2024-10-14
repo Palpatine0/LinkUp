@@ -131,6 +131,7 @@
         "selectServiceSchedule": "请选择服务时间",
         "price": "价格",
         "saveOrder": "保存订单",
+        "orderAndPay": "发布订单",
         "options": {
             "all": "不限",
             "allGender": "不限性别",

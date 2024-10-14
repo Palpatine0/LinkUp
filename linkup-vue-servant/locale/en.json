@@ -126,7 +126,8 @@
         "myOrders": "My Orders",
         "candidates": "Candidates",
         "pending": "Pending",
-        "processing": "Processing",
+        "confirmed": "Confirmed",
+        "processing": "Service in Progress",
         "completed": "Completed",
         "canceled": "Canceled"
     },
@@ -139,7 +140,7 @@
         "candidates": "Candidates",
         "selectCandidate": "Select Candidate",
         "noCandidate": "No one responded yet",
-        "startChatting": "Start Chatting!",
+        "contactUser": "Contact User",
         "orderClosed": "This order has been closed",
         "refunded": "The cost of your order has been refunded",
         "selectedBeforeCountdown": "Please select a candidate before the countdown is over",

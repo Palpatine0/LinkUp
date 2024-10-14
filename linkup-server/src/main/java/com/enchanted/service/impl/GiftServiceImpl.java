@@ -23,7 +23,6 @@ import java.lang.reflect.Field;
 import java.math.BigDecimal;
 import java.util.Date;
 import java.util.Map;
-import java.util.concurrent.TimeUnit;
 
 @Service
 public class GiftServiceImpl extends ServiceImpl<GiftMapper, Gift> implements IGiftService {
@@ -125,7 +124,7 @@ public class GiftServiceImpl extends ServiceImpl<GiftMapper, Gift> implements IG
         if (activeConversation == null) {
             // No active conversation found, create a new one
             Conversation newConversation = new Conversation();
-            newConversation.setUserId(senderId);
+            newConversation.setClientId(senderId);
             newConversation.setServantId(recipientId);
             newConversation.setEndTime(new Date(System.currentTimeMillis() + (chatDuration * 60 * 1000)));
             conversationService.save(newConversation);

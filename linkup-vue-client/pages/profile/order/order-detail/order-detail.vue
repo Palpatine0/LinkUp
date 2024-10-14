@@ -29,10 +29,10 @@
     <!-- DYNAMIC STATUS CONTAINERS -->
     <div v-if="order.countdownStartAt">
         <!-- Alert: Choose while still can -->
-        <div v-if="countdown > 0 && order.status == orderConstant.PENDING" class="app-container" style="background-color: #feb327">
+        <div v-if="countdown != 0 && order.status == orderConstant.PENDING" class="app-container" style="background-color: #feb327">
             <div>
                 <app-title type="h3" bold="true">{{ $t('profile>order>orderDetail.selectedBeforeCountdown') }}</app-title>
-                <p>{{ formatTime(countdown) }}</p>
+                <p>{{ countdown }}</p>
             </div>
             <app-button type="small" color="red" shaped size="small" @click="cancelOrder">
                 {{ $t('profile>order>orderDetail.cancelOrder') }}
@@ -77,7 +77,7 @@
     <!-- /DYNAMIC STATUS CONTAINERS -->
 
     <!-- SERVANT CONTAINER  -->
-    <div v-if="countdown > 0 && order.status == orderConstant.PENDING" class="mt-4">
+    <div v-if="countdown != 0 && order.status == orderConstant.PENDING" class="mt-4">
         <app-title bold="true">{{ $t('profile>order>orderDetail.candidates') }}</app-title>
         <div v-if="servantList.length > 0">
             <z-swiper v-model="servantList" :options="{slidesPerView: 'auto', centeredSlides: true, spaceBetween: 14}" style="width: 100%">
@@ -170,7 +170,8 @@
     <!-- ORDER DETAIL -->
     <div class="mt-4" style="color: grey">
         <div class="order-detail">
-            <span>{{ $t('profile>order>orderDetail.orderInfoDetail.orderId') }}:</span> <p @click="common.addToClipboard(order.identifier)">{{ order.identifier }}</p>
+            <span>{{ $t('profile>order>orderDetail.orderInfoDetail.orderId') }}:</span>
+            <p @click="common.addToClipboard(order.identifier)">{{ order.identifier }}</p>
         </div>
         <div class="order-detail">
             <span>{{ $t('profile>order>orderDetail.orderInfoDetail.orderTime') }}:</span> {{ common.stampToTime(order.createdAt) }}
@@ -282,7 +283,12 @@ export default {
                     this.getOrderAddress();
                     if(this.order.status == this.orderConstant.PENDING) {
                         if(this.order.countdownStartAt) {
-                            this.startCountdown();
+                            const startTime = this.order.countdownStartAt;
+                            const durationInMinutes = 10;
+                            const endTime = new Date(startTime).getTime() + durationInMinutes * 60 * 1000;
+                            this.$common.calculateCountdown(startTime, endTime, (remainingTime) => {
+                                this.countdown = remainingTime;
+                            });
                         }
                         this.getRemainingFreeOrderPostingQuota();
                         this.getServantList();
@@ -352,46 +358,6 @@ export default {
                     this.orderAddress = res.data.list[0];
                 },
             });
-        },
-
-        startCountdown() {
-            const countdownDurationInMinutes = 10; // Define your countdown duration in minutes
-            const countdownDurationInMilliseconds = countdownDurationInMinutes * 60 * 1000; // Convert to milliseconds
-
-            // Parse the countdownStartAt time to get the start time in milliseconds
-            const startTime = new Date(this.order.countdownStartAt).getTime();
-            const countdownEndTime = startTime + countdownDurationInMilliseconds; // Calculate the end time
-
-            // Get the current time in milliseconds
-            const currentTime = new Date().getTime();
-
-            // Calculate the remaining time until countdown ends
-            const remainingTime = countdownEndTime - currentTime;
-
-            console.log("Remaining Time (milliseconds):", remainingTime);
-
-            // Check if the countdown is still active
-            if(remainingTime > 0) {
-                this.countdown = Math.floor(remainingTime / 1000); // Convert to seconds
-                this.countdownInterval = setInterval(() => {
-                    if(this.countdown > 0) {
-                        this.countdown--;
-                    } else {
-                        clearInterval(this.countdownInterval);
-                        console.log("Countdown has ended.");
-                    }
-                }, 1000);
-            } else {
-                this.countdown = 0;
-                console.log("Countdown has already ended.");
-            }
-        },
-
-        formatTime(seconds) {
-            const hours = Math.floor(seconds / 3600);
-            const minutes = Math.floor((seconds % 3600) / 60);
-            const secs = seconds % 60;
-            return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
         },
 
         getServantList() {
@@ -601,7 +567,7 @@ export default {
                 uni.showToast({title: this.$t('profile>order>orderDetail.showToast.selectRate'), icon: 'none'});
                 return;
             }
-            if(!this.$common.isEmpty(this.order.performanceRating)){
+            if(!this.$common.isEmpty(this.order.performanceRating)) {
                 uni.showToast({title: this.$t('profile>order>orderDetail.showToast.rated'), icon: 'none'});
                 return;
             }
@@ -628,7 +594,7 @@ export default {
 
         async userDetailRedirect(userId) {
             uni.navigateTo({
-                url: '/pages/components/user/user-detail/user-detail?userId=' + userId + '?serviceType=' + serviceType + '&serviceName=' + serviceName,
+                url: '/pages/components/user/user-detail/user-detail?userId=' + userId,
             });
         },
         chatWindowRedirect(userId) {

@@ -12,12 +12,18 @@ public class Conversation {
 
     private Long id;
 
-    @TableField("user_id")
-    private Long userId;
+    @TableField("client_id")
+    private Long clientId;
 
     @TableField("servant_id")
     private Long servantId;
 
     @TableField("end_time")
     private Date endTime;
+
+    @TableField("is_deleted")
+    private Boolean isDeleted;
+
+    @TableField("created_at")
+    private Date createdAt;
 }

@@ -38,17 +38,17 @@
                         </app-title>
                     </div>
                     <div class="order-detail">
-                        <div class="highlight-blue">
-                            {{ $t('profile>order.candidates') }}: {{ order.candidateCount }}
-                        </div>
-
                         <div style="display:flex;justify-content: space-between;">
                             <span style="font-size: 14px; color: gray;">{{ order.createdAt }}</span>
                             <div v-if="order.status==0" class="flex">
                                 <span class="status-dot yellow-dot"></span>
                                 <div class="status-text">{{ $t('profile>order.pending') }}</div>
                             </div>
-                            <div v-if="order.status==1" class="flex">
+                            <div v-if="order.status==1&&isServiceInProgressState(order)" class="flex">
+                                <span class="status-dot green-dot"></span>
+                                <div class="status-text">{{ $t('profile>order.processing') }}</div>
+                            </div>
+                            <div v-if="order.status==1&&!isServiceInProgressState(order)" class="flex">
                                 <span class="status-dot green-dot"></span>
                                 <div class="status-text">{{ $t('profile>order.confirmed') }}</div>
                             </div>
@@ -146,6 +146,20 @@ export default {
                     this.loading = false;
                 },
             });
+        },
+        isServiceInProgressState(order) {
+            if(order.serviceScheduleStart && order.serviceScheduleEnd) {
+                const currentTime = new Date().getTime();
+                const serviceStartTime = new Date(order.serviceScheduleStart).getTime();
+                const serviceEndTime = new Date(order.serviceScheduleEnd).getTime();
+                if(currentTime >= serviceStartTime && currentTime <= serviceEndTime) {
+                    return  true;
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
         },
 
         // Redirects

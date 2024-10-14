@@ -13,126 +13,37 @@
                 <app-title bold="true">{{ $t('profile>order>orderDetail.orderInfoBasic.price') }}</app-title>
                 <p>¥{{ order.price }}</p>
             </div>
-
-            <!-- Divider -->
-            <div class="divider"></div>
-
-            <!-- Respondent Section -->
-            <div class="respondent-section">
-                <app-title bold="true">{{ $t('profile>order>orderDetail.orderInfoBasic.totalCandidates') }}</app-title>
-                <p>{{ order.candidateCount }}</p>
-            </div>
         </div>
     </div>
     <!-- /ORDER BASIC INFO CONTAINER-->
 
-    <!-- DYNAMIC STATUS CONTAINERS -->
-    <div v-if="order.countdownStartAt">
-        <!-- Alert: Choose while still can -->
-        <div v-if="countdown > 0 && order.status == orderConstant.PENDING" class="app-container" style="background-color: #feb327">
-            <div>
-                <app-title type="h3" bold="true">{{ $t('profile>order>orderDetail.selectedBeforeCountdown') }}</app-title>
-                <p>{{ formatTime(countdown) }}</p>
-            </div>
-            <app-button type="small" color="red" shaped size="small" @click="cancelOrder">
-                {{ $t('profile>order>orderDetail.cancelOrder') }}
-            </app-button>
-        </div>
-    </div>
-
-
-    <!-- Cancel before Waiting Respond OT -->
-    <div v-if="cancelStatus.isCancelManually" class="app-container" style="background-color: white !important;">
-        <app-title type="h3" bold="true">{{ $t('profile>order>orderDetail.orderClosed') }}</app-title>
-        <p>{{ $t('profile>order>orderDetail.orderCanceledManuallyExplanation') }}</p>
-        <p>{{ $t('profile>order>orderDetail.refunded') }}</p>
-    </div>
-    <!-- Cancel cuz Waiting Respond OT -->
-    <div v-if="cancelStatus.isCancelByTimeout" class="app-container" style="background-color: white !important;">
-        <app-title type="h3" bold="true">{{ $t('profile>order>orderDetail.orderClosed') }}</app-title>
-        <p>{{ $t('profile>order>orderDetail.orderCanceledByTimeoutExplanation') }}</p>
-        <p>{{ $t('profile>order>orderDetail.refunded') }}</p>
-    </div>
-
-    <!-- Cancel before Selection OT -->
-    <div v-if="cancelStatus.isCancelManuallyWithinSelection" class="app-container" style="background-color: white !important;">
-        <app-title type="h3" bold="true">{{ $t('profile>order>orderDetail.orderClosed') }}</app-title>
-        <p>{{ $t('profile>order>orderDetail.orderCanceledManuallyWithinSelection') }}</p>
-        <p>{{ $t('profile>order>orderDetail.refunded') }}</p>
-    </div>
-    <!-- Cancel cuz Selection OT -->
-    <div v-if="cancelStatus.isCancelByTimeoutWithinSelection" class="app-container" style="background-color: white !important;">
-        <app-title type="h3" bold="true">{{ $t('profile>order>orderDetail.orderClosed') }}</app-title>
-        <p>{{ $t('profile>order>orderDetail.orderCanceledByTimeoutWithinSelection') }}</p>
-        <p>{{ $t('profile>order>orderDetail.refunded') }}</p>
-    </div>
 
     <!-- SERVICE IN PROGRESS -->
     <div v-if="order.status == orderConstant.PROCESSING&&isServiceInProgress" class="app-container" style="background-color: #44e1a6">
         <app-title type="h3" bold="true" style="color: white">{{ $t('profile>order>orderDetail.serviceInProgress') }}</app-title>
-        <app-button type="small" color="black" shaped size="small" @click="completeOrder">
-            {{ $t('profile>order>orderDetail.completeOrder') }}
-        </app-button>
     </div>
     <!-- /DYNAMIC STATUS CONTAINERS -->
 
-    <!-- SERVANT CONTAINER  -->
-    <div v-if="countdown > 0 && order.status == orderConstant.PENDING" class="mt-4">
-        <app-title bold="true">{{ $t('profile>order>orderDetail.candidates') }}</app-title>
-        <div v-if="servantList.length > 0">
-            <z-swiper v-model="servantList" :options="{slidesPerView: 'auto', centeredSlides: true, spaceBetween: 14}" style="width: 100%">
-                <z-swiper-item v-for="(user, index) in servantList" :key="index" :custom-style="{width: '500rpx'}">
-                    <demo-item :item="user">
-                        <app-container color="#fff" col="12" @click="userDetailRedirect(user.id)">
-                            <div class="center-h">
-                                <image style="width: 160px; height: 160px; border-radius: 50%; margin: 30px 0" :src="user.avatar" mode="aspectFill"></image>
-                            </div>
-                            <app-title type="h3" bold="true">{{ user.nickname }}</app-title>
-                            <div class="flex" style="margin: 3px 0px 0px -6px">
-                                <span style="font-size: 27px; margin: 0 10px; position: relative; top: -8px; left: 2px;">
-                                    {{ user.gender === 0 ? '👨‍💻' : '👩‍💻' }}
-                                </span>
-                                <app-title type="h3" bold="true">{{ user.age }}</app-title>
-                            </div>
-                            <div class="highlight">
-                                {{ $t('profile>order>orderDetail.quotedPrice') }}: {{ user.quotedPrice }}
-                            </div>
-                            <p style="margin-bottom: 10px">{{ user.servantData.bio }}</p>
-                        </app-container>
-                        <div style="width: 70%;" class="center-h">
-                            <app-button type="small" @click="selectServant(user.nickname,user.id,user.quotedPrice)" shaped>
-                                {{ $t('profile>order>orderDetail.selectCandidate') }}
-                            </app-button>
-                        </div>
-                    </demo-item>
-                </z-swiper-item>
-            </z-swiper>
-        </div>
-        <div v-else>
-            <div class="no-more-data-text" style="margin-bottom: 60vh;">
-                {{ $t('profile>order>orderDetail.noCandidate') }}
-            </div>
-        </div>
-    </div>
+    <!-- CLIENT CONTAINER  -->
     <div v-if="order.status == orderConstant.PROCESSING" style="width: 65vw;margin: 0 auto">
-        <app-container color="#fff" col="12" @click="userDetailRedirect(orderServant.id)">
+        <app-container color="#fff" col="12" @click="userDetailRedirect(orderClient.id)">
             <div class="center-h">
-                <image style="width: 160px; height: 160px; border-radius: 50%; margin: 30px 0" :src="orderServant.avatar" mode="aspectFill"></image>
+                <image style="width: 160px; height: 160px; border-radius: 50%; margin: 30px 0" :src="orderClient.avatar" mode="aspectFill"></image>
             </div>
-            <app-title type="h3" bold="true">{{ orderServant.nickname }}</app-title>
+            <app-title type="h3" bold="true">{{ orderClient.nickname }}</app-title>
             <div class="flex" style="margin: 3px 0 30px -6px">
                 <span style="font-size: 27px; margin: 0 10px; position: relative; top: -8px; left: 2px;">
-                    {{ orderServant.gender === 0 ? '👨‍💻' : '👩‍💻' }}
+                    {{ orderClient.gender === 0 ? '👨‍💻' : '👩‍💻' }}
                 </span>
-                <app-title type="h3" bold="true">{{ orderServant.age }}</app-title>
+                <app-title type="h3" bold="true">{{ orderClient.age }}</app-title>
             </div>
-            <p style="margin-bottom: 10px">{{ orderServant.servantData.bio }}</p>
+            <p style="margin-bottom: 10px">{{ orderClient.servantData.bio }}</p>
+            <div style="width: 70%;" class="center-h">
+                <app-button type="small" @click="chatWindowRedirect(orderClient.id)" shaped>
+                    {{ $t('profile>order>orderDetail.contactUser') }}
+                </app-button>
+            </div>
         </app-container>
-        <div style="width: 70%;" class="center-h">
-            <app-button type="small" @click="chatWindowRedirect(orderServant.id)" shaped>
-                {{ $t('profile>order>orderDetail.startChatting') }}
-            </app-button>
-        </div>
     </div>
     <!-- /SERVANT CONTAINER  -->
 
@@ -233,7 +144,7 @@ export default {
             orderAddress: {},
 
             servantList: [],
-            orderServant: {},
+            orderClient: {},
 
             freeOrderPostingQuota: 0,
 
@@ -288,7 +199,7 @@ export default {
                         this.getServantList();
                     }
                     if(this.order.status == this.orderConstant.PROCESSING) {
-                        this.getOrderServant();
+                        this.getOrderClient();
                         this.setServiceInProgressState();
                     }
                     this.setCancellationStates();
@@ -580,15 +491,15 @@ export default {
             });
         },
 
-        getOrderServant() {
+        getOrderClient() {
             uni.request({
                 url: getApp().globalData.data.requestUrl + this.$API.user.search,
                 method: 'POST',
                 data: {
-                    id: this.order.servantId
+                    id: this.order.clientId
                 },
                 success: (res) => {
-                    this.orderServant = res.data.list[0]
+                    this.orderClient = res.data.list[0]
                 },
             });
         },

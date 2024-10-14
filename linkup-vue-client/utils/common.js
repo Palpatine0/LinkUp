@@ -138,6 +138,52 @@ var $common = {
         return timePart ? `${datePart} ${timePart}` : datePart;
     },
 
+    calculateCountdown: function(startTime, endTime, callback){
+        const currentTime = new Date().getTime();
+        let remainingTime = 0;
+
+        if (startTime && endTime) {
+            // If both start and end times are provided
+            const startTimestamp = new Date(startTime).getTime();
+            const endTimestamp = new Date(endTime).getTime();
+            remainingTime = endTimestamp - currentTime;
+        } else if (startTime && !endTime) {
+            // If only the start time is provided, assume a default 10-minute duration
+            const startTimestamp = new Date(startTime).getTime();
+            const countdownDurationInMilliseconds = 10 * 60 * 1000; // 10 minutes
+            const endTimestamp = startTimestamp + countdownDurationInMilliseconds;
+            remainingTime = endTimestamp - currentTime;
+        } else if (!startTime && endTime) {
+            // If only the end time is provided, calculate remaining time from current time to end time
+            const endTimestamp = new Date(endTime).getTime();
+            remainingTime = endTimestamp - currentTime;
+        }
+
+        // Check if countdown is still active
+        if (remainingTime > 0) {
+            let countdown = Math.floor(remainingTime / 1000); // Convert milliseconds to seconds
+
+            const intervalId = setInterval(() => {
+                if (countdown > 0) {
+                    countdown--;
+                    const formattedTime = this.secondsToCountdown(countdown);
+                    callback(formattedTime); // Pass the formatted time to the callback
+                } else {
+                    clearInterval(intervalId);
+                    callback("00:00:00"); // When countdown reaches 0
+                }
+            }, 1000); // Update every second
+        } else {
+            callback("00:00:00"); // If countdown is over, return "00:00:00"
+        }
+    },
+    secondsToCountdown: function(seconds){
+        const hours = Math.floor(seconds / 3600);
+        const minutes = Math.floor((seconds % 3600) / 60);
+        const secs = seconds % 60;
+        return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    },
+
     unDefined(v) {
         return v === undefined ? true : false;
     },

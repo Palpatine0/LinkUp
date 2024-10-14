@@ -49,7 +49,7 @@ export default {
                 url: getApp().globalData.data.requestUrl + this.$API.conversation.search,
                 method: 'POST',
                 data: {
-                    userId: this.userId,
+                    clientId: this.userId,
                     contactId: this.contactId,
                 },
                 success: (res) => {

@@ -126,7 +126,8 @@
         "myOrders": "我的订单",
         "candidates": "抢单人数",
         "pending": "已发布",
-        "processing": "订单开始",
+        "confirmed": "订单确认",
+        "processing": "服务中",
         "completed": "订单完成",
         "canceled": "订单取消"
     },
@@ -139,7 +140,7 @@
         "candidates": "已抢单用户",
         "selectCandidate": "选择达人",
         "noCandidate": "暂时无人抢单",
-        "startChatting": "开始聊天!",
+        "contactUser": "联系用户",
 
         "orderClosed": "订单关闭",
         "refunded": "您的订单费用已退回至您的余额",
