@@ -6,8 +6,10 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.enchanted.constant.OrderConstant;
 import com.enchanted.constant.TransactionConstant;
+import com.enchanted.entity.Conversation;
 import com.enchanted.entity.Transaction;
 import com.enchanted.entity.User;
+import com.enchanted.mapper.ConversationMapper;
 import com.enchanted.mapper.OrderMapper;
 import com.enchanted.entity.Order;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -44,10 +46,13 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     private ITransactionService transactionService;
 
     @Autowired
+    private IOrderCandidateService orderCandidateService;
+
+    @Autowired
     private OrderMapper orderMapper;
 
     @Autowired
-    private IOrderCandidateService orderCandidateService;
+    private ConversationMapper conversationMapper;
 
     @Autowired
     private TaskScheduler taskScheduler;
@@ -307,13 +312,14 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         Runnable task = () -> {
             Order order = this.getById(orderId);
             if (order != null && order.getStatus() == OrderConstant.PROCESSING) {
-                updateStatus(orderId,OrderConstant.COMPLETED);
+                updateStatus(orderId, OrderConstant.COMPLETED);
             }
             autoCompletionTasks.remove(orderId);
         };
         ScheduledFuture<?> future = taskScheduler.schedule(task, serviceScheduleEnd);
         autoCompletionTasks.put(orderId, future);
     }
+
     public void stopOrderCompletionMonitor(Long orderId) {
         ScheduledFuture<?> future = autoCompletionTasks.get(orderId);
         if (future != null && !future.isCancelled()) {
@@ -321,9 +327,6 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             autoCompletionTasks.remove(orderId);
         }
     }
-
-
-
 
 
     /**
@@ -509,6 +512,13 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
      */
     public void processingOrder(Order order) {
         stopAutoRefundMonitor(order.getId());
+        QueryWrapper<Conversation> wrapper = new QueryWrapper<>();
+        wrapper.eq("client_id", order.getClientId());
+        wrapper.eq("servant_id", order.getServantId());
+        wrapper.eq("is_deleted", 0);
+        Conversation conversation = conversationMapper.selectOne(wrapper);
+        conversation.setEndTime(order.getServiceScheduleEnd());
+        conversationMapper.updateById(conversation);
         order.setStatus(OrderConstant.PROCESSING);
         orderMapper.updateById(order);
     }
