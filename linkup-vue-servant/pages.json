@@ -63,7 +63,7 @@
         },
 
         // ** order ** //
-        // profile > order
+        // order-detail
         {
             "root": "pages/order/order-detail",
             "pages": [
@@ -133,7 +133,7 @@
             ]
         },
 
-        //components
+        // ** components ** //
         {
             "root": "pages/components",
             "pages": [

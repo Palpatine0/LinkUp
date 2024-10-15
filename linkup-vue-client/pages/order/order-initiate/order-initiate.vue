@@ -82,13 +82,13 @@
         <!-- Service Schedule -->
         <app-title bold="true">{{ $t('profile>order>orderInitiate.serviceSchedule') }}</app-title>
         <div class="app-input">
-            <div v-if="common.isEmpty(this.formData.serviceScheduleStart) || common.isEmpty(this.formData.serviceScheduleEnd)" @click="serviceScheduleToggle">
+            <div v-if="$common.isEmpty(this.formData.serviceScheduleStart) || $common.isEmpty(this.formData.serviceScheduleEnd)" @click="serviceScheduleToggle">
                 {{ $t('profile>order>orderInitiate.selectServiceSchedule') }}
             </div>
             <div v-else @click="serviceScheduleToggle">
-                {{ common.stampToTime(this.formData.serviceScheduleStart, {yyyy: false, ss: false}) }}
+                {{ $common.stampToTime(this.formData.serviceScheduleStart, {yyyy: false, ss: false}) }}
                 -
-                {{ common.stampToTime(this.formData.serviceScheduleEnd, {yyyy: false, ss: false, MM: false, dd: false}) }}
+                {{ $common.stampToTime(this.formData.serviceScheduleEnd, {yyyy: false, ss: false, MM: false, dd: false}) }}
             </div>
         </div>
 
@@ -120,18 +120,17 @@
 </template>
 
 <script>
-import PaymentMethodSelection from "../../../../components/page/payment/payment-method-selection.vue";
-import ServiceSchedule from "../../../../components/page/order/service-schedule.vue";
-import AddressSelector from "../../../../components/page/address/address-selector.vue";
-import common from "../../../../utils/common";
-import $common from "../../../../utils/common";
-import app from "../../../../App.vue";
+import PaymentMethodSelection from "../../../components/page/payment/payment-method-selection.vue";
+import ServiceSchedule from "../../../components/page/order/service-schedule.vue";
+import AddressSelector from "../../../components/page/address/address-selector.vue";
+import $common from "../../../utils/common";
+import app from "../../../App.vue";
 
 export default {
     computed: {
-        common() {
-            return common;
-        },
+        $common() {
+            return $common
+        }
     },
     components: {
         PaymentMethodSelection,
@@ -537,8 +536,8 @@ export default {
                     paymentMethod: paymentMethod,
                 },
                 success: (res) => {
-                    uni.redirectTo({
-                        url: '/pages/profile/order/order',
+                    uni.switchTab({
+                        url: '/pages/order/order',
                     });
                 },
             });

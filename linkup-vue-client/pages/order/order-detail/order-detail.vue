@@ -86,7 +86,7 @@
                         <app-container color="#fff" col="12" @click="userDetailRedirect(user.id)">
                             <div class="center-h">
                                 <image style="width: 160px; height: 160px; border-radius: 50%; margin: 30px 0" :src="user.avatar" mode="aspectFill"></image>
-                            </div>
+                            </div>`
                             <app-title type="h3" bold="true">{{ user.nickname }}</app-title>
                             <div class="flex" style="margin: 3px 0px 0px -6px">
                                 <span style="font-size: 27px; margin: 0 10px; position: relative; top: -8px; left: 2px;">
@@ -140,7 +140,7 @@
     <!-- SERVICE COMPLETE -->
     <div v-if="order.status==orderConstant.COMPLETED" class="center-h">
         <div class="center-h">
-            <img style="width: 140px" src="/static/page/profile/order/check-double.svg">
+            <img style="width: 140px" src="/static/page/order/check-double.svg">
         </div>
         <div class="completed-text">
             <div>{{ $t('profile>order>orderDetail.serviceComplete') }}</div>
@@ -171,10 +171,10 @@
     <div class="mt-4" style="color: grey">
         <div class="order-detail">
             <span>{{ $t('profile>order>orderDetail.orderInfoDetail.orderId') }}:</span>
-            <p @click="common.addToClipboard(order.identifier)">{{ order.identifier }}</p>
+            <p @click="$common.addToClipboard(order.identifier)">{{ order.identifier }}</p>
         </div>
         <div class="order-detail">
-            <span>{{ $t('profile>order>orderDetail.orderInfoDetail.orderTime') }}:</span> {{ common.stampToTime(order.createdAt) }}
+            <span>{{ $t('profile>order>orderDetail.orderInfoDetail.orderTime') }}:</span> {{ $common.stampToTime(order.createdAt) }}
         </div>
         <div class="order-detail">
             <span>{{ $t('profile>order>orderDetail.orderInfoDetail.paymentMethod') }}:</span>
@@ -197,13 +197,13 @@
     <!-- /ORDER DETAIL -->
 
     <!-- Cancel order opt (no candidates) -->
-    <div v-if="order.status == orderConstant.PENDING && common.isEmpty(this.servantList)" class="fix-bottom flex">
+    <div v-if="order.status == orderConstant.PENDING && $common.isEmpty(this.servantList)" class="fix-bottom flex">
         <div style="width: 100%">
             <app-button color="red" shaped @click="cancelOrder">
                 {{ $t('profile>order>orderDetail.cancelOrder') }}
             </app-button>
         </div>
-        <img class="reload-btn center-v" @click="reload()" src="/static/page/profile/order/rotate-right-solid.svg">
+        <img class="reload-btn center-v" @click="reload()" src="/static/page/order/rotate-right-solid.svg">
     </div>
     <!-- Repost order opt -->
     <div v-if="order.status == orderConstant.CANCELED" class="fix-bottom">
@@ -216,15 +216,13 @@
 
 <script>
 
-import common from "../../../../utils/common";
-import $common from "../../../../utils/common";
-import order from "../order.vue";
+import $common from "../../../utils/common";
 
 export default {
     name: "order-detail",
     computed: {
-        common() {
-            return common
+        $common() {
+            return $common
         }
     },
     data() {
@@ -445,8 +443,8 @@ export default {
                                     status: this.orderConstant.CANCELED
                                 },
                                 success: (res) => {
-                                    uni.redirectTo({
-                                        url: '/pages/profile/order/order',
+                                    uni.switchTab({
+                                        url: '/pages/order/order',
                                     })
                                 },
                             });
@@ -470,8 +468,8 @@ export default {
                                     status: this.orderConstant.CANCELED
                                 },
                                 success: (res) => {
-                                    uni.redirectTo({
-                                        url: '/pages/profile/order/order',
+                                    uni.switchTab({
+                                        url: '/pages/order/order',
                                     })
                                 },
                             });
@@ -533,7 +531,7 @@ export default {
                         }
                         const serviceTypeData = await serviceType()
                         uni.redirectTo({
-                            url: '/pages/profile/order/order-initiate/order-initiate?serviceType=' + serviceTypeData.id + '&serviceName=' + serviceTypeData.name + '&serviceNameCn=' + serviceTypeData.nameCn + '&orderId=' + this.orderId,
+                            url: '../order-initiate/order-initiate?serviceType=' + serviceTypeData.id + '&serviceName=' + serviceTypeData.name + '&serviceNameCn=' + serviceTypeData.nameCn + '&orderId=' + this.orderId,
                         });
                     }
                 },

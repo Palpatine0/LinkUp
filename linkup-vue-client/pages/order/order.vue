@@ -77,8 +77,6 @@
 
 
 <script>
-import orderDetail from './order-detail/order-detail.vue';
-
 export default {
     data() {
         return {
@@ -184,12 +182,12 @@ export default {
         // Redirects
         orderInitiateRedirect() {
             uni.navigateTo({
-                url: '/pages/profile/order/order-servant-selection/order-servant-selection',
+                url: './order-servant-selection/order-servant-selection',
             });
         },
         orderDetailRedirect(orderId) {
             uni.navigateTo({
-                url: '/pages/profile/order/order-detail/order-detail?orderId=' + orderId,
+                url: './order-detail/order-detail?orderId=' + orderId,
             });
         },
     },

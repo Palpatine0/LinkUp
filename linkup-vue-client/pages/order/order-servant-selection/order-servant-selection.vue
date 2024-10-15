@@ -37,7 +37,7 @@ export default {
         },
         orderInitiateRedirect(serviceType, serviceName, serviceNameCn) {
             uni.redirectTo({
-                url: '/pages/profile/order/order-initiate/order-initiate?serviceType=' + serviceType + '&serviceName=' + serviceName + '&serviceNameCn=' + serviceNameCn,
+                url: '../order-initiate/order-initiate?serviceType=' + serviceType + '&serviceName=' + serviceName + '&serviceNameCn=' + serviceNameCn,
             });
         },
 
