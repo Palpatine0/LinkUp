@@ -8,11 +8,13 @@
                 "navigationBarBackgroundColor": "#fefefe"
             }
         },
+
+        // order
         {
-            "path": "pages/home/order-detail/order-detail",
+            "path": "pages/order/order",
             "style": {
                 "navigationBarTitleText": "",
-                "navigationBarBackgroundColor": "#f3f2f6"
+                "navigationBarBackgroundColor": "#fefefe"
             }
         },
 
@@ -45,19 +47,28 @@
         }
     ],
     "subPackages": [
-        // profile > order
+        // ** home ** //
+        // order-detail
         {
-            "root": "pages/profile/order",
+            "root": "pages/home/order-detail",
             "pages": [
                 {
-                    "path": "order",
+                    "path": "order-detail",
                     "style": {
                         "navigationBarTitleText": "",
-                        "navigationBarBackgroundColor": "#fefefe"
+                        "navigationBarBackgroundColor": "#f3f2f6"
                     }
-                },
+                }
+            ]
+        },
+
+        // ** order ** //
+        // profile > order
+        {
+            "root": "pages/order/order-detail",
+            "pages": [
                 {
-                    "path": "order-detail/order-detail",
+                    "path": "order-detail",
                     "style": {
                         "navigationBarTitleText": "",
                         "navigationBarBackgroundColor": "#f3f2f6",
@@ -66,6 +77,8 @@
                 }
             ]
         },
+
+        // ** profile ** //
         // profile > balance
         {
             "root": "pages/profile/balance",
@@ -176,6 +189,13 @@
                 "iconPath": "static/tab-bar/home.jpg",
                 "selectedIconPath": "static/tab-bar/home-active.jpg",
                 "pagePath": "pages/home/home",
+                // "text": "我的订单"
+                "text": ""
+            },
+            {
+                "iconPath": "static/tab-bar/order.png",
+                "selectedIconPath": "static/tab-bar/order-active.png",
+                "pagePath": "pages/order/order",
                 // "text": "我的订单"
                 "text": ""
             },

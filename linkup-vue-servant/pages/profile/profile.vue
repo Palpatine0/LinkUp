@@ -24,11 +24,6 @@
         </div>
     </div>
 
-    <app-container v-if="isUserLogin" color="#fff" col="12" @click="orderRedirect">
-        <img src="/static/page/profile/order.png" alt="" class="link-icon">
-        <span class="link-text">{{ $t('profile.order') }}</span>
-    </app-container>
-
     <!-- Other Options with Icons -->
     <app-container v-if="isUserLogin" color="#fff" col="12" type="list">
         <div

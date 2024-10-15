@@ -165,7 +165,7 @@ export default {
         // Redirects
         orderDetailRedirect(orderId) {
             uni.navigateTo({
-                url: '/pages/profile/order/order-detail/order-detail?orderId=' + orderId,
+                url: './order-detail/order-detail?orderId=' + orderId,
             });
         },
     },

@@ -40,7 +40,7 @@
                     </p>
                 </div>
                 <div style="margin-top: 14px;margin-left: 18px;">
-                    <img style="width: 36px;height: 36px;" src="/static/page/profile/order/siren-on.svg">
+                    <img style="width: 36px;height: 36px;" src="/static/page/order/siren-on.svg">
                 </div>
             </div>
             <div class="divider"></div>
@@ -65,7 +65,7 @@
     <!-- SERVICE COMPLETE -->
     <div v-if="order.status==orderConstant.COMPLETED" class="center-h">
         <div class="center-h">
-            <img style="width: 140px" src="/static/page/profile/order/check-double.svg">
+            <img style="width: 140px" src="/static/page/order/check-double.svg">
         </div>
         <div class="completed-text">
             <div>{{ $t('profile>order>orderDetail.serviceComplete') }}</div>
@@ -98,7 +98,7 @@
 <script>
 
 
-import $common from "../../../../utils/common";
+import $common from "../../../utils/common";
 
 export default {
     name: "order-detail",
