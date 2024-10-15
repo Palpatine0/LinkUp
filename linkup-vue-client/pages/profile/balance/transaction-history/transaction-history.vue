@@ -175,7 +175,6 @@ export default {
     background-color: #0A2342;
     border-radius: 50px;
     padding: 4px;
-    margin-top: -14px;
 }
 
 .transaction-toggle button {

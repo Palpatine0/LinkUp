@@ -3,7 +3,6 @@
     <!-- Heading section -->
     <div style="display: flex; align-items: center; justify-content: space-between;">
         <app-title type="h1" bold="true">{{ $t('profile>order.myOrders') }}</app-title>
-        <img src="/static/common/create.svg" style="width: 28px; height: 28px;" @click="orderInitiateRedirect"/>
     </div>
 
     <!-- Search input -->
@@ -39,24 +38,23 @@
                     </div>
                     <div class="order-detail">
                         <div style="display:flex;justify-content: space-between;">
-                            <span style="font-size: 14px; color: gray;">{{ order.createdAt }}</span>
-                            <div v-if="order.status==0" class="flex">
+                            <div v-if="order.status == 0" class="flex">
                                 <span class="status-dot yellow-dot"></span>
                                 <div class="status-text">{{ $t('profile>order.pending') }}</div>
                             </div>
-                            <div v-if="order.status==1&&isServiceInProgressState(order)" class="flex">
+                            <div v-if="order.status == 1 && isServiceInProgressState(order)" class="flex">
                                 <span class="status-dot green-dot"></span>
                                 <div class="status-text">{{ $t('profile>order.processing') }}</div>
                             </div>
-                            <div v-if="order.status==1&&!isServiceInProgressState(order)" class="flex">
+                            <div v-if="order.status == 1 && !isServiceInProgressState(order)" class="flex">
                                 <span class="status-dot green-dot"></span>
                                 <div class="status-text">{{ $t('profile>order.confirmed') }}</div>
                             </div>
-                            <div v-if="order.status==2" class="flex">
+                            <div v-if="order.status == 2" class="flex">
                                 <span class="status-dot gray-dot"></span>
                                 <div class="status-text">{{ $t('profile>order.completed') }}</div>
                             </div>
-                            <div v-if="order.status==3" class="flex">
+                            <div v-if="order.status == 3" class="flex">
                                 <div class="status-dot red-dot"></div>
                                 <div class="status-text">{{ $t('profile>order.canceled') }}</div>
                             </div>
@@ -76,6 +74,7 @@
 import orderDetail from './order-detail/order-detail.vue';
 
 export default {
+    name:"order",
     data() {
         return {
             orderList: [],
@@ -86,7 +85,7 @@ export default {
         this.reload()
     },
     methods: {
-        reload(){
+        reload() {
             this.resetPagination();
             this.getDataList();
         },
@@ -100,7 +99,7 @@ export default {
             };
             let data = {};
 
-            if (this.searchKeyword && this.searchKeyword.trim() !== '') {
+            if(this.searchKeyword && this.searchKeyword.trim() !== '') {
                 data = {
                     ...baseData,
                     keyword: this.searchKeyword,
@@ -140,6 +139,7 @@ export default {
                     this.orderList.forEach((order) => {
                         order.createdAt = order.createdAt ? this.$common.stampToTime(order.createdAt) : '';
                     });
+
                     this.page += 1;
                 },
                 complete: () => {
@@ -153,7 +153,7 @@ export default {
                 const serviceStartTime = new Date(order.serviceScheduleStart).getTime();
                 const serviceEndTime = new Date(order.serviceScheduleEnd).getTime();
                 if(currentTime >= serviceStartTime && currentTime <= serviceEndTime) {
-                    return  true;
+                    return true;
                 } else {
                     return false;
                 }
@@ -163,11 +163,6 @@ export default {
         },
 
         // Redirects
-        orderInitiateRedirect() {
-            uni.navigateTo({
-                url: '/pages/profile/order/order-servant-selection/order-servant-selection',
-            });
-        },
         orderDetailRedirect(orderId) {
             uni.navigateTo({
                 url: '/pages/profile/order/order-detail/order-detail?orderId=' + orderId,
@@ -235,11 +230,10 @@ export default {
     border-radius: 5px;
     font-weight: bold;
     padding: 2px;
-    width: 100px;
     font-size: 14px;
     margin-bottom: 4px;
     align-items: center;
-    display: f;
+    display: flex;
 }
 
 </style>

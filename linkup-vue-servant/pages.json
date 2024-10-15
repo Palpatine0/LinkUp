@@ -60,7 +60,8 @@
                     "path": "order-detail/order-detail",
                     "style": {
                         "navigationBarTitleText": "",
-                        "navigationBarBackgroundColor": "#f3f2f6"
+                        "navigationBarBackgroundColor": "#f3f2f6",
+                        "navigationStyle":"custom"
                     }
                 }
             ]

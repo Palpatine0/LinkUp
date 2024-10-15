@@ -13,7 +13,8 @@
         },
         "button": {
             "confirm": "确认",
-            "cancel": "取消"
+            "cancel": "取消",
+            "submit": "提交"
         },
         "gender": {
             "m": "男",

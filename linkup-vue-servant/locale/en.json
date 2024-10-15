@@ -13,7 +13,8 @@
         },
         "button": {
             "confirm": "Confirm",
-            "cancel": "Cancel"
+            "cancel": "Cancel",
+            "submit": "Submit"
         },
         "gender": {
             "m": "Male",
@@ -141,6 +142,8 @@
         "selectCandidate": "Select Candidate",
         "noCandidate": "No one responded yet",
         "contactUser": "Contact User",
+        "serviceCountdown": "Service Countdown",
+        "serviceCompleteCountdown": "Service Complete Countdown",
         "orderClosed": "This order has been closed",
         "refunded": "The cost of your order has been refunded",
         "selectedBeforeCountdown": "Please select a candidate before the countdown is over",

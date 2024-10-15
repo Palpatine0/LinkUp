@@ -29,10 +29,10 @@
     <!-- DYNAMIC STATUS CONTAINERS -->
     <div v-if="order.countdownStartAt">
         <!-- Alert: Choose while still can -->
-        <div v-if="countdown != 0 && order.status == orderConstant.PENDING" class="app-container" style="background-color: #feb327">
+        <div v-if="candidateSelectionCountdown != 0 && order.status == orderConstant.PENDING" class="app-container" style="background-color: #feb327">
             <div>
                 <app-title type="h3" bold="true">{{ $t('profile>order>orderDetail.selectedBeforeCountdown') }}</app-title>
-                <p>{{ countdown }}</p>
+                <p>{{ candidateSelectionCountdown }}</p>
             </div>
             <app-button type="small" color="red" shaped size="small" @click="cancelOrder">
                 {{ $t('profile>order>orderDetail.cancelOrder') }}
@@ -77,7 +77,7 @@
     <!-- /DYNAMIC STATUS CONTAINERS -->
 
     <!-- SERVANT CONTAINER  -->
-    <div v-if="countdown != 0 && order.status == orderConstant.PENDING" class="mt-4">
+    <div v-if="candidateSelectionCountdown != 0 && order.status == orderConstant.PENDING" class="mt-4">
         <app-title bold="true">{{ $t('profile>order>orderDetail.candidates') }}</app-title>
         <div v-if="servantList.length > 0">
             <z-swiper v-model="servantList" :options="{slidesPerView: 'auto', centeredSlides: true, spaceBetween: 14}" style="width: 100%">
@@ -241,8 +241,7 @@ export default {
             balanceText: this.$t('profile>order>orderDetail.orderInfoDetail.balance'),
             weChatText: this.$t('profile>order>orderDetail.orderInfoDetail.weChat'),
 
-            countdown: 0,
-            countdownInterval: null,
+            candidateSelectionCountdown: 0,
 
             cancelStatus: {
                 isCancelManually: false,
@@ -265,11 +264,6 @@ export default {
         this.orderId = params.orderId;
         this.getOrder();
     },
-    onUnLoad() {
-        if(this.countdownInterval) {
-            clearInterval(this.countdownInterval);
-        }
-    },
     methods: {
         getOrder() {
             uni.request({
@@ -287,7 +281,7 @@ export default {
                             const durationInMinutes = 10;
                             const endTime = new Date(startTime).getTime() + durationInMinutes * 60 * 1000;
                             this.$common.calculateCountdown(startTime, endTime, (remainingTime) => {
-                                this.countdown = remainingTime;
+                                this.candidateSelectionCountdown = remainingTime;
                             });
                         }
                         this.getRemainingFreeOrderPostingQuota();

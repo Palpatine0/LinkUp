@@ -84,13 +84,14 @@ export default {
         return {
             orderList: [],
             searchKeyword: '',
+            countdowns:{}
         };
     },
     onShow() {
         this.reload()
     },
     methods: {
-        reload(){
+        reload() {
             this.resetPagination();
             this.getDataList();
         },
@@ -104,7 +105,7 @@ export default {
             };
             let data = {};
 
-            if (this.searchKeyword && this.searchKeyword.trim() !== '') {
+            if(this.searchKeyword && this.searchKeyword.trim() !== '') {
                 data = {
                     ...baseData,
                     keyword: this.searchKeyword,
@@ -120,11 +121,8 @@ export default {
             this.reload();
         },
         getDataList() {
-            if (this.loading || !this.hasMore||this.$common.isEmpty(uni.getStorageSync(getApp().globalData.data.userInfoKey).id)) return;
-
-            this.loading = true;
-
             const {url, method, data} = this.buildApiParams();
+            this.loading = true;
 
             uni.request({
                 url: url,
@@ -132,18 +130,22 @@ export default {
                 data: data,
                 success: (res) => {
                     const orders = res.data.list;
+
+                    // If on first page, reset the list
                     if (this.page === 1) {
                         this.orderList = [];
                     }
-                    if (orders.length < this.pageSize) {
-                        this.hasMore = false;
-                    }
-                    // Append new orders to the list
                     this.orderList = this.orderList.concat(orders);
-                    // Process 'createdAt' fields
+
+                    // Process the 'createdAt' and start the countdown
                     this.orderList.forEach((order) => {
                         order.createdAt = order.createdAt ? this.$common.stampToTime(order.createdAt) : '';
+
+                        if (order.serviceScheduleStart && order.status === 1 && !this.isServiceInProgressState(order)) {
+                            this.startCountdown(order);  // This will now refer to the component's method correctly
+                        }
                     });
+
                     this.page += 1;
                 },
                 complete: () => {
@@ -151,13 +153,26 @@ export default {
                 },
             });
         },
+        startCountdown(order) {
+            const serviceStartTime = new Date(order.serviceScheduleStart).getTime();
+            const currentTime = new Date().getTime();
+
+            // Only start countdown if current time is less than the service start time
+            if(currentTime < serviceStartTime) {
+                this.$common.calculateCountdown(currentTime, serviceStartTime, (formattedTime) => {
+                    this.$set(this.countdowns, order.id, formattedTime);
+                });
+            } else {
+                this.$set(this.countdowns, order.id, "00:00:00");
+            }
+        },
         isServiceInProgressState(order) {
             if(order.serviceScheduleStart && order.serviceScheduleEnd) {
                 const currentTime = new Date().getTime();
                 const serviceStartTime = new Date(order.serviceScheduleStart).getTime();
                 const serviceEndTime = new Date(order.serviceScheduleEnd).getTime();
                 if(currentTime >= serviceStartTime && currentTime <= serviceEndTime) {
-                    return  true;
+                    return true;
                 } else {
                     return false;
                 }

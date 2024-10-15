@@ -13,7 +13,8 @@
         },
         "button": {
             "confirm": "确认",
-            "cancel": "取消"
+            "cancel": "取消",
+            "submit": "提交"
         },
         "gender": {
             "m": "男",
@@ -139,9 +140,9 @@
         "quotedPrice": "报价",
         "candidates": "已抢单用户",
         "selectCandidate": "选择达人",
-        "noCandidate": "暂时无人抢单",
         "contactUser": "联系用户",
-
+        "serviceCountdown": "服务倒计时",
+        "serviceCompleteCountdown": "服务结束倒计时",
         "orderClosed": "订单关闭",
         "refunded": "您的订单费用已退回至您的余额",
 
