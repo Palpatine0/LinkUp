@@ -5,40 +5,100 @@
 
 <mapper namespace="com.enchanted.mapper.OrderMapper">
 
-    <select id="search" resultType="com.enchanted.entity.Order">
-        SELECT * FROM `order`
+    <resultMap id="OrderWithAddressResultMap" type="com.enchanted.entity.Order">
+        <id property="id" column="id"/>
+        <result property="identifier" column="identifier"/>
+        <result property="title" column="title"/>
+        <result property="titleCn" column="title_cn"/>
+        <result property="clientId" column="client_id"/>
+        <result property="servantId" column="servant_id"/>
+        <result property="addressId" column="address_id"/>
+        <result property="requiredServantType" column="required_servant_type"/>
+        <result property="requiredGender" column="required_gender"/>
+        <result property="requiredAgeMin" column="required_age_min"/>
+        <result property="requiredAgeMax" column="required_age_max"/>
+        <result property="serviceDuration" column="service_duration"/>
+        <result property="serviceScheduleStart" column="service_schedule_start"/>
+        <result property="serviceScheduleEnd" column="service_schedule_end"/>
+        <result property="price" column="price"/>
+        <result property="pendingServantPayment" column="pending_servant_payment"/>
+        <result property="performanceRating" column="performance_rating"/>
+        <result property="candidateCount" column="candidate_count"/>
+        <result property="status" column="status"/>
+        <result property="paymentMethod" column="payment_method"/>
+        <result property="countdownStartAt" column="countdown_start_at"/>
+        <result property="canceledAt" column="canceled_at"/>
+        <result property="completedAt" column="completed_at"/>
+        <result property="isCompleted" column="is_completed"/>
+        <result property="isDeleted" column="is_deleted"/>
+        <result property="createdAt" column="created_at"/>
+
+        <!-- Map Address fields -->
+        <association property="address" javaType="com.enchanted.entity.Address">
+            <id property="id" column="address_id"/>
+            <result property="userId" column="address_user_id"/>
+            <result property="consignee" column="consignee"/>
+            <result property="phoneNumber" column="phone_number"/>
+            <result property="address" column="address"/>
+            <result property="addressName" column="address_name"/>
+            <result property="detail" column="detail"/>
+            <result property="latitude" column="latitude"/>
+            <result property="longitude" column="longitude"/>
+            <result property="isDeleted" column="address_is_deleted"/>
+            <result property="createdAt" column="address_created_at"/>
+        </association>
+    </resultMap>
+
+    <!-- Modified Search Query -->
+    <select id="search" resultMap="OrderWithAddressResultMap">
+        SELECT
+        o.*,
+        a.id AS address_id,
+        a.user_id AS address_user_id,
+        a.consignee,
+        a.phone_number,
+        a.address,
+        a.address_name,
+        a.detail,
+        a.latitude,
+        a.longitude,
+        a.is_deleted AS address_is_deleted,
+        a.created_at AS address_created_at
+        FROM `order` o
+        LEFT JOIN address a ON o.address_id = a.id
         <where>
-            is_deleted = 0
+            o.is_deleted = 0
+            <!-- Existing conditions -->
             <if test="params.id != null and params.id != ''">
-                AND id = #{params.id}
+                AND o.id = #{params.id}
             </if>
             <if test="params.keyword != null and params.keyword != ''">
                 AND (
-                title LIKE CONCAT('%', #{params.keyword}, '%')
-                OR title LIKE CONCAT('%', #{params.keyword}, '%')
+                o.title LIKE CONCAT('%', #{params.keyword}, '%')
+                OR o.title_cn LIKE CONCAT('%', #{params.keyword}, '%')
                 )
             </if>
             <if test="params.clientId != null and params.clientId != ''">
-                AND client_id = #{params.clientId}
+                AND o.client_id = #{params.clientId}
             </if>
             <if test="params.servantId != null and params.servantId != ''">
-                AND servant_id = #{params.servantId}
+                AND o.servant_id = #{params.servantId}
             </if>
             <if test="params.status != null and params.status != ''">
-                AND status = #{params.status}
+                AND o.status = #{params.status}
             </if>
             <if test="params.userGender != null and params.userGender != ''">
-                AND (required_gender IS NULL OR required_gender = '' OR required_gender = #{params.userGender})
+                AND (o.required_gender IS NULL OR o.required_gender = '' OR o.required_gender = #{params.userGender})
             </if>
             <if test="params.userAge != null and params.userAge != ''">
                 AND (
-                (required_age_min IS NULL OR required_age_min &lt;= #{params.userAge})
+                (o.required_age_min IS NULL OR o.required_age_min &lt;= #{params.userAge})
                 AND
-                (required_age_max IS NULL OR required_age_max &gt;= #{params.userAge})
+                (o.required_age_max IS NULL OR o.required_age_max &gt;= #{params.userAge})
                 )
             </if>
         </where>
-        ORDER BY created_at DESC
+        ORDER BY o.created_at DESC
     </select>
 
 </mapper>
