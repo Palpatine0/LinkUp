@@ -98,4 +98,7 @@ public class Order {
 
     @TableField("created_at")
     private Date createdAt;
+
+    @TableField(exist = false)
+    private Address address;
 }

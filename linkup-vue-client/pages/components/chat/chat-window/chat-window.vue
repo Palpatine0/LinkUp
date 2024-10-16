@@ -188,7 +188,7 @@ export default {
             });
         },
 
-        handleSend(messageContent) {
+        handleSend(messageContent,conversationId) {
             if(this.socketOpen) {
                 const tempId = Date.now();
                 const messageData = {
@@ -197,6 +197,7 @@ export default {
                         tempId: tempId,
                         senderId: this.userId,
                         recipientId: this.contactId,
+                        conversationId: conversationId,
                         content: messageContent,
                         mediaType: 0,
                     },

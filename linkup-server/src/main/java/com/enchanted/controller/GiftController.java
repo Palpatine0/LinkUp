@@ -34,12 +34,11 @@ public class GiftController {
         Long recipientId = Long.parseLong(requestData.get("recipientId").toString());
         Long giftId = Long.parseLong(requestData.get("giftId").toString());
 
-        // Process the gift purchase
-        boolean success = giftService.purchase(senderId, recipientId, giftId);
-        if (success) {
-            return R.ok("Gift purchased successfully");
-        } else {
-            return R.error("Gift purchase failed");
+        try {
+            Long conversationId = giftService.purchase(senderId, recipientId, giftId);
+            return R.ok().put("conversationId", conversationId);
+        } catch (IllegalArgumentException e) {
+            return R.error(e.getMessage());
         }
     }
 

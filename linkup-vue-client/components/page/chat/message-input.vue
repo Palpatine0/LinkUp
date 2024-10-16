@@ -37,6 +37,7 @@ export default {
     },
     data() {
         return {
+            conversationId: '',
             message: '',
             canSendMessage: false,
             isChatItemSelectorToggleVisible: false,
@@ -55,6 +56,7 @@ export default {
                 success: (res) => {
                     if(res.data.status === 200 && res.data.list && res.data.list.length > 0) {
                         const conversation = res.data.list[0];
+                        this.conversationId = conversation.id; // Store the conversation ID
                         const currentTime = new Date().getTime();
                         const endTime = new Date(conversation.endTime).getTime();
 
@@ -70,7 +72,8 @@ export default {
                         }
                     } else {
                         this.canSendMessage = false;
-                        this.isGiftVisible = true
+                        this.isGiftVisible = true;
+                        this.conversationId = null;
                     }
                 },
                 fail: (err) => {
@@ -87,25 +90,13 @@ export default {
                     cancelText: this.$t('pub.modal.button.cancel'),
                     success: (res) => {
                         if(res.confirm) {
-                            uni.request({
-                                url: getApp().globalData.data.requestUrl + this.$API.order.assignServant,
-                                method: 'POST',
-                                data: {
-                                    orderId: this.order.id,
-                                    servantId: servantId,
-                                    quotedPrice: quotedPrice
-                                },
-                                success: (res) => {
-                                    this.reload();
-                                },
-                            });
                         }
                     },
                 });
                 return;
             } else {
                 if(this.message.trim()) {
-                    this.$emit('handleSend', this.message.trim());
+                    this.$emit('handleSend', this.message.trim(), this.conversationId);
                     this.message = '';
                 }
             }
@@ -132,6 +123,7 @@ export default {
                 success: (res) => {
                     if(res.data.status == 200) {
                         uni.showToast({title: this.$t('pub.showToast.success'), icon: 'none'});
+                        this.conversationId = res.data.conversationId;
                         this.isEligibleSendMsg()
                     } else if(res.data.status == 500) {
                         if(res.data.message == "Insufficient looking coins to purchase the gift") {

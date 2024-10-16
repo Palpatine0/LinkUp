@@ -15,19 +15,19 @@ public class R extends HashMap<String, Object> {
 
     // ok
     public static R ok() {
-        return new R();
+        R r = new R();
+        r.put("status", 200);
+        return r;
     }
 
     public static R ok(String message) {
         R r = new R();
-        r.put("status", 200);
         r.put("message", message);
         return r;
     }
 
     public static R ok(Map<String, Object> map) {
         R r = new R();
-        r.put("status", 200);
         r.putAll(map);
         return r;
     }

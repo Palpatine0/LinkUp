@@ -1,35 +1,4 @@
 var $API = {
-    // Address
-    address: {
-        save: '/address/save',
-        search: '/address/search',
-        update: '/address/update',
-    },
-    // Message
-    message: {
-        save: '/message/save',
-        search: '/message/search',
-        searchContacts: '/message/search-contacts',
-        markAsRead: '/message/mark-read',
-    },
-    // Service Type
-    serviceType: {
-        search: '/service-type/search',
-    },
-    // Order
-    order: {
-        save: '/order/save',
-        search: '/order/search',
-        update: '/order/update',
-        updateStatus: '/order/update-status',
-        remainingFreePostingQuota: '/order/remaining-free-posting-quota',
-    },
-    // Order Candidate
-    orderCandidate: {
-        save: '/order-candidate/save',
-        search: '/order-candidate/search',
-        servants: '/order-candidate/servants',
-    },
     // User
     user: {
         save: '/user/save',
@@ -39,15 +8,65 @@ var $API = {
         searchServant: '/user/search-servant',
         referralCodeValidation: '/user/referral-code-validation'
     },
+
     // User Servant
     userServant: {
         search: '/user-servant/search',
     },
+
+    // Service Type
+    serviceType: {
+        search: '/service-type/search',
+    },
+
+    // Conversation
+    conversation: {
+        search: '/conversation/search',
+    },
+    // Message
+    message: {
+        save: '/message/save',
+        search: '/message/search',
+        searchContacts: '/message/search-contacts',
+        markAsRead: '/message/mark-read',
+    },
+
+    // Order
+    order: {
+        save: '/order/save',
+        search: '/order/search',
+        update: '/order/update',
+        updateStatus: '/order/update-status',
+        remainingFreePostingQuota: '/order/remaining-free-posting-quota',
+        assignServant: '/order/assign-servant',
+        rate: '/order/rate',
+    },
+
+    // Order Candidate
+    orderCandidate: {
+        save: '/order-candidate/save',
+        search: '/order-candidate/search',
+        servants: '/order-candidate/servants',
+    },
+
     // Transaction
     transaction: {
         search: '/transaction/search',
         save: '/transaction/save',
         updateLookingCoin: '/transaction/update-looking-coin',
+    },
+
+    // Address
+    address: {
+        save: '/address/save',
+        search: '/address/search',
+        update: '/address/update',
+    },
+
+    // Gift
+    gift:{
+        search: '/gift/search',
+        purchase: '/gift/purchase',
     }
 }
 export default $API;

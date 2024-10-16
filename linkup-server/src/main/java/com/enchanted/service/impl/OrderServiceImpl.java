@@ -517,8 +517,19 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         wrapper.eq("servant_id", order.getServantId());
         wrapper.eq("is_deleted", 0);
         Conversation conversation = conversationMapper.selectOne(wrapper);
-        conversation.setEndTime(order.getServiceScheduleEnd());
-        conversationMapper.updateById(conversation);
+
+        if (conversation==null){
+            Conversation newConversation = new Conversation();
+            newConversation.setClientId(order.getClientId());
+            newConversation.setServantId(order.getServantId());
+            newConversation.setEndTime(order.getServiceScheduleEnd());
+            conversationMapper.insert(newConversation);
+        }else{
+            conversation.setEndTime(order.getServiceScheduleEnd());
+            conversationMapper.updateById(conversation);
+        }
+
+
         order.setStatus(OrderConstant.PROCESSING);
         orderMapper.updateById(order);
     }

@@ -11,7 +11,7 @@ public interface IGiftService extends IService<Gift> {
     /* C */
     boolean save(Gift gift);
 
-    boolean purchase(Long senderId, Long recipientId, Long giftId);
+    Long purchase(Long senderId, Long recipientId, Long giftId);
 
     /* R */
     Page<Gift> search(Map<String, Object> params, int page, int size);

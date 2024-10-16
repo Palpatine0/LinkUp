@@ -39,6 +39,7 @@ export default {
     },
     data() {
         return {
+            conversationId: '',
             userId: uni.getStorageSync(app.globalData.data.userInfoKey).id,
             user: {},
             isUserInfoLoaded: false,
@@ -56,6 +57,7 @@ export default {
         this.contactId = params.contactId;
         await this.getUser();
         await this.getContact();
+        await this.getConversation()
         this.connectWebSocket();
     },
     onUnload() {
@@ -100,6 +102,25 @@ export default {
                 });
             });
         },
+        async getConversation() {
+            return new Promise((resolve, reject) => {
+                uni.request({
+                    url: getApp().globalData.data.requestUrl + this.$API.conversation.search,
+                    method: 'POST',
+                    data: {
+                        clientId: this.contactId,
+                        servantId: this.userId,
+                    },
+                    success: (res) => {
+                        this.conversationId = res.data.list[0].id;
+                        resolve();
+                    },
+                    fail: (err) => {
+                        reject(err);
+                    },
+                });
+            });
+        },
         getMessages() {
             return new Promise(async (resolve, reject) => {
                 if(this.loading || !this.hasMore) return;
@@ -109,8 +130,8 @@ export default {
                     url: getApp().globalData.data.requestUrl + this.$API.message.search,
                     method: 'POST',
                     data: {
-                        senderId: this.userId,    // Current user's ID
-                        recipientId: this.contactId,  // Contact's ID
+                        senderId: this.userId,
+                        recipientId: this.contactId,
                         page: this.page,
                         size: this.pageSize
                     },
@@ -192,6 +213,7 @@ export default {
                         tempId: tempId,
                         senderId: this.userId,
                         recipientId: this.contactId,
+                        conversationId: this.conversationId,
                         content: messageContent,
                         mediaType: 0,
                     },

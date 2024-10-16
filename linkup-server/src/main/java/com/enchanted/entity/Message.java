@@ -12,14 +12,17 @@ public class Message {
 
     private Long id;
 
-    @TableField("temp_id")
-    private Long tempId;
-
     @TableField("sender_id")
     private Long senderId;
 
     @TableField("recipient_id")
     private Long recipientId;
+
+    @TableField("conversation_id")
+    private Long conversationId;
+
+    @TableField("temp_id")
+    private Long tempId;
 
     private String content;
 

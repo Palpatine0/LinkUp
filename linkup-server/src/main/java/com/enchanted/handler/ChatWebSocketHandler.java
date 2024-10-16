@@ -61,17 +61,19 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     }
 
     private void handleChatMessage(WebSocketSession session, Map<String, Object> data) throws Exception {
-        Long tempId = Long.valueOf(data.get("tempId").toString());
         Long senderId = Long.valueOf(data.get("senderId").toString());
         Long recipientId = Long.valueOf(data.get("recipientId").toString());
+        Long conversationId = Long.valueOf(data.get("conversationId").toString());
+        Long tempId = Long.valueOf(data.get("tempId").toString());
         String content = data.get("content").toString();
         Integer mediaType = data.get("mediaType") != null ? Integer.valueOf(data.get("mediaType").toString()) : 0;
 
         // Save message to the database
         Message chatMessage = new Message();
-        chatMessage.setTempId(tempId);
         chatMessage.setSenderId(senderId);
         chatMessage.setRecipientId(recipientId);
+        chatMessage.setConversationId(conversationId);
+        chatMessage.setTempId(tempId);
         chatMessage.setContent(content);
         chatMessage.setMediaType(mediaType);
         chatMessage.setStatus(1);

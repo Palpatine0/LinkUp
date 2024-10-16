@@ -57,7 +57,7 @@ public class GiftServiceImpl extends ServiceImpl<GiftMapper, Gift> implements IG
      * @return
      */
     @Override
-    public boolean purchase(Long senderId, Long recipientId, Long giftId) {
+    public Long purchase(Long senderId, Long recipientId, Long giftId) {
 
         // Fetch the gift price and chat duration from the gift table using the giftId
         Gift gift = giftMapper.selectById(giftId);
@@ -117,10 +117,11 @@ public class GiftServiceImpl extends ServiceImpl<GiftMapper, Gift> implements IG
 
         // Check if an active conversation exists between the sender and the recipient
         QueryWrapper<Conversation> wrapper = new QueryWrapper<>();
-        wrapper.eq("user_id", senderId);
+        wrapper.eq("client_id", senderId);
         wrapper.eq("servant_id", recipientId);
         Conversation activeConversation = conversationMapper.selectOne(wrapper);
 
+        Long conversationId;
         if (activeConversation == null) {
             // No active conversation found, create a new one
             Conversation newConversation = new Conversation();
@@ -128,12 +129,14 @@ public class GiftServiceImpl extends ServiceImpl<GiftMapper, Gift> implements IG
             newConversation.setServantId(recipientId);
             newConversation.setEndTime(new Date(System.currentTimeMillis() + (chatDuration * 60 * 1000)));
             conversationService.save(newConversation);
+            conversationId = newConversation.getId();
         } else {
             activeConversation.setEndTime(new Date(System.currentTimeMillis() + (chatDuration * 60 * 1000)));
             conversationService.updateById(activeConversation);
+            conversationId = activeConversation.getId();
         }
 
-        return true;
+        return conversationId;
     }
 
 
