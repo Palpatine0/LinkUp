@@ -18,8 +18,21 @@ public class Conversation {
     @TableField("servant_id")
     private Long servantId;
 
+    @TableField("gift_id")
+    private Long giftId;
+
     @TableField("expiration_time")
     private Date expirationTime;
+
+    @TableField("last_client_message_time")
+    private Date lastClientMessageTime;
+
+    /**
+     * 0: not required;
+     * 1: required;
+     */
+    @TableField("servant_response_required")
+    private Integer servantResponseRequired;
 
     @TableField("is_deleted")
     private Boolean isDeleted;

@@ -63,8 +63,7 @@ public class GiftServiceImpl extends ServiceImpl<GiftMapper, Gift> implements IG
         if (gift == null) {
             throw new IllegalArgumentException("Gift not found");
         }
-        BigDecimal giftPrice = new BigDecimal(gift.getPrice());
-        BigDecimal recipientShare = giftPrice.divide(new BigDecimal(2));
+        BigDecimal recipientShare = gift.getPrice().divide(new BigDecimal(2));
         Integer chatDuration = gift.getChatDuration();
 
         // Fetch the sender (User A)
@@ -74,12 +73,12 @@ public class GiftServiceImpl extends ServiceImpl<GiftMapper, Gift> implements IG
         }
 
         // Check if sender has enough looking coins
-        if (sender.getLookingCoins().compareTo(giftPrice) < 0) {
+        if (sender.getLookingCoins().compareTo(gift.getPrice()) < 0) {
             throw new IllegalArgumentException("Insufficient looking coins to purchase the gift");
         }
 
         // Deduct the full gift price from the sender's looking coins
-        sender.setLookingCoins(sender.getLookingCoins().subtract(giftPrice));
+        sender.setLookingCoins(sender.getLookingCoins().subtract(gift.getPrice()));
         userService.updateById(sender);
 
         // Fetch the recipient (Servant)
@@ -92,15 +91,45 @@ public class GiftServiceImpl extends ServiceImpl<GiftMapper, Gift> implements IG
         recipient.setLookingCoins(recipient.getLookingCoins().add(recipientShare));
         userService.updateById(recipient);
 
+        // Check if an active conversation exists between the sender and the recipient
+        QueryWrapper<Conversation> wrapper = new QueryWrapper<>();
+        wrapper.eq("client_id", senderId);
+        wrapper.eq("servant_id", recipientId);
+        Conversation activeConversation = conversationMapper.selectOne(wrapper);
+
+
+        Long conversationId;
+        if (activeConversation == null) {
+            // No active conversation found, create a new one
+            Conversation newConversation = new Conversation();
+            newConversation.setClientId(senderId);
+            newConversation.setServantId(recipientId);
+            newConversation.setExpirationTime(new Date(System.currentTimeMillis() + (chatDuration * 60 * 1000)));
+            newConversation.setServantResponseRequired(1);
+            newConversation.setLastClientMessageTime(new Date());
+            newConversation.setGiftId(giftId);
+            conversationService.save(newConversation);
+            conversationId = newConversation.getId();
+        } else {
+            // Update the existing conversation
+            activeConversation.setExpirationTime(new Date(System.currentTimeMillis() + (chatDuration * 60 * 1000)));
+            activeConversation.setServantResponseRequired(1);
+            activeConversation.setLastClientMessageTime(new Date());
+            activeConversation.setGiftId(giftId);
+            conversationService.updateById(activeConversation);
+            conversationId = activeConversation.getId();
+        }
+
         // Record the transaction for the sender
         Transaction senderTransaction = new Transaction();
         senderTransaction.setCurrencyType(TransactionConstant.LOOKING_COIN_CURRENCY);
         senderTransaction.setUserId(sender.getId());
-        senderTransaction.setAmount(giftPrice.negate());  // Negative value to indicate deduction
+        senderTransaction.setAmount(gift.getPrice().negate());  // Negative value to indicate deduction
         senderTransaction.setBalanceAfter(sender.getLookingCoins());
         senderTransaction.setTransactionType(TransactionConstant.DEDUCTION);  // Deduction
         senderTransaction.setDescription(TransactionConstant.CLIENT_CONVERSATION_GIFT);
         senderTransaction.setDescriptionCn(TransactionConstant.CLIENT_CONVERSATION_GIFT_CN);
+        senderTransaction.setConversationId(conversationId);
         transactionService.save(senderTransaction);
 
         // Record the transaction for the recipient
@@ -112,28 +141,8 @@ public class GiftServiceImpl extends ServiceImpl<GiftMapper, Gift> implements IG
         recipientTransaction.setTransactionType(TransactionConstant.ADDITION);  // Addition
         recipientTransaction.setDescription(TransactionConstant.SERVANT_CONVERSATION_GIFT);
         recipientTransaction.setDescriptionCn(TransactionConstant.SERVANT_CONVERSATION_GIFT_CN);
+        recipientTransaction.setConversationId(conversationId);
         transactionService.save(recipientTransaction);
-
-        // Check if an active conversation exists between the sender and the recipient
-        QueryWrapper<Conversation> wrapper = new QueryWrapper<>();
-        wrapper.eq("client_id", senderId);
-        wrapper.eq("servant_id", recipientId);
-        Conversation activeConversation = conversationMapper.selectOne(wrapper);
-
-        Long conversationId;
-        if (activeConversation == null) {
-            // No active conversation found, create a new one
-            Conversation newConversation = new Conversation();
-            newConversation.setClientId(senderId);
-            newConversation.setServantId(recipientId);
-            newConversation.setExpirationTime(new Date(System.currentTimeMillis() + (chatDuration * 60 * 1000)));
-            conversationService.save(newConversation);
-            conversationId = newConversation.getId();
-        } else {
-            activeConversation.setExpirationTime(new Date(System.currentTimeMillis() + (chatDuration * 60 * 1000)));
-            conversationService.updateById(activeConversation);
-            conversationId = activeConversation.getId();
-        }
 
         return conversationId;
     }

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
@@ -19,7 +20,7 @@ public class Gift {
     private Integer chatDuration;
 
     @TableField("price")
-    private Double price;
+    private BigDecimal price;
 
     @TableField("is_deleted")
     private Boolean isDeleted;

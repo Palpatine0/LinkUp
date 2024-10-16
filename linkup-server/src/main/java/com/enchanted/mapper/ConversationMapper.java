@@ -6,9 +6,13 @@ import com.enchanted.entity.Conversation;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 @Mapper
 public interface ConversationMapper extends BaseMapper<Conversation> {
     IPage<Conversation> search(IPage<Conversation> page, @Param("params") Map<String, Object> params);
+
+    List<Conversation> selectOverdueConversations(@Param("thresholdTime") Date thresholdTime);
 }

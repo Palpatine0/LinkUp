@@ -1,7 +1,9 @@
 package com.enchanted.handler;
 
+import com.enchanted.entity.Conversation;
 import com.enchanted.entity.Message;
 import com.enchanted.mapper.MessageMapper;
+import com.enchanted.service.IConversationService;
 import com.enchanted.service.IMessageService;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +21,9 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
 
     @Autowired
     private IMessageService messageService;
+
+    @Autowired
+    private IConversationService conversationService;
 
     @Autowired
     private MessageMapper messageMapper;
@@ -68,6 +73,13 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         String content = data.get("content").toString();
         Integer mediaType = data.get("mediaType") != null ? Integer.valueOf(data.get("mediaType").toString()) : 0;
 
+        // Validate the conversation
+        Conversation conversation = conversationService.getById(conversationId);
+        if (conversation == null) {
+            session.sendMessage(new TextMessage("{\"type\":\"error\",\"message\":\"Invalid conversation ID.\"}"));
+            return;
+        }
+
         // Save message to the database
         Message chatMessage = new Message();
         chatMessage.setSenderId(senderId);
@@ -80,6 +92,18 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         chatMessage.setIsRead(0);
         chatMessage.setCreatedAt(new Date());
         messageService.save(chatMessage);
+
+        // Update conversation
+        if (senderId.equals(conversation.getClientId())) {
+            // Client sent a message, servant response is required
+            conversation.setServantResponseRequired(1);
+            conversation.setLastClientMessageTime(new Date());
+            conversationService.updateById(conversation);
+        } else if (senderId.equals(conversation.getServantId())) {
+            // Servant responded, no response required
+            conversation.setServantResponseRequired(0);
+            conversationService.updateById(conversation);
+        }
 
         // Prepare message to send
         Map<String, Object> sendMessageData = new HashMap<>();

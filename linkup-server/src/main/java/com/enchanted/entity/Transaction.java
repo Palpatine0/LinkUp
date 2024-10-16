@@ -28,6 +28,9 @@ public class Transaction {
     @TableField("order_id")
     private Long orderId;
 
+    @TableField("conversation_id")
+    private Long conversationId;
+
     private BigDecimal amount;
 
     @TableField("balance_after")

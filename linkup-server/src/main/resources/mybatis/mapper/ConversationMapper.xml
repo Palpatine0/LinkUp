@@ -18,4 +18,9 @@
         ORDER BY created_at DESC
     </select>
 
+    <select id="selectOverdueConversations" parameterType="java.util.Date" resultType="com.enchanted.entity.Conversation">
+        SELECT * FROM conversation
+        WHERE servant_response_required = 1
+        AND last_client_message_time &lt;= #{thresholdTime}
+    </select>
 </mapper>

@@ -20,6 +20,8 @@ public class TransactionConstant {
     public static final String CLIENT_REFERRER_COMMISSION_CN = "订单佣金";
     public static final String CLIENT_CANCEL_ORDER_REFUND = "Order cancel refund";
     public static final String CLIENT_CANCEL_ORDER_REFUND_CN = "订单取消退款";
+    public static final String CLIENT_NO_RESPONSE_GIFT_REFUND = "Refund due to no response to gifted message";
+    public static final String CLIENT_NO_RESPONSE_GIFT_REFUND_CN = "未回复礼物退款";
     // - Client > DEDUCTION
     public static final String CLIENT_ORDER_PAYMENT = "Order payment";
     public static final String CLIENT_ORDER_PAYMENT_CN = "订单付款";
@@ -38,5 +40,9 @@ public class TransactionConstant {
     public static final String SERVANT_CONVERSATION_GIFT_CN = "用户赠礼";
 
     // - Servant > DEDUCTION
+    public static final String SERVANT_RESPONSE_DELAY_PENALTY = "Penalty for delayed response beyond 1 minute";
+    public static final String SERVANT_RESPONSE_DELAY_PENALTY_CN = "超时未回复惩罚";
+    public static final String SERVANT_NO_RESPONSE_GIFT_SHARE_DEDUCTION = "Deduction of gift share due to no response";
+    public static final String SERVANT_NO_RESPONSE_GIFT_SHARE_DEDUCTION_CN = "未回复礼物分成扣除";
 
 }
