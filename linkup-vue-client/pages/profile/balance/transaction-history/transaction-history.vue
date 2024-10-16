@@ -36,6 +36,7 @@
         :scroll-top="0"
         scroll-y="true"
         style="height: 80vh"
+        @scrolltoupper="reLoad"
         @scrolltolower="onReachBottom"
     >
         <div
@@ -90,14 +91,17 @@ export default {
             searchKeyword: '',
             income: this.$t('profile>balance>transactionHistory.income'),
             expanse: this.$t('profile>balance>transactionHistory.expanse'),
-            currencyType: 0 // 0 for All, 1 for Income, 2 for Outcome
+            currencyType: 0
         };
     },
     onLoad() {
-        this.resetPagination();
-        this.getDataList();
+        this.reLoad();
     },
     methods: {
+        reLoad(){
+            this.resetPagination();
+            this.getDataList();
+        },
         setCurrencyType(type) {
             this.currencyType = type;
             this.resetPagination();
