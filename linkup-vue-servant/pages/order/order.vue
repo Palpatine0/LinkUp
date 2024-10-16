@@ -40,24 +40,25 @@
                 <div>{{order.address.addressName}}</div>
                 <div>{{order.address.detail}}</div>
             </div>
-            <div class="order-status">
-                <div v-if="order.status == 0" class="flex">
+            <div class="chat-user-order-status">
+                <img style="width: 28px;height: 22px" src="/static/page/order/messages.svg" @click="chatWindowRedirect(order.clientId)">
+                <div v-if="order.status == 0" class="order-status">
                     <span class="status-dot yellow-dot"></span>
                     <div class="status-text">{{ $t('profile>order.pending') }}</div>
                 </div>
-                <div v-if="order.status == 1 && isServiceInProgressState(order)" class="flex">
+                <div v-if="order.status == 1 && isServiceInProgressState(order)" class="order-status">
                     <span class="status-dot green-dot"></span>
                     <div class="status-text">{{ $t('profile>order.processing') }}</div>
                 </div>
-                <div v-if="order.status == 1 && !isServiceInProgressState(order)" class="flex">
+                <div v-if="order.status == 1 && !isServiceInProgressState(order)" class="order-status">
                     <span class="status-dot green-dot"></span>
                     <div class="status-text">{{ $t('profile>order.confirmed') }}</div>
                 </div>
-                <div v-if="order.status == 2" class="flex">
+                <div v-if="order.status == 2" class="order-status">
                     <span class="status-dot gray-dot"></span>
                     <div class="status-text">{{ $t('profile>order.completed') }}</div>
                 </div>
-                <div v-if="order.status == 3" class="flex">
+                <div v-if="order.status == 3" class="order-status">
                     <div class="status-dot red-dot"></div>
                     <div class="status-text">{{ $t('profile>order.canceled') }}</div>
                 </div>
@@ -192,10 +193,16 @@ export default {
             }
             return false;
         },
+
         // Redirects
         orderDetailRedirect(orderId) {
             uni.navigateTo({
                 url: './order-detail/order-detail?orderId=' + orderId,
+            });
+        },
+        chatWindowRedirect(userId) {
+            uni.navigateTo({
+                url: '/pages/components/chat/chat-window/chat-window?contactId=' + userId
             });
         },
     },
@@ -238,10 +245,11 @@ export default {
     margin: 8px 0;
 }
 
-.order-status {
+.chat-user-order-status {
     margin-top: 5px;
     display: flex;
-    align-self: flex-end;
+    width: 100%;
+    justify-content: space-between;
 }
 
 .status-dot {
@@ -256,6 +264,11 @@ export default {
     position: relative;
     bottom: 4px;
     left: 5px;
+}
+
+.order-status{
+    display: flex;
+    margin-top: 4px;
 }
 
 .yellow-dot {

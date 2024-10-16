@@ -38,8 +38,14 @@
                         </app-title>
                     </div>
                     <div class="order-detail">
-                        <div class="highlight-blue">
+                        <div v-if="$common.isEmpty(order.servantId)" class="highlight-blue">
                             {{ $t('profile>order.candidates') }}: {{ order.candidateCount }}
+                        </div>
+                        <div v-else class="highlight-blue">
+                            <img style="width: 20px; height: 20px; border-radius: 50%; margin-right: 5px;" :src="order.servant.avatar" @click="chatWindowRedirect(order.servantId)">
+                            <span v-if="order.requiredServantType == serviceTypeConstant.TOUR_GUIDE">
+                                {{ $t('profile>order.tourGuide') }}: {{ order.servant.nickname }}
+                            </span>
                         </div>
 
                         <div style="display:flex;justify-content: space-between;">
@@ -77,12 +83,22 @@
 
 
 <script>
+import $common from "../../utils/common";
+
 export default {
+    computed: {
+        $common() {
+            return $common
+        }
+    },
     data() {
         return {
             orderList: [],
             searchKeyword: '',
-            countdowns:{}
+            countdowns: {},
+            serviceTypeConstant: {
+                TOUR_GUIDE: 1,
+            }
         };
     },
     onShow() {
@@ -126,23 +142,23 @@ export default {
                 url: url,
                 method: method,
                 data: data,
-                success: (res) => {
+                success: async (res) => {
                     const orders = res.data.list;
 
                     // If on first page, reset the list
-                    if (this.page === 1) {
+                    if(this.page === 1) {
                         this.orderList = [];
                     }
                     this.orderList = this.orderList.concat(orders);
 
                     // Process the 'createdAt' and start the countdown
-                    this.orderList.forEach((order) => {
+                    for (const order of this.orderList) {
                         order.createdAt = order.createdAt ? this.$common.stampToTime(order.createdAt) : '';
 
-                        if (order.serviceScheduleStart && order.status === 1 && !this.isServiceInProgressState(order)) {
-                            this.startCountdown(order);  // This will now refer to the component's method correctly
+                        if(!this.$common.isEmpty(order.servantId)) {
+                            order.servant = await this.getOrderServant(order.servantId)
                         }
-                    });
+                    }
 
                     this.page += 1;
                 },
@@ -151,19 +167,24 @@ export default {
                 },
             });
         },
-        startCountdown(order) {
-            const serviceStartTime = new Date(order.serviceScheduleStart).getTime();
-            const currentTime = new Date().getTime();
-
-            // Only start countdown if current time is less than the service start time
-            if(currentTime < serviceStartTime) {
-                this.$common.calculateCountdown(currentTime, serviceStartTime, (formattedTime) => {
-                    this.$set(this.countdowns, order.id, formattedTime);
-                });
-            } else {
-                this.$set(this.countdowns, order.id, "00:00:00");
+        async getOrderServant(servantId) {
+            const getServant = () => {
+                return new Promise((resolve, reject) => {
+                    uni.request({
+                        url: getApp().globalData.data.requestUrl + this.$API.user.search,
+                        method: 'POST',
+                        data: {
+                            id: servantId
+                        },
+                        success: (res) => {
+                            resolve(res.data.list[0])
+                        },
+                    });
+                })
             }
+            return await getServant();
         },
+
         isServiceInProgressState(order) {
             if(order.serviceScheduleStart && order.serviceScheduleEnd) {
                 const currentTime = new Date().getTime();
@@ -188,6 +209,11 @@ export default {
         orderDetailRedirect(orderId) {
             uni.navigateTo({
                 url: './order-detail/order-detail?orderId=' + orderId,
+            });
+        },
+        chatWindowRedirect(userId) {
+            uni.navigateTo({
+                url: '/pages/components/chat/chat-window/chat-window?contactId=' + userId
             });
         },
     },
@@ -251,12 +277,14 @@ export default {
     background-color: #007aff;
     border-radius: 5px;
     font-weight: bold;
-    padding: 2px;
-    width: 100px;
+    padding: 4px 5px;
     font-size: 14px;
     margin-bottom: 4px;
+    display: inline-flex;
     align-items: center;
-    display: f;
 }
+
+
+
 
 </style>

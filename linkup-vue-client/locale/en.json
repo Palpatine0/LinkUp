@@ -102,6 +102,8 @@
     "profile>order": {
         "myOrders": "My Orders",
         "candidates": "Candidates",
+        "servant": "Servant",
+        "tourGuide": "Tour Guide",
         "pending": "Pending",
         "confirmed": "Confirmed",
         "processing": "Processing",
