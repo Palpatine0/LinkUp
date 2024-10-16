@@ -62,7 +62,6 @@ export default {
                 },
                 success: (resR) => {
                     const sentMessages = resR.data.list;
-                    // Gather all recipient IDs
                     sentMessages.forEach(message => {
                         uniqueUserIds.add(message.recipientId);
                     });
@@ -73,7 +72,7 @@ export default {
                         url: getApp().globalData.data.requestUrl + this.$API.message.searchContacts,
                         method: 'POST',
                         data: {
-                            recipientId: this.userId,  // Fetch messages where current user is the recipient
+                            recipientId: this.userId,
                             page: this.page,
                             size: this.pageSize,
                         },
@@ -92,13 +91,11 @@ export default {
                             this.loading = false; // Finished loading
                         },
                         fail: (err) => {
-                            console.error("Error fetching received messages:", err);
                             this.loading = false;
                         }
                     });
                 },
                 fail: (err) => {
-                    console.error("Error fetching sent messages:", err);
                     this.loading = false;
                 }
             });
@@ -110,22 +107,21 @@ export default {
                 url: getApp().globalData.data.requestUrl + this.$API.user.search,
                 method: "POST",
                 data: {
-                    id: id,  // Pass the array of unique user IDs
+                    id: id,
                 },
                 success: (res) => {
                     this.contactList.push(res.data.list[0])
                 },
                 complete: () => {
-                    this.loading = false; // Reset loading flag
+                    this.loading = false;
                 },
                 fail: (err) => {
-                    console.error("Error fetching user details:", err);
-                    this.loading = false; // Reset loading flag on failure
+                    this.loading = false;
                 }
             });
         },
 
-        // Redirect to chat window for the selected contact
+        // Redirects
         contactRedirect(contactId) {
             uni.navigateTo({
                 url: '/pages/components/chat/chat-window/chat-window?contactId=' + contactId

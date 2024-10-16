@@ -181,7 +181,6 @@ export default {
                     this.socketTask.send({
                         data: messageStr,
                         success: () => {
-                            console.log('Read receipt sent via WebSocket.');
                             // Update local messages
                             this.messages.forEach(msg => {
                                 if(unreadMessageIds.includes(msg.id)) {
@@ -190,11 +189,9 @@ export default {
                             });
                         },
                         fail: () => {
-                            console.error('Failed to send read receipt via WebSocket.');
                         },
                     });
                 } else {
-                    console.error('WebSocket is not connected.');
                 }
             }
         },
@@ -222,10 +219,8 @@ export default {
                 this.socketTask.send({
                     data: messageStr,
                     success: () => {
-                        console.log('Message sent via WebSocket.');
                     },
                     fail: () => {
-                        console.error('Failed to send message via WebSocket.');
                     },
                 });
                 // Add the message to the local messages array
@@ -239,7 +234,6 @@ export default {
                 });
                 this.scrollTop = 0;
             } else {
-                console.error('WebSocket is not connected.');
             }
         },
         sendReadReceipt() {
@@ -260,7 +254,6 @@ export default {
                 this.socketTask.send({
                     data: JSON.stringify(readReceiptData),
                     success: () => {
-                        console.log('Read receipt sent via WebSocket.');
                         // Update local messages to mark as read
                         this.messages.forEach(msg => {
                             if(unreadMessageIds.includes(msg.id)) {
@@ -269,7 +262,6 @@ export default {
                         });
                     },
                     fail: () => {
-                        console.error('Failed to send read receipt via WebSocket.');
                     },
                 });
             }
@@ -287,7 +279,6 @@ export default {
                 this.socketTask.send({
                     data: JSON.stringify(readReceiptData),
                     success: () => {
-                        console.log('Immediate read receipt sent via WebSocket.');
                         // Update local messages to mark as read
                         this.messages.forEach((msg, index) => {
                             if(messageIds.map(id => String(id)).includes(String(msg.id))) {
@@ -296,27 +287,22 @@ export default {
                         });
                     },
                     fail: () => {
-                        console.error('Failed to send immediate read receipt via WebSocket.');
                     },
                 });
             } else {
-                console.error('WebSocket is not connected.');
             }
         },
 
         connectWebSocket() {
             if(this.socketTask) {
-                console.log('WebSocket task already exists.');
                 return;
             }
 
             this.socketTask = uni.connectSocket({
                 url: getApp().globalData.data.socketUrl + '/chat?userId=' + this.userId,
                 success: () => {
-                    console.log('WebSocket connection created.');
                 },
                 fail: (err) => {
-                    console.error('WebSocket connection failed:', err);
                     this.socketTask = null;
                     setTimeout(() => {
                         this.connectWebSocket();
@@ -325,12 +311,10 @@ export default {
             });
 
             this.socketTask.onOpen(() => {
-                console.log('WebSocket connection opened.');
                 this.socketOpen = true;
                 this.getMessages();
             });
             this.socketTask.onMessage((res) => {
-                console.log('Received message:', res.data);
                 const messageObject = JSON.parse(res.data);
                 const messageData = messageObject.data;
                 const messageType = messageObject.type;
@@ -361,7 +345,6 @@ export default {
             });
 
             this.socketTask.onError((err) => {
-                console.error('WebSocket error:', err);
                 this.socketOpen = false;
             });
         }

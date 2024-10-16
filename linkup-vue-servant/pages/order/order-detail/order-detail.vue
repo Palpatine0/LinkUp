@@ -174,7 +174,6 @@ export default {
                             });
                         }
                         if(this.isServiceInProgress) {
-                            console.log("if(this.isServiceInProgress) {")
                             const endTime = new Date(this.order.serviceScheduleEnd);
                             this.$common.calculateCountdown(null, endTime, (remainingTime) => {
                                 this.serviceCompleteCountdown = remainingTime;
