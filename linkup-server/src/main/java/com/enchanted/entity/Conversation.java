@@ -18,8 +18,8 @@ public class Conversation {
     @TableField("servant_id")
     private Long servantId;
 
-    @TableField("end_time")
-    private Date endTime;
+    @TableField("expiration_time")
+    private Date expirationTime;
 
     @TableField("is_deleted")
     private Boolean isDeleted;

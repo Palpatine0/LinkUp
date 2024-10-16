@@ -522,10 +522,10 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             Conversation newConversation = new Conversation();
             newConversation.setClientId(order.getClientId());
             newConversation.setServantId(order.getServantId());
-            newConversation.setEndTime(order.getServiceScheduleEnd());
+            newConversation.setExpirationTime(order.getServiceScheduleEnd());
             conversationMapper.insert(newConversation);
         }else{
-            conversation.setEndTime(order.getServiceScheduleEnd());
+            conversation.setExpirationTime(order.getServiceScheduleEnd());
             conversationMapper.updateById(conversation);
         }
 

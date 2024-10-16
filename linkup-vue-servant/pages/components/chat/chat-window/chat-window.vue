@@ -197,7 +197,7 @@ export default {
         },
         loadMoreMessages() {
             this.getMessages().then(() => {
-                this.scrollTop += 100; // Adjust this value based on how many messages are loaded and the estimated height
+                this.scrollTop += 100;
             });
         },
         // Handle sending a new message

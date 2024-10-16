@@ -24,9 +24,9 @@ public class OrderController {
     public R save(@RequestBody Order order) {
         boolean isSaved = orderService.save(order);
         if (isSaved) {
-            return R.ok("添加成功");
+            return R.ok("Success");
         } else {
-            return R.error("添加失败");
+            return R.error("Failed");
         }
     }
 

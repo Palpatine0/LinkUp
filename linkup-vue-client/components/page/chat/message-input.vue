@@ -58,10 +58,10 @@ export default {
                         const conversation = res.data.list[0];
                         this.conversationId = conversation.id; // Store the conversation ID
                         const currentTime = new Date().getTime();
-                        const endTime = new Date(conversation.endTime).getTime();
+                        const expirationTime = new Date(conversation.expirationTime).getTime();
 
                         // Calculate remaining time in seconds
-                        const remainingTime = Math.floor((endTime - currentTime) / 1000);
+                        const remainingTime = Math.floor((expirationTime - currentTime) / 1000);
                         if(remainingTime > 0) {
                             this.canSendMessage = true;
                             this.isGiftVisible = false

@@ -59,14 +59,13 @@ public class GiftServiceImpl extends ServiceImpl<GiftMapper, Gift> implements IG
     @Override
     public Long purchase(Long senderId, Long recipientId, Long giftId) {
 
-        // Fetch the gift price and chat duration from the gift table using the giftId
         Gift gift = giftMapper.selectById(giftId);
         if (gift == null) {
             throw new IllegalArgumentException("Gift not found");
         }
         BigDecimal giftPrice = new BigDecimal(gift.getPrice());
-        BigDecimal recipientShare = giftPrice.divide(new BigDecimal(2));  // Half of the gift price
-        Integer chatDuration = gift.getChatDuration();  // Duration in seconds (or minutes)
+        BigDecimal recipientShare = giftPrice.divide(new BigDecimal(2));
+        Integer chatDuration = gift.getChatDuration();
 
         // Fetch the sender (User A)
         User sender = userService.getById(senderId);
@@ -127,11 +126,11 @@ public class GiftServiceImpl extends ServiceImpl<GiftMapper, Gift> implements IG
             Conversation newConversation = new Conversation();
             newConversation.setClientId(senderId);
             newConversation.setServantId(recipientId);
-            newConversation.setEndTime(new Date(System.currentTimeMillis() + (chatDuration * 60 * 1000)));
+            newConversation.setExpirationTime(new Date(System.currentTimeMillis() + (chatDuration * 60 * 1000)));
             conversationService.save(newConversation);
             conversationId = newConversation.getId();
         } else {
-            activeConversation.setEndTime(new Date(System.currentTimeMillis() + (chatDuration * 60 * 1000)));
+            activeConversation.setExpirationTime(new Date(System.currentTimeMillis() + (chatDuration * 60 * 1000)));
             conversationService.updateById(activeConversation);
             conversationId = activeConversation.getId();
         }

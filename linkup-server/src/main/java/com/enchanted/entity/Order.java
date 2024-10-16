@@ -91,7 +91,7 @@ public class Order {
     private Date completedAt;
 
     @TableField("is_completed")
-    private Boolean isCompleted;
+    private Integer isCompleted;
 
     @TableField("is_deleted")
     private Boolean isDeleted;
