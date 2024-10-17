@@ -335,15 +335,12 @@ export default {
                                 nameCn: serviceType.nameCn,
                             };
                         });
-                        console.log("serviceTypeMap")
-                        console.log(serviceTypeMap)
                         this.order.serviceTypeName = serviceTypeMap[this.order.requiredServantType].name;
                         this.order.serviceTypeNameCn = serviceTypeMap[this.order.requiredServantType].nameCn;
 
                         resolve();
                     },
                     fail: (error) => {
-                        console.error("Failed to fetch servant type list:", error);
                         reject(error);
                     },
                 });
@@ -404,14 +401,11 @@ export default {
                     orderId: this.orderId
                 },
                 success: (res) => {
-                    console.log("this.servantList");
-                    console.log(res.data.list);
                     this.servantList = res.data.list;
 
                     if(!this.$common.isEmpty(this.servantList)) {
                         // Use Promise.all for concurrent requests
                         const promises = this.servantList.map((user) => {
-                            console.log("Fetching data for user:", user);
                             return new Promise((resolve) => {
                                 uni.request({
                                     url: getApp().globalData.data.requestUrl + this.$API.userServant.search,
@@ -439,7 +433,6 @@ export default {
                     }
                 },
                 fail: (error) => {
-                    console.error("Failed to fetch servant list:", error);
                 }
             });
         },

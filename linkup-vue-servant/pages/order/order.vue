@@ -16,13 +16,7 @@
     />
 
     <!-- Orders Container using app-container -->
-    <scroll-view
-        :scroll-top="0"
-        scroll-y="true"
-        style="height: 80vh"
-        @scrolltoupper="reload"
-        @scrolltolower="onReachBottom"
-    >
+    <scroll-view :scroll-top="0" scroll-y="true" style="height: 80vh" @scrolltoupper="reload" @scrolltolower="onReachBottom">
         <div class="app-container" v-for="order in orderList" :key="order.id" @click="orderDetailRedirect(order.id)" style="display: flex;flex-direction: column;align-items: center">
             <div class="order-schedule">
                 <div>{{ language != "zh-Hans" ? 'Service Schedule: ' : "服务时间" }}</div>
@@ -132,17 +126,13 @@ export default {
                     const orders = res.data.list;
                     if(this.page === 1) this.orderList = [];
 
-                    // Check if there are more pages
                     if(orders.length < this.pageSize) {
                         this.hasMore = false;
                     }
 
-                    // Append new orders to the list and map servant type names
                     orders.forEach((order) => {
-                        // Convert timestamp to readable time
                         order.createdAt = order.createdAt ? this.$common.stampToTime(order.createdAt) : '';
 
-                        // Add service type name and nameCn to the order
                         if(this.serviceTypeMap[order.requiredServantType]) {
                             order.serviceTypeName = this.serviceTypeMap[order.requiredServantType].name;
                             order.serviceTypeNameCn = this.serviceTypeMap[order.requiredServantType].nameCn;
@@ -169,17 +159,16 @@ export default {
                     data: {},
                     success: (res) => {
                         res.data.list.forEach((serviceType) => {
-                            // Populate the serviceTypeMap
                             this.serviceTypeMap[serviceType.id] = {
                                 name: serviceType.name,
                                 nameCn: serviceType.nameCn,
                             };
                         });
-                        resolve(); // Resolve the promise after fetching the data
+                        resolve();
                     },
                     fail: (error) => {
                         console.error("Failed to fetch servant type list:", error);
-                        reject(error); // Reject the promise in case of failure
+                        reject(error);
                     },
                 });
             });
@@ -218,6 +207,7 @@ export default {
 }
 
 .order-schedule {
+    font-weight: bold;
     width: 100%;
     padding: 2px 8px;
     margin: 0 0 8px 0;
@@ -252,6 +242,11 @@ export default {
     justify-content: space-between;
 }
 
+.order-status{
+    display: flex;
+    margin-top: 4px;
+}
+
 .status-dot {
     width: 10px;
     height: 10px;
@@ -264,11 +259,6 @@ export default {
     position: relative;
     bottom: 4px;
     left: 5px;
-}
-
-.order-status{
-    display: flex;
-    margin-top: 4px;
 }
 
 .yellow-dot {
