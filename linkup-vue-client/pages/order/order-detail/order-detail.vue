@@ -16,21 +16,20 @@
         {{ language != "zh-Hans" ? order.serviceTypeName + " Service" : order.serviceTypeNameCn + "服务" }}
     </app-title>
 
-    <div v-show="detailType === 0">
-        <!-- DYNAMIC STATUS CONTAINERS -->
-        <div v-if="order.countdownStartAt">
-            <!-- Alert: Choose while still can -->
-            <div v-if="candidateSelectionCountdown != 0 && order.status == orderConstant.PENDING" class="app-container" style="background-color: #feb327">
-                <div>
-                    <app-title type="h3" bold="true">{{ $t('profile>order>orderDetail.selectedBeforeCountdown') }}</app-title>
-                    <p>{{ candidateSelectionCountdown }}</p>
-                </div>
-                <app-button type="small" color="red" shaped size="small" @click="cancelOrder">
-                    {{ $t('profile>order>orderDetail.cancelOrder') }}
-                </app-button>
+    <div v-if="order.countdownStartAt">
+        <!-- Alert: Choose while still can -->
+        <div v-if="candidateSelectionCountdown != 0 && order.status == orderConstant.PENDING" class="app-container" style="background-color: #feb327">
+            <div>
+                <app-title type="h3" bold="true">{{ $t('profile>order>orderDetail.selectedBeforeCountdown') }}</app-title>
+                <p>{{ candidateSelectionCountdown }}</p>
             </div>
+            <app-button type="small" color="red" shaped size="small" @click="cancelOrder">
+                {{ $t('profile>order>orderDetail.cancelOrder') }}
+            </app-button>
         </div>
+    </div>
 
+    <div v-show="detailType === 0">
         <!-- Cancel before Waiting Respond OT -->
         <div v-if="cancelStatus.isCancelManually" class="app-container" style="background-color: white !important;">
             <app-title type="h3" bold="true">{{ $t('profile>order>orderDetail.orderClosed') }}</app-title>
@@ -212,6 +211,7 @@
                 <div class="icon"><img src="/static/page/order/location-dot.svg" alt="Payment Icon"/></div>
                 <div class="details">
                     <span class="label">{{ $t('profile>order>orderDetail.orderInfoDetail.address') }}</span>
+                    <p class="value">{{ order.address.address }} </p>
                     <p class="value">{{ order.address.addressName }} </p>
                     <p class="value">{{ order.address.detail }}</p>
                 </div>

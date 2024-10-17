@@ -112,7 +112,9 @@ export default {
         };
     },
     onShow() {
-        this.reload()
+        if(!this.$common.isEmpty(uni.getStorageSync(getApp().globalData.data.userInfoKey).id)){
+            this.reload()
+        }
     },
     methods: {
         async reload() {

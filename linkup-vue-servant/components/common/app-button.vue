@@ -1,7 +1,7 @@
 <template>
 <div :class="['button-common', shaped ? 'button-shaped' : 'button-normal', sizeClass]"
      @click="$emit('click')"
-     :style="{ width: width, backgroundColor: color }">
+     :style="{ width: width, backgroundColor: color, color: fontColor }">
     <slot/>
 </div>
 </template>
@@ -12,7 +12,8 @@ export default {
         shaped: { type: Boolean, default: false }, // Determines if the div has a "shaped" appearance
         size: { type: String, default: 'medium' }, // small, medium, large
         width: { type: String, default: '100%' },  // Button width, default is 100%
-        color: { type: String, default: '#007BFF' } // Button background color, default is blue
+        color: { type: String, default: '#007BFF' }, // Button background color, default is blue
+        fontColor: { type: String, default: '#FFFFFF' } // Font color, default is white
     },
     computed: {
         sizeClass() {
@@ -39,7 +40,6 @@ export default {
 
 <style>
 .button-common {
-    color: white;
     text-align: center;
     display: inline-block; /* Makes it behave like a button */
     box-sizing: border-box;
@@ -48,6 +48,7 @@ export default {
     width: 100%; /* Default width is 100% but can be overridden */
 }
 
+/* Shape styles */
 .button-shaped {
     border-radius: 25px;
 }

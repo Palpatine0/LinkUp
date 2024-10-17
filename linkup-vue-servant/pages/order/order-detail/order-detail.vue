@@ -28,19 +28,19 @@
                 <p>{{ serviceCompleteCountdown }}</p>
             </div>
         </div>
-        <div class="client-addr-detail" >
+        <div class="client-addr-detail">
             <div style="display: flex;justify-content: flex-start;margin: 18px 0 2px 0;width: 90%;">
                 <div style="width: 80%; text-align: left;">
                     <p style="font-weight: bold;font-size:18px">{{ orderAddress.addressName }}</p>
                     <p style="font-weight: bold;font-size:18px">{{ orderAddress.detail }}</p>
-                    <p >
+                    <p>
                         {{ $common.stampToTime(this.order.serviceScheduleStart, {yyyy: false, ss: false}) }}
                         -
                         {{ $common.stampToTime(this.order.serviceScheduleEnd, {yyyy: false, ss: false, MM: false, dd: false}) }}
                     </p>
                 </div>
                 <div style="margin-top: 14px;margin-left: 18px;">
-                    <img style="width: 36px;height: 36px;" src="/static/page/order/siren-on.svg">
+                    <img style="width: 36px;height: 36px;" src="/static/page/order/siren-on.svg" @click="emergencyCenterRedirect()">
                 </div>
             </div>
             <div class="divider"></div>
@@ -72,7 +72,7 @@
         </div>
 
         <!-- Rating Section -->
-        <div class="rating-section" >
+        <div class="rating-section">
             <app-title type="h2" bold="true">
                 <div>{{ $t('profile>order>orderDetail.rateRequest') }}</div>
             </app-title>
@@ -277,6 +277,11 @@ export default {
         chatWindowRedirect(userId) {
             uni.navigateTo({
                 url: '/pages/components/chat/chat-window/chat-window?contactId=' + userId
+            });
+        },
+        emergencyCenterRedirect(userId) {
+            uni.navigateTo({
+                url: '/pages/order/order-detail/emergency-center/emergency-center'
             });
         },
     }

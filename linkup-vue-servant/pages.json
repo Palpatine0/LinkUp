@@ -74,6 +74,13 @@
                         "navigationBarBackgroundColor": "#f3f2f6",
                         "navigationStyle":"custom"
                     }
+                },
+                {
+                    "path": "emergency-center/emergency-center",
+                    "style": {
+                        "navigationBarTitleText": "",
+                        "navigationBarBackgroundColor": "#ed3a3a"
+                    }
                 }
             ]
         },
