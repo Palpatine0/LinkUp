@@ -138,6 +138,8 @@
         }
     },
     "profile>order>orderDetail": {
+        "candidateSelection": "Candidate Selection",
+        "orderDetail": "Order Detail",
         "orderInfoBasic": {
             "price": "Order Price",
             "totalCandidates": "Total Candidates"
@@ -184,6 +186,7 @@
         "orderInfoDetail": {
             "orderId": "Order ID",
             "orderTime": "Order Time",
+            "serviceTime": "Service Time",
             "paymentMethod": "Payment Method",
             "balance": "Balance",
             "weChat": "WeChat",

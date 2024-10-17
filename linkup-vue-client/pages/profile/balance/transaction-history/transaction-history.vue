@@ -15,7 +15,6 @@
         @input="onSearchInput"
     />
 
-    <!-- Toggle buttons for All Transactions / Income / Outcome -->
     <div class="transaction-toggle">
         <button
             :class="{ active: currencyType === 0 }"
@@ -86,12 +85,12 @@ export default {
     },
     data() {
         return {
+            currencyType: 0,
             userProfileAvailable: false,
             transactionList: [],
             searchKeyword: '',
             income: this.$t('profile>balance>transactionHistory.income'),
             expanse: this.$t('profile>balance>transactionHistory.expanse'),
-            currencyType: 0
         };
     },
     onLoad() {

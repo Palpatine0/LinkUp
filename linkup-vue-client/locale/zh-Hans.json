@@ -146,6 +146,8 @@
         }
     },
     "profile>order>orderDetail": {
+        "candidateSelection": "选择达人",
+        "orderDetail": "订单详情",
         "orderInfoBasic": {
             "price": "报价",
             "totalCandidates": "已抢单"
@@ -199,6 +201,7 @@
         "orderInfoDetail": {
             "orderId": "订单编号",
             "orderTime": "下单时间",
+            "serviceTime": "服务时间",
             "paymentMethod": "支付方式",
             "balance": "余额",
             "weChat": "微信支付",
