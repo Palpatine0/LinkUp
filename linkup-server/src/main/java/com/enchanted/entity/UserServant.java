@@ -3,6 +3,8 @@ package com.enchanted.entity;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
+
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
@@ -16,8 +18,11 @@ public class UserServant {
 
     private String bio;
 
-    @TableField("servant_type_id")
-    private String serviceTypeId;
+    @TableField("good_performance_rating_count")
+    private Integer goodPerformanceRatingCount;
+
+    @TableField("good_performance_rate")
+    private BigDecimal goodPerformanceRate;
 
     @TableField("is_deleted")
     private Boolean isDeleted;

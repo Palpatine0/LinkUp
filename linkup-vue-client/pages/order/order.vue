@@ -27,14 +27,17 @@
                     {{ $common.stampToTime(order.serviceScheduleEnd, {yyyy: false, ss: false, MM: false, dd: false}) }}
                 </div>
             </div>
+
             <div class="service-type-price">
                 <app-title bold="true" type="h3">{{ language != "zh-Hans" ? order.serviceTypeName + ' Service' : order.serviceTypeNameCn + "服务" }}</app-title>
                 <app-title type="h3">¥{{ order.price }}</app-title>
             </div>
+
             <div class="order-address">
                 <div>{{ order.address.addressName }}</div>
                 <div>{{ order.address.detail }}</div>
             </div>
+
             <div class="chat-user-order-status">
                 <span style="font-size: 14px; color: gray;">{{ order.createdAt }}</span>
                 <div v-if="order.status == 0" class="order-status">
@@ -120,7 +123,7 @@ export default {
         async reload() {
             this.resetPagination();
             await this.getServantTypeList();
-            this.getDataList();
+            await this.getDataList();
         },
         buildApiParams() {
             let url = getApp().globalData.data.requestUrl + this.$API.order.search;
@@ -147,7 +150,10 @@ export default {
         onSearchInput() {
             this.reload();
         },
-        getDataList() {
+        async getDataList() {
+            if (this.isFetchingData) return; // Prevent multiple calls
+            this.isFetchingData = true;
+
             const {url, method, data} = this.buildApiParams();
             this.loading = true;
 
@@ -188,6 +194,7 @@ export default {
                     this.loading = false;
                 },
             });
+            this.isFetchingData = false;
         },
         async getServantTypeList() {
             return new Promise((resolve, reject) => {

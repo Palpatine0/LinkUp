@@ -6,17 +6,13 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.enchanted.constant.OrderConstant;
 import com.enchanted.constant.TransactionConstant;
-import com.enchanted.entity.Conversation;
-import com.enchanted.entity.Transaction;
-import com.enchanted.entity.User;
+import com.enchanted.entity.*;
 import com.enchanted.mapper.ConversationMapper;
 import com.enchanted.mapper.OrderMapper;
-import com.enchanted.entity.Order;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.enchanted.service.IOrderCandidateService;
-import com.enchanted.service.IOrderService;
-import com.enchanted.service.ITransactionService;
-import com.enchanted.service.IUserService;
+import com.enchanted.mapper.UserMapper;
+import com.enchanted.mapper.UserServantMapper;
+import com.enchanted.service.*;
 import com.enchanted.util.ConversionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.TaskScheduler;
@@ -27,6 +23,7 @@ import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
 import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -55,6 +52,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     private ConversationMapper conversationMapper;
 
     @Autowired
+    private UserServantMapper userServantMapper;
+
+    @Autowired
     private TaskScheduler taskScheduler;
 
     // Maps to keep track of scheduled tasks
@@ -62,6 +62,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     private final Map<Long, ScheduledFuture<?>> autoSelectionRefundTasks = new ConcurrentHashMap<>();
     private final Map<Long, ScheduledFuture<?>> autoRatingTasks = new ConcurrentHashMap<>();
     private final Map<Long, ScheduledFuture<?>> autoCompletionTasks = new ConcurrentHashMap<>();
+    @Autowired
+    private UserMapper userMapper;
 
 
     /*C*/
@@ -350,6 +352,17 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         sendServantReferrerCommission(order);
         payServantInitialAmount(order);
 
+        User servant = userMapper.selectById(order.getServantId());
+        if (servant != null) {
+            servant.setCompletedOrderCount(servant.getCompletedOrderCount() + 1);
+            userService.updateById(servant);
+        }
+        User client = userMapper.selectById(order.getClientId());
+        if (client != null) {
+            client.setCompletedOrderCount(client.getCompletedOrderCount() + 1);
+            userService.updateById(client);
+        }
+
         // monitor control
         stopAutoRefundMonitor(order.getId());
         startAutoRatingMonitor(order.getId());
@@ -518,13 +531,13 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         wrapper.eq("is_deleted", 0);
         Conversation conversation = conversationMapper.selectOne(wrapper);
 
-        if (conversation==null){
+        if (conversation == null) {
             Conversation newConversation = new Conversation();
             newConversation.setClientId(order.getClientId());
             newConversation.setServantId(order.getServantId());
             newConversation.setExpirationTime(order.getServiceScheduleEnd());
             conversationMapper.insert(newConversation);
-        }else{
+        } else {
             conversation.setExpirationTime(order.getServiceScheduleEnd());
             conversationMapper.updateById(conversation);
         }
@@ -564,7 +577,11 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     private void payServantPerformanceAmount(Order order, Integer rating) {
         // Fetch the servant
         User servant = userService.getById(order.getServantId());
-        if (servant == null) {
+        QueryWrapper<UserServant> wrapper = new QueryWrapper<>();
+        wrapper.eq("user_id", servant.getId());
+        wrapper.eq("is_deleted", 0);
+        UserServant userServant = userServantMapper.selectOne(wrapper);
+        if (userServant == null) {
             return;
         }
 
@@ -572,6 +589,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         BigDecimal maxServantShare = order.getPrice().multiply(OrderConstant.MAX_SERVANT_COMMISSION);
 
         // Determine additional payment based on rating
+        int goodPerformanceRatingCount = userServant.getGoodPerformanceRatingCount();
+        int completedOrderCount = servant.getCompletedOrderCount();
+
         BigDecimal additionalPercentage = BigDecimal.ZERO;
         if (rating == OrderConstant.LIMITED) {
             additionalPercentage = OrderConstant.ADDITIONAL_PAYMENT_RATE_LIMITED; // 0%
@@ -579,7 +599,30 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             additionalPercentage = OrderConstant.ADDITIONAL_PAYMENT_RATE_FAIR; // 10% of 70%
         } else if (rating == OrderConstant.GOOD) {
             additionalPercentage = OrderConstant.ADDITIONAL_PAYMENT_RATE_GOOD; // 20% of 70%
+            goodPerformanceRatingCount += 1;
         }
+
+        // Update good performance rating count
+        userServant.setGoodPerformanceRatingCount(goodPerformanceRatingCount);
+
+        // Calculate good performance rate
+        if (completedOrderCount == 0) {
+            // Avoid division by zero; set rate to zero or handle as needed
+            userServant.setGoodPerformanceRate(BigDecimal.ZERO);
+        } else {
+            BigDecimal goodPerformanceRatingCountBD = BigDecimal.valueOf(goodPerformanceRatingCount);
+            BigDecimal completedOrderCountBD = BigDecimal.valueOf(completedOrderCount);
+
+            // Calculate the rate as a percentage with two decimal places
+            BigDecimal goodPerformanceRate = goodPerformanceRatingCountBD
+                .divide(completedOrderCountBD, 4, RoundingMode.HALF_UP) // Divide with scale 4
+                .multiply(BigDecimal.valueOf(100)); // Convert to percentage
+
+            userServant.setGoodPerformanceRate(goodPerformanceRate);
+        }
+
+        // Update the userServant record
+        userServantMapper.updateById(userServant);
 
         // Calculate the additional payment
         BigDecimal additionalPayment = maxServantShare.multiply(additionalPercentage);
