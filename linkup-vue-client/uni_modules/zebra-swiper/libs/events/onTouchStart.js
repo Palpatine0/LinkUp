@@ -26,7 +26,7 @@ export default function onTouchStart(event) {
 	data.isTouchEvent = e.type === 'touchstart' || e.type === 'touchStart' || e.type === 'onTouchstart';
 	if (!data.isTouchEvent && 'which' in e && e.which === 3) return;
 	if (!data.isTouchEvent && 'button' in e && e.button > 0) return;
-	if (data.isTouched && data.isMoved) return; // change target el for shadow root components
+	if (data.isTouched && data.isMoved) return; // change target el for shadow root component
 
 	const swipingClassHasValue = !!params.noSwipingClass && params.noSwipingClass !== '';
 

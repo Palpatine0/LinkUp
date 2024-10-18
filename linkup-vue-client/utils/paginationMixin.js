@@ -1,5 +1,5 @@
 export default {
-    name: "paginationMixin.js",
+    name: "paginationMixin",
     data() {
         return {
             page: 1,
@@ -7,6 +7,7 @@ export default {
             global: false,
             hasMore: true,
             loading: false,
+            isFetchingData: false
         };
     },
     methods: {
@@ -14,6 +15,7 @@ export default {
             this.page = 1;
             this.pageSize = 10;
             this.hasMore = true;
+            this.orderList = [];
         },
         onReachBottom() {
             this.getDataList();

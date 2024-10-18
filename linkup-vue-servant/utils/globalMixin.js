@@ -1,5 +1,5 @@
 export default {
-    name: "globalMixin.js",
+    name: "globalMixin",
     data() {
         return {
             language: uni.getStorageSync("language"),
