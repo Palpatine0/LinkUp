@@ -92,12 +92,12 @@ public class OrderController {
     }
 
 
-    @PostMapping("/rate")
-    public R rateOrder(@RequestBody Map<String, Object> requestData) {
+    @PostMapping("/rate-servant")
+    public R rateServant(@RequestBody Map<String, Object> requestData) {
         Long orderId = Long.parseLong(requestData.get("orderId").toString());
         Integer rating = Integer.parseInt(requestData.get("rating").toString());
 
-        boolean isRated = orderService.rate(orderId, rating);
+        boolean isRated = orderService.rateServant(orderId, rating);
         if (isRated) {
             return R.ok("Order rated successfully");
         } else {

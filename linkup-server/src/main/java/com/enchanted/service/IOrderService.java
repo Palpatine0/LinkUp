@@ -24,7 +24,7 @@ public interface IOrderService extends IService<Order> {
 
     boolean assignServant(Long orderId, Long servantId, BigDecimal quotedPrice);
 
-    boolean rate(Long orderId, Integer rating);
+    boolean rateServant(Long orderId, Integer rating);
 
     void startServantSelectionMonitor(Long orderId);
 
