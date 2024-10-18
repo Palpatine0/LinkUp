@@ -24,6 +24,7 @@
             "cny": "CNY",
             "minutes": "Minutes"
         },
+
         "showToast": {
             "success": "Success",
             "fail": "Operation failed",
@@ -47,6 +48,7 @@
             }
         }
     },
+
     "//////": "App.vue",
     "app": {
         "showToast": {
@@ -55,6 +57,7 @@
             "loginFail": "Login failed"
         }
     },
+
     "//////": "register",
     "register": {
         "step0Title": "Your referrer?",
@@ -77,15 +80,20 @@
             "authFailed": "Auth failed"
         }
     },
+
     "//////": "home",
     "home": {
         "nearby": "Nearby",
         "tourGuideServices": "Tour Guide Services"
     },
+
+
     "//////": "chat",
     "chat": {
         "chats": "Chats"
     },
+
+
     "//////": "profile",
     "profile": {
         "order": "Order",
@@ -153,19 +161,24 @@
         "selectCandidate": "Select Candidate",
         "noCandidate": "No one responded yet",
         "startChatting": "Start Chatting!",
+
         "orderClosed": "This order has been closed",
         "refunded": "The cost of your order has been refunded",
         "selectionCountdown": "Selection Countdown",
         "selectedBeforeCountdown": "Please select a candidate before the countdown is over",
+
         "orderCanceledManuallyExplanation": "You canceled this order",
         "orderCanceledByTimeoutExplanation": "The order has been closed due to the fact that no one has taken the order within half an hour of its release (or you manually close it within this duration)",
         "orderCanceledManuallyWithinSelection": "You canceled this order",
         "orderCanceledByTimeoutWithinSelection": "Failure in selecting candidate in designated time. This order has been closed",
+
         "serviceInProgress": "Your service is now in progress",
         "serviceComplete": "Your service is now completed",
         "rateRequest": "Please provide your feedback on your experience.",
+
         "cancelOrder": "Cancel Order",
         "completeOrder": "Mark order as completed",
+
         "selectServantModal": {
             "title": "Confirm your selection",
             "content1": "Are you sure you want to choose",
@@ -188,6 +201,7 @@
             "title": "Complete Order Advance",
             "content": "Are you certain you wish to proceed with completing this order ahead of the designated schedule?"
         },
+
         "orderInfoDetail": {
             "orderId": "Order ID",
             "orderTime": "Order Time",
@@ -197,6 +211,7 @@
             "weChat": "WeChat",
             "address": "Address"
         },
+
         "showToast": {
             "selectRate": "Please select a rating before submitting.",
             "rated": "You have rated this order already"
@@ -233,6 +248,7 @@
         "income": "Income",
         "expanse": "Expanse"
     },
+
     "//////": "profile > address",
     "profile>address": {
         "addressManage": "Manage Addresses"
@@ -251,10 +267,14 @@
         "saveBtn": "Save",
         "updateBtn": "Update"
     },
+
     "//////": "profile > data",
     "profile>data": {
         "ds": "Data and Storage"
     },
+
+
+
     "//////": "components(page)",
     "componentPage>user>userDetail": {
         "startChatting": "Start Chatting"
@@ -271,6 +291,8 @@
             "enterMsg": ""
         }
     },
+
+
     "//////": "components",
     "component>address>addressSelector": {
         "selectorServiceAddress": "Selector an Address",

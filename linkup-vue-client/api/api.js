@@ -66,6 +66,13 @@ var $API = {
     gift:{
         search: '/gift/search',
         purchase: '/gift/purchase',
-    }
+    },
+
+    // Review
+    review: {
+        save: '/review/save',
+        search: '/review/search',
+        update: '/review/update',
+    },
 }
 export default $API;
