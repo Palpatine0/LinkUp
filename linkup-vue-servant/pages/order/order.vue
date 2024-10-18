@@ -27,7 +27,7 @@
                 </div>
             </div>
             <div class="service-type-price">
-                <app-title bold="true" type="h3">{{ language != "zh-Hans" ? order.serviceTypeName + ' Service' : order.serviceTypeNameCn + "服务" }}</app-title>
+                <app-title bold="true" type="h3">{{ language != "zh-Hans" ? order.serviceType.name + ' Service' : order.serviceType.nameCn + "服务" }}</app-title>
                 <app-title type="h3">¥{{ order.price }}</app-title>
             </div>
             <div class="order-address">
@@ -80,7 +80,6 @@ export default {
         return {
             orderList: [],
             searchKeyword: '',
-            serviceTypeMap: {},
             addressMap: {},
         };
     },
@@ -90,7 +89,6 @@ export default {
     methods: {
         async reload() {
             this.resetPagination();
-            await this.getServantTypeList();
             this.getDataList();
         },
         resetPagination() {
@@ -132,12 +130,6 @@ export default {
 
                     orders.forEach((order) => {
                         order.createdAt = order.createdAt ? this.$common.stampToTime(order.createdAt) : '';
-
-                        if(this.serviceTypeMap[order.requiredServantType]) {
-                            order.serviceTypeName = this.serviceTypeMap[order.requiredServantType].name;
-                            order.serviceTypeNameCn = this.serviceTypeMap[order.requiredServantType].nameCn;
-                        }
-
                     });
 
                     // Update the order list
@@ -149,28 +141,6 @@ export default {
                 complete: () => {
                     this.loading = false;
                 },
-            });
-        },
-        async getServantTypeList() {
-            return new Promise((resolve, reject) => {
-                uni.request({
-                    url: getApp().globalData.data.requestUrl + this.$API.serviceType.search,
-                    method: 'POST',
-                    data: {},
-                    success: (res) => {
-                        res.data.list.forEach((serviceType) => {
-                            this.serviceTypeMap[serviceType.id] = {
-                                name: serviceType.name,
-                                nameCn: serviceType.nameCn,
-                            };
-                        });
-                        resolve();
-                    },
-                    fail: (error) => {
-                        console.error("Failed to fetch servant type list:", error);
-                        reject(error);
-                    },
-                });
             });
         },
         isServiceInProgressState(order) {

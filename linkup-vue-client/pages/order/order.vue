@@ -29,7 +29,7 @@
             </div>
 
             <div class="service-type-price">
-                <app-title bold="true" type="h3">{{ language != "zh-Hans" ? order.serviceTypeName + ' Service' : order.serviceTypeNameCn + "服务" }}</app-title>
+                <app-title bold="true" type="h3">{{ language != "zh-Hans" ? order.serviceType.name + ' Service' : order.serviceType.nameCn + "服务" }}</app-title>
                 <app-title type="h3">¥{{ order.price }}</app-title>
             </div>
 
@@ -107,7 +107,6 @@ export default {
         return {
             searchKeyword: '',
             orderList: [],
-            serviceTypeMap: {},
             countdowns: {},
             serviceTypeConstant: {
                 TOUR_GUIDE: 1,
@@ -122,7 +121,6 @@ export default {
     methods: {
         async reload() {
             this.resetPagination();
-            await this.getServantTypeList();
             await this.getDataList();
         },
         buildApiParams() {
@@ -174,11 +172,6 @@ export default {
                     for (const order of this.orderList) {
                         order.createdAt = order.createdAt ? this.$common.stampToTime(order.createdAt) : '';
 
-                        if(this.serviceTypeMap[order.requiredServantType]) {
-                            order.serviceTypeName = this.serviceTypeMap[order.requiredServantType].name;
-                            order.serviceTypeNameCn = this.serviceTypeMap[order.requiredServantType].nameCn;
-                        }
-
                         if(!this.$common.isEmpty(order.servantId)) {
                             order.servant = await this.getOrderServant(order.servantId)
                         } else {
@@ -195,29 +188,6 @@ export default {
                 },
             });
             this.isFetchingData = false;
-        },
-        async getServantTypeList() {
-            return new Promise((resolve, reject) => {
-                uni.request({
-                    url: getApp().globalData.data.requestUrl + this.$API.serviceType.search,
-                    method: 'POST',
-                    data: {},
-                    success: (res) => {
-                        res.data.list.forEach((serviceType) => {
-                            // Populate the serviceTypeMap
-                            this.serviceTypeMap[serviceType.id] = {
-                                name: serviceType.name,
-                                nameCn: serviceType.nameCn,
-                            };
-                        });
-                        resolve(); // Resolve the promise after fetching the data
-                    },
-                    fail: (error) => {
-                        console.error("Failed to fetch servant type list:", error);
-                        reject(error); // Reject the promise in case of failure
-                    },
-                });
-            });
         },
         async getOrderServant(servantId) {
             const getServant = () => {

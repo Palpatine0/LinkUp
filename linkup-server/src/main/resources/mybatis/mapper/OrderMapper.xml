@@ -5,7 +5,7 @@
 
 <mapper namespace="com.enchanted.mapper.OrderMapper">
 
-    <resultMap id="OrderWithAddressResultMap" type="com.enchanted.entity.Order">
+    <resultMap id="OrderWithAssociationsResultMap" type="com.enchanted.entity.Order">
         <id property="id" column="id"/>
         <result property="identifier" column="identifier"/>
         <result property="title" column="title"/>
@@ -47,12 +47,23 @@
             <result property="isDeleted" column="address_is_deleted"/>
             <result property="createdAt" column="address_created_at"/>
         </association>
+
+        <association property="serviceType" javaType="com.enchanted.entity.ServiceType">
+            <id property="id" column="service_type_id"/>
+            <result property="name" column="service_type_name"/>
+            <result property="nameCn" column="service_type_name_cn"/>
+            <result property="coverImg" column="service_type_cover_img"/>
+            <result property="introImg" column="service_type_intro_img"/>
+            <result property="isDeleted" column="service_type_is_deleted"/>
+            <result property="createdAt" column="service_type_created_at"/>
+        </association>
     </resultMap>
 
     <!-- Modified Search Query -->
-    <select id="search" resultMap="OrderWithAddressResultMap">
+    <select id="search" resultMap="OrderWithAssociationsResultMap">
         SELECT
         o.*,
+        -- Address fields
         a.id AS address_id,
         a.user_id AS address_user_id,
         a.consignee,
@@ -63,9 +74,18 @@
         a.latitude,
         a.longitude,
         a.is_deleted AS address_is_deleted,
-        a.created_at AS address_created_at
+        a.created_at AS address_created_at,
+        -- ServiceType fields
+        st.id AS service_type_id,
+        st.name AS service_type_name,
+        st.name_cn AS service_type_name_cn,
+        st.cover_img AS service_type_cover_img,
+        st.intro_img AS service_type_intro_img,
+        st.is_deleted AS service_type_is_deleted,
+        st.created_at AS service_type_created_at
         FROM `order` o
         LEFT JOIN address a ON o.address_id = a.id
+        LEFT JOIN service_type st ON o.required_servant_type = st.id
         <where>
             o.is_deleted = 0
             <!-- Existing conditions -->
@@ -100,5 +120,6 @@
         </where>
         ORDER BY o.created_at DESC
     </select>
+
 
 </mapper>

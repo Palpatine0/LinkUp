@@ -99,6 +99,10 @@ public class Order {
     @TableField("created_at")
     private Date createdAt;
 
+    // Transient fields
     @TableField(exist = false)
     private Address address;
+
+    @TableField(exist = false)
+    private ServiceType serviceType;
 }

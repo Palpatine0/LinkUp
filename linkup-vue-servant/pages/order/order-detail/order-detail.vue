@@ -8,7 +8,7 @@
             <img style="width: 22px;height: 22px" src="/static/page/register/back.svg">
         </div>
         <div class="nav-bar">
-            {{ language != "zh-Hans" ? requiredServantType + " Service" : requiredServantTypeCn + "服务" }}
+            {{ language != "zh-Hans" ? order.serviceType.name + " Service" : order.serviceType.nameCn + "服务" }}
         </div>
     </div>
     <!--/HEADER-->
@@ -113,9 +113,6 @@ export default {
 
             orderClient: {},
 
-            requiredServantType: '',
-            requiredServantTypeCn: '',
-
             serviceCountdown: 0,
             serviceCompleteCountdown: 0,
 
@@ -179,8 +176,6 @@ export default {
                                 this.serviceCompleteCountdown = remainingTime;
                             });
                         }
-
-                        this.getServantType();
                     }
                 }
             });
@@ -222,20 +217,6 @@ export default {
                 },
                 success: (res) => {
                     this.orderClient = res.data.list[0]
-                },
-            });
-        },
-        getServantType(id) {
-            uni.request({
-                url: getApp().globalData.data.requestUrl + this.$API.serviceType.search,
-                method: 'POST',
-                data: {
-                    id: id
-                },
-                success: (res) => {
-                    var servantType = res.data.list[0]
-                    this.requiredServantType = servantType.name
-                    this.requiredServantTypeCn = servantType.nameCn
                 },
             });
         },

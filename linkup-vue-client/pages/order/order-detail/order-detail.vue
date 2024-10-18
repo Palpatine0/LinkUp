@@ -13,7 +13,7 @@
     </div>
 
     <app-title v-if="order.status!=orderConstant.COMPLETED" type="h2" bold="true">
-        {{ language != "zh-Hans" ? order.serviceTypeName + " Service" : order.serviceTypeNameCn + "服务" }}
+        {{ language != "zh-Hans" ? order.serviceType.name + " Service" : order.serviceType.nameCn + "服务" }}
     </app-title>
 
     <div v-if="order.countdownStartAt">
@@ -316,7 +316,6 @@ export default {
                 },
                 success: async (res) => {
                     this.order = res.data.list[0];
-                    await this.getServantTypeList();
                     if(this.order.status == this.orderConstant.PENDING) {
                         if(this.order.countdownStartAt) {
                             const startTime = this.order.countdownStartAt;
@@ -335,31 +334,6 @@ export default {
                     }
                     this.setCancellationStates();
                 },
-            });
-        },
-        async getServantTypeList() {
-            return new Promise((resolve, reject) => {
-                uni.request({
-                    url: getApp().globalData.data.requestUrl + this.$API.serviceType.search,
-                    method: 'POST',
-                    data: {},
-                    success: (res) => {
-                        var serviceTypeMap = {}
-                        res.data.list.forEach((serviceType) => {
-                            serviceTypeMap[serviceType.id] = {
-                                name: serviceType.name,
-                                nameCn: serviceType.nameCn,
-                            };
-                        });
-                        this.order.serviceTypeName = serviceTypeMap[this.order.requiredServantType].name;
-                        this.order.serviceTypeNameCn = serviceTypeMap[this.order.requiredServantType].nameCn;
-
-                        resolve();
-                    },
-                    fail: (error) => {
-                        reject(error);
-                    },
-                });
             });
         },
         setServiceInProgressState() {
