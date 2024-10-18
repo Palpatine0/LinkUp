@@ -606,7 +606,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         userServant.setGoodPerformanceRatingCount(goodPerformanceRatingCount);
 
         // Calculate good performance rate
-        if (completedOrderCount == 0) {
+        if (completedOrderCount <= 5) {
             // Avoid division by zero; set rate to zero or handle as needed
             userServant.setGoodPerformanceRate(BigDecimal.ZERO);
         } else {
