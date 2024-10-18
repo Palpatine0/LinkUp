@@ -58,26 +58,42 @@
         <!-- SERVANT CONTAINER  -->
         <div v-if="candidateSelectionCountdown != 0 && order.status == orderConstant.PENDING" class="mt-4">
             <app-title bold="true">{{ $t('profile>order>orderDetail.candidates') }}</app-title>
-            <div v-if="servantList.length > 0">
-                <z-swiper v-model="servantList" :options="{slidesPerView: 'auto', centeredSlides: true, spaceBetween: 14}" style="width: 100%">
-                    <z-swiper-item v-for="(user, index) in servantList" :key="index" :custom-style="{width: '500rpx'}">
+            <div v-if="candidateList.length > 0">
+                <z-swiper v-model="candidateList" :options="{slidesPerView: 'auto', centeredSlides: true, spaceBetween: 14}" style="width: 100%">
+                    <z-swiper-item v-for="(user, index) in candidateList" :key="index" :custom-style="{width: '500rpx'}">
                         <demo-item :item="user">
                             <app-container color="#fff" col="12" @click="userDetailRedirect(user.id)">
                                 <div class="center-h">
-                                    <image style="width: 160px; height: 160px; border-radius: 50%; margin: 30px 0" :src="user.avatar" mode="aspectFill"></image>
+                                    <image style="width: 160px; height: 160px; border-radius: 50%; margin: 25px 0 12px 0" :src="user.avatar" mode="aspectFill"></image>
                                 </div>
-                                `
-                                <app-title type="h3" bold="true">{{ user.nickname }}</app-title>
-                                <div class="flex" style="margin: 3px 0px 0px -6px">
-                                    <span style="font-size: 27px; margin: 0 10px; position: relative; top: -8px; left: 2px;">
-                                        {{ user.gender === 0 ? '👨‍💻' : '👩‍💻' }}
-                                    </span>
-                                    <app-title type="h3" bold="true">{{ user.age }}</app-title>
+                                <app-title style="text-align: center" type="h3" bold="true">{{ user.nickname }}</app-title>
+                                <div class="flex justify-SB mt-2 mb-1">
+                                    <div class="center-h" style="width: 50%;display: flex;flex-direction: row;align-items: center;">
+                                        <div class="flex" style="margin: 3px 0px 0px -6px">
+                                            <div style="text-align: center">
+                                                <span style="font-size: 42px; margin: 0 10px;">{{ user.gender === 0 ? '👨‍💻' : '👩‍💻' }}</span>
+                                                <app-title type="h3" bold="true">{{ user.age }}</app-title>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div style="width: 50%">
+                                        <div class="servant-detail-item">
+                                            <p class="value">¥{{ user.quotedPrice }}</p>
+                                            <p class="label">{{ $t('profile>order>orderDetail.servantDetail.quotedPrice') }}</p>
+                                            <div class="divider-servant"></div>
+                                        </div>
+                                        <div v-if="!$common.isEmpty(user.servantData.goodPerformanceRate)&&user.servantData.goodPerformanceRate!=0" class="servant-detail-item">
+                                            <p class="value">{{ user.servantData.goodPerformanceRate }}%</p>
+                                            <p class="label">{{ $t('profile>order>orderDetail.servantDetail.positiveFeedback') }}</p>
+                                            <div class="divider-servant"></div>
+                                        </div>
+                                        <div class="servant-detail-item">
+                                            <p class="value">{{ user.completedOrderCount }}</p>
+                                            <p class="label">{{ $t('profile>order>orderDetail.servantDetail.assistanceProvided') }}</p>
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="highlight">
-                                    {{ $t('profile>order>orderDetail.quotedPrice') }}: {{ user.quotedPrice }}
-                                </div>
-                                <p style="margin-bottom: 10px">{{ user.servantData.bio }}</p>
+                                <!--<p style="margin-bottom: 10px">{{ user.servantData.bio }}</p>-->
                             </app-container>
                             <div style="width: 70%;" class="center-h">
                                 <app-button type="small" @click="selectServant(user.nickname,user.id,user.quotedPrice)" shaped>
@@ -93,6 +109,14 @@
                     {{ $t('profile>order>orderDetail.noCandidate') }}
                 </div>
             </div>
+        </div>
+
+        <!-- SERVICE IN PROGRESS -->
+        <div v-if="order.status == orderConstant.PROCESSING&&isServiceInProgress" class="app-container" style="background-color: #44e1a6">
+            <app-title type="h3" bold="true" style="color: white">{{ $t('profile>order>orderDetail.serviceInProgress') }}</app-title>
+            <app-button type="small" color="black" shaped size="small" @click="completeOrder">
+                {{ $t('profile>order>orderDetail.completeOrder') }}
+            </app-button>
         </div>
         <div v-if="order.status == orderConstant.PROCESSING" style="width: 65vw;margin: 0 auto">
             <app-container color="#fff" col="12" @click="userDetailRedirect(orderServant.id)">
@@ -116,14 +140,6 @@
         </div>
         <!-- /SERVANT CONTAINER  -->
 
-        <!-- SERVICE IN PROGRESS -->
-        <div v-if="order.status == orderConstant.PROCESSING&&isServiceInProgress" class="app-container" style="background-color: #44e1a6">
-            <app-title type="h3" bold="true" style="color: white">{{ $t('profile>order>orderDetail.serviceInProgress') }}</app-title>
-            <app-button type="small" color="black" shaped size="small" @click="completeOrder">
-                {{ $t('profile>order>orderDetail.completeOrder') }}
-            </app-button>
-        </div>
-        <!-- /DYNAMIC STATUS CONTAINERS -->
 
         <!-- SERVICE COMPLETE -->
         <div v-if="order.status==orderConstant.COMPLETED" class="center-h">
@@ -156,7 +172,7 @@
         <!-- /SERVICE COMPLETE -->
 
         <!-- Cancel order opt (no candidates) -->
-        <div v-if="order.status == orderConstant.PENDING && $common.isEmpty(this.servantList)" class="fix-bottom flex">
+        <div v-if="order.status == orderConstant.PENDING && $common.isEmpty(this.candidateList)" class="fix-bottom flex">
             <div style="width: 100%">
                 <app-button color="red" shaped @click="cancelOrder">
                     {{ $t('profile>order>orderDetail.cancelOrder') }}
@@ -256,7 +272,7 @@ export default {
             order: {},
             orderAddress: {},
 
-            servantList: [],
+            candidateList: [],
             orderServant: {},
 
             freeOrderPostingQuota: 0,
@@ -311,7 +327,7 @@ export default {
                             });
                         }
                         this.getRemainingFreeOrderPostingQuota();
-                        this.getServantList();
+                        this.getcandidateList();
                     }
                     if(this.order.status == this.orderConstant.PROCESSING) {
                         this.getOrderServant();
@@ -393,7 +409,7 @@ export default {
             });
         },
 
-        getServantList() {
+        getcandidateList() {
             uni.request({
                 url: getApp().globalData.data.requestUrl + this.$API.orderCandidate.servants,
                 method: 'POST',
@@ -401,11 +417,11 @@ export default {
                     orderId: this.orderId
                 },
                 success: (res) => {
-                    this.servantList = res.data.list;
+                    this.candidateList = res.data.list.sort((a, b) => a.quotedPrice - b.quotedPrice);
 
-                    if(!this.$common.isEmpty(this.servantList)) {
+                    if(!this.$common.isEmpty(this.candidateList)) {
                         // Use Promise.all for concurrent requests
-                        const promises = this.servantList.map((user) => {
+                        const promises = this.candidateList.map((user) => {
                             return new Promise((resolve) => {
                                 uni.request({
                                     url: getApp().globalData.data.requestUrl + this.$API.userServant.search,
@@ -463,7 +479,7 @@ export default {
         },
 
         cancelOrder() {
-            if(this.$common.isEmpty(this.servantList)) {
+            if(this.$common.isEmpty(this.candidateList)) {
                 uni.showModal({
                     title: this.$t('profile>order>orderDetail.noCandidateCancelModal.title'),
                     content: this.$t('profile>order>orderDetail.noCandidateCancelModal.content'),
@@ -608,7 +624,13 @@ export default {
                     rating: this.selectedEmoji
                 },
                 success: (res) => {
-                    uni.showToast({title: this.$t('pub.showToast.success'), icon: 'none'});
+                    console.log(res)
+                    if(res.data.status == 200) {
+                        uni.showToast({title: this.$t('pub.showToast.success'), icon: 'none'});
+                    } else {
+                        uni.showToast({title: this.$t('pub.showToast.fail'), icon: 'none'});
+                    }
+                    this.reload()
                 },
                 fail: (error) => {
                     uni.showToast({title: this.$t('pub.showToast.fail'), icon: 'none'});
@@ -668,7 +690,7 @@ export default {
 .divider {
     height: 40px;
     width: 1px;
-    background-color: #ddd;
+    background-color: #f0f0f0;
     margin: 0 10px;
 }
 
@@ -705,20 +727,6 @@ export default {
     height: 48px;
     margin-top: 5px;
     margin-left: 25px
-}
-
-.highlight {
-    color: white;
-    background-color: #607D8B;
-    border-radius: 5px;
-    font-weight: bold;
-    padding: 4px 12px;
-    font-size: 14px;
-    margin-bottom: 4px;
-    //display: flex;
-    //max-width: fit-content;
-    //margin-left: auto;
-    //margin-right: auto;
 }
 
 .completed-text {
@@ -795,12 +803,32 @@ export default {
     font-weight: bold;
     color: #000;
     font-size: 16px;
-    margin-bottom: 4px; /* Add space between label and value */
+    margin-bottom: 4px;
 }
 
 .order-detail-item .value {
-    color: #4a4a4a; /* Set lighter color for value text */
-    font-size: 14px; /* Slightly smaller for the value */
+    color: #4a4a4a;
+    font-size: 14px;
+}
+
+.divider-servant {
+    width: 90%;
+    height: 2px;
+    background-color: #f0f0f0;
+    margin: 6px 0;;
+}
+
+.servant-detail-item {
+    line-height: 24px
+}
+
+.servant-detail-item .value {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.servant-detail-item .label {
+    font-size: 12px;
 }
 
 

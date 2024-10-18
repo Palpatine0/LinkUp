@@ -144,7 +144,11 @@
             "price": "Order Price",
             "totalCandidates": "Total Candidates"
         },
-        "quotedPrice": "Quoted Price",
+        "servantDetail": {
+            "quotedPrice": "Quoted Price",
+            "positiveFeedback": "Positive Feedback",
+            "assistanceProvided": "Assistance Provided"
+        },
         "candidates": "Candidates",
         "selectCandidate": "Select Candidate",
         "noCandidate": "No one responded yet",

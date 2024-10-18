@@ -22,6 +22,7 @@ export default {
                 success: '#67C23A',
                 warning: '#E6A23C',
                 danger: '#F56C6C',
+                eucalyptus: '#44E1A6',
                 info: '#939393',
                 antiFlashWhite: '#f3f2f6',
                 navyBlue: '#192C77',
