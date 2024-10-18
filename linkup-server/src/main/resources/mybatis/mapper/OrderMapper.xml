@@ -29,7 +29,6 @@
         <result property="countdownStartAt" column="countdown_start_at"/>
         <result property="canceledAt" column="canceled_at"/>
         <result property="completedAt" column="completed_at"/>
-        <result property="isCompleted" column="is_completed"/>
         <result property="isDeleted" column="is_deleted"/>
         <result property="createdAt" column="created_at"/>
 

@@ -155,10 +155,13 @@
 
         "serviceInProgress": "您的订单已经开始",
         "serviceComplete": "您的订单已经结束",
-        "rateRequest": "请给您的达人评个分",
 
         "cancelOrder": "取消订单",
         "completeOrder": "完成订单",
+
+        "reviewRequest": "请给我们提供一些客户的信息",
+        "behavioralRecord": "行为记录",
+        "behavioralRecordPlaceholder": "请记录客户的在服务期间的行为表现，便于我们更好地了解客户情况",
 
         "selectServantModal": {
             "title": "确认选择",
@@ -193,8 +196,8 @@
         },
 
         "showToast": {
-            "selectRate": "请选择一个评分再提交",
-            "rated": "您已评价过该订单"
+            "fillReview": "请填写客户记录",
+            "reviewed": "您已评价过该订单"
         }
     },
 

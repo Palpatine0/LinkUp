@@ -155,10 +155,13 @@
 
         "serviceInProgress": "Your service is now in progress",
         "serviceComplete": "Your service is now completed",
-        "rateRequest": "Please provide your feedback on your experience.",
 
         "cancelOrder": "Cancel Order",
         "completeOrder": "Mark order as completed",
+
+        "reviewRequest": "Please provide provide some information about the client.",
+        "behavioralRecord": "Behavioral Record",
+        "behavioralRecordPlaceholder": "Please tell us more about the client's behavioral details throughout the service.",
 
         "selectServantModal": {
             "title": "Confirm your selection",
@@ -193,8 +196,8 @@
         },
 
         "showToast": {
-            "selectRate": "Please select a rating before submitting.",
-            "rated": "You have rated this order already"
+            "fillReview": "Please select a rating before submitting.",
+            "reviewed": "You have reviewed this order already"
         }
     },
 

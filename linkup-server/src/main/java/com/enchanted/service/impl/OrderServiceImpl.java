@@ -574,6 +574,14 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         return true;
     }
 
+    @Override
+    public boolean reviewClient(Long orderId) {
+        Order order = orderMapper.selectById(orderId);
+        order.setIsReviewed(1);
+        orderMapper.updateById(order);
+        return true;
+    }
+
     private void payServantPerformanceAmount(Order order, Integer rating) {
         // Fetch the servant
         User servant = userService.getById(order.getServantId());

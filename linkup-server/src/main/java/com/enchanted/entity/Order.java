@@ -55,13 +55,6 @@ public class Order {
     @TableField("pending_servant_payment")
     private BigDecimal pendingServantPayment;
 
-    /**
-     * 0: limited;
-     * 1: fair;
-     * 2: good;
-     */
-    @TableField("performance_rating")
-    private Integer performanceRating;
 
     @TableField("candidate_count")
     private Integer candidateCount;
@@ -90,8 +83,20 @@ public class Order {
     @TableField("completed_at")
     private Date completedAt;
 
-    @TableField("is_completed")
-    private Integer isCompleted;
+    /**
+     * 0: servant not leaved review;
+     * 1: servant leaved review;
+     */
+    @TableField("is_reviewed")
+    private Integer isReviewed;
+
+    /**
+     * 0: limited;
+     * 1: fair;
+     * 2: good;
+     */
+    @TableField("performance_rating")
+    private Integer performanceRating;
 
     @TableField("is_deleted")
     private Integer isDeleted;

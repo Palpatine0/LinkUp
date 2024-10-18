@@ -3,7 +3,7 @@
 
 
     <!--HEADER-->
-    <div class="center-h">
+    <div alt="header" class="center-h">
         <div class="back" @click="back()">
             <img style="width: 22px;height: 22px" src="/static/page/register/back.svg">
         </div>
@@ -13,8 +13,8 @@
     </div>
     <!--/HEADER-->
 
-    <!--PROCESSING CONTAINER-->
-    <div v-if="order.status == orderConstant.PROCESSING" class="center-h">
+    <!--PROCESSING -->
+    <div alt="processing" v-if="order.status == orderConstant.PROCESSING" class="center-h">
         <div class="price-service-detail">
             <div class="price-text">{{ $t('profile>order>orderDetail.orderInfoBasic.price') }}</div>
             <div class="price">¥{{ order.price }}</div>
@@ -31,8 +31,8 @@
         <div class="client-addr-detail">
             <div style="display: flex;justify-content: flex-start;margin: 18px 0 2px 0;width: 90%;">
                 <div style="width: 80%; text-align: left;">
-                    <p style="font-weight: bold;font-size:18px">{{ orderAddress.addressName }}</p>
-                    <p style="font-weight: bold;font-size:18px">{{ orderAddress.detail }}</p>
+                    <p style="font-weight: bold;font-size:18px">{{ order.address.addressName }}</p>
+                    <p style="font-weight: bold;font-size:18px">{{ order.address.detail }}</p>
                     <p>
                         {{ $common.stampToTime(this.order.serviceScheduleStart, {yyyy: false, ss: false}) }}
                         -
@@ -63,7 +63,7 @@
     <!-- /DYNAMIC STATUS CONTAINERS -->
 
     <!-- SERVICE COMPLETE -->
-    <div v-if="order.status==orderConstant.COMPLETED" class="center-h">
+    <div alt="completed" v-if="order.status==orderConstant.COMPLETED" class="center-h">
         <div class="center-h">
             <img style="width: 140px" src="/static/page/order/check-double.svg">
         </div>
@@ -74,12 +74,12 @@
         <!-- Rating Section -->
         <div class="rating-section">
             <app-title type="h2" bold="true">
-                <div>{{ $t('profile>order>orderDetail.rateRequest') }}</div>
+                <div>{{ $t('profile>order>orderDetail.reviewRequest') }}</div>
             </app-title>
-            <div class="emoji-rating mt-2">
-                <div class="emoji" role="img" :class="{ selected: selectedEmoji === 0 }" aria-label="Very dissatisfied" @click="selectEmoji(0)">😣</div>
-                <div class="emoji" role="img" :class="{ selected: selectedEmoji === 1 }" aria-label="Neutral" @click="selectEmoji(1)">😐</div>
-                <div class="emoji" role="img" :class="{ selected: selectedEmoji === 2 }" aria-label="Very satisfied" @click="selectEmoji(2)">😁</div>
+
+            <div class="mt-4" style="text-align: left">
+                <app-title bold="true">{{ $t('profile>order>orderDetail.behavioralRecord') }}</app-title>
+                <app-input mode="textarea" :placeholder="$t('profile>order>orderDetail.behavioralRecordPlaceholder')" color="#FFF" v-model="reviewFormData.comments"/>
             </div>
 
             <!-- Submit Button -->
@@ -109,10 +109,10 @@ export default {
         return {
             orderId: '',
             order: {},
-            orderAddress: {},
 
             orderClient: {},
 
+            isServiceInProgress: false,
             serviceCountdown: 0,
             serviceCompleteCountdown: 0,
 
@@ -123,19 +123,25 @@ export default {
                 isCancelByTimeoutWithinSelection: false,
             },
 
-            isServiceInProgress: false,
             selectedEmoji: null,
             orderConstant: {
                 PENDING: 0,
                 PROCESSING: 1,
                 COMPLETED: 2,
                 CANCELED: 3,
+            },
+
+            reviewFormData: {
+                orderId: '',
+                reviewerId: '',
+                revieweeId: '',
+                comments: ''
             }
         };
     },
     onLoad(params) {
         this.orderId = params.orderId;
-        this.getOrder();
+        this.reload();
     },
     onUnLoad() {
         if(this.countdownInterval) {
@@ -160,7 +166,6 @@ export default {
                 },
                 success: (res) => {
                     this.order = res.data.list[0];
-                    this.getOrderAddress();
                     if(this.order.status == this.orderConstant.PROCESSING) {
                         this.getOrderClient();
                         this.setServiceInProgressState();
@@ -176,6 +181,11 @@ export default {
                                 this.serviceCompleteCountdown = remainingTime;
                             });
                         }
+                    }
+                    if(this.order.status == this.orderConstant.COMPLETED) {
+                        this.reviewFormData.orderId = this.order.id;
+                        this.reviewFormData.reviewerId = this.order.servantId;
+                        this.reviewFormData.revieweeId = this.order.clientId;
                     }
                 }
             });
@@ -195,19 +205,6 @@ export default {
             }
         },
 
-        getOrderAddress() {
-            uni.request({
-                url: getApp().globalData.data.requestUrl + this.$API.address.search,
-                method: 'POST',
-                data: {
-                    id: this.order.addressId,
-                },
-                success: (res) => {
-                    this.orderAddress = res.data.list[0];
-                },
-            });
-        },
-
         getOrderClient() {
             uni.request({
                 url: getApp().globalData.data.requestUrl + this.$API.user.search,
@@ -220,24 +217,33 @@ export default {
                 },
             });
         },
-        selectEmoji(rating) {
-            this.selectedEmoji = rating;
-        },
         submitFeedback() {
-            if(this.$common.isEmpty(this.selectedEmoji)) {
-                uni.showToast({title: this.$t('profile>order>orderDetail.showToast.selectRate'), icon: 'none'});
+            if(this.$common.isEmpty(this.comments.comments)) {
+                uni.showToast({title: this.$t('profile>order>orderDetail.showToast.fillReview'), icon: 'none'});
                 return;
             }
-            if(!this.$common.isEmpty(this.order.performanceRating)) {
-                uni.showToast({title: this.$t('profile>order>orderDetail.showToast.rated'), icon: 'none'});
+            if(this.order.isReviewed == 1) {
+                uni.showToast({title: this.$t('profile>order>orderDetail.showToast.reviewed'), icon: 'no¬ne'});
                 return;
             }
             uni.request({
-                url: getApp().globalData.data.requestUrl + this.$API.order.rate,
+                url: getApp().globalData.data.requestUrl + this.$API.order.reviewClient,
                 method: 'POST',
                 data: {
                     orderId: this.orderId,
-                    rating: this.selectedEmoji
+                },
+                success: (res) => {
+                    uni.showToast({title: this.$t('pub.showToast.success'), icon: 'none'});
+                },
+                fail: (error) => {
+                    uni.showToast({title: this.$t('pub.showToast.fail'), icon: 'none'});
+                }
+            });
+            uni.request({
+                url: getApp().globalData.data.requestUrl + this.$API.review.save,
+                method: 'POST',
+                data: {
+                    ...this.reviewFormData
                 },
                 success: (res) => {
                     uni.showToast({title: this.$t('pub.showToast.success'), icon: 'none'});
@@ -340,26 +346,6 @@ export default {
     height: 50vh;
 }
 
-.reload-btn {
-    width: 48px;
-    height: 48px;
-    margin-top: 5px;
-    margin-left: 25px
-}
-
-.highlight {
-    color: white;
-    background-color: #607D8B;
-    border-radius: 5px;
-    font-weight: bold;
-    padding: 4px 12px;
-    font-size: 14px;
-    margin-bottom: 4px;
-    //display: flex;
-    //max-width: fit-content;
-    //margin-left: auto;
-    //margin-right: auto;
-}
 
 .completed-text {
     width: 400px;
@@ -374,25 +360,6 @@ export default {
     margin-top: 20px;
 }
 
-.emoji-rating {
-    display: flex;
-    justify-content: center;
-    gap: 20px;
-    font-size: 2rem;
-}
-
-.emoji-rating div {
-    background-color: #FFF;
-    border-radius: 25px;
-    padding: 0px 34px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-}
-
-.emoji-rating div.selected {
-    background-color: #fff0cb;
-    color: white;
-}
 
 .submit-section {
     text-align: center;

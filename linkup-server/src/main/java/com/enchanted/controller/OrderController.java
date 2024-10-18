@@ -105,6 +105,18 @@ public class OrderController {
         }
     }
 
+    @PostMapping("/review-client")
+    public R reviewClient(@RequestBody Map<String, Object> requestData) {
+        Long orderId = Long.parseLong(requestData.get("orderId").toString());
+
+        boolean isRated = orderService.reviewClient(orderId);
+        if (isRated) {
+            return R.ok("Order rated successfully");
+        } else {
+            return R.error("Failed to rate order");
+        }
+    }
+
 
     /*D*/
     @PostMapping("/delete")

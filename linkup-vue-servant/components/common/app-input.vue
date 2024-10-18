@@ -4,6 +4,7 @@
     <input
         v-if="mode === 'text'"
         :value="value"
+        :style="{ backgroundColor: color }"
         :class="{'input-focused': isFocused}"
         @focus="isFocused = true"
         @blur="isFocused = false"
@@ -16,6 +17,7 @@
     <textarea
         v-else-if="mode === 'textarea'"
         :value="value"
+        :style="{ backgroundColor: color }"
         :class="{'input-focused': isFocused}"
         @focus="isFocused = true"
         @blur="isFocused = false"
@@ -29,6 +31,7 @@
         v-else-if="mode === 'number'"
         type="number"
         :value="value"
+        :style="{ backgroundColor: color }"
         :class="{'input-focused': isFocused}"
         @focus="isFocused = true"
         @blur="isFocused = false"
@@ -48,10 +51,11 @@ export default {
         };
     },
     props: {
-        value: {type: [String, Number], default: ''},
-        mode: {type: String, default: 'text'},
-        col: {type: String, default: '12'},
-        placeholder: {type: String, default: ''}
+        value: { type: [String, Number], default: '' },
+        mode: { type: String, default: 'text' },
+        col: { type: String, default: '12' },
+        placeholder: { type: String, default: '' },
+        color: { type: String, default: '#f3f2f6' }, // Prop for background color
     },
     computed: {
         colPercentage() {
@@ -60,7 +64,7 @@ export default {
         hasValue() {
             // Check if value is not null, undefined, or an empty string
             return this.value !== null && this.value !== undefined && this.value !== '';
-        }
+        },
     },
     methods: {
         onInput(event) {
@@ -71,8 +75,8 @@ export default {
             // Ensure the input is numeric only
             const numericValue = value.replace(/[^0-9]/g, ''); // Removes any non-numeric characters
             this.$emit('input', numericValue); // Emit only numeric value
-        }
-    }
+        },
+    },
 };
 </script>
 
@@ -94,7 +98,8 @@ export default {
     line-height: normal;
 }
 
-.input-text, .input-number {
+.input-text,
+.input-number {
     height: 40px;
 }
 
@@ -116,9 +121,6 @@ export default {
 
 .placeholder-move {
     display: none;
-    //transform: translateY(-150%); /* Moves the placeholder above the input */
-    //font-size: 12px;
-    //color: #000;
 }
 
 .input-focused {
