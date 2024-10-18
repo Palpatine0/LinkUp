@@ -549,7 +549,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
     @Override
     @Transactional
-    public boolean rate(Long orderId, Integer rating) {
+    public boolean rateServant(Long orderId, Integer rating) {
         Order order = orderMapper.selectById(orderId);
         if (order == null || order.getStatus() != OrderConstant.COMPLETED) {
             return false;
@@ -660,7 +660,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         Runnable task = () -> {
             Order order = this.getById(orderId);
             if (order != null && order.getPerformanceRating() == null) {
-                rate(orderId, OrderConstant.GOOD);
+                rateServant(orderId, OrderConstant.GOOD);
             }
             // Remove the task from the map after execution
             autoRatingTasks.remove(orderId);

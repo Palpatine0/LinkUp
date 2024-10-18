@@ -155,6 +155,7 @@
         "startChatting": "Start Chatting!",
         "orderClosed": "This order has been closed",
         "refunded": "The cost of your order has been refunded",
+        "selectionCountdown": "Selection Countdown",
         "selectedBeforeCountdown": "Please select a candidate before the countdown is over",
         "orderCanceledManuallyExplanation": "You canceled this order",
         "orderCanceledByTimeoutExplanation": "The order has been closed due to the fact that no one has taken the order within half an hour of its release (or you manually close it within this duration)",

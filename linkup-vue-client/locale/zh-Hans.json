@@ -164,7 +164,7 @@
 
         "orderClosed": "订单关闭",
         "refunded": "您的订单费用已退回至您的余额",
-
+        "selectionCountdown": "选择倒计时",
         "selectedBeforeCountdown": "请在剩余时间内选择一个达人",
 
         "orderCanceledManuallyExplanation": "您取消了订单",

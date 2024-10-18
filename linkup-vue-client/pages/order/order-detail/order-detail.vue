@@ -16,16 +16,20 @@
         {{ language != "zh-Hans" ? order.serviceType.name + " Service" : order.serviceType.nameCn + "服务" }}
     </app-title>
 
-    <div v-if="order.countdownStartAt">
-        <!-- Alert: Choose while still can -->
-        <div v-if="candidateSelectionCountdown != 0 && order.status == orderConstant.PENDING" class="app-container" style="background-color: #feb327">
-            <div>
-                <app-title type="h3" bold="true">{{ $t('profile>order>orderDetail.selectedBeforeCountdown') }}</app-title>
-                <p>{{ candidateSelectionCountdown }}</p>
-            </div>
-            <app-button type="small" color="red" shaped size="small" @click="cancelOrder">
-                {{ $t('profile>order>orderDetail.cancelOrder') }}
-            </app-button>
+    <div v-if="candidateSelectionCountdown != 0 && order.status == orderConstant.PENDING">
+        <div class="center-h">
+            <img style="width: 140px" src="/static/page/order/hourglass-half.svg">
+        </div>
+        <div class="countdown-container mb-2">
+            <p style="font-weight: bold">{{ $t('profile>order>orderDetail.selectionCountdown') }}</p>
+            <p>{{ candidateSelectionCountdown }}</p>
+        </div>
+        <div class="tips-text">
+            <div>{{ $t('profile>order>orderDetail.selectedBeforeCountdown') }}</div>
+        </div>
+
+        <div class="center-h" style="width: 40vw" >
+            <app-button type="small" color="red" shaped size="small"  @click="cancelOrder">{{ $t('profile>order>orderDetail.cancelOrder') }}</app-button>
         </div>
     </div>
 
@@ -57,7 +61,7 @@
 
         <!-- SERVANT CONTAINER  -->
         <div v-if="candidateSelectionCountdown != 0 && order.status == orderConstant.PENDING" class="mt-4">
-            <app-title bold="true">{{ $t('profile>order>orderDetail.candidates') }}</app-title>
+            <app-title type="h3" bold="true">{{ $t('profile>order>orderDetail.candidates') }}</app-title>
             <div v-if="candidateList.length > 0">
                 <z-swiper v-model="candidateList" :options="{slidesPerView: 'auto', centeredSlides: true, spaceBetween: 14}" style="width: 100%">
                     <z-swiper-item v-for="(user, index) in candidateList" :key="index" :custom-style="{width: '500rpx'}">
@@ -118,19 +122,39 @@
                 {{ $t('profile>order>orderDetail.completeOrder') }}
             </app-button>
         </div>
-        <div v-if="order.status == orderConstant.PROCESSING" style="width: 65vw;margin: 0 auto">
+
+        <div v-if="order.status == orderConstant.PROCESSING" style="width: 80vw;margin: 0 auto">
             <app-container color="#fff" col="12" @click="userDetailRedirect(orderServant.id)">
                 <div class="center-h">
-                    <image style="width: 160px; height: 160px; border-radius: 50%; margin: 30px 0" :src="orderServant.avatar" mode="aspectFill"></image>
+                    <image style="width: 160px; height: 160px; border-radius: 50%; margin: 25px 0 12px 0" :src="orderServant.avatar" mode="aspectFill"></image>
                 </div>
-                <app-title type="h3" bold="true">{{ orderServant.nickname }}</app-title>
-                <div class="flex" style="margin: 3px 0 30px -6px">
-                    <span style="font-size: 27px; margin: 0 10px; position: relative; top: -8px; left: 2px;">
-                        {{ orderServant.gender === 0 ? '👨‍💻' : '👩‍💻' }}
-                    </span>
-                    <app-title type="h3" bold="true">{{ orderServant.age }}</app-title>
+                <app-title style="text-align: center" type="h3" bold="true">{{ orderServant.nickname }}</app-title>
+                <div class="flex justify-SB mt-2 mb-1">
+                    <div class="center-h" style="width: 50%;display: flex;flex-direction: row;align-items: center;">
+                        <div class="flex" style="margin: 3px 0px 0px -6px">
+                            <div style="text-align: center">
+                                <span style="font-size: 42px; margin: 0 10px;">{{ orderServant.gender === 0 ? '👨‍💻' : '👩‍💻' }}</span>
+                                <app-title type="h3" bold="true">{{ orderServant.age }}</app-title>
+                            </div>
+                        </div>
+                    </div>
+                    <div style="width: 50%">
+                        <div class="servant-detail-item">
+                            <p class="value">¥{{ order.price }}</p>
+                            <p class="label">{{ $t('profile>order>orderDetail.servantDetail.quotedPrice') }}</p>
+                            <div class="divider-servant"></div>
+                        </div>
+                        <div v-if="!$common.isEmpty(orderServant.servantData.goodPerformanceRate)&&orderServant.servantData.goodPerformanceRate!=0" class="servant-detail-item">
+                            <p class="value">{{ orderServant.servantData.goodPerformanceRate }}%</p>
+                            <p class="label">{{ $t('profile>order>orderDetail.servantDetail.positiveFeedback') }}</p>
+                            <div class="divider-servant"></div>
+                        </div>
+                        <div class="servant-detail-item">
+                            <p class="value">{{ orderServant.completedOrderCount }}</p>
+                            <p class="label">{{ $t('profile>order>orderDetail.servantDetail.assistanceProvided') }}</p>
+                        </div>
+                    </div>
                 </div>
-                <p style="margin-bottom: 10px">{{ orderServant.servantData.bio }}</p>
             </app-container>
             <div style="width: 70%;" class="center-h">
                 <app-button type="small" @click="chatWindowRedirect(orderServant.id)" shaped>
@@ -146,7 +170,7 @@
             <div class="center-h">
                 <img style="width: 140px" src="/static/page/order/check-double.svg">
             </div>
-            <div class="completed-text">
+            <div class="tips-text">
                 <div>{{ $t('profile>order>orderDetail.serviceComplete') }}</div>
             </div>
 
@@ -329,7 +353,8 @@ export default {
                         this.getcandidateList();
                     }
                     if(this.order.status == this.orderConstant.PROCESSING) {
-                        this.getOrderServant();
+                        await this.getOrderServant();
+                        await this.getOrderServantInfo();
                         this.setServiceInProgressState();
                     }
                     this.setCancellationStates();
@@ -404,12 +429,12 @@ export default {
                                         userId: user.id
                                     },
                                     success: (res) => {
-                                        user.servantData = res.data.list[0] || {}; // Default to empty object if no data
-                                        user.servantData.quotedPrice = user.quotedPrice; // Assign quotedPrice directly
+                                        user.servantData = res.data.list[0] || {};
+                                        user.servantData.quotedPrice = user.quotedPrice;
                                         resolve();
                                     },
                                     fail: () => {
-                                        user.servantData = {}; // Handle failure case by assigning empty object
+                                        user.servantData = {};
                                         resolve();
                                     }
                                 });
@@ -565,17 +590,42 @@ export default {
             });
         },
 
-        getOrderServant() {
-            uni.request({
-                url: getApp().globalData.data.requestUrl + this.$API.user.search,
-                method: 'POST',
-                data: {
-                    id: this.order.servantId
-                },
-                success: (res) => {
-                    this.orderServant = res.data.list[0]
-                },
-            });
+        async getOrderServant() {
+            const getServant = () => {
+                return new Promise((resolve, reject) => {
+                    uni.request({
+                        url: getApp().globalData.data.requestUrl + this.$API.user.search,
+                        method: 'POST',
+                        data: {
+                            id: this.order.servantId
+                        },
+                        success: (res) => {
+                            this.orderServant = res.data.list[0]
+                            resolve()
+                        },
+                    });
+                })
+            }
+            return await getServant();
+        },
+
+        async getOrderServantInfo() {
+            const getServantInfo = () => {
+                return new Promise((resolve, reject) => {
+                    uni.request({
+                        url: getApp().globalData.data.requestUrl + this.$API.userServant.search,
+                        method: 'POST',
+                        data: {
+                            userId: this.order.servantId
+                        },
+                        success: (res) => {
+                            this.$set(this.orderServant, 'servantData', res.data.list[0] || {});
+                            resolve()
+                        },
+                    });
+                })
+            }
+            return await getServantInfo();
         },
 
         selectEmoji(rating) {
@@ -591,7 +641,7 @@ export default {
                 return;
             }
             uni.request({
-                url: getApp().globalData.data.requestUrl + this.$API.order.rate,
+                url: getApp().globalData.data.requestUrl + this.$API.order.rateServant,
                 method: 'POST',
                 data: {
                     orderId: this.orderId,
@@ -642,7 +692,7 @@ export default {
 }
 
 .active {
-    background-color: #2676f7;
+    background-color: rgb(38 118 247 / 0.4);
     height: 6px;
     border-radius: 5px;
     width: 80%;
@@ -679,13 +729,6 @@ export default {
     border-bottom: none;
 }
 
-.countdown-container {
-    margin: 20px 0;
-    text-align: center;
-    background-color: #fffae5;
-    padding: 10px;
-    border-radius: 10px;
-}
 
 .order-detail {
     display: flex;
@@ -703,8 +746,8 @@ export default {
     margin-left: 25px
 }
 
-.completed-text {
-    width: 400px;
+.tips-text {
+    width: 100%;
     font-size: 36px;
     font-weight: bold;
     line-height: 40px;
@@ -805,5 +848,14 @@ export default {
     font-size: 12px;
 }
 
-
+.countdown-container {
+    text-align: center;
+    background-color: #2676f7;
+    padding: 2px 56px;
+    border-radius: 50px;
+    color: white;
+    font-size: 16px;
+    width: 164px;
+    margin: 0 auto;
+}
 </style>
