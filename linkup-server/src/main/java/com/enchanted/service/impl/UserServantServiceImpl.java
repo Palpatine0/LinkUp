@@ -62,7 +62,9 @@ public class UserServantServiceImpl extends ServiceImpl<UserServantMapper, UserS
 
     @Override
     public boolean delete(Long id) {
-        int deleted = userServantMapper.deleteById(id);
-        return retBool(deleted);
+        UserServant userServant = userServantMapper.selectById(id);
+        userServant.setIsDeleted(1);
+        int updated = userServantMapper.updateById(userServant);
+        return updated > 0;
     }
 }

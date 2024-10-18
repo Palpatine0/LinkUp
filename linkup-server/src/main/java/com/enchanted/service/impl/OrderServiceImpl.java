@@ -686,7 +686,10 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     /*D*/
     @Override
     public boolean delete(Long id) {
-        return orderMapper.deleteById(id) > 0;
+        Order order = orderMapper.selectById(id);
+        order.setIsDeleted(1);
+        int updated = orderMapper.updateById(order);
+        return updated > 0;
     }
 
 }

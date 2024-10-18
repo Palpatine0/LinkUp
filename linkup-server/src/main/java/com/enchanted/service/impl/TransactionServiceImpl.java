@@ -8,6 +8,7 @@ import com.enchanted.constant.TransactionConstant;
 import com.enchanted.entity.Transaction;
 import com.enchanted.entity.User;
 import com.enchanted.mapper.TransactionMapper;
+import com.enchanted.mapper.UserMapper;
 import com.enchanted.service.ITransactionService;
 import com.enchanted.service.IUserService;
 import com.enchanted.util.ConversionUtils;
@@ -226,6 +227,9 @@ public class TransactionServiceImpl extends ServiceImpl<TransactionMapper, Trans
     /*D*/
     @Override
     public boolean delete(Long id) {
-        return transactionMapper.deleteById(id) > 0;
+        Transaction transaction = transactionMapper.selectById(id);
+        transaction.setIsDeleted(1);
+        int updated = transactionMapper.updateById(transaction);
+        return updated > 0;
     }
 }

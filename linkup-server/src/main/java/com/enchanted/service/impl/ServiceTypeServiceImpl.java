@@ -60,6 +60,9 @@ public class ServiceTypeServiceImpl extends ServiceImpl<ServiceTypeMapper, Servi
 
     @Override
     public boolean delete(Long id) {
-        return serviceTypeMapper.deleteById(id) > 0;
+        ServiceType serviceType = serviceTypeMapper.selectById(id);
+        serviceType.setIsDeleted(1);
+        int updated = serviceTypeMapper.updateById(serviceType);
+        return updated > 0;
     }
 }

@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.enchanted.constant.OrderConstant;
 import com.enchanted.entity.Order;
 import com.enchanted.entity.OrderCandidate;
 import com.enchanted.entity.User;
@@ -157,6 +156,9 @@ public class OrderCandidateServiceImpl extends ServiceImpl<OrderCandidateMapper,
 
     @Override
     public boolean delete(Long id) {
-        return orderCandidateMapper.deleteById(id) > 0;
+        OrderCandidate orderCandidate = orderCandidateMapper.selectById(id);
+        orderCandidate.setIsDeleted(1);
+        int updated = orderCandidateMapper.updateById(orderCandidate);
+        return updated > 0;
     }
 }

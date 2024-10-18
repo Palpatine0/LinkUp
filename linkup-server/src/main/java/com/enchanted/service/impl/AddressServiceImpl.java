@@ -57,6 +57,9 @@ public class AddressServiceImpl extends ServiceImpl<AddressMapper, Address> impl
     /* D */
     @Override
     public boolean delete(Long id) {
-        return addressMapper.deleteById(id) > 0;
+        Address address = addressMapper.selectById(id);
+        address.setIsDeleted(1);
+        int updated = addressMapper.updateById(address);
+        return updated > 0;
     }
 }

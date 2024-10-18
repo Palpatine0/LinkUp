@@ -49,6 +49,13 @@ public class Transaction {
     @TableField("description_cn")
     private String descriptionCn;
 
+    /**
+     * 0: not deleted;
+     * 1: deleted
+     */
+    @TableField("is_deleted")
+    private Integer isDeleted;
+
     @TableField("created_at")
     private Date createdAt;
 

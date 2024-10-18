@@ -179,6 +179,9 @@ public class GiftServiceImpl extends ServiceImpl<GiftMapper, Gift> implements IG
     /* D */
     @Override
     public boolean delete(Long id) {
-        return giftMapper.deleteById(id) > 0;
+        Gift gift = giftMapper.selectById(id);
+        gift.setIsDeleted(1);
+        int updated = giftMapper.updateById(gift);
+        return updated > 0;
     }
 }

@@ -24,7 +24,7 @@ public class ServiceType {
     private String introImg;
 
     @TableField("is_deleted")
-    private Boolean isDeleted;
+    private Integer isDeleted;
 
     @TableField("created_at")
     private Date createdAt;

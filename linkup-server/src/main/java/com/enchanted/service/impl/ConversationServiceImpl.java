@@ -219,6 +219,9 @@ public class ConversationServiceImpl extends ServiceImpl<ConversationMapper, Con
     /* D */
     @Override
     public boolean delete(Long id) {
-        return conversationMapper.deleteById(id) > 0;
+        Conversation conversation = conversationMapper.selectById(id);
+        conversation.setIsDeleted(1);
+        int updated = conversationMapper.updateById(conversation);
+        return updated > 0;
     }
 }

@@ -78,6 +78,9 @@ public class UserClientServiceImpl extends ServiceImpl<UserClientMapper, UserCli
     /*D*/
     @Override
     public boolean delete(Long id) {
-        return userClientMapper.deleteById(id) > 0;
+        UserClient userClient = userClientMapper.selectById(id);
+        userClient.setIsDeleted(1);
+        int updated = userClientMapper.updateById(userClient);
+        return updated > 0;
     }
 }

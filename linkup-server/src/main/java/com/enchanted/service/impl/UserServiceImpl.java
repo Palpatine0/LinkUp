@@ -188,7 +188,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     /*U*/
     @Override
     public boolean delete(Long id) {
-        int deleted = userMapper.deleteById(id);
-        return retBool(deleted);
+        UserServant userServant = userServantMapper.selectById(id);
+        userServant.setIsDeleted(1);
+        int updated = userServantMapper.updateById(userServant);
+        return updated > 0;
     }
 }

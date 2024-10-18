@@ -35,7 +35,7 @@ public class Conversation {
     private Integer servantResponseRequired;
 
     @TableField("is_deleted")
-    private Boolean isDeleted;
+    private Integer isDeleted;
 
     @TableField("created_at")
     private Date createdAt;
