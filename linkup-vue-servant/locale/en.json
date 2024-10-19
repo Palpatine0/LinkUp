@@ -200,6 +200,15 @@
             "reviewed": "You have reviewed this order already"
         }
     },
+    "profile>order>orderDetail>emergencyCenter": {
+        "title": "Security Center",
+        "description": "Feature to help you feel safe and secure while using our services.",
+        "popularServices": "Popular Services",
+        "emergencyAssist": "Emergency assist",
+        "callToLocalAuthority": "Call to local authority",
+        "shareDetails": "Share details",
+        "letFriendTrack": "Let your friend track your services"
+    },
 
     "//////": "profile > balance",
     "profile>balance": {

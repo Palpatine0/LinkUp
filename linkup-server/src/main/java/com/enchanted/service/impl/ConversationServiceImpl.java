@@ -161,6 +161,8 @@ public class ConversationServiceImpl extends ServiceImpl<ConversationMapper, Con
                     servantGiftRefundTransaction.setDescription(TransactionConstant.SERVANT_NO_RESPONSE_GIFT_SHARE_DEDUCTION);
                     servantGiftRefundTransaction.setDescriptionCn(TransactionConstant.SERVANT_NO_RESPONSE_GIFT_SHARE_DEDUCTION_CN);
                     transactionService.save(servantGiftRefundTransaction);
+
+                    conversation.setExpirationTime(null);
                 }
             }
 

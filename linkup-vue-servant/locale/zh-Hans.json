@@ -200,6 +200,15 @@
             "reviewed": "您已评价过该订单"
         }
     },
+    "profile>order>orderDetail>emergencyCenter": {
+        "title": "安全中心",
+        "description": "帮助您在使用我们的服务时感到安全和放心的功能。",
+        "popularServices": "热门服务",
+        "emergencyAssist": "紧急协助",
+        "callToLocalAuthority": "呼叫当地当局",
+        "shareDetails": "分享详情",
+        "letFriendTrack": "让您的朋友跟踪您的服务"
+    },
 
     "//////": "profile > balance",
     "profile>balance": {

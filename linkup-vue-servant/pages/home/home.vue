@@ -74,7 +74,7 @@ export default {
             user: uni.getStorageSync(getApp().globalData.data.userInfoKey)
         };
     },
-    onShow() {
+    onLoad() {
         this.reload();
     },
     methods: {

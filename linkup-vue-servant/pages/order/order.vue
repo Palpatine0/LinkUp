@@ -83,7 +83,7 @@ export default {
             addressMap: {},
         };
     },
-    onShow() {
+    onLoad() {
         this.reload();
     },
     methods: {

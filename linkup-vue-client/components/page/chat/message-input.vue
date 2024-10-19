@@ -21,6 +21,7 @@
 <script>
 import ChatItemSelector from "./chat-item-selector.vue";
 import Gift from "./gift.vue";
+import app from "../../../App.vue";
 
 export default {
     name: "message-input",
@@ -50,8 +51,8 @@ export default {
                 url: getApp().globalData.data.requestUrl + this.$API.conversation.search,
                 method: 'POST',
                 data: {
-                    clientId: this.userId,
-                    contactId: this.contactId,
+                    clientId: uni.getStorageSync(app.globalData.data.userInfoKey).id,
+                    servantId: this.contactId,
                 },
                 success: (res) => {
                     if(res.data.status === 200 && res.data.list && res.data.list.length > 0) {

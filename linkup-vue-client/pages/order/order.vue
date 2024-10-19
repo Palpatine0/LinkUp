@@ -113,7 +113,7 @@ export default {
             }
         };
     },
-    onShow() {
+    onLoad() {
         if(!this.$common.isEmpty(uni.getStorageSync(getApp().globalData.data.userInfoKey).id)){
             this.reload()
         }

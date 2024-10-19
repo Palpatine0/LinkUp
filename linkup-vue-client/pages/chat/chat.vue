@@ -38,7 +38,7 @@ export default {
             contactList: [],
         };
     },
-    onShow() {
+    onLoad() {
         this.contactList = []
         if(!this.$common.isEmpty(this.userId)) {
             this.getUserList();

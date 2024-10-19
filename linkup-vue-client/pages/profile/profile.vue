@@ -84,7 +84,7 @@ export default {
             ],
         };
     },
-    onShow() {
+    onLoad() {
         this.user = uni.getStorageSync(app.globalData.data.userInfoKey)
         this.isUserLogin = uni.getStorageSync(app.globalData.data.userLoginKey)
     },
