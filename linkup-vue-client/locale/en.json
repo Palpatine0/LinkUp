@@ -283,6 +283,9 @@
     "componentPage>service>serviceDetail>servantList": {},
     "componentPage>chat>chatWindow": {
         "cancelChatting": "Cancel",
+        "conversationExpireAt": "Chat available until",
+        "chatNow": "Start Chatting",
+        "keepChatting": "Keep Chatting",
         "insufficientTimeModal": {
             "title": "Send a Gift to Start Chatting",
             "content": "To start a conversation, please send a gift first! Tap the link icon at the bottom to find the gift options. Once you’ve sent a gift, the chat feature will be available for a certain period based on the type of gift you send."

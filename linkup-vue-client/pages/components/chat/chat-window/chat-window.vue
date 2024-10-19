@@ -1,6 +1,10 @@
 <template>
 <div class="chat-page">
-    <ChatHeader :username="contact.nickname" :avatar="contact.avatar"/>
+    <ChatHeader
+        :randomNum="randomNum"
+        :username="contact.nickname"
+        :avatar="contact.avatar"
+    />
 
     <scroll-view
         v-show="isUserInfoLoaded"
@@ -20,6 +24,7 @@
     </scroll-view>
 
     <MessageInput
+        :randomNum="randomNum"
         :senderId="userId"
         :contactId="contactId"
         @handleSend="handleSend"
@@ -44,6 +49,7 @@ export default {
     },
     data() {
         return {
+            randomNum: new Date().valueOf() + this.$common.getRandom(1000),
             userId: uni.getStorageSync(app.globalData.data.userInfoKey).id,
             user: {},
             isUserInfoLoaded: false,

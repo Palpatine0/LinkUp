@@ -173,7 +173,8 @@
                     "path": "chat/chat-window/chat-window",
                     "style": {
                         "navigationBarTitleText": "",
-                        "navigationBarBackgroundColor": "#fefefe"
+                        "navigationBarBackgroundColor": "#fefefe",
+                        "navigationStyle": "custom"
                     }
                 }
             ]

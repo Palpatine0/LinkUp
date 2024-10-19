@@ -8,6 +8,7 @@
         rows="1"
         maxlength="2000"
         auto-height
+        :placeholder="conversationExpirationTime"
     ></textarea>
     <img src="/static/page/chat/send.svg" alt="Send" class="send-button" @click="sendMessage"/>
     <ChatItemSelector
@@ -22,10 +23,17 @@
 import ChatItemSelector from "./chat-item-selector.vue";
 import Gift from "./gift.vue";
 import app from "../../../App.vue";
+import $common from "../../../utils/common";
 
 export default {
     name: "message-input",
+    computed: {
+        $common() {
+            return $common
+        }
+    },
     props: {
+        randomNum: {type: String},
         senderId: {type: String},
         contactId: {type: String},
     },
@@ -35,14 +43,22 @@ export default {
     },
     mounted() {
         this.isEligibleSendMsg()
+        this.$bus.$on(
+            'giftToggle' + this.randomNum,
+            (visibility) => {
+                this.isGiftVisible = visibility;
+            }
+        );
     },
     data() {
         return {
             conversationId: '',
+            conversation: {},
             message: '',
             canSendMessage: false,
             isChatItemSelectorToggleVisible: false,
-            isGiftVisible: false
+            isGiftVisible: false,
+            conversationExpirationTime: ''
         };
     },
     methods: {
@@ -56,20 +72,26 @@ export default {
                 },
                 success: (res) => {
                     if(res.data.status === 200 && res.data.list && res.data.list.length > 0) {
-                        const conversation = res.data.list[0];
-                        this.conversationId = conversation.id; // Store the conversation ID
+                        this.conversation = res.data.list[0];
+                        this.conversationId = this.conversation.id; // Store the conversation ID
                         const currentTime = new Date().getTime();
-                        const expirationTime = new Date(conversation.expirationTime).getTime();
+                        const expirationTime = new Date(this.conversation.expirationTime).getTime();
 
                         // Calculate remaining time in seconds
                         const remainingTime = Math.floor((expirationTime - currentTime) / 1000);
                         if(remainingTime > 0) {
                             this.canSendMessage = true;
+                            this.$bus.$emit(
+                                'updateCanSendMessage' + this.randomNum,
+                                this.canSendMessage
+                            );
                             this.isGiftVisible = false
+                            this.conversationExpirationTime = this.$t('componentPage>chat>chatWindow.conversationExpireAt') + this.$common.stampToTime(this.conversation.expirationTime, {yyyy: false, ss: false, MM: false, dd: false})
                             this.enableChatForDuration(remainingTime);
                         } else {
                             this.canSendMessage = false;
-                            this.isGiftVisible = true
+                            this.isGiftVisible = true;
+                            this.conversationExpirationTime = ''
                         }
                     } else {
                         this.canSendMessage = false;
@@ -89,10 +111,6 @@ export default {
                     showCancel: false,
                     confirmText: this.$t('pub.modal.button.confirm'),
                     cancelText: this.$t('pub.modal.button.cancel'),
-                    success: (res) => {
-                        if(res.confirm) {
-                        }
-                    },
                 });
                 return;
             } else {
@@ -101,7 +119,6 @@ export default {
                     this.message = '';
                 }
             }
-
         },
         enableChatForDuration(duration) {
             this.canSendMessage = true;

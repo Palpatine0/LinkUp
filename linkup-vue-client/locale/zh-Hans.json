@@ -283,6 +283,7 @@
     "componentPage>service>serviceDetail>servantList": {},
     "componentPage>chat>chatWindow": {
         "cancelChatting": "先不聊了",
+        "conversationExpireAt": "聊天可用至",
         "insufficientTimeModal": {
             "title": "发送礼物以开始聊天",
             "content": "请给达人赠送一个礼物来开启对话,您可以点击右下方的链接图标找到礼物选项。送出礼物后，聊天功能将根据你的礼物类型开发一段时间。"

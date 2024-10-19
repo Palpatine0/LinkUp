@@ -6,6 +6,7 @@ import paginationMixin from './utils/paginationMixin';
 
 import common from "./utils/common";
 import API from "./api/api";
+import bus from "./bus/bus";
 import messages from './locale/index.js'
 
 import './style/common.css';
@@ -30,6 +31,7 @@ Vue.mixin(paginationMixin)
 
 Vue.prototype.$common = common;
 Vue.prototype.$API = API;
+Vue.prototype.$bus = bus;
 Vue.use(VueI18n)
 Vue.config.productionTip = false
 
