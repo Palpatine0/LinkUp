@@ -80,6 +80,31 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
             return;
         }
 
+        // Update conversation
+        if (senderId.equals(conversation.getClientId())) {
+            // Client sent a message, servant response is required
+            if (conversation.getIsServantMessagingAvailable() == 0) {
+                conversation.setIsServantMessagingAvailable(1);
+            }
+            conversation.setServantResponseRequired(1);
+            conversation.setLastClientMessageTime(new Date());
+            conversationService.updateById(conversation);
+        } else if (senderId.equals(conversation.getServantId())) {
+            if (conversation.getIsServantMessagingAvailable() == 0) {
+                // Send error message back to client
+                Map<String, Object> errorMessageData = new HashMap<>();
+                errorMessageData.put("type", "error");
+                errorMessageData.put("data", "No permission to initiate conversation");
+
+                String errorMessageStr = objectMapper.writeValueAsString(errorMessageData);
+                session.sendMessage(new TextMessage(errorMessageStr));
+                return;
+            }
+            // Servant responded, no response required
+            conversation.setServantResponseRequired(0);
+            conversationService.updateById(conversation);
+        }
+
         // Save message to the database
         Message chatMessage = new Message();
         chatMessage.setSenderId(senderId);
@@ -92,18 +117,6 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         chatMessage.setIsRead(0);
         chatMessage.setCreatedAt(new Date());
         messageService.save(chatMessage);
-
-        // Update conversation
-        if (senderId.equals(conversation.getClientId())) {
-            // Client sent a message, servant response is required
-            conversation.setServantResponseRequired(1);
-            conversation.setLastClientMessageTime(new Date());
-            conversationService.updateById(conversation);
-        } else if (senderId.equals(conversation.getServantId())) {
-            // Servant responded, no response required
-            conversation.setServantResponseRequired(0);
-            conversationService.updateById(conversation);
-        }
 
         // Prepare message to send
         Map<String, Object> sendMessageData = new HashMap<>();

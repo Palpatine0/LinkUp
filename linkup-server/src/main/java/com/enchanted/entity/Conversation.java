@@ -34,6 +34,13 @@ public class Conversation {
     @TableField("servant_response_required")
     private Integer servantResponseRequired;
 
+    /**
+     * 0: not available;
+     * 1: available;
+     */
+    @TableField("is_servant_messaging_available")
+    private Integer isServantMessagingAvailable;
+
     @TableField("is_deleted")
     private Integer isDeleted;
 

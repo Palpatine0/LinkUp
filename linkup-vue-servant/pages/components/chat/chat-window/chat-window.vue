@@ -15,6 +15,7 @@
                 :content="message.content"
                 :msgBelongs="message.senderId === userId"
                 :isRead="message.isRead"
+                :erroring="message.erroring"
             />
         </div>
     </scroll-view>
@@ -282,7 +283,7 @@ export default {
                         // Update local messages to mark as read
                         this.messages.forEach((msg, index) => {
                             if(messageIds.map(id => String(id)).includes(String(msg.id))) {
-                                this.$set(this.messages[index], 'isRead', 1);
+                                this.$set(this.messages[index], 'isRead', true);
                             }
                         });
                     },
@@ -341,6 +342,20 @@ export default {
                             msg.isRead = 1;
                         }
                     });
+                }else if (messageType === 'error') {
+                    if(messageData=="No permission to initiate conversation"){
+                        for (let i = this.messages.length - 1; i >= 0; i--) {
+                            if (this.messages[i].senderId === this.userId) {
+                                this.$set(this.messages[i], 'erroring', 1);
+                                break;
+                            }
+                        }
+                        uni.showToast({
+                            title: this.$t('componentPage>chat>chatWindow.showToast.cannotSendMsg'),
+                            icon: 'none',
+                            duration: 6000
+                        });
+                    }
                 }
             });
 

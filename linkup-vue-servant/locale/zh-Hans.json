@@ -274,8 +274,8 @@
     "componentPage>service>serviceDetail": {},
     "componentPage>service>serviceDetail>servantList": {},
     "componentPage>chat>chatWindow": {
-        "messageInput": {
-            "enterMsg": ""
+        "showToast": {
+            "cannotSendMsg": "您不能在订单结束后联系用户，除非他们主动联系您"
         }
     },
 

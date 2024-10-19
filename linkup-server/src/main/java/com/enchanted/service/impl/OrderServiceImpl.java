@@ -363,6 +363,13 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             userService.updateById(client);
         }
 
+        QueryWrapper<Conversation> wrapper = new QueryWrapper<>();
+        wrapper.eq("client_id", order.getClientId());
+        wrapper.eq("servant_id", order.getServantId());
+        Conversation conversation = conversationMapper.selectOne(wrapper);
+        conversation.setIsServantMessagingAvailable(0);
+        conversationMapper.updateById(conversation);
+
         // monitor control
         stopAutoRefundMonitor(order.getId());
         startAutoRatingMonitor(order.getId());

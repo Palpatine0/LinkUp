@@ -1,7 +1,12 @@
 <template>
-<div :class="['message-bubble', msgBelongs ? 'sender' : 'receiver']">
-    <p class="message-content">{{ content }}</p>
-    <div v-if="msgBelongs && isRead" class="read-indicator"></div>
+<div>
+    <div :class="['message-bubble', msgBelongs ? 'sender' : 'receiver']">
+        <p class="message-content">{{ content }}</p>
+        <div v-if="msgBelongs && isRead" class="read-indicator"></div>
+        <div v-if="msgBelongs && erroring" class="erroring-exclamation">
+            <img style="width: 20px;height: 20px" src="/static/page/chat/circle-exclamation.svg">
+        </div>
+    </div>
 </div>
 </template>
 
@@ -11,6 +16,7 @@ export default {
         content: {type: String, required: true},
         msgBelongs: {type: Boolean, default: false},
         isRead: {type: Boolean, default: false},
+        erroring: {type: Boolean, default: false},
     },
 };
 </script>
@@ -48,5 +54,14 @@ export default {
     align-self: flex-end;
     position: absolute;
     margin-left: -20px;
+}
+
+.erroring-exclamation {
+    background-color: #FFF;
+    border-radius: 50%;
+    margin-top: -20px;
+    align-self: flex-end;
+    position: absolute;
+    margin-left: -33px;
 }
 </style>
