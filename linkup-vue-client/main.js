@@ -5,9 +5,9 @@ import globalMixin from './utils/globalMixin'
 import paginationMixin from './utils/paginationMixin';
 
 import common from "./utils/common";
+import messages from './locale/index.js'
 import API from "./api/api";
 import bus from "./bus/bus";
-import messages from './locale/index.js'
 
 import './style/common.css';
 import './style/animat.css'
@@ -30,9 +30,9 @@ Vue.mixin(globalMixin)
 Vue.mixin(paginationMixin)
 
 Vue.prototype.$common = common;
+Vue.use(VueI18n)
 Vue.prototype.$API = API;
 Vue.prototype.$bus = bus;
-Vue.use(VueI18n)
 Vue.config.productionTip = false
 
 // i18n

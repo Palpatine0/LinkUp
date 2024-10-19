@@ -5,8 +5,9 @@ import globalMixin from './utils/globalMixin'
 import paginationMixin from './utils/paginationMixin';
 
 import common from "./utils/common";
-import API from "./api/api";
 import messages from './locale/index.js'
+import API from "./api/api";
+import bus from "./bus/bus";
 
 import './style/common.css';
 import './style/animat.css'
@@ -16,7 +17,6 @@ import AppInput from './components/common/app-input.vue';
 import AppContainer from './components/common/app-container.vue';
 import AppButton from './components/common/app-button.vue';
 import UserList from './components/page/user-list/user-list.vue';
-
 
 // common
 Vue.component('app-title', AppTitle);
@@ -29,8 +29,9 @@ Vue.mixin(globalMixin)
 Vue.mixin(paginationMixin)
 
 Vue.prototype.$common = common;
-Vue.prototype.$API = API;
 Vue.use(VueI18n)
+Vue.prototype.$API = API;
+Vue.prototype.$bus = bus;
 Vue.config.productionTip = false
 
 // i18n
