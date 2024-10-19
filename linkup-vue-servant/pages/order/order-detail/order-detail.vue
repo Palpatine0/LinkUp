@@ -1,7 +1,5 @@
 <template>
 <div class="page" style="background-color: #f3f2f6">
-
-
     <!--HEADER-->
     <div alt="header" class="center-h">
         <div class="back" @click="back()">
@@ -72,17 +70,15 @@
         </div>
 
         <!-- Rating Section -->
-        <div class="rating-section">
+        <div  v-if="order.isReviewed==0" class="rating-section">
             <app-title type="h2" bold="true">
                 <div>{{ $t('profile>order>orderDetail.reviewRequest') }}</div>
             </app-title>
 
-            <div class="mt-4" style="text-align: left">
+            <div class="mt-2" style="text-align: left">
                 <app-title bold="true">{{ $t('profile>order>orderDetail.behavioralRecord') }}</app-title>
                 <app-input mode="textarea" :placeholder="$t('profile>order>orderDetail.behavioralRecordPlaceholder')" color="#FFF" v-model="reviewFormData.comments"/>
             </div>
-
-            <!-- Submit Button -->
             <div class="submit-section mt-3">
                 <app-button type="submit" shaped @click="submitFeedback">
                     {{ $t('pub.button.submit') }}
@@ -217,41 +213,55 @@ export default {
                 },
             });
         },
-        submitFeedback() {
-            if(this.$common.isEmpty(this.comments.comments)) {
+        async submitFeedback() {
+            if(this.$common.isEmpty(this.reviewFormData.comments)) {
                 uni.showToast({title: this.$t('profile>order>orderDetail.showToast.fillReview'), icon: 'none'});
                 return;
             }
             if(this.order.isReviewed == 1) {
-                uni.showToast({title: this.$t('profile>order>orderDetail.showToast.reviewed'), icon: 'no¬ne'});
+                uni.showToast({title: this.$t('profile>order>orderDetail.showToast.reviewed'), icon: 'none'});
                 return;
             }
-            uni.request({
-                url: getApp().globalData.data.requestUrl + this.$API.order.reviewClient,
-                method: 'POST',
-                data: {
-                    orderId: this.orderId,
-                },
-                success: (res) => {
-                    uni.showToast({title: this.$t('pub.showToast.success'), icon: 'none'});
-                },
-                fail: (error) => {
-                    uni.showToast({title: this.$t('pub.showToast.fail'), icon: 'none'});
+            const reviewClient = new Promise(
+                (resolve, reject) => {
+                    uni.request({
+                        url: getApp().globalData.data.requestUrl + this.$API.order.reviewClient,
+                        method: 'POST',
+                        data: {
+                            orderId: this.orderId,
+                        },
+                        success: (res) => {
+                            uni.showToast({title: this.$t('pub.showToast.success'), icon: 'none'});
+                            resolve()
+                        },
+                        fail: (error) => {
+                            uni.showToast({title: this.$t('pub.showToast.fail'), icon: 'none'});
+                            reject()
+                        }
+                    });
                 }
-            });
-            uni.request({
-                url: getApp().globalData.data.requestUrl + this.$API.review.save,
-                method: 'POST',
-                data: {
-                    ...this.reviewFormData
-                },
-                success: (res) => {
-                    uni.showToast({title: this.$t('pub.showToast.success'), icon: 'none'});
-                },
-                fail: (error) => {
-                    uni.showToast({title: this.$t('pub.showToast.fail'), icon: 'none'});
+            )
+            await reviewClient
+            const reviewSave = new Promise(
+                (resolve, reject) => {
+                    uni.request({
+                        url: getApp().globalData.data.requestUrl + this.$API.review.save,
+                        method: 'POST',
+                        data: {
+                            ...this.reviewFormData
+                        },
+                        success: (res) => {
+                            uni.showToast({title: this.$t('pub.showToast.success'), icon: 'none'});
+                            resolve()
+                        },
+                        fail: (error) => {
+                            uni.showToast({title: this.$t('pub.showToast.fail'), icon: 'none'});
+                            reject()
+                        }
+                    });
                 }
-            });
+            )
+            await reviewSave
             this.reload();
         },
 
