@@ -82,7 +82,8 @@
 
     "//////": "home",
     "home": {
-        "nearby": "附近的订单"
+        "nearby": "附近的订单",
+        "candidates": "抢单人数"
     },
     "home>orderDetail": {
         "orderInfoBasic": {
@@ -96,6 +97,7 @@
         "orderInfoDetail": {
             "orderId": "订单编号",
             "orderTime": "下单时间",
+            "serviceTime": "服务时间",
             "paymentMethod": "支付方式",
             "balance": "余额",
             "weChat": "微信支付",

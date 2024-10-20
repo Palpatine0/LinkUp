@@ -16,7 +16,13 @@
     />
 
     <!-- Orders Container using app-container -->
-    <scroll-view :scroll-top="0" scroll-y="true" style="height: 80vh" @scrolltoupper="reload" @scrolltolower="onReachBottom">
+    <scroll-view
+        :scroll-top="0"
+        scroll-y="true"
+        style="height: 80vh"
+        @scrolltoupper="reload"
+        @scrolltolower="onReachBottom"
+    >
         <div class="app-container" v-for="order in orderList" :key="order.id" @click="orderDetailRedirect(order.id)" style="display: flex;flex-direction: column;align-items: center">
             <div class="order-schedule">
                 <div>{{ language != "zh-Hans" ? 'Service Schedule: ' : "服务时间" }}</div>
@@ -31,8 +37,8 @@
                 <app-title type="h3">¥{{ order.price }}</app-title>
             </div>
             <div class="order-address">
-                <div>{{order.address.addressName}}</div>
-                <div>{{order.address.detail}}</div>
+                <div>{{ order.address.addressName }}</div>
+                <div>{{ order.address.detail }}</div>
             </div>
             <div class="chat-user-order-status">
                 <img style="width: 28px;height: 22px" src="/static/page/order/messages.svg" @click="chatWindowRedirect(order.clientId)">
@@ -193,7 +199,7 @@ export default {
     justify-content: space-between
 }
 
-.order-address{
+.order-address {
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -212,7 +218,7 @@ export default {
     justify-content: space-between;
 }
 
-.order-status{
+.order-status {
     display: flex;
     margin-top: 4px;
 }

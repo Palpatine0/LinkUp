@@ -2,55 +2,45 @@
 <div class="page">
     <!-- Heading section -->
     <div style="display: flex; align-items: center; justify-content: space-between;">
-        <app-title type="h1" bold="true">{{ $t('home.nearby') }}</app-title>
+        <app-title type="h1" bold="true">{{ $t('profile>order.myOrders') }}</app-title>
     </div>
+
+    <!-- Search input -->
+    <app-input
+        mode="text"
+        :placeholder="$t('pub.page.search')"
+        col="12"
+        class="mb-2"
+        v-model="searchKeyword"
+        @input="onSearchInput"
+    />
 
     <!-- Orders Container using app-container -->
     <scroll-view
         :scroll-top="0"
         scroll-y="true"
-        style="height: 90vh"
+        style="height: 80vh"
         @scrolltoupper="reload"
         @scrolltolower="onReachBottom"
     >
-        <div
-            class="app-container"
-            v-for="order in orderList"
-            :key="order.id"
-            @click="orderDetailRedirect(order.id)"
-        >
-            <div class="order-content">
-                <div style="width: 100%;">
-                    <div style="display: flex; align-items: center;">
-                        <app-title bold="true" type="h3" style="width: 330px;">
-                            {{ language != "zh-Hans" ? order.title : order.titleCn }}
-                        </app-title>
-                    </div>
-                    <div class="order-detail">
-                        <div class="highlight-blue">
-                            {{ $t('profile>order.candidates') }}: {{ order.candidateCount }}
-                        </div>
-                        <span style="font-size: 14px; color: gray;">{{ order.createdAt }}</span>
-                        <div style="display:flex;justify-content: space-between;">
-                            <span style="font-size: 14px; color: gray;">{{ order.identifier }}</span>
-                            <div v-if="order.status==0" class="flex">
-                                <span class="status-dot yellow-dot"></span>
-                                <div class="status-text">{{ $t('profile>order.pending') }}</div>
-                            </div>
-                            <div v-if="order.status==1" class="flex">
-                                <span class="status-dot green-dot"></span>
-                                <div class="status-text">{{ $t('profile>order.processing') }}</div>
-                            </div>
-                            <div v-if="order.status==2" class="flex">
-                                <span class="status-dot gray-dot"></span>
-                                <div class="status-text">{{ $t('profile>order.completed') }}</div>
-                            </div>
-                            <divs v-if="order.status==3" class="flex">
-                                <div class="status-dot red-dot"></div>
-                                <div class="status-text">{{ $t('profile>order.canceled') }}</div>
-                            </divs>
-                        </div>
-                    </div>
+        <div class="app-container" v-for="order in orderList" :key="order.id" @click="orderDetailRedirect(order.id)" style="display: flex;flex-direction: column;align-items: center">
+            <div class="order-schedule">
+                <div>{{ language != "zh-Hans" ? 'Service Schedule: ' : "服务时间" }}</div>
+                <div>
+                    {{ $common.stampToTime(order.serviceScheduleStart, {yyyy: false, ss: false}) }}
+                    -
+                    {{ $common.stampToTime(order.serviceScheduleEnd, {yyyy: false, ss: false, MM: false, dd: false}) }}
+                </div>
+            </div>
+            <div class="service-type-price">
+                <app-title bold="true" type="h3">{{ language != "zh-Hans" ? order.serviceType.name + ' Service' : order.serviceType.nameCn + "服务" }}</app-title>
+                <app-title type="h3">¥{{ order.price }}</app-title>
+            </div>
+            <div class="order-address">
+                <div>{{ order.address.addressName }}</div>
+                <div>{{ order.address.detail }}</div>
+                <div>
+                    <p class="candidates">{{ $t('home.candidates')+': '+order.candidateCount}}</p>
                 </div>
             </div>
         </div>
@@ -62,27 +52,36 @@
 
 
 <script>
-import orderDetail from './order-detail/order-detail.vue';
+
+import $common from "../../utils/common";
 
 export default {
+    name: "order",
+    computed: {
+        $common() {
+            return $common
+        }
+    },
     data() {
         return {
-            userProfileAvailable: false,
+            user: uni.getStorageSync(getApp().globalData.data.userInfoKey),
             orderList: [],
             searchKeyword: '',
-
-            user: uni.getStorageSync(getApp().globalData.data.userInfoKey)
+            addressMap: {},
         };
     },
     onLoad() {
         this.reload();
     },
     methods: {
-        reload(){
-            uni.showLoading({title: this.$t('pub.showLoading.loading')});
+        async reload() {
             this.resetPagination();
             this.getDataList();
-            uni.hideLoading();
+        },
+        resetPagination() {
+            this.page = 1;
+            this.hasMore = true;
+            this.orderList = [];
         },
         buildApiParams() {
             let url = getApp().globalData.data.requestUrl + this.$API.order.search;
@@ -90,34 +89,20 @@ export default {
             let baseData = {
                 userGender: this.user.gender,
                 userAge: this.user.age,
+                status: "0",
                 page: this.page,
                 size: this.pageSize,
-                status: "0",
             };
-            let data = {};
-
-            if (this.searchKeyword && this.searchKeyword.trim() !== '') {
-                data = {
-                    ...baseData,
-                    keyword: this.searchKeyword,
-                };
-            } else {
-                data = {
-                    ...baseData
-                };
-            }
-
+            let data = this.searchKeyword.trim() !== '' ? {...baseData, keyword: this.searchKeyword} : baseData;
             return {url, method, data};
         },
         onSearchInput() {
-            this.resetPagination();
-            this.getDataList();
+            this.reload();
         },
-        getDataList() {
-            if (this.loading || !this.hasMore || this.$common.isEmpty(uni.getStorageSync(getApp().globalData.data.userInfoKey).id)) return;
+        async getDataList() {
+            if(this.loading || !this.hasMore || this.$common.isEmpty(uni.getStorageSync(getApp().globalData.data.userInfoKey).id)) return;
 
             this.loading = true;
-
             const {url, method, data} = this.buildApiParams();
 
             uni.request({
@@ -126,19 +111,20 @@ export default {
                 data: data,
                 success: (res) => {
                     const orders = res.data.list;
-                    if (this.page === 1) {
-                        this.orderList = [];
-                    }
-                    if (orders.length < this.pageSize) {
+                    if(this.page === 1) this.orderList = [];
+
+                    if(orders.length < this.pageSize) {
                         this.hasMore = false;
                     }
-                    const processedOrders = orders.map((order) => ({
-                        ...order,
-                        createdAt: order.createdAt ? this.$common.stampToTime(order.createdAt) : '',
-                    }));
-                    // Append new orders to the list
-                    this.orderList = this.orderList.concat(processedOrders);
 
+                    orders.forEach((order) => {
+                        order.createdAt = order.createdAt ? this.$common.stampToTime(order.createdAt) : '';
+                    });
+
+                    // Update the order list
+                    this.orderList = this.orderList.concat(orders);
+
+                    // Increment the page number for the next call
                     this.page += 1;
                 },
                 complete: () => {
@@ -146,32 +132,78 @@ export default {
                 },
             });
         },
+        isServiceInProgressState(order) {
+            if(order.serviceScheduleStart && order.serviceScheduleEnd) {
+                const currentTime = new Date().getTime();
+                const serviceStartTime = new Date(order.serviceScheduleStart).getTime();
+                const serviceEndTime = new Date(order.serviceScheduleEnd).getTime();
+                return currentTime >= serviceStartTime && currentTime <= serviceEndTime;
+            }
+            return false;
+        },
 
         // Redirects
         orderDetailRedirect(orderId) {
             uni.navigateTo({
-                url: '/pages/home/order-detail/order-detail?orderId=' + orderId,
+                url: './order-detail/order-detail?orderId=' + orderId,
+            });
+        },
+        chatWindowRedirect(userId) {
+            uni.navigateTo({
+                url: '/pages/components/chat/chat-window/chat-window?contactId=' + userId
             });
         },
     },
 };
 </script>
 
-<style scoped>
-.order-content {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-}
 
+<style scoped>
 .order-icon {
     width: 40px;
     height: 40px;
     margin-right: 10px;
 }
 
-.order-detail {
+.order-schedule {
+    font-weight: bold;
+    width: 100%;
+    padding: 2px 8px;
+    margin: 0 0 8px 0;
+    background-color: white;
+    border-radius: 50px;
+    justify-content: space-between;
+    display: flex;
+}
+
+.service-type-price {
+    width: 100%;
+    display: flex;
+    justify-content: space-between
+}
+
+.order-address {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    background-color: #2676f7;
+    border-radius: 10px;
+    padding: 6px;
+    color: white;
+    font-weight: bold;
+    margin: 8px 0;
+}
+
+.chat-user-order-status {
     margin-top: 5px;
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
+
+.order-status {
+    display: flex;
+    margin-top: 4px;
 }
 
 .status-dot {
@@ -186,7 +218,6 @@ export default {
     position: relative;
     bottom: 4px;
     left: 5px;
-    margin-right: 12px;
 }
 
 .yellow-dot {
@@ -205,19 +236,18 @@ export default {
     background-color: #8c8c8c;
 }
 
-.order-status {
-    margin-right: 10px;
-}
-
-.highlight-blue {
-    color: white;
-    background-color: #007aff;
+.candidates {
+    width: 30%;
+    color: #000;
+    background-color: #FFF;
     border-radius: 5px;
     font-weight: bold;
     padding: 2px;
-    width: 100px;
     font-size: 14px;
-    margin-bottom: 4px;
+    align-items: center;
+    display: flex;
+    margin: 2px 0;
 }
+
 
 </style>

@@ -1,5 +1,6 @@
 <template>
 <div class="page" style="background-color: #f3f2f6">
+
     <!--HEADER-->
     <div alt="header" class="center-h">
         <div class="back" @click="back()">
@@ -38,7 +39,7 @@
                     </p>
                 </div>
                 <div style="margin-top: 14px;margin-left: 18px;">
-                    <img style="width: 36px;height: 36px;" src="/static/page/order/siren-on.svg" @click="emergencyCenterRedirect()">
+                    <img style="width: 36px;height: 36px;" src="/static/page/order/order-detail/siren-on.svg" @click="emergencyCenterRedirect()">
                 </div>
             </div>
             <div class="divider"></div>
@@ -63,7 +64,7 @@
     <!-- SERVICE COMPLETE -->
     <div alt="completed" v-if="order.status==orderConstant.COMPLETED" class="center-h">
         <div class="center-h">
-            <img style="width: 140px" src="/static/page/order/check-double.svg">
+            <img style="width: 140px" src="/static/page/order/order-detail/check-double.svg">
         </div>
         <div class="completed-text">
             <div>{{ $t('profile>order>orderDetail.serviceComplete') }}</div>
