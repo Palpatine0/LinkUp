@@ -105,27 +105,8 @@
         }
     },
 
-
-    "//////": "chat",
-    "chat": {
-        "chats": "聊天"
-    },
-
-
-    "//////": "profile",
-    "profile": {
-        "order": "订单",
-        "balance": "余额",
-        "address": "地址信息",
-        "myFavorite": "我的收藏",
-        "data": "数据与存储",
-        "tag": "标签",
-        "signIn": "微信一键登录",
-        "signOut": "退出登录"
-    },
-
-    "//////": "profile > order",
-    "profile>order": {
+    "//////": "order",
+    "order": {
         "myOrders": "我的订单",
         "candidates": "抢单人数",
         "pending": "已发布",
@@ -134,7 +115,7 @@
         "completed": "订单完成",
         "canceled": "订单取消"
     },
-    "profile>order>orderDetail": {
+    "order>orderDetail": {
         "orderInfoBasic": {
             "price": "报价",
             "totalCandidates": "已抢单"
@@ -202,7 +183,7 @@
             "reviewed": "您已评价过该订单"
         }
     },
-    "profile>order>orderDetail>emergencyCenter": {
+    "order>orderDetail>emergencyCenter": {
         "title": "安全中心",
         "description": "帮助您在使用我们的服务时感到安全和放心的功能。",
         "popularServices": "热门服务",
@@ -210,6 +191,23 @@
         "callToLocalAuthority": "呼叫当地当局",
         "shareDetails": "分享详情",
         "letFriendTrack": "让您的朋友跟踪您的服务"
+    },
+
+    "//////": "chat",
+    "chat": {
+        "chats": "聊天"
+    },
+
+    "//////": "profile",
+    "profile": {
+        "order": "订单",
+        "balance": "余额",
+        "address": "地址信息",
+        "myFavorite": "我的收藏",
+        "data": "数据与存储",
+        "tag": "标签",
+        "signIn": "微信一键登录",
+        "signOut": "退出登录"
     },
 
     "//////": "profile > balance",

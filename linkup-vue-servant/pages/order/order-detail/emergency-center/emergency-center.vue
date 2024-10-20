@@ -6,21 +6,21 @@
             <img style="width: 20px;height: 20px" src="/static/page/order/emergency-center/location-dot.svg">
             <div style="font-weight: bold;font-size: 20px;margin: 0px 6px;">Warsaw, Poland</div>
         </div>
-        <div class="alert-title">{{ $t('profile>order>orderDetail>emergencyCenter.title') }}</div>
+        <div class="alert-title">{{ $t('order>orderDetail>emergencyCenter.title') }}</div>
         <p class="alert-description">
-            {{ $t('profile>order>orderDetail>emergencyCenter.description') }}
+            {{ $t('order>orderDetail>emergencyCenter.description') }}
         </p>
     </div>
 
-    <app-title type="h3" bold="true" style="color: white">{{ $t('profile>order>orderDetail>emergencyCenter.popularServices') }}</app-title>
+    <app-title type="h3" bold="true" style="color: white">{{ $t('order>orderDetail>emergencyCenter.popularServices') }}</app-title>
 
     <div class="app-container flex" style="background-color: white;">
         <div class="service-icon">
             <img style="width: 35px;height: 35px" src="/static/page/order/emergency-center/siren-on.png">
         </div>
         <div>
-            <div style="font-weight: bold;color:#ed3a3a;font-size: 18px">{{ $t('profile>order>orderDetail>emergencyCenter.emergencyAssist') }}</div>
-            <div style="font-size: 14px">{{ $t('profile>order>orderDetail>emergencyCenter.callToLocalAuthority') }}</div>
+            <div style="font-weight: bold;color:#ed3a3a;font-size: 18px">{{ $t('order>orderDetail>emergencyCenter.emergencyAssist') }}</div>
+            <div style="font-size: 14px">{{ $t('order>orderDetail>emergencyCenter.callToLocalAuthority') }}</div>
         </div>
     </div>
 
@@ -29,8 +29,8 @@
             <img style="width: 26px;height: 40px;margin: 0 4px;" src="/static/page/order/emergency-center/phone-volume-solid.svg">
         </div>
         <div>
-            <div style="font-weight: bold;font-size: 18px">{{ $t('profile>order>orderDetail>emergencyCenter.shareDetails') }}</div>
-            <div style="font-size: 14px">{{ $t('profile>order>orderDetail>emergencyCenter.letFriendTrack') }}</div>
+            <div style="font-weight: bold;font-size: 18px">{{ $t('order>orderDetail>emergencyCenter.shareDetails') }}</div>
+            <div style="font-size: 14px">{{ $t('order>orderDetail>emergencyCenter.letFriendTrack') }}</div>
         </div>
     </div>
 

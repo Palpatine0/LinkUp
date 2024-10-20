@@ -15,15 +15,15 @@
     <!--PROCESSING -->
     <div alt="processing" v-if="order.status == orderConstant.PROCESSING" class="center-h">
         <div class="price-service-detail">
-            <div class="price-text">{{ $t('profile>order>orderDetail.orderInfoBasic.price') }}</div>
+            <div class="price-text">{{ $t('order>orderDetail.orderInfoBasic.price') }}</div>
             <div class="price">¥{{ order.price }}</div>
 
             <div v-if="order.status == 1 && !isServiceInProgress" class="countdown-container">
-                <p style="font-weight: bold">{{ $t('profile>order>orderDetail.serviceCountdown') }}</p>
+                <p style="font-weight: bold">{{ $t('order>orderDetail.serviceCountdown') }}</p>
                 <p>{{ serviceCountdown }}</p>
             </div>
             <div v-if="order.status == 1 && isServiceInProgress" class="countdown-container">
-                <p style="font-weight: bold">{{ $t('profile>order>orderDetail.serviceCompleteCountdown') }}</p>
+                <p style="font-weight: bold">{{ $t('order>orderDetail.serviceCompleteCountdown') }}</p>
                 <p>{{ serviceCompleteCountdown }}</p>
             </div>
         </div>
@@ -47,7 +47,7 @@
             <app-title type="h2" bold="true">{{ orderClient.nickname }}</app-title>
             <div style="width: 70%;" class="center-h">
                 <app-button type="small" @click="chatWindowRedirect(orderClient.id)" shaped>
-                    {{ $t('profile>order>orderDetail.contactUser') }}
+                    {{ $t('order>orderDetail.contactUser') }}
                 </app-button>
             </div>
         </div>
@@ -57,7 +57,7 @@
 
     <!-- SERVICE IN PROGRESS -->
     <div v-if="order.status == orderConstant.PROCESSING&&isServiceInProgress" class="app-container" style="background-color: #44e1a6">
-        <app-title type="h3" bold="true" style="color: white">{{ $t('profile>order>orderDetail.serviceInProgress') }}</app-title>
+        <app-title type="h3" bold="true" style="color: white">{{ $t('order>orderDetail.serviceInProgress') }}</app-title>
     </div>
     <!-- /DYNAMIC STATUS CONTAINERS -->
 
@@ -67,18 +67,18 @@
             <img style="width: 140px" src="/static/page/order/order-detail/check-double.svg">
         </div>
         <div class="completed-text">
-            <div>{{ $t('profile>order>orderDetail.serviceComplete') }}</div>
+            <div>{{ $t('order>orderDetail.serviceComplete') }}</div>
         </div>
 
         <!-- Rating Section -->
         <div  v-if="order.isReviewed==0" class="rating-section">
             <app-title type="h2" bold="true">
-                <div>{{ $t('profile>order>orderDetail.reviewRequest') }}</div>
+                <div>{{ $t('order>orderDetail.reviewRequest') }}</div>
             </app-title>
 
             <div class="mt-2" style="text-align: left">
-                <app-title bold="true">{{ $t('profile>order>orderDetail.behavioralRecord') }}</app-title>
-                <app-input mode="textarea" :placeholder="$t('profile>order>orderDetail.behavioralRecordPlaceholder')" color="#FFF" v-model="reviewFormData.comments"/>
+                <app-title bold="true">{{ $t('order>orderDetail.behavioralRecord') }}</app-title>
+                <app-input mode="textarea" :placeholder="$t('order>orderDetail.behavioralRecordPlaceholder')" color="#FFF" v-model="reviewFormData.comments"/>
             </div>
             <div class="submit-section mt-3">
                 <app-button type="submit" shaped @click="submitFeedback">
@@ -216,11 +216,11 @@ export default {
         },
         async submitFeedback() {
             if(this.$common.isEmpty(this.reviewFormData.comments)) {
-                uni.showToast({title: this.$t('profile>order>orderDetail.showToast.fillReview'), icon: 'none'});
+                uni.showToast({title: this.$t('order>orderDetail.showToast.fillReview'), icon: 'none'});
                 return;
             }
             if(this.order.isReviewed == 1) {
-                uni.showToast({title: this.$t('profile>order>orderDetail.showToast.reviewed'), icon: 'none'});
+                uni.showToast({title: this.$t('order>orderDetail.showToast.reviewed'), icon: 'none'});
                 return;
             }
             const reviewClient = new Promise(

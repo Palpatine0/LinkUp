@@ -105,27 +105,8 @@
         }
     },
 
-
-    "//////": "chat",
-    "chat": {
-        "chats": "Chats"
-    },
-
-
-    "//////": "profile",
-    "profile": {
-        "order": "Order",
-        "balance": "Balance",
-        "address": "Address",
-        "myFavorite": "My Favorite",
-        "data": "Data and Storage",
-        "tag": "Tag",
-        "signIn": "Sign In",
-        "signOut": "Sign Out"
-    },
-
-    "//////": "profile > order",
-    "profile>order": {
+    "//////": "order",
+    "order": {
         "myOrders": "My Orders",
         "candidates": "Candidates",
         "pending": "Pending",
@@ -134,7 +115,7 @@
         "completed": "Completed",
         "canceled": "Canceled"
     },
-    "profile>order>orderDetail": {
+    "order>orderDetail": {
         "orderInfoBasic": {
             "price": "Order Price",
             "totalCandidates": "Total Candidates"
@@ -202,7 +183,7 @@
             "reviewed": "You have reviewed this order already"
         }
     },
-    "profile>order>orderDetail>emergencyCenter": {
+    "order>orderDetail>emergencyCenter": {
         "title": "Security Center",
         "description": "Feature to help you feel safe and secure while using our services.",
         "popularServices": "Popular Services",
@@ -210,6 +191,23 @@
         "callToLocalAuthority": "Call to local authority",
         "shareDetails": "Share details",
         "letFriendTrack": "Let your friend track your services"
+    },
+
+    "//////": "chat",
+    "chat": {
+        "chats": "Chats"
+    },
+
+    "//////": "profile",
+    "profile": {
+        "order": "Order",
+        "balance": "Balance",
+        "address": "Address",
+        "myFavorite": "My Favorite",
+        "data": "Data and Storage",
+        "tag": "Tag",
+        "signIn": "Sign In",
+        "signOut": "Sign Out"
     },
 
     "//////": "profile > balance",
