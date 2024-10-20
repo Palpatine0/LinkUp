@@ -87,27 +87,8 @@
         "tourGuideServices": "导游服务"
     },
 
-
-    "//////": "chat",
-    "chat": {
-        "chats": "聊天"
-    },
-
-
-    "//////": "profile",
-    "profile": {
-        "order": "订单",
-        "balance": "余额",
-        "address": "地址信息",
-        "myFavorite": "我的收藏",
-        "data": "数据与存储",
-        "tag": "标签",
-        "signIn": "微信一键登录",
-        "signOut": "退出登录"
-    },
-
-    "//////": "profile > order",
-    "profile>order": {
+    "//////": "order",
+    "order": {
         "myOrders": "我的订单",
         "candidates": "抢单人数",
         "servant": "达人",
@@ -118,10 +99,10 @@
         "completed": "订单完成",
         "canceled": "订单取消"
     },
-    "profile>order>orderServantSelection": {
+    "order>orderServantSelection": {
         "selectServantType": "选择你的服务者类型"
     },
-    "profile>order>orderInitiate": {
+    "order>orderInitiate": {
         "postOrder": "发布订单",
         "repostOrder": "重新发布订单",
         "serviceGender": "服务者性别",
@@ -145,7 +126,7 @@
             "selectSchedule": "请选择一个时间段"
         }
     },
-    "profile>order>orderDetail": {
+    "order>orderDetail": {
         "candidateSelection": "选择达人",
         "orderDetail": "订单详情",
         "orderInfoBasic": {
@@ -220,6 +201,26 @@
             "rated": "您已评价过该订单"
         }
     },
+
+
+    "//////": "chat",
+    "chat": {
+        "chats": "聊天"
+    },
+
+
+    "//////": "profile",
+    "profile": {
+        "order": "订单",
+        "balance": "余额",
+        "address": "地址信息",
+        "myFavorite": "我的收藏",
+        "data": "数据与存储",
+        "tag": "标签",
+        "signIn": "微信一键登录",
+        "signOut": "退出登录"
+    },
+
 
     "//////": "profile > balance",
     "profile>balance": {

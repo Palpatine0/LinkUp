@@ -87,27 +87,8 @@
         "tourGuideServices": "Tour Guide Services"
     },
 
-
-    "//////": "chat",
-    "chat": {
-        "chats": "Chats"
-    },
-
-
-    "//////": "profile",
-    "profile": {
-        "order": "Order",
-        "balance": "Balance",
-        "address": "Address",
-        "myFavorite": "My Favorite",
-        "data": "Data and Storage",
-        "tag": "Tag",
-        "signIn": "Sign In",
-        "signOut": "Sign Out"
-    },
-
-    "//////": "profile > order",
-    "profile>order": {
+    "//////": "order",
+    "order": {
         "myOrders": "My Orders",
         "candidates": "Candidates",
         "servant": "Servant",
@@ -118,10 +99,10 @@
         "completed": "Completed",
         "canceled": "Canceled"
     },
-    "profile>order>orderServantSelection": {
+    "order>orderServantSelection": {
         "selectServantType": "Select a Servant Type"
     },
-    "profile>order>orderInitiate": {
+    "order>orderInitiate": {
         "postOrder": "Post Order",
         "repostOrder": "Repost Order",
         "serviceGender": "Service Provider Gender",
@@ -145,7 +126,7 @@
             "selectSchedule": "please select a schedule"
         }
     },
-    "profile>order>orderDetail": {
+    "order>orderDetail": {
         "candidateSelection": "Candidate Selection",
         "orderDetail": "Order Detail",
         "orderInfoBasic": {
@@ -219,6 +200,25 @@
             "selectRate": "Please select a rating before submitting.",
             "rated": "You have rated this order already"
         }
+    },
+
+
+    "//////": "chat",
+    "chat": {
+        "chats": "Chats"
+    },
+
+
+    "//////": "profile",
+    "profile": {
+        "order": "Order",
+        "balance": "Balance",
+        "address": "Address",
+        "myFavorite": "My Favorite",
+        "data": "Data and Storage",
+        "tag": "Tag",
+        "signIn": "Sign In",
+        "signOut": "Sign Out"
     },
 
     "//////": "profile > balance",

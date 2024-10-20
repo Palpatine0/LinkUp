@@ -2,7 +2,7 @@
 <div class="page">
     <!-- Heading section -->
     <div style="display: flex; align-items: center; justify-content: space-between;">
-        <app-title type="h1" bold="true">{{ $t('profile>order.myOrders') }}</app-title>
+        <app-title type="h1" bold="true">{{ $t('order.myOrders') }}</app-title>
         <img src="/static/common/create.svg" style="width: 28px; height: 28px;" @click="orderInitiateRedirect"/>
     </div>
 
@@ -42,23 +42,23 @@
                 <span style="font-size: 14px; color: gray;">{{ order.createdAt }}</span>
                 <div v-if="order.status == 0" class="order-status">
                     <span class="status-dot yellow-dot"></span>
-                    <div class="status-text">{{ $t('profile>order.pending') }}</div>
+                    <div class="status-text">{{ $t('order.pending') }}</div>
                 </div>
                 <div v-if="order.status == 1 && isServiceInProgressState(order)" class="order-status">
                     <span class="status-dot green-dot"></span>
-                    <div class="status-text">{{ $t('profile>order.processing') }}</div>
+                    <div class="status-text">{{ $t('order.processing') }}</div>
                 </div>
                 <div v-if="order.status == 1 && !isServiceInProgressState(order)" class="order-status">
                     <span class="status-dot green-dot"></span>
-                    <div class="status-text">{{ $t('profile>order.confirmed') }}</div>
+                    <div class="status-text">{{ $t('order.confirmed') }}</div>
                 </div>
                 <div v-if="order.status == 2" class="order-status">
                     <span class="status-dot gray-dot"></span>
-                    <div class="status-text">{{ $t('profile>order.completed') }}</div>
+                    <div class="status-text">{{ $t('order.completed') }}</div>
                 </div>
                 <div v-if="order.status == 3" class="order-status">
                     <div class="status-dot red-dot"></div>
-                    <div class="status-text">{{ $t('profile>order.canceled') }}</div>
+                    <div class="status-text">{{ $t('order.canceled') }}</div>
                 </div>
             </div>
 
@@ -82,7 +82,7 @@
                 <div class="order-candidate">
                     <img style="width: 40px; height: 40px; border-radius: 50%; margin-right: 5px;" :src="order.servant.avatar" @click="chatWindowRedirect(order.servantId)">
                     <div v-if="order.requiredServantType == serviceTypeConstant.TOUR_GUIDE" class="center-v">
-                        <div style="font-size: 18px">{{ $t('profile>order.tourGuide') }}: {{ order.servant.nickname }}</div>
+                        <div style="font-size: 18px">{{ $t('order.tourGuide') }}: {{ order.servant.nickname }}</div>
                     </div>
                 </div>
             </div>

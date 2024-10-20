@@ -3,11 +3,11 @@
 
     <div class="detail-toggle">
         <div @click="detailTypeToggle(0)" style="position: relative">
-            <div style="z-index: 10">{{ $t('profile>order>orderDetail.candidateSelection') }}</div>
+            <div style="z-index: 10">{{ $t('order>orderDetail.candidateSelection') }}</div>
             <div v-show="detailType === 0" class="active"></div>
         </div>
         <div @click="detailTypeToggle(1)" style="margin-left: 10px; position: relative">
-            <div style="z-index: 10">{{ $t('profile>order>orderDetail.orderDetail') }}</div>
+            <div style="z-index: 10">{{ $t('order>orderDetail.orderDetail') }}</div>
             <div v-show="detailType === 1" class="active"></div>
         </div>
     </div>
@@ -21,47 +21,47 @@
             <img style="width: 140px" src="/static/page/order/order-detail/hourglass-half.svg">
         </div>
         <div class="countdown-container mb-2">
-            <p style="font-weight: bold">{{ $t('profile>order>orderDetail.selectionCountdown') }}</p>
+            <p style="font-weight: bold">{{ $t('order>orderDetail.selectionCountdown') }}</p>
             <p>{{ candidateSelectionCountdown }}</p>
         </div>
         <div class="tips-text">
-            <div>{{ $t('profile>order>orderDetail.selectedBeforeCountdown') }}</div>
+            <div>{{ $t('order>orderDetail.selectedBeforeCountdown') }}</div>
         </div>
 
         <div class="center-h" style="width: 40vw" >
-            <app-button type="small" color="red" shaped size="small"  @click="cancelOrder">{{ $t('profile>order>orderDetail.cancelOrder') }}</app-button>
+            <app-button type="small" color="red" shaped size="small"  @click="cancelOrder">{{ $t('order>orderDetail.cancelOrder') }}</app-button>
         </div>
     </div>
 
     <div v-show="detailType === 0">
         <!-- Cancel before Waiting Respond OT -->
         <div v-if="cancelStatus.isCancelManually" class="app-container" style="background-color: white !important;">
-            <app-title type="h3" bold="true">{{ $t('profile>order>orderDetail.orderClosed') }}</app-title>
-            <p>{{ $t('profile>order>orderDetail.orderCanceledManuallyExplanation') }}</p>
-            <p>{{ $t('profile>order>orderDetail.refunded') }}</p>
+            <app-title type="h3" bold="true">{{ $t('order>orderDetail.orderClosed') }}</app-title>
+            <p>{{ $t('order>orderDetail.orderCanceledManuallyExplanation') }}</p>
+            <p>{{ $t('order>orderDetail.refunded') }}</p>
         </div>
         <!-- Cancel cuz Waiting Respond OT -->
         <div v-if="cancelStatus.isCancelByTimeout" class="app-container" style="background-color: white !important;">
-            <app-title type="h3" bold="true">{{ $t('profile>order>orderDetail.orderClosed') }}</app-title>
-            <p>{{ $t('profile>order>orderDetail.orderCanceledByTimeoutExplanation') }}</p>
-            <p>{{ $t('profile>order>orderDetail.refunded') }}</p>
+            <app-title type="h3" bold="true">{{ $t('order>orderDetail.orderClosed') }}</app-title>
+            <p>{{ $t('order>orderDetail.orderCanceledByTimeoutExplanation') }}</p>
+            <p>{{ $t('order>orderDetail.refunded') }}</p>
         </div>
         <!-- Cancel before Selection OT -->
         <div v-if="cancelStatus.isCancelManuallyWithinSelection" class="app-container" style="background-color: white !important;">
-            <app-title type="h3" bold="true">{{ $t('profile>order>orderDetail.orderClosed') }}</app-title>
-            <p>{{ $t('profile>order>orderDetail.orderCanceledManuallyWithinSelection') }}</p>
-            <p>{{ $t('profile>order>orderDetail.refunded') }}</p>
+            <app-title type="h3" bold="true">{{ $t('order>orderDetail.orderClosed') }}</app-title>
+            <p>{{ $t('order>orderDetail.orderCanceledManuallyWithinSelection') }}</p>
+            <p>{{ $t('order>orderDetail.refunded') }}</p>
         </div>
         <!-- Cancel cuz Selection OT -->
         <div v-if="cancelStatus.isCancelByTimeoutWithinSelection" class="app-container" style="background-color: white !important;">
-            <app-title type="h3" bold="true">{{ $t('profile>order>orderDetail.orderClosed') }}</app-title>
-            <p>{{ $t('profile>order>orderDetail.orderCanceledByTimeoutWithinSelection') }}</p>
-            <p>{{ $t('profile>order>orderDetail.refunded') }}</p>
+            <app-title type="h3" bold="true">{{ $t('order>orderDetail.orderClosed') }}</app-title>
+            <p>{{ $t('order>orderDetail.orderCanceledByTimeoutWithinSelection') }}</p>
+            <p>{{ $t('order>orderDetail.refunded') }}</p>
         </div>
 
         <!-- SERVANT CONTAINER  -->
         <div v-if="candidateSelectionCountdown != 0 && order.status == orderConstant.PENDING" class="mt-4">
-            <app-title type="h3" bold="true">{{ $t('profile>order>orderDetail.candidates') }}</app-title>
+            <app-title type="h3" bold="true">{{ $t('order>orderDetail.candidates') }}</app-title>
             <div v-if="candidateList.length > 0">
                 <z-swiper v-model="candidateList" :options="{slidesPerView: 'auto', centeredSlides: true, spaceBetween: 14}" style="width: 100%">
                     <z-swiper-item v-for="(user, index) in candidateList" :key="index" :custom-style="{width: '500rpx'}">
@@ -69,15 +69,15 @@
                             <app-container color="#fff" col="12"  @click="userDetailRedirect(user.id)">
                                 <div v-if="index === 0" class="badge">
                                     <img style="width: 80px;height: 68px;" src="/static/page/order/order-detail/badge.png">
-                                    <p class="badge-text">{{$t('profile>order>orderDetail.servantDetail.bestValueOffer')}}</p>
+                                    <p class="badge-text">{{$t('order>orderDetail.servantDetail.bestValueOffer')}}</p>
                                 </div>
                                 <div v-else-if="index === 1" class="badge">
                                     <img style="width: 80px;height: 68px;" src="/static/page/order/order-detail/badge.png">
-                                    <p class="badge-text">{{$t('profile>order>orderDetail.servantDetail.secondBestDeal')}}</p>
+                                    <p class="badge-text">{{$t('order>orderDetail.servantDetail.secondBestDeal')}}</p>
                                 </div>
                                 <div v-else-if="index === 2" class="badge">
                                     <img style="width: 80px;height: 68px;" src="/static/page/order/order-detail/badge.png">
-                                    <p class="badge-text">{{$t('profile>order>orderDetail.servantDetail.topBudgetChoice')}}</p>
+                                    <p class="badge-text">{{$t('order>orderDetail.servantDetail.topBudgetChoice')}}</p>
                                 </div>
                                 <div class="center-h">
                                     <image style="width: 160px; height: 160px; border-radius: 50%; margin: 46px 0 12px 0" :src="user.avatar" mode="aspectFill"></image>
@@ -95,17 +95,17 @@
                                     <div style="width: 50%">
                                         <div class="servant-detail-item">
                                             <p class="value">¥{{ user.quotedPrice }}</p>
-                                            <p class="label">{{ $t('profile>order>orderDetail.servantDetail.quotedPrice') }}</p>
+                                            <p class="label">{{ $t('order>orderDetail.servantDetail.quotedPrice') }}</p>
                                             <div class="divider-servant"></div>
                                         </div>
                                         <div v-if="!$common.isEmpty(user.servantData.goodPerformanceRate)&&user.servantData.goodPerformanceRate!=0" class="servant-detail-item">
                                             <p class="value">{{ user.servantData.goodPerformanceRate }}%</p>
-                                            <p class="label">{{ $t('profile>order>orderDetail.servantDetail.positiveFeedback') }}</p>
+                                            <p class="label">{{ $t('order>orderDetail.servantDetail.positiveFeedback') }}</p>
                                             <div class="divider-servant"></div>
                                         </div>
                                         <div class="servant-detail-item">
                                             <p class="value">{{ user.completedOrderCount }}</p>
-                                            <p class="label">{{ $t('profile>order>orderDetail.servantDetail.assistanceProvided') }}</p>
+                                            <p class="label">{{ $t('order>orderDetail.servantDetail.assistanceProvided') }}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -113,7 +113,7 @@
                             </app-container>
                             <div style="width: 70%;" class="center-h">
                                 <app-button type="small" @click="selectServant(user.nickname,user.id,user.quotedPrice)" shaped>
-                                    {{ $t('profile>order>orderDetail.selectCandidate') }}
+                                    {{ $t('order>orderDetail.selectCandidate') }}
                                 </app-button>
                             </div>
                         </demo-item>
@@ -122,16 +122,16 @@
             </div>
             <div v-else>
                 <div class="no-more-data-text" style="margin-bottom: 60vh;">
-                    {{ $t('profile>order>orderDetail.noCandidate') }}
+                    {{ $t('order>orderDetail.noCandidate') }}
                 </div>
             </div>
         </div>
 
         <!-- SERVICE IN PROGRESS -->
         <div v-if="order.status == orderConstant.PROCESSING&&isServiceInProgress" class="app-container" style="background-color: #44e1a6">
-            <app-title type="h3" bold="true" style="color: white">{{ $t('profile>order>orderDetail.serviceInProgress') }}</app-title>
+            <app-title type="h3" bold="true" style="color: white">{{ $t('order>orderDetail.serviceInProgress') }}</app-title>
             <app-button type="small" color="black" shaped size="small" @click="completeOrder">
-                {{ $t('profile>order>orderDetail.completeOrder') }}
+                {{ $t('order>orderDetail.completeOrder') }}
             </app-button>
         </div>
 
@@ -153,24 +153,24 @@
                     <div style="width: 50%">
                         <div class="servant-detail-item">
                             <p class="value">¥{{ order.price }}</p>
-                            <p class="label">{{ $t('profile>order>orderDetail.servantDetail.quotedPrice') }}</p>
+                            <p class="label">{{ $t('order>orderDetail.servantDetail.quotedPrice') }}</p>
                             <div class="divider-servant"></div>
                         </div>
                         <div v-if="!$common.isEmpty(orderServant.servantData.goodPerformanceRate)&&orderServant.servantData.goodPerformanceRate!=0" class="servant-detail-item">
                             <p class="value">{{ orderServant.servantData.goodPerformanceRate }}%</p>
-                            <p class="label">{{ $t('profile>order>orderDetail.servantDetail.positiveFeedback') }}</p>
+                            <p class="label">{{ $t('order>orderDetail.servantDetail.positiveFeedback') }}</p>
                             <div class="divider-servant"></div>
                         </div>
                         <div class="servant-detail-item">
                             <p class="value">{{ orderServant.completedOrderCount }}</p>
-                            <p class="label">{{ $t('profile>order>orderDetail.servantDetail.assistanceProvided') }}</p>
+                            <p class="label">{{ $t('order>orderDetail.servantDetail.assistanceProvided') }}</p>
                         </div>
                     </div>
                 </div>
             </app-container>
             <div style="width: 70%;" class="center-h">
                 <app-button type="small" @click="chatWindowRedirect(orderServant.id)" shaped>
-                    {{ $t('profile>order>orderDetail.startChatting') }}
+                    {{ $t('order>orderDetail.startChatting') }}
                 </app-button>
             </div>
         </div>
@@ -183,13 +183,13 @@
                 <img style="width: 140px" src="/static/page/order/check-double.svg">
             </div>
             <div class="tips-text">
-                <div>{{ $t('profile>order>orderDetail.serviceComplete') }}</div>
+                <div>{{ $t('order>orderDetail.serviceComplete') }}</div>
             </div>
 
             <!-- Rating Section -->
             <div class="rating-section">
                 <app-title type="h2" bold="true">
-                    <div>{{ $t('profile>order>orderDetail.rateRequest') }}</div>
+                    <div>{{ $t('order>orderDetail.rateRequest') }}</div>
                 </app-title>
                 <div class="emoji-rating mt-2">
                     <div class="emoji" role="img" :class="{ selected: selectedEmoji === 0 }" aria-label="Very dissatisfied" @click="selectEmoji(0)">😣</div>
@@ -211,7 +211,7 @@
         <div v-if="order.status == orderConstant.PENDING && $common.isEmpty(this.candidateList)" class="fix-bottom flex">
             <div style="width: 100%">
                 <app-button color="red" shaped @click="cancelOrder">
-                    {{ $t('profile>order>orderDetail.cancelOrder') }}
+                    {{ $t('order>orderDetail.cancelOrder') }}
                 </app-button>
             </div>
             <img class="reload-btn center-v" @click="reload()" src="/static/page/order/order-detail/rotate-right-solid.svg">
@@ -219,7 +219,7 @@
         <!-- Repost order opt -->
         <div v-if="order.status == orderConstant.CANCELED" class="fix-bottom">
             <app-button shaped @click="repostOrder">
-                {{ $t('profile>order>orderDetail.repostOrder') }}
+                {{ $t('order>orderDetail.repostOrder') }}
             </app-button>
         </div>
     </div>
@@ -230,7 +230,7 @@
             <div class="price-respondent-container">
                 <!-- Price Section -->
                 <div class="price-section">
-                    <app-title bold="true">{{ $t('profile>order>orderDetail.orderInfoBasic.price') }}</app-title>
+                    <app-title bold="true">{{ $t('order>orderDetail.orderInfoBasic.price') }}</app-title>
                     <p>¥{{ order.price }}</p>
                 </div>
 
@@ -239,7 +239,7 @@
 
                 <!-- Respondent Section -->
                 <div class="respondent-section">
-                    <app-title bold="true">{{ $t('profile>order>orderDetail.orderInfoBasic.totalCandidates') }}</app-title>
+                    <app-title bold="true">{{ $t('order>orderDetail.orderInfoBasic.totalCandidates') }}</app-title>
                     <p>{{ order.candidateCount }}</p>
                 </div>
             </div>
@@ -251,7 +251,7 @@
             <div class="order-detail-item">
                 <div class="icon"><img src="/static/page/order/order-detail/timer.svg" alt="Payment Icon"/></div>
                 <div class="details">
-                    <span class="label">{{ $t('profile>order>orderDetail.orderInfoDetail.serviceTime') }}</span>
+                    <span class="label">{{ $t('order>orderDetail.orderInfoDetail.serviceTime') }}</span>
                     <p class="value">
                         {{ $common.stampToTime(order.serviceScheduleStart, {yyyy: false, ss: false}) }}
                         -
@@ -262,7 +262,7 @@
             <div class="order-detail-item">
                 <div class="icon"><img src="/static/page/order/order-detail/location-dot.svg" alt="Payment Icon"/></div>
                 <div class="details">
-                    <span class="label">{{ $t('profile>order>orderDetail.orderInfoDetail.address') }}</span>
+                    <span class="label">{{ $t('order>orderDetail.orderInfoDetail.address') }}</span>
                     <p class="value">{{ order.address.address }} </p>
                     <p class="value">{{ order.address.addressName }} </p>
                     <p class="value">{{ order.address.detail }}</p>
@@ -271,14 +271,14 @@
             <div class="order-detail-item">
                 <div class="icon" style="width: 20px;margin-left: 22px;"><img src="/static/page/order/order-detail/memo.svg" alt="Payment Icon"/></div>
                 <div class="details">
-                    <span class="label">{{ $t('profile>order>orderDetail.orderInfoDetail.orderId') }}</span>
+                    <span class="label">{{ $t('order>orderDetail.orderInfoDetail.orderId') }}</span>
                     <div @click="$common.addToClipboard(order.identifier)" class="value">{{ order.identifier }}</div>
                 </div>
             </div>
             <div class="order-detail-item">
                 <div class="icon"><img src="/static/page/order/order-detail/credit-card-front.svg" alt="Payment Icon"/></div>
                 <div class="details">
-                    <span class="label">{{ $t('profile>order>orderDetail.orderInfoDetail.paymentMethod') }}</span>
+                    <span class="label">{{ $t('order>orderDetail.orderInfoDetail.paymentMethod') }}</span>
                     <div v-if="order.paymentMethod == 0" class="value">{{ balanceText }}</div>
                     <div v-else-if="order.paymentMethod == 1" class="value">{{ weChatText }}</div>
                 </div>
@@ -313,8 +313,8 @@ export default {
 
             freeOrderPostingQuota: 0,
 
-            balanceText: this.$t('profile>order>orderDetail.orderInfoDetail.balance'),
-            weChatText: this.$t('profile>order>orderDetail.orderInfoDetail.weChat'),
+            balanceText: this.$t('order>orderDetail.orderInfoDetail.balance'),
+            weChatText: this.$t('order>orderDetail.orderInfoDetail.weChat'),
 
             candidateSelectionCountdown: 0,
 
@@ -465,8 +465,8 @@ export default {
         },
         selectServant(servantName, servantId, quotedPrice) {
             uni.showModal({
-                title: this.$t('profile>order>orderDetail.selectServantModal.title'),
-                content: this.$t('profile>order>orderDetail.selectServantModal.content1') + servantName + this.$t('profile>order>orderDetail.selectServantModal.content2'),
+                title: this.$t('order>orderDetail.selectServantModal.title'),
+                content: this.$t('order>orderDetail.selectServantModal.content1') + servantName + this.$t('order>orderDetail.selectServantModal.content2'),
                 showCancel: true,
                 confirmText: this.$t('pub.modal.button.confirm'),
                 cancelText: this.$t('pub.modal.button.cancel'),
@@ -492,8 +492,8 @@ export default {
         cancelOrder() {
             if(this.$common.isEmpty(this.candidateList)) {
                 uni.showModal({
-                    title: this.$t('profile>order>orderDetail.noCandidateCancelModal.title'),
-                    content: this.$t('profile>order>orderDetail.noCandidateCancelModal.content'),
+                    title: this.$t('order>orderDetail.noCandidateCancelModal.title'),
+                    content: this.$t('order>orderDetail.noCandidateCancelModal.content'),
                     showCancel: true,
                     confirmText: this.$t('pub.modal.button.confirm'),
                     cancelText: this.$t('pub.modal.button.cancel'),
@@ -517,8 +517,8 @@ export default {
                 });
             } else {
                 uni.showModal({
-                    title: this.$t('profile>order>orderDetail.hasCandidateCancelModal.title'),
-                    content: this.$t('profile>order>orderDetail.hasCandidateCancelModal.content') + `${this.freeOrderPostingQuota}`,
+                    title: this.$t('order>orderDetail.hasCandidateCancelModal.title'),
+                    content: this.$t('order>orderDetail.hasCandidateCancelModal.content') + `${this.freeOrderPostingQuota}`,
                     showCancel: true,
                     confirmText: this.$t('pub.modal.button.confirm'),
                     cancelText: this.$t('pub.modal.button.cancel'),
@@ -545,8 +545,8 @@ export default {
         },
         completeOrder() {
             uni.showModal({
-                title: this.$t('profile>order>orderDetail.completeOrderModal.title'),
-                content: this.$t('profile>order>orderDetail.completeOrderModal.content'),
+                title: this.$t('order>orderDetail.completeOrderModal.title'),
+                content: this.$t('order>orderDetail.completeOrderModal.content'),
                 showCancel: true,
                 confirmText: this.$t('pub.modal.button.confirm'),
                 cancelText: this.$t('pub.modal.button.cancel'),
@@ -570,8 +570,8 @@ export default {
         },
         repostOrder() {
             uni.showModal({
-                title: this.$t('profile>order>orderDetail.repostModal.title'),
-                content: this.$t('profile>order>orderDetail.repostModal.content'),
+                title: this.$t('order>orderDetail.repostModal.title'),
+                content: this.$t('order>orderDetail.repostModal.content'),
                 showCancel: true,
                 confirmText: this.$t('pub.modal.button.confirm'),
                 cancelText: this.$t('pub.modal.button.cancel'),
@@ -645,11 +645,11 @@ export default {
         },
         submitFeedback() {
             if(this.$common.isEmpty(this.selectedEmoji)) {
-                uni.showToast({title: this.$t('profile>order>orderDetail.showToast.selectRate'), icon: 'none'});
+                uni.showToast({title: this.$t('order>orderDetail.showToast.selectRate'), icon: 'none'});
                 return;
             }
             if(!this.$common.isEmpty(this.order.performanceRating)) {
-                uni.showToast({title: this.$t('profile>order>orderDetail.showToast.rated'), icon: 'none'});
+                uni.showToast({title: this.$t('order>orderDetail.showToast.rated'), icon: 'none'});
                 return;
             }
             uni.request({
