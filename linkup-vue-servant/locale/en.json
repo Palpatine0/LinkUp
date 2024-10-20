@@ -109,11 +109,11 @@
     "order": {
         "myOrders": "My Orders",
         "candidates": "Candidates",
-        "pending": "Pending",
-        "confirmed": "Confirmed",
-        "processing": "Service in Progress",
-        "completed": "Completed",
-        "canceled": "Canceled"
+        "orderStatus": {
+            "confirmed": "Confirmed",
+            "processing": "Service in Progress",
+            "completed": "Completed"
+        }
     },
     "order>orderDetail": {
         "orderInfoBasic": {

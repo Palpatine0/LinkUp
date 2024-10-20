@@ -42,25 +42,17 @@
             </div>
             <div class="chat-user-order-status">
                 <img style="width: 28px;height: 22px" src="/static/page/order/messages.svg" @click="chatWindowRedirect(order.clientId)">
-                <div v-if="order.status == 0" class="order-status">
-                    <span class="status-dot yellow-dot"></span>
-                    <div class="status-text">{{ $t('order.pending') }}</div>
+                <div v-if="order.status == 1 && !isServiceInProgressState(order)" class="order-status">
+                    <span class="status-dot green-dot"></span>
+                    <div class="status-text">{{ $t('order.orderStatus.confirmed') }}</div>
                 </div>
                 <div v-if="order.status == 1 && isServiceInProgressState(order)" class="order-status">
                     <span class="status-dot green-dot"></span>
-                    <div class="status-text">{{ $t('order.processing') }}</div>
-                </div>
-                <div v-if="order.status == 1 && !isServiceInProgressState(order)" class="order-status">
-                    <span class="status-dot green-dot"></span>
-                    <div class="status-text">{{ $t('order.confirmed') }}</div>
+                    <div class="status-text">{{ $t('order.orderStatus.processing') }}</div>
                 </div>
                 <div v-if="order.status == 2" class="order-status">
                     <span class="status-dot gray-dot"></span>
-                    <div class="status-text">{{ $t('order.completed') }}</div>
-                </div>
-                <div v-if="order.status == 3" class="order-status">
-                    <div class="status-dot red-dot"></div>
-                    <div class="status-text">{{ $t('order.canceled') }}</div>
+                    <div class="status-text">{{ $t('order.orderStatus.completed') }}</div>
                 </div>
             </div>
         </div>

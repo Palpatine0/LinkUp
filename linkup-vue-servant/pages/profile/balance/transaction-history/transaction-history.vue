@@ -16,7 +16,7 @@
     />
 
     <!-- Toggle buttons for All Transactions / Income / Outcome -->
-    <div class="transaction-toggle">
+    <div class="currency-type-selection">
         <button
             :class="{ active: currencyType === 0 }"
             @click="setCurrencyType(0)"
@@ -172,7 +172,7 @@ export default {
 </script>
 
 <style scoped>
-.transaction-toggle {
+.currency-type-selection {
     display: flex;
     justify-content: space-between;
     margin-bottom: 10px;
@@ -181,7 +181,7 @@ export default {
     padding: 4px;
 }
 
-.transaction-toggle button {
+.currency-type-selection button {
     flex: 1;
     background-color: transparent;
     color: white;
@@ -194,16 +194,16 @@ export default {
     transition: background-color 0.3s;
 }
 
-.transaction-toggle button.active {
+.currency-type-selection button.active {
     background-color: white;
     color: #0f172a;
 }
 
-.transaction-toggle button:not(.active) {
+.currency-type-selection button:not(.active) {
     color: white;
 }
 
-.transaction-toggle button:not(.active):hover {
+.currency-type-selection button:not(.active):hover {
     background-color: rgba(255, 255, 255, 0.2);
 }
 

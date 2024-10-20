@@ -109,11 +109,11 @@
     "order": {
         "myOrders": "我的订单",
         "candidates": "抢单人数",
-        "pending": "已发布",
-        "confirmed": "订单确认",
-        "processing": "服务中",
-        "completed": "订单完成",
-        "canceled": "订单取消"
+        "orderStatus": {
+            "confirmed": "订单确认",
+            "processing": "服务中",
+            "completed": "订单完成"
+        }
     },
     "order>orderDetail": {
         "orderInfoBasic": {

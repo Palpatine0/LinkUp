@@ -93,11 +93,14 @@
         "candidates": "Candidates",
         "servant": "Servant",
         "tourGuide": "Tour Guide",
-        "pending": "Pending",
-        "confirmed": "Confirmed",
-        "processing": "Processing",
-        "completed": "Completed",
-        "canceled": "Canceled"
+        "orderStatus": {
+            "pending": "Pending",
+            "confirmed": "Confirmed",
+            "processing": "Processing",
+            "completed": "Completed",
+            "canceled": "Canceled",
+            "all": "All",
+        }
     },
     "order>orderServantSelection": {
         "selectServantType": "Select a Servant Type"
