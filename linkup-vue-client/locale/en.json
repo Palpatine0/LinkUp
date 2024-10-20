@@ -155,7 +155,10 @@
         "servantDetail": {
             "quotedPrice": "Quoted Price",
             "positiveFeedback": "Positive Feedback",
-            "assistanceProvided": "Assistance Provided"
+            "assistanceProvided": "Assistance Provided",
+            "bestValueOffer": "Best Value Offer",
+            "secondBestDeal": "Second-Best Deal",
+            "topBudgetChoice": "Top Budget Choice"
         },
         "candidates": "Candidates",
         "selectCandidate": "Select Candidate",

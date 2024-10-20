@@ -18,7 +18,7 @@
 
     <div v-if="candidateSelectionCountdown != 0 && order.status == orderConstant.PENDING">
         <div class="center-h">
-            <img style="width: 140px" src="/static/page/order/hourglass-half.svg">
+            <img style="width: 140px" src="/static/page/order/order-detail/hourglass-half.svg">
         </div>
         <div class="countdown-container mb-2">
             <p style="font-weight: bold">{{ $t('profile>order>orderDetail.selectionCountdown') }}</p>
@@ -66,9 +66,21 @@
                 <z-swiper v-model="candidateList" :options="{slidesPerView: 'auto', centeredSlides: true, spaceBetween: 14}" style="width: 100%">
                     <z-swiper-item v-for="(user, index) in candidateList" :key="index" :custom-style="{width: '500rpx'}">
                         <demo-item :item="user">
-                            <app-container color="#fff" col="12" @click="userDetailRedirect(user.id)">
+                            <app-container color="#fff" col="12"  @click="userDetailRedirect(user.id)">
+                                <div v-if="index === 0" class="badge">
+                                    <img style="width: 80px;height: 68px;" src="/static/page/order/order-detail/badge.png">
+                                    <p class="badge-text">{{$t('profile>order>orderDetail.servantDetail.bestValueOffer')}}</p>
+                                </div>
+                                <div v-else-if="index === 1" class="badge">
+                                    <img style="width: 80px;height: 68px;" src="/static/page/order/order-detail/badge.png">
+                                    <p class="badge-text">{{$t('profile>order>orderDetail.servantDetail.secondBestDeal')}}</p>
+                                </div>
+                                <div v-else-if="index === 2" class="badge">
+                                    <img style="width: 80px;height: 68px;" src="/static/page/order/order-detail/badge.png">
+                                    <p class="badge-text">{{$t('profile>order>orderDetail.servantDetail.topBudgetChoice')}}</p>
+                                </div>
                                 <div class="center-h">
-                                    <image style="width: 160px; height: 160px; border-radius: 50%; margin: 25px 0 12px 0" :src="user.avatar" mode="aspectFill"></image>
+                                    <image style="width: 160px; height: 160px; border-radius: 50%; margin: 46px 0 12px 0" :src="user.avatar" mode="aspectFill"></image>
                                 </div>
                                 <app-title style="text-align: center" type="h3" bold="true">{{ user.nickname }}</app-title>
                                 <div class="flex justify-SB mt-2 mb-1">
@@ -202,7 +214,7 @@
                     {{ $t('profile>order>orderDetail.cancelOrder') }}
                 </app-button>
             </div>
-            <img class="reload-btn center-v" @click="reload()" src="/static/page/order/rotate-right-solid.svg">
+            <img class="reload-btn center-v" @click="reload()" src="/static/page/order/order-detail/rotate-right-solid.svg">
         </div>
         <!-- Repost order opt -->
         <div v-if="order.status == orderConstant.CANCELED" class="fix-bottom">
@@ -237,7 +249,7 @@
         <!-- ORDER DETAIL -->
         <div class="order-detail-section">
             <div class="order-detail-item">
-                <div class="icon"><img src="/static/page/order/timer.svg" alt="Payment Icon"/></div>
+                <div class="icon"><img src="/static/page/order/order-detail/timer.svg" alt="Payment Icon"/></div>
                 <div class="details">
                     <span class="label">{{ $t('profile>order>orderDetail.orderInfoDetail.serviceTime') }}</span>
                     <p class="value">
@@ -248,7 +260,7 @@
                 </div>
             </div>
             <div class="order-detail-item">
-                <div class="icon"><img src="/static/page/order/location-dot.svg" alt="Payment Icon"/></div>
+                <div class="icon"><img src="/static/page/order/order-detail/location-dot.svg" alt="Payment Icon"/></div>
                 <div class="details">
                     <span class="label">{{ $t('profile>order>orderDetail.orderInfoDetail.address') }}</span>
                     <p class="value">{{ order.address.address }} </p>
@@ -257,14 +269,14 @@
                 </div>
             </div>
             <div class="order-detail-item">
-                <div class="icon" style="width: 20px;margin-left: 22px;"><img src="/static/page/order/memo.svg" alt="Payment Icon"/></div>
+                <div class="icon" style="width: 20px;margin-left: 22px;"><img src="/static/page/order/order-detail/memo.svg" alt="Payment Icon"/></div>
                 <div class="details">
                     <span class="label">{{ $t('profile>order>orderDetail.orderInfoDetail.orderId') }}</span>
                     <div @click="$common.addToClipboard(order.identifier)" class="value">{{ order.identifier }}</div>
                 </div>
             </div>
             <div class="order-detail-item">
-                <div class="icon"><img src="/static/page/order/credit-card-front.svg" alt="Payment Icon"/></div>
+                <div class="icon"><img src="/static/page/order/order-detail/credit-card-front.svg" alt="Payment Icon"/></div>
                 <div class="details">
                     <span class="label">{{ $t('profile>order>orderDetail.orderInfoDetail.paymentMethod') }}</span>
                     <div v-if="order.paymentMethod == 0" class="value">{{ balanceText }}</div>
@@ -792,6 +804,7 @@ export default {
     gap: 20px;
     color: #333;
     background-color: white;
+    margin-bottom: 10vh;
 }
 
 .order-detail-item {
@@ -858,4 +871,24 @@ export default {
     width: 164px;
     margin: 0 auto;
 }
+
+.badge {
+    position: absolute;
+    display: inline-block;
+    font-size: 14px;
+    font-weight: bold;
+    padding: 7px 12px;
+    color: white;
+    border-radius: 4px 4px 0 0;
+    text-align: center;
+    top: 0;
+    right: 0px;
+}
+
+.badge-text{
+    position: absolute;
+    top: 18px;
+    width: 80px;
+}
+
 </style>

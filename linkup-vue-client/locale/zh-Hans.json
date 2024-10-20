@@ -155,7 +155,10 @@
         "servantDetail": {
             "quotedPrice": "报价",
             "positiveFeedback": "好评率",
-            "assistanceProvided": "完成订单"
+            "assistanceProvided": "完成订单",
+            "bestValueOffer": "特惠TOP1",
+            "secondBestDeal": "特惠TOP2",
+            "topBudgetChoice": "特惠TOP3"
         },
         "candidates": "已抢单用户",
         "selectCandidate": "选择达人",
