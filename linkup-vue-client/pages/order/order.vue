@@ -117,13 +117,15 @@ export default {
     },
     data() {
         return {
-            searchKeyword: '',
             dataList: [],
+            searchKeyword: '',
+
+            orderStatusType: -1,
+
             serviceTypeConstant: {
                 TOUR_GUIDE: 1,
             },
 
-            orderStatusType: 0,
         };
     },
     onLoad() {
@@ -459,7 +461,7 @@ export default {
 .order-type-selection {
     display: flex;
     border-radius: 19px;
-    height: 38px; /* Set a fixed height for visibility */
+    height: 38px;
     overflow-x: auto; /* Allow horizontal scrolling */
 }
 
@@ -488,6 +490,4 @@ export default {
 .order-type-selection span {
     padding: 0 8px;
 }
-
-
 </style>

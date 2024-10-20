@@ -113,6 +113,11 @@
             "confirmed": "订单确认",
             "processing": "服务中",
             "completed": "订单完成"
+        },
+        "orderStatusType": {
+            "all": "全部",
+            "confirmed": "已确认",
+            "completed": "已完成"
         }
     },
     "order>orderDetail": {

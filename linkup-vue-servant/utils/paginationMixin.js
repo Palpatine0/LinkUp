@@ -14,6 +14,7 @@ export default {
             this.page = 1;
             this.pageSize = 10;
             this.hasMore = true;
+            this.dataList = []
         },
         onReachBottom() {
             this.getDataList();

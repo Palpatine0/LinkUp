@@ -15,6 +15,15 @@
         @input="onSearchInput"
     />
 
+    <!-- Order Category -->
+    <scroll-view :scroll-top="0" scroll-x="true" class="order-type-selection">
+        <div class="button-container">
+            <div :class="{ active: orderStatusType === -1 }" @click="setOrderStatusType(-1)"><span>{{ $t('order.orderStatusType.all') }}</span></div>
+            <div :class="{ active: orderStatusType === 1 }" @click="setOrderStatusType(1)"><span>{{ $t('order.orderStatusType.confirmed') }}</span></div>
+            <div :class="{ active: orderStatusType === 2 }" @click="setOrderStatusType(2)"><span>{{ $t('order.orderStatusType.completed') }}</span></div>
+        </div>
+    </scroll-view>
+
     <!-- Orders Container using app-container -->
     <scroll-view
         :scroll-top="0"
@@ -23,7 +32,7 @@
         @scrolltoupper="reload"
         @scrolltolower="onReachBottom"
     >
-        <div class="app-container" v-for="order in orderList" :key="order.id" @click="orderDetailRedirect(order.id)" style="display: flex;flex-direction: column;align-items: center">
+        <div class="app-container" v-for="order in dataList" :key="order.id" @click="orderDetailRedirect(order.id)" style="display: flex;flex-direction: column;align-items: center">
             <div class="order-schedule">
                 <div>{{ language != "zh-Hans" ? 'Service Schedule: ' : "服务时间" }}</div>
                 <div>
@@ -76,9 +85,10 @@ export default {
     },
     data() {
         return {
-            orderList: [],
+            dataList: [],
             searchKeyword: '',
-            addressMap: {},
+
+            orderStatusType: -1,
         };
     },
     onLoad() {
@@ -89,16 +99,12 @@ export default {
             this.resetPagination();
             this.getDataList();
         },
-        resetPagination() {
-            this.page = 1;
-            this.hasMore = true;
-            this.orderList = [];
-        },
         buildApiParams() {
             let url = getApp().globalData.data.requestUrl + this.$API.order.search;
             let method = 'POST';
             let baseData = {
                 servantId: uni.getStorageSync(getApp().globalData.data.userInfoKey).id,
+                status: this.orderStatusType === -1 ? null : this.orderStatusType,
                 page: this.page,
                 size: this.pageSize,
             };
@@ -120,7 +126,7 @@ export default {
                 data: data,
                 success: (res) => {
                     const orders = res.data.list;
-                    if(this.page === 1) this.orderList = [];
+                    if(this.page === 1) this.dataList = [];
 
                     if(orders.length < this.pageSize) {
                         this.hasMore = false;
@@ -130,10 +136,7 @@ export default {
                         order.createdAt = order.createdAt ? this.$common.stampToTime(order.createdAt) : '';
                     });
 
-                    // Update the order list
-                    this.orderList = this.orderList.concat(orders);
-
-                    // Increment the page number for the next call
+                    this.dataList = this.dataList.concat(orders);
                     this.page += 1;
                 },
                 complete: () => {
@@ -149,6 +152,11 @@ export default {
                 return currentTime >= serviceStartTime && currentTime <= serviceEndTime;
             }
             return false;
+        },
+
+        setOrderStatusType(type) {
+            this.orderStatusType = type;
+            this.reload();
         },
 
         // Redirects
@@ -188,7 +196,6 @@ export default {
 .service-type-price {
     width: 100%;
     display: flex;
-    justify-content: space-between
 }
 
 .order-address {
@@ -245,16 +252,35 @@ export default {
     background-color: #8c8c8c;
 }
 
-.highlight-blue {
-    color: white;
-    background-color: #007aff;
-    border-radius: 5px;
-    font-weight: bold;
-    padding: 2px;
-    font-size: 14px;
-    margin-bottom: 4px;
-    align-items: center;
+.order-type-selection {
     display: flex;
+    border-radius: 19px;
+    height: 38px;
+    overflow-x: auto; /* Allow horizontal scrolling */
 }
 
+.button-container {
+    display: flex;
+    flex-grow: 1; /* Allow buttons to grow and fill space */
+}
+
+.order-type-selection div {
+    padding: 4px;
+    border-radius: 50px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.order-type-selection div.active {
+    background-color: #0A2342;
+    color: #FFF;
+}
+
+.order-type-selection div:not(.active) {
+    color: #0A2342;
+}
+
+.order-type-selection span {
+    padding: 0 8px;
+}
 </style>

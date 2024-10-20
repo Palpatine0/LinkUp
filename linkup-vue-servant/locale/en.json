@@ -113,6 +113,11 @@
             "confirmed": "Confirmed",
             "processing": "Service in Progress",
             "completed": "Completed"
+        },
+        "orderStatusType": {
+            "all": "All",
+            "confirmed": "Confirmed",
+            "completed": "Completed"
         }
     },
     "order>orderDetail": {
