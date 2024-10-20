@@ -61,62 +61,61 @@
     <!-- Modified Search Query -->
     <select id="search" resultMap="OrderWithAssociationsResultMap">
         SELECT
-        o.*,
-        -- Address fields
-        a.id AS address_id,
-        a.user_id AS address_user_id,
-        a.consignee,
-        a.phone_number,
-        a.address,
-        a.address_name,
-        a.detail,
-        a.latitude,
-        a.longitude,
-        a.is_deleted AS address_is_deleted,
-        a.created_at AS address_created_at,
-        -- ServiceType fields
-        st.id AS service_type_id,
-        st.name AS service_type_name,
-        st.name_cn AS service_type_name_cn,
-        st.cover_img AS service_type_cover_img,
-        st.intro_img AS service_type_intro_img,
-        st.is_deleted AS service_type_is_deleted,
-        st.created_at AS service_type_created_at
-        FROM `order` o
-        LEFT JOIN address a ON o.address_id = a.id
-        LEFT JOIN service_type st ON o.required_servant_type = st.id
-        <where>
-            o.is_deleted = 0
-            <!-- Existing conditions -->
-            <if test="params.id != null and params.id != ''">
-                AND o.id = #{params.id}
-            </if>
-            <if test="params.keyword != null and params.keyword != ''">
-                AND (
-                o.title LIKE CONCAT('%', #{params.keyword}, '%')
-                OR o.title_cn LIKE CONCAT('%', #{params.keyword}, '%')
-                )
-            </if>
-            <if test="params.clientId != null and params.clientId != ''">
-                AND o.client_id = #{params.clientId}
-            </if>
-            <if test="params.servantId != null and params.servantId != ''">
-                AND o.servant_id = #{params.servantId}
-            </if>
-            <if test="params.status != null and params.status != ''">
-                AND o.status = #{params.status}
-            </if>
-            <if test="params.userGender != null and params.userGender != ''">
-                AND (o.required_gender IS NULL OR o.required_gender = '' OR o.required_gender = #{params.userGender})
-            </if>
-            <if test="params.userAge != null and params.userAge != ''">
-                AND (
-                (o.required_age_min IS NULL OR o.required_age_min &lt;= #{params.userAge})
-                AND
-                (o.required_age_max IS NULL OR o.required_age_max &gt;= #{params.userAge})
-                )
-            </if>
-        </where>
+            o.*,
+            -- Address fields
+            a.id AS address_id,
+            a.user_id AS address_user_id,
+            a.consignee,
+            a.phone_number,
+            a.address,
+            a.address_name,
+            a.detail,
+            a.latitude,
+            a.longitude,
+            a.is_deleted AS address_is_deleted,
+            a.created_at AS address_created_at,
+            -- ServiceType fields
+            st.id AS service_type_id,
+            st.name AS service_type_name,
+            st.name_cn AS service_type_name_cn,
+            st.cover_img AS service_type_cover_img,
+            st.intro_img AS service_type_intro_img,
+            st.is_deleted AS service_type_is_deleted,
+            st.created_at AS service_type_created_at
+            FROM `order` o
+            LEFT JOIN address a ON o.address_id = a.id
+            LEFT JOIN service_type st ON o.required_servant_type = st.id
+            <where>
+                o.is_deleted = 0
+                <if test="params.id != null and params.id != ''">
+                    AND o.id = #{params.id}
+                </if>
+                <if test="params.keyword != null and params.keyword != ''">
+                    AND (
+                    o.title LIKE CONCAT('%', #{params.keyword}, '%')
+                    OR o.title_cn LIKE CONCAT('%', #{params.keyword}, '%')
+                    )
+                </if>
+                <if test="params.clientId != null and params.clientId != ''">
+                    AND o.client_id = #{params.clientId}
+                </if>
+                <if test="params.servantId != null and params.servantId != ''">
+                    AND o.servant_id = #{params.servantId}
+                </if>
+                <if test="params.status != null">
+                    AND o.status = #{params.status}
+                </if>
+                <if test="params.userGender != null and params.userGender != ''">
+                    AND (o.required_gender IS NULL OR o.required_gender = '' OR o.required_gender = #{params.userGender})
+                </if>
+                <if test="params.userAge != null and params.userAge != ''">
+                    AND (
+                        (o.required_age_min IS NULL OR o.required_age_min &lt;= #{params.userAge})
+                            AND
+                        (o.required_age_max IS NULL OR o.required_age_max &gt;= #{params.userAge})
+                    )
+                </if>
+            </where>
         ORDER BY o.created_at DESC
     </select>
 

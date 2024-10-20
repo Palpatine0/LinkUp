@@ -16,9 +16,21 @@
         @input="onSearchInput"
     />
 
+    <!-- Order Category -->
+    <scroll-view :scroll-top="0" scroll-x="true" class="order-type-selection">
+        <div class="button-container">
+            <div :class="{ active: orderStatusType === -1 }" @click="setOrderStatusType(-1)"><span>{{ $t('order.orderStatusType.all') }}</span></div>
+            <div :class="{ active: orderStatusType === 0 }" @click="setOrderStatusType(0)"><span>{{ $t('order.orderStatusType.pending') }}</span></div>
+            <div :class="{ active: orderStatusType === 1 }" @click="setOrderStatusType(1)"><span>{{ $t('order.orderStatusType.confirmed') }}</span></div>
+            <div :class="{ active: orderStatusType === 2 }" @click="setOrderStatusType(2)"><span>{{ $t('order.orderStatusType.completed') }}</span></div>
+            <div :class="{ active: orderStatusType === 3 }" @click="setOrderStatusType(3)"><span>{{ $t('order.orderStatusType.canceled') }}</span></div>
+        </div>
+    </scroll-view>
+
+
     <!-- Orders Container using app-container -->
     <scroll-view :scroll-top="0" scroll-y="true" style="height: 80vh" @scrolltoupper="reload" @scrolltolower="onReachBottom">
-        <div class="app-container" v-for="order in orderList" :key="order.id" @click="orderDetailRedirect(order.id)" style="display: flex;flex-direction: column;align-items: center">
+        <div class="app-container" v-for="order in dataList" :key="order.id" @click="orderDetailRedirect(order.id)" style="display: flex;flex-direction: column;align-items: center">
             <div class="order-schedule">
                 <div>{{ language != "zh-Hans" ? 'Service Schedule: ' : "服务时间" }}</div>
                 <div>
@@ -106,15 +118,16 @@ export default {
     data() {
         return {
             searchKeyword: '',
-            orderList: [],
-            countdowns: {},
+            dataList: [],
             serviceTypeConstant: {
                 TOUR_GUIDE: 1,
-            }
+            },
+
+            orderStatusType: 0,
         };
     },
     onLoad() {
-        if(!this.$common.isEmpty(uni.getStorageSync(getApp().globalData.data.userInfoKey).id)){
+        if(!this.$common.isEmpty(uni.getStorageSync(getApp().globalData.data.userInfoKey).id)) {
             this.reload()
         }
     },
@@ -128,6 +141,7 @@ export default {
             let method = 'POST';
             let baseData = {
                 clientId: uni.getStorageSync(getApp().globalData.data.userInfoKey).id,
+                status: this.orderStatusType === -1 ? null : this.orderStatusType,
                 page: this.page,
                 size: this.pageSize,
             };
@@ -149,7 +163,7 @@ export default {
             this.reload();
         },
         async getDataList() {
-            if (this.isFetchingData) return; // Prevent multiple calls
+            if(this.isFetchingData) return;
             this.isFetchingData = true;
 
             const {url, method, data} = this.buildApiParams();
@@ -164,12 +178,12 @@ export default {
 
                     // If on first page, reset the list
                     if(this.page === 1) {
-                        this.orderList = [];
+                        this.dataList = [];
                     }
-                    this.orderList = this.orderList.concat(orders);
+                    this.dataList = this.dataList.concat(orders);
 
                     // Process the 'createdAt' and start the countdown
-                    for (const order of this.orderList) {
+                    for (const order of this.dataList) {
                         order.createdAt = order.createdAt ? this.$common.stampToTime(order.createdAt) : '';
 
                         if(!this.$common.isEmpty(order.servantId)) {
@@ -274,6 +288,11 @@ export default {
             } else {
                 return false;
             }
+        },
+
+        setOrderStatusType(type) {
+            this.orderStatusType = type;
+            this.reload();
         },
 
         // Redirects
@@ -436,5 +455,39 @@ export default {
     background-color: #9e9e9e66;
     margin: 3px 0 8px 0;
 }
+
+.order-type-selection {
+    display: flex;
+    border-radius: 19px;
+    height: 38px; /* Set a fixed height for visibility */
+    overflow-x: auto; /* Allow horizontal scrolling */
+}
+
+.button-container {
+    display: flex;
+    justify-content: space-between;
+    flex-grow: 1; /* Allow buttons to grow and fill space */
+}
+
+.order-type-selection div {
+    padding: 4px;
+    border-radius: 50px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.order-type-selection div.active {
+    background-color: #0A2342;
+    color: #FFF;
+}
+
+.order-type-selection div:not(.active) {
+    color: #0A2342;
+}
+
+.order-type-selection span {
+    padding: 0 8px;
+}
+
 
 </style>

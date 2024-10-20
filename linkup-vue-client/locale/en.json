@@ -98,8 +98,14 @@
             "confirmed": "Confirmed",
             "processing": "Processing",
             "completed": "Completed",
-            "canceled": "Canceled",
+            "canceled": "Canceled"
+        },
+        "orderStatusType": {
             "all": "All",
+            "pending": "Pending",
+            "confirmed": "Confirmed",
+            "completed": "Completed",
+            "canceled": "Canceled"
         }
     },
     "order>orderServantSelection": {

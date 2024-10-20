@@ -104,8 +104,7 @@ export default {
         },
         setCurrencyType(type) {
             this.currencyType = type;
-            this.resetPagination();
-            this.getDataList();
+            this.reLoad()
         },
         buildApiParams() {
             let url = getApp().globalData.data.requestUrl + this.$API.transaction.search;
