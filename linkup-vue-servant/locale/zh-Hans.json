@@ -92,7 +92,7 @@
         },
 
         "acceptOrder": "报价",
-        "acceptOrderSent": "报价已发送",
+        "updateQuotedPrice": "更改报价",
 
         "orderInfoDetail": {
             "orderId": "订单编号",
@@ -327,7 +327,9 @@
     },
     "component>order>increasedQuotedPriceRequest": {
         "requestHigherPay": "报价",
+        "updateQuotedPrice": "更改报价",
         "tips": "有效报价范围为大于等于订单初始价格与小于等于订单初始价格的两倍",
+        "updateQuotedPriceTips": "更改后的报价需要高于上一次报价",
         "sendRequest": "发送请求",
         "showToast": {
             "priceRange": "有效报价范围为",

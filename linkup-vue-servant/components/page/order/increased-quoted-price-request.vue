@@ -2,7 +2,8 @@
 <div class="price-request-container">
     <div class="mask" @click="close()"></div>
     <div class="widget-center price-request-anim">
-        <div class="price-request-header">{{$t('component>order>increasedQuotedPriceRequest.requestHigherPay')}}</div>
+        <div v-if="optType==0" class="price-request-header">{{ $t('component>order>increasedQuotedPriceRequest.requestHigherPay') }}</div>
+        <div v-else class="price-request-header">{{ $t('component>order>increasedQuotedPriceRequest.updateQuotedPrice') }}</div>
 
         <!-- Input for Custom Price Request -->
         <div class="custom-price-request">
@@ -17,12 +18,13 @@
 
         <!-- Display Requested Price -->
         <div class="no-more-data">
-            <div class="credit">{{$t('component>order>increasedQuotedPriceRequest.tips')}}</div>
+            <div class="credit">{{ $t('component>order>increasedQuotedPriceRequest.tips') }}</div>
+            <div v-if="optType==1" class="credit bold">{{ $t('component>order>increasedQuotedPriceRequest.updateQuotedPriceTips') }}</div>
         </div>
 
         <!-- Confirm Button -->
         <div class="center-h" style="width: 60%;">
-            <app-button @click="confirmPriceRequest" shaped>{{$t('component>order>increasedQuotedPriceRequest.sendRequest')}}</app-button>
+            <app-button @click="confirmPriceRequest" shaped>{{ $t('component>order>increasedQuotedPriceRequest.sendRequest') }}</app-button>
         </div>
     </div>
 </div>
@@ -32,43 +34,105 @@
 export default {
     data() {
         return {
+            orderCandidateId: '',
             initialPrice: this.order.price || 0,
             quotedPrice: this.order.price || 0,
             maxPrice: this.order.price * 2,
         };
     },
-    props: {order: Object},
+    props: {
+        order: Object,
+        optType: Number
+    },
+    async mounted() {
+        if(this.optType == 1) {
+            await this.getOrderCandidate()
+        }
+    },
     methods: {
         close() {
             this.$parent.priceRequestToggle(false);
         },
-
+        async getOrderCandidate() {
+            const getOrderCandidate = () => {
+                return new Promise(
+                    (resolve, reject) => {
+                        uni.request({
+                            url: getApp().globalData.data.requestUrl + this.$API.orderCandidate.search,
+                            method: 'POST',
+                            data: {
+                                orderId: this.order.id,
+                                servantId: uni.getStorageSync(getApp().globalData.data.userInfoKey)?.id,
+                            },
+                            success: (res) => {
+                                if(res.data.status == 200) {
+                                    let orderCandidate = res.data.list[0];
+                                    this.initialPrice = orderCandidate.quotedPrice
+                                    this.quotedPrice = orderCandidate.quotedPrice
+                                    this.orderCandidateId = orderCandidate.id
+                                    resolve()
+                                }
+                            },
+                        });
+                    }
+                )
+            }
+            await getOrderCandidate()
+        },
         confirmPriceRequest() {
-            if (this.quotedPrice < this.initialPrice || this.quotedPrice > this.maxPrice) {
+            if(this.quotedPrice < this.initialPrice || this.quotedPrice > this.maxPrice) {
                 uni.showToast({
-                    title: this.$t('component>order>increasedQuotedPriceRequest.showToast.priceRange')+`¥${this.initialPrice.toFixed(2)} - ¥${this.maxPrice.toFixed(2)}`,
+                    title: this.$t('component>order>increasedQuotedPriceRequest.showToast.priceRange') + `¥${this.initialPrice.toFixed(2)} - ¥${this.maxPrice.toFixed(2)}`,
                     icon: 'none'
                 });
             } else {
-                // Submit the requested price update
-                uni.request({
-                    url: getApp().globalData.data.requestUrl + this.$API.orderCandidate.save,
-                    method: 'POST',
-                    data: {
-                        orderId: this.order.id,
-                        servantId: uni.getStorageSync(getApp().globalData.data.userInfoKey)?.id,
-                        quotedPrice: this.quotedPrice,
-                    },
-                    success: (res) => {
-                        if (res.data.code == 0) {
-                            uni.showToast({title: this.$t('component>order>increasedQuotedPriceRequest.showToast.sent'), icon: 'none'});
-                            this.$parent.getOrder();
-                            this.close();
-                        } else {
-                            uni.showToast({title: 'pub.showToast.fail', icon: 'none'});
-                        }
-                    },
-                });
+
+                if(this.optType == 0) {
+                    uni.request({
+                        url: getApp().globalData.data.requestUrl + this.$API.orderCandidate.save,
+                        method: 'POST',
+                        data: {
+                            orderId: this.order.id,
+                            servantId: uni.getStorageSync(getApp().globalData.data.userInfoKey)?.id,
+                            quotedPrice: this.quotedPrice,
+                        },
+                        success: (res) => {
+                            if(res.data.status == 200) {
+                                uni.showToast({title: this.$t('component>order>increasedQuotedPriceRequest.showToast.sent'), icon: 'none'});
+                                this.$parent.getOrder();
+                                this.close();
+                            } else {
+                                uni.showToast({title: this.$t('pub.showToast.fail'), icon: 'none'});
+                            }
+                        },
+                        fail: () => {
+                            uni.showToast({title: this.$t('pub.showToast.fail'), icon: 'none'});
+                        },
+                    });
+                } else {
+                    uni.request({
+                        url: getApp().globalData.data.requestUrl + this.$API.orderCandidate.update,
+                        method: 'POST',
+                        data: {
+                            id: this.orderCandidateId,
+                            orderId: this.order.id,
+                            servantId: uni.getStorageSync(getApp().globalData.data.userInfoKey)?.id,
+                            quotedPrice: this.quotedPrice,
+                        },
+                        success: (res) => {
+                            if(res.data.status == 200) {
+                                uni.showToast({title: this.$t('component>order>increasedQuotedPriceRequest.showToast.sent'), icon: 'none'});
+                                this.$parent.getOrder();
+                                this.close();
+                            } else {
+                                uni.showToast({title: this.$t('pub.showToast.fail'), icon: 'none'});
+                            }
+                        },
+                        fail: () => {
+                            uni.showToast({title: this.$t('pub.showToast.fail'), icon: 'none'});
+                        },
+                    });
+                }
             }
         },
     },

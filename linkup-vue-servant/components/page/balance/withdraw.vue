@@ -16,10 +16,10 @@
             />
         </div>
 
-        <div class="hint">
+        <div class="tips">
             {{ $t('component>balance>withdraw.minWithdrawAmount') }}
         </div>
-        <div class="hint">
+        <div class="tips">
             {{ $t('component>balance>withdraw.hint') }}
         </div>
 

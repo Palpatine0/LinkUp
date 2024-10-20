@@ -2,7 +2,7 @@
 <div class="page">
     <!-- Heading section -->
     <div style="display: flex; align-items: center; justify-content: space-between;">
-        <app-title type="h1" bold="true">{{ $t('profile>order.myOrders') }}</app-title>
+        <app-title type="h1" bold="true">{{ $t('home.nearby') }}</app-title>
     </div>
 
     <!-- Search input -->

@@ -51,15 +51,15 @@
     </div>
 
     <div v-if="order.status==0" class="fix-bottom">
-        <app-button v-if="isQuotedPriceRequestSent" shaped >
-            {{ $t('home>orderDetail.acceptOrderSent') }}
+        <app-button v-if="!isQuotedPriceRequestSent" shaped @click="priceRequestToggle">
+            {{ $t('home>orderDetail.acceptOrder') }}
         </app-button>
         <app-button v-else shaped @click="priceRequestToggle">
-            {{ $t('home>orderDetail.acceptOrder') }}
+            {{ $t('home>orderDetail.updateQuotedPrice') }}
         </app-button>
     </div>
 
-    <IncreasedQuotedPriceRequest v-if="increasedQuotedPriceRequestVisible" :order="order"></IncreasedQuotedPriceRequest>
+    <IncreasedQuotedPriceRequest v-if="increasedQuotedPriceRequestVisible" :order="order" :optType="increasedQuotedPriceRequestOptType"/>
 </div>
 </template>
 
@@ -82,6 +82,8 @@ export default {
             order: {},
 
             isQuotedPriceRequestSent: false,
+
+            increasedQuotedPriceRequestOptType: 0,
             increasedQuotedPriceRequestVisible: false,
         };
     },
@@ -113,6 +115,7 @@ export default {
                 success: (res) => {
                     const userId = uni.getStorageSync(getApp().globalData.data.userInfoKey).id;
                     this.isQuotedPriceRequestSent = res.data.list.some(item => item.servantId === userId);
+                    this.increasedQuotedPriceRequestOptType = 1
                 },
             });
         },

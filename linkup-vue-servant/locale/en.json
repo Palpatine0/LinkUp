@@ -92,7 +92,7 @@
         },
 
         "acceptOrder": "Accept",
-        "acceptOrderSent": "Accept Request Sent",
+        "updateQuotedPrice": "Update Quoted Price",
 
         "orderInfoDetail": {
             "orderId": "Order ID",
@@ -327,7 +327,9 @@
     },
     "component>order>increasedQuotedPriceRequest": {
         "requestHigherPay": "Request Higher Pay",
+        "updateQuotedPrice": "Update Quoted Price",
         "tips": "The range of the quoted price will be lager equal than initial order price and smaller equal than 2 times of the initial order price",
+        "updateQuotedPriceTips": "You can only update a quoted price to a higher amount",
         "sendRequest": "Send Request",
         "showToast": {
             "priceRange": "Available price range is ",

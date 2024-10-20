@@ -46,9 +46,15 @@
 .hidden{
     display: none;
 }
+
+.bold{
+    font-weight: bold;
+}
+
 .flex {
     display: flex;
 }
+
 .justify-SB{
     display: flex;
     justify-content: space-between
@@ -213,6 +219,6 @@
     margin-top: 4px;
 }
 
-.hint {
+.tips {
     color: #949393;
 }

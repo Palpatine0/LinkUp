@@ -47,6 +47,7 @@ var $API = {
     orderCandidate: {
         save: '/order-candidate/save',
         search: '/order-candidate/search',
+        update: '/order-candidate/update',
         servants: '/order-candidate/servants',
     },
 
