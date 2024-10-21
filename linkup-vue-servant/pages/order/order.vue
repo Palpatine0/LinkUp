@@ -116,7 +116,6 @@ export default {
         },
         async getDataList() {
             if(this.loading || !this.hasMore || this.$common.isEmpty(uni.getStorageSync(getApp().globalData.data.userInfoKey).id)) return;
-
             this.loading = true;
             const {url, method, data} = this.buildApiParams();
 
@@ -127,7 +126,6 @@ export default {
                 success: (res) => {
                     const orders = res.data.list;
                     if(this.page === 1) this.dataList = [];
-
                     if(orders.length < this.pageSize) {
                         this.hasMore = false;
                     }

@@ -35,7 +35,7 @@
         :scroll-top="0"
         scroll-y="true"
         style="height: 80vh"
-        @scrolltoupper="reLoad"
+        @scrolltoupper="reload"
         @scrolltolower="onReachBottom"
     >
         <div
@@ -94,10 +94,10 @@ export default {
         };
     },
     onLoad() {
-        this.reLoad();
+        this.reload();
     },
     methods: {
-        reLoad(){
+        reload(){
             this.resetPagination();
             this.getDataList();
         },
@@ -136,16 +136,14 @@ export default {
         },
         getDataList() {
             if (this.loading || !this.hasMore || this.$common.isEmpty(uni.getStorageSync(getApp().globalData.data.userInfoKey).id)) return;
-
             this.loading = true;
-
             const { url, method, data } = this.buildApiParams();
 
             uni.request({
                 url: url,
                 method: method,
                 data: data,
-                success: (res) => {
+                success: async (res) => {
                     const transactions = res.data.list;
                     if (this.page === 1) {
                         this.transactionList = [];
@@ -153,12 +151,12 @@ export default {
                     if (transactions.length < this.pageSize) {
                         this.hasMore = false;
                     }
-                    // Append new transactions to the list
                     this.transactionList = this.transactionList.concat(transactions);
-                    // Process 'createdAt' fields
+
                     this.transactionList.forEach((transaction) => {
                         transaction.createdAt = transaction.createdAt ? this.$common.stampToTime(transaction.createdAt) : '';
                     });
+
                     this.page += 1;
                 },
                 complete: () => {

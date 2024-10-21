@@ -7,7 +7,6 @@ export default {
             global: false,
             hasMore: true,
             loading: false,
-            isFetchingData: false
         };
     },
     methods: {

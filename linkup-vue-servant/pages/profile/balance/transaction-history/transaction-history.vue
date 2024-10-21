@@ -36,7 +36,7 @@
         :scroll-top="0"
         scroll-y="true"
         style="height: 80vh"
-        @scrolltoupper="reLoad"
+        @scrolltoupper="reload"
         @scrolltolower="onReachBottom"
     >
         <div
@@ -95,16 +95,16 @@ export default {
         };
     },
     onLoad() {
-        this.reLoad();
+        this.reload();
     },
     methods: {
-        reLoad() {
+        reload() {
             this.resetPagination();
             this.getDataList();
         },
         setCurrencyType(type) {
             this.currencyType = type;
-            this.reLoad()
+            this.reload()
         },
         buildApiParams() {
             let url = getApp().globalData.data.requestUrl + this.$API.transaction.search;

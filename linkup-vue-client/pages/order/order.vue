@@ -7,14 +7,14 @@
     </div>
 
     <!-- Search input -->
-    <app-input
+    <!--<app-input
         mode="text"
         :placeholder="$t('pub.page.search')"
         col="12"
         class="mb-2"
         v-model="searchKeyword"
         @input="onSearchInput"
-    />
+    />-->
 
     <!-- Order Category -->
     <scroll-view :scroll-top="0" scroll-x="true" class="order-type-selection">
@@ -165,11 +165,9 @@ export default {
             this.reload();
         },
         async getDataList() {
-            if(this.isFetchingData) return;
-            this.isFetchingData = true;
-
-            const {url, method, data} = this.buildApiParams();
+            if(this.loading || !this.hasMore || this.$common.isEmpty(uni.getStorageSync(getApp().globalData.data.userInfoKey).id)) return
             this.loading = true;
+            const {url, method, data} = this.buildApiParams();
 
             uni.request({
                 url: url,
@@ -177,23 +175,21 @@ export default {
                 data: data,
                 success: async (res) => {
                     const orders = res.data.list;
-
-                    // If on first page, reset the list
                     if(this.page === 1) {
                         this.dataList = [];
                     }
+                    if(orders.length < this.pageSize) {
+                        this.hasMore = false;
+                    }
                     this.dataList = this.dataList.concat(orders);
 
-                    // Process the 'createdAt' and start the countdown
-                    for (const order of this.dataList) {
+                    for (const order of orders) {
                         order.createdAt = order.createdAt ? this.$common.stampToTime(order.createdAt) : '';
 
                         if(!this.$common.isEmpty(order.servantId)) {
                             order.servant = await this.getOrderServant(order.servantId)
-                        } else {
-                            if(order.candidateCount != 0) {
-                                order.servants = await this.getOrderServantList(order.id)
-                            }
+                        } else if(order.candidateCount != 0) {
+                            order.servants = await this.getOrderServantList(order.id)
                         }
                     }
 
@@ -203,7 +199,6 @@ export default {
                     this.loading = false;
                 },
             });
-            this.isFetchingData = false;
         },
         async getOrderServant(servantId) {
             const getServant = () => {
