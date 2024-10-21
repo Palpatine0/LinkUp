@@ -206,6 +206,7 @@
     "//////": "profile",
     "profile": {
         "order": "Order",
+        "profile": "Profile",
         "balance": "Balance",
         "address": "Address",
         "myFavorite": "My Favorite",
@@ -213,6 +214,15 @@
         "tag": "Tag",
         "signIn": "Sign In",
         "signOut": "Sign Out"
+    },
+
+    "//////": "profile > profile",
+    "profile>profile": {
+        "updateAvatar": "Set New Photo",
+        "nickname": "Username",
+        "nicknamePlaceholder": "Enter your user name",
+        "gender": "Gender",
+        "age": "Age"
     },
 
     "//////": "profile > balance",

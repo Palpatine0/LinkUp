@@ -24,6 +24,11 @@
         </div>
     </div>
 
+    <app-container v-if="isUserLogin" color="#fff" col="12" @click="profileRedirect">
+        <img src="/static/page/profile/profile.png" alt="" class="link-icon">
+        <span class="link-text">{{ $t('profile.profile') }}</span>
+    </app-container>
+
     <!-- Other Options with Icons -->
     <app-container v-if="isUserLogin" color="#fff" col="12" type="list">
         <div
@@ -130,19 +135,16 @@ export default {
                 }
             });
         },
-        orderRedirect() {
+
+        // Redirect
+        profileRedirect() {
             uni.navigateTo({
-                url: '/pages/profile/order/order',
+                url: './profile/profile',
             });
         },
         balanceRedirect() {
             uni.navigateTo({
                 url: '/pages/profile/balance/balance',
-            });
-        },
-        addressRedirect() {
-            uni.navigateTo({
-                url: '/pages/profile/address/address',
             });
         },
         dataRedirect() {

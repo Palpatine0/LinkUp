@@ -86,6 +86,20 @@
         },
 
         // ** profile ** //
+        // profile > profile
+        {
+            "root": "pages/profile/profile",
+            "pages": [
+                {
+                    "path": "profile",
+                    "style": {
+                        "navigationBarTitleText": "",
+                        "navigationBarBackgroundColor": "#FFF"
+                    }
+                }
+            ]
+        },
+
         // profile > balance
         {
             "root": "pages/profile/balance",
