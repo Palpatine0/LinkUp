@@ -15,6 +15,9 @@ public class User {
 
     private String identifier;
 
+    @TableField("is_identify_certified")
+    private String isIdentifyCertified;
+
     /**
      * 0: admin;
      * 1: client;
@@ -37,6 +40,9 @@ public class User {
 
     @TableField("referral_code")
     private String referralCode;
+
+    @TableField("phone_number")
+    private String phoneNumber;
 
     private String nickname;
 
