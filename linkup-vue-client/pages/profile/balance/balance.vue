@@ -6,7 +6,9 @@
         <div class="user-details">
             <div class="user-name">Hi, <span style="font-weight: bold">{{ user.nickname }}</span></div>
         </div>
-        <image :src="user.avatar" mode="aspectFill" class="profile-img"></image>
+        <div style="width: 130rpx">
+            <image :src="user.avatar" mode="aspectFill" class="profile-img"></image>
+        </div>
     </div>
 
     <!-- Wallet and Balance Section -->

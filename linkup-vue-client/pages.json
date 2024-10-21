@@ -89,6 +89,20 @@
         },
 
         // ** profile ** //
+        // profile > profile
+        {
+            "root": "pages/profile/profile",
+            "pages": [
+                {
+                    "path": "profile",
+                    "style": {
+                        "navigationBarTitleText": "",
+                        "navigationBarBackgroundColor": "#FFF"
+                    }
+                }
+            ]
+        },
+
         // profile > balance
         {
             "root": "pages/profile/balance",
@@ -104,7 +118,7 @@
                     "path": "transaction-history/transaction-history",
                     "style": {
                         "navigationBarTitleText": "",
-                        "navigationBarBackgroundColor": "#ffffff"
+                        "navigationBarBackgroundColor": "#fefefe"
                     }
                 }
             ]
@@ -142,6 +156,7 @@
                 }
             ]
         },
+
 
         // ** components ** //
         {

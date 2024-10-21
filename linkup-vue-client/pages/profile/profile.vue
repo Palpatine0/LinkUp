@@ -1,7 +1,7 @@
 <template>
 <div class="page" style="background-color: #f3f2f6;">
     <!-- Profile Section -->
-    <div v-if="isUserLogin" class="profile-section">
+    <div v-if="isUserLogin" class="mb-4">
         <div class="profile-header center-h">
             <div class="center-h">
                 <img :src="user.avatar" alt="Profile Photo" class="profile-photo"/>
@@ -11,7 +11,7 @@
             </div>
         </div>
     </div>
-    <div v-if="!isUserLogin" class="profile-section">
+    <div v-if="!isUserLogin" class="mb-4">
         <div class="profile-header center-h">
             <div class="center-h">
                 <img src="/static/page/profile/logo.jpg" alt="Profile Photo" class="profile-photo"/>
@@ -23,6 +23,12 @@
             </div>
         </div>
     </div>
+
+    <app-container v-if="isUserLogin" color="#fff" col="12" @click="profileRedirect">
+        <img src="/static/page/profile/profile.png" alt="" class="link-icon">
+        <span class="link-text">{{ $t('profile.profile') }}</span>
+    </app-container>
+
 
     <!-- Other Options with Icons -->
     <app-container v-if="isUserLogin" color="#fff" col="12" type="list">
@@ -74,7 +80,7 @@ export default {
             ],
             linkItemsC: [
                 {label: "profile.data", icon: "/static/page/profile/db.jpg", click: "dataRedirect"},
-                {label: "pub.lang.curLang", icon: "/static/page/profile/globe.jpg", click: "languageToggle"},
+                {label: "pub.lang.curLang", icon: "/static/page/profile/globe.jpg", click: "languageSelector"},
                 // {label: "profile.tag", icon: "/static/page/profile/tag.svg", click: "tagsRedirect"},
             ],
         };
@@ -108,7 +114,7 @@ export default {
             });
         },
 
-        languageToggle() {
+        languageSelector() {
             uni.showActionSheet({
                 itemList: [
                     this.$t('pub.lang.en'),
@@ -130,24 +136,26 @@ export default {
                 }
             });
         },
-        orderRedirect() {
+
+        // Redirects
+        profileRedirect() {
             uni.navigateTo({
-                url: '/pages/profile/order/order',
+                url: './profile/profile',
             });
         },
         balanceRedirect() {
             uni.navigateTo({
-                url: '/pages/profile/balance/balance',
+                url: './balance/balance',
             });
         },
         addressRedirect() {
             uni.navigateTo({
-                url: '/pages/profile/address/address',
+                url: './address/address',
             });
         },
         dataRedirect() {
             uni.navigateTo({
-                url: '/pages/profile/data/data',
+                url: './data/data',
             });
         }
     }
@@ -155,10 +163,6 @@ export default {
 </script>
 
 <style scoped>
-.profile-section {
-    margin-bottom: 40px;
-}
-
 .profile-header {
     align-items: center;
     justify-content: space-between;

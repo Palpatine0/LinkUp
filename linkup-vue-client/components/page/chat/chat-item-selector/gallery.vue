@@ -34,7 +34,9 @@ export default {
                                     filePath: item,
                                     encoding: 'base64',
                                     success: res => {
-                                        resolve('data:image/png;base64,' + res.data)
+                                        var img = 'data:image/png;base64,' + res.data
+                                        console.log(img)
+                                        resolve(img)
                                     },
                                     fail: err => {
                                         reject(err)
