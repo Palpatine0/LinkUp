@@ -191,7 +191,7 @@ export default {
                     avatar: this.user.avatar,
                 },
                 success: (res) => {
-                    if(res.data.status === "200") {
+                    if(res.data.status === 200) {
                         uni.setStorageSync(app.globalData.data.userInfoKey, this.user);
                         uni.setStorageSync(app.globalData.data.userLoginKey, true);
                         uni.showToast({title: this.$t('pub.showToast.success'), icon: 'none'});

@@ -15,6 +15,7 @@ import com.enchanted.mapper.UserServantMapper;
 import com.enchanted.service.*;
 import com.enchanted.util.ConversionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -43,6 +44,7 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     private ITransactionService transactionService;
 
     @Autowired
+    @Lazy
     private IOrderCandidateService orderCandidateService;
 
     @Autowired
@@ -55,6 +57,9 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     private UserServantMapper userServantMapper;
 
     @Autowired
+    private UserMapper userMapper;
+
+    @Autowired
     private TaskScheduler taskScheduler;
 
     // Maps to keep track of scheduled tasks
@@ -62,9 +67,6 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     private final Map<Long, ScheduledFuture<?>> autoSelectionRefundTasks = new ConcurrentHashMap<>();
     private final Map<Long, ScheduledFuture<?>> autoRatingTasks = new ConcurrentHashMap<>();
     private final Map<Long, ScheduledFuture<?>> autoCompletionTasks = new ConcurrentHashMap<>();
-    @Autowired
-    private UserMapper userMapper;
-
 
     /*C*/
     @Override

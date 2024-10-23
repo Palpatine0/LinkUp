@@ -104,7 +104,7 @@ export default {
             let method = 'POST';
             let baseData = {
                 servantId: uni.getStorageSync(getApp().globalData.data.userInfoKey).id,
-                status: this.orderStatusType === -1 ? null : this.orderStatusType,
+                status: this.orderStatusType,
                 page: this.page,
                 size: this.pageSize,
             };

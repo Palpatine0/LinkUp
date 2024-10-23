@@ -38,14 +38,7 @@ public class WebAppConfig implements WebMvcConfigurer {
 
 
     @Override
-    public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        // >dev
-        registry.addResourceHandler("/image/qrcode/**").addResourceLocations("file:/Users/sheevpalpatine/Desktop/Work/WBQ/Projects/TasteDash/tastedash-server/img/qrcode/");
-        registry.addResourceHandler("/image/dish/**").addResourceLocations("file:/Users/sheevpalpatine/Desktop/Work/WBQ/Projects/TasteDash/tastedash-server/img/dish/");
-        // >prd
-//        registry.addResourceHandler("/image/qrcode/**").addResourceLocations("file:/opt/projects/TasteDash/tastedash-server/img/qrcode/");
-//        registry.addResourceHandler("/image/dish/**").addResourceLocations("file:/opt/projects/TasteDash/tastedash-server/img/dish/");
-    }
+    public void addResourceHandlers(ResourceHandlerRegistry registry) {}
 
 
 }

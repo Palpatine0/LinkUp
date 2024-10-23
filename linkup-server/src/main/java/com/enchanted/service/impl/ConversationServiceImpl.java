@@ -79,7 +79,7 @@ public class ConversationServiceImpl extends ServiceImpl<ConversationMapper, Con
     @Scheduled(fixedDelay = ConversationConstant.SERVANT_PENALTY_MONITOR_DELAY) // Runs every minute
     public void monitorConversations() {
         Date now = new Date();
-        Date thresholdTime = new Date(now.getTime() - 60000);
+        Date thresholdTime = new Date(now.getTime() - ConversationConstant.SERVANT_PENALTY_MONITOR_DELAY);
         List<Conversation> overdueConversations = this.getOverdueConversations(thresholdTime);
 
         for (Conversation conversation : overdueConversations) {
@@ -90,8 +90,7 @@ public class ConversationServiceImpl extends ServiceImpl<ConversationMapper, Con
     public List<Conversation> getOverdueConversations(Date thresholdTime) {
         return conversationMapper.selectOverdueConversations(thresholdTime);
     }
-
-    @Transactional // Ensure atomicity
+    @Transactional
     public void processUnansweredConversation(Conversation conversation) {
         Long clientId = conversation.getClientId();
         Long servantId = conversation.getServantId();
@@ -176,7 +175,6 @@ public class ConversationServiceImpl extends ServiceImpl<ConversationMapper, Con
             // Handle exception
         }
     }
-
     private boolean isFirstMessageAfterGiftPurchase(Conversation conversation) {
         Long clientId = conversation.getClientId();
         Long conversationId = conversation.getId();

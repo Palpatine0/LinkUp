@@ -13,6 +13,7 @@ import com.enchanted.service.IOrderService;
 import com.enchanted.service.IUserService;
 import com.enchanted.util.ConversionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Lazy;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
 
@@ -28,13 +29,14 @@ import java.util.stream.Collectors;
 public class OrderCandidateServiceImpl extends ServiceImpl<OrderCandidateMapper, OrderCandidate> implements IOrderCandidateService {
 
     @Autowired
-    private OrderCandidateMapper orderCandidateMapper;
-
-    @Autowired
     private IUserService userService;
 
     @Autowired
+    @Lazy
     private IOrderService orderService;
+
+    @Autowired
+    private OrderCandidateMapper orderCandidateMapper;
 
     @Override
     public boolean save(OrderCandidate orderCandidate) {

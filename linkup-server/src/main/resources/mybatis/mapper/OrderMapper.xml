@@ -102,7 +102,7 @@
                 <if test="params.servantId != null and params.servantId != ''">
                     AND o.servant_id = #{params.servantId}
                 </if>
-                <if test="params.status != null">
+                <if test="params.status != null and params.status != -1">
                     AND o.status = #{params.status}
                 </if>
                 <if test="params.userGender != null and params.userGender != ''">

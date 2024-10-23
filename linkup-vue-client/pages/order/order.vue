@@ -143,7 +143,7 @@ export default {
             let method = 'POST';
             let baseData = {
                 clientId: uni.getStorageSync(getApp().globalData.data.userInfoKey).id,
-                status: this.orderStatusType === -1 ? null : this.orderStatusType,
+                status: this.orderStatusType,
                 page: this.page,
                 size: this.pageSize,
             };
@@ -165,7 +165,7 @@ export default {
             this.reload();
         },
         async getDataList() {
-            if(this.loading || !this.hasMore || this.$common.isEmpty(uni.getStorageSync(getApp().globalData.data.userInfoKey).id)) return
+            if(this.loading || !this.hasMore) return
             this.loading = true;
             const {url, method, data} = this.buildApiParams();
 
