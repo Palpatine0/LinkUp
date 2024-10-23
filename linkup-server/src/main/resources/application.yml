@@ -2,6 +2,10 @@ server:
   port: 8090
   servlet:
     context-path: /
+  ssl:
+    key-store-password: fwagueti
+    key-store-type: JKS
+    key-store: classpath:looking.cool.jks
 
 spring:
   jackson:
@@ -10,9 +14,9 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
     # >dev
-    url: jdbc:mysql://localhost:3310/linkup?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8
+    # url: jdbc:mysql://localhost:3310/linkup?serverTimezone=Asia/Shanghai&useUnicode=true&characterEn  coding=utf-8
     # >prd
-    #    url: jdbc:mysql://111.231.19.137:3310/linkup?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8
+    url: jdbc:mysql://looking.cool:3310/linkup?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8
     username: root
     password: root
 
