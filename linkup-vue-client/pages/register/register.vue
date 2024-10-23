@@ -2,7 +2,7 @@
 <div class="page" style="background-color: #f5f7fb">
 
     <div v-if="step==0" class="page-register">
-        <div class="back" @click="backToHome()">
+        <div class="back" @click="backToProfile()">
             <img src="/static/page/register/back.svg">
         </div>
         <div class="header-register">
@@ -27,7 +27,7 @@
 
     <!--step 1-->
     <div v-if="step==1" style="height: 100vh;width: 100%">
-        <div class="back" @click="backToHome()">
+        <div class="back" @click="backToProfile()">
             <img src="/static/page/register/back.svg">
         </div>
         <div class="center-h">
@@ -200,7 +200,7 @@ export default {
     },
     onLoad(param) {
         this.userConfigData = JSON.parse(decodeURIComponent(param.userConfigData));
-        if (this.$common.isEmpty(uni.getStorageSync('referrerId'))) {
+        if(this.$common.isEmpty(uni.getStorageSync('referrerId'))) {
             this.step = 0
         } else {
             this.referrerId = uni.getStorageSync('referrerId');
@@ -210,7 +210,7 @@ export default {
     },
     watch: {
         step(newStep) {
-            if (newStep === 5) {
+            if(newStep === 5) {
                 this.changeAvatar();
             }
         }
@@ -225,7 +225,7 @@ export default {
                     role: 1,
                 },
                 success: (res) => {
-                    if (res.data.data.validRC == "1") {
+                    if(res.data.data.validRC == "1") {
                         this.referrerId = res.data.data.referrerId;
                         this.advance()
                         this.authRequest();
@@ -245,9 +245,9 @@ export default {
         advance() {
             this.step++;
         },
-        backToHome() {
+        backToProfile() {
             uni.switchTab({
-                url: '/pages/home/home',
+                url: '/pages/profile/profile',
             });
         },
 
@@ -265,12 +265,12 @@ export default {
                 confirmText: this.$t('pub.modal.button.confirm'),
                 cancelText: this.$t('pub.modal.button.cancel'),
                 success: (res) => {
-                    if (res.confirm) {
+                    if(res.confirm) {
                         this.getUserInfo();
                     }
                 },
                 fail: () => {
-                    this.backToHome()
+                    this.backToProfile()
                 }
             });
         },
@@ -288,17 +288,35 @@ export default {
             // fetch user basic data
             const getUserData = () => {
                 return new Promise((resolve) => {
-                    uni.authorize({
-                        scope: 'scope.userInfo',
-                        success() {
-                            uni.getUserInfo({
-                                success: function (res) {
-                                    resolve(res.userInfo);
-                                },
-                            });
-                        },
-                        fail() {
-                            uni.exitMiniProgram()
+                    uni.getSetting({
+                        success(res) {
+                            console.log("Inside getSetting success");
+                            console.log(res.authSetting);
+                            if (res.authSetting['scope.userInfo'] != undefined && res.authSetting['scope.userInfo'] == true) {
+                                uni.getUserInfo({
+                                    success: function (res) {
+                                        resolve(res.userInfo);
+                                    },
+                                });
+                            }else{
+                                uni.authorize({
+                                    scope: 'scope.userInfo',
+                                    success() {
+                                        uni.getUserInfo({
+                                            success: function (res) {
+                                                resolve(res.userInfo);
+                                            },
+                                        });
+                                    },
+                                    fail(err) {
+                                        console.log("fail const getUserData = () => {")
+                                        console.log(err)
+                                        uni.showToast({title: this.$t('register.showToast.authFailed'), icon: 'none'});
+                                        this.backToProfile()
+                                    }
+                                })
+                            }
+
                         }
                     })
                 });
@@ -330,7 +348,9 @@ export default {
                     });
                 },
                 fail() {
-                    uni.exitMiniProgram()
+                    uni.showToast({title: this.$t('register.showToast.authFailed'), icon: 'none'});
+                    this.backToProfile()
+                    
                 }
             })
             uni.hideLoading();
@@ -373,7 +393,7 @@ export default {
                 url: getApp().globalData.data.requestUrl + this.$API.user.save,
                 method: 'POST',
                 data: {
-                    identifier:this.$common.generateUniqueCode('1', 8),
+                    identifier: this.$common.generateUniqueCode('1', 8),
                     referralCode: this.$common.generateUniqueCode('a1a', 2),
                     role: 1,
                     referrerId: this.referrerId,
@@ -389,7 +409,7 @@ export default {
                     uni.showToast({title: this.$t('register.showToast.authFailed'), icon: 'none'});
                 },
             });
-            this.backToHome()
+            this.backToProfile()
         }
     }
 }

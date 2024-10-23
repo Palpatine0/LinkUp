@@ -106,11 +106,9 @@ export default {
         authVerification() {
             uni.getSetting({
                 success: (res) => {
-                    console.log("uni.getSetting({")
-                    console.log(res)
-                    if (res.authSetting['scope.userLocation']) {
+                    if (res.authSetting['scope.userFuzzyLocation']) {
                         this.handleChooseLocation()
-                    } else if (res.authSetting['scope.userLocation'] === undefined) {
+                    } else if (res.authSetting['scope.userFuzzyLocation'] === undefined) {
                         this.handleOpenSetting()
                     } else {
                         this.handleOpenSetting()
