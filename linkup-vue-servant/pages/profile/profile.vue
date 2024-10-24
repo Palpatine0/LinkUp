@@ -1,7 +1,7 @@
 <template>
 <div class="page" style="background-color: #f3f2f6;">
     <!-- Profile Section -->
-    <div v-if="isUserLogin" class="profile-section">
+    <div v-if="isUserLogin" class="mb-4">
         <div class="profile-header center-h">
             <div class="center-h">
                 <img :src="user.avatar" alt="Profile Photo" class="profile-photo"/>
@@ -11,7 +11,7 @@
             </div>
         </div>
     </div>
-    <div v-if="!isUserLogin" class="profile-section">
+    <div v-if="!isUserLogin" class="mb-4">
         <div class="profile-header center-h">
             <div class="center-h">
                 <img src="/static/page/profile/logo.jpg" alt="Profile Photo" class="profile-photo"/>
@@ -28,6 +28,7 @@
         <img src="/static/page/profile/profile.png" alt="" class="link-icon">
         <span class="link-text">{{ $t('profile.profile') }}</span>
     </app-container>
+
 
     <!-- Other Options with Icons -->
     <app-container v-if="isUserLogin" color="#fff" col="12" type="list">
@@ -64,8 +65,6 @@
 
 
 <script>
-import app from "../../App.vue";
-
 export default {
     data() {
         return {
@@ -79,14 +78,14 @@ export default {
             ],
             linkItemsC: [
                 {label: "profile.data", icon: "/static/page/profile/db.jpg", click: "dataRedirect"},
-                {label: "pub.lang.curLang", icon: "/static/page/profile/globe.jpg", click: "languageToggle"},
+                {label: "pub.lang.curLang", icon: "/static/page/profile/globe.jpg", click: "languageSelector"},
                 // {label: "profile.tag", icon: "/static/page/profile/tag.svg", click: "tagsRedirect"},
             ],
         };
     },
     onShow() {
-        this.user = uni.getStorageSync(app.globalData.data.userInfoKey)
-        this.isUserLogin = uni.getStorageSync(app.globalData.data.userLoginKey)
+        this.user = uni.getStorageSync(getApp().globalData.data.userInfoKey)
+        this.isUserLogin = uni.getStorageSync(getApp().globalData.data.userLoginKey) == true ? true : false;
     },
     methods: {
         handleLinkClick(methodName) {
@@ -113,7 +112,7 @@ export default {
             });
         },
 
-        languageToggle() {
+        languageSelector() {
             uni.showActionSheet({
                 itemList: [
                     this.$t('pub.lang.en'),
@@ -136,7 +135,7 @@ export default {
             });
         },
 
-        // Redirect
+        // Redirects
         profileRedirect() {
             uni.navigateTo({
                 url: './profile/profile',
@@ -144,12 +143,12 @@ export default {
         },
         balanceRedirect() {
             uni.navigateTo({
-                url: '/pages/profile/balance/balance',
+                url: './balance/balance',
             });
         },
         dataRedirect() {
             uni.navigateTo({
-                url: '/pages/profile/data/data',
+                url: './data/data',
             });
         }
     }
@@ -157,10 +156,6 @@ export default {
 </script>
 
 <style scoped>
-.profile-section {
-    margin-bottom: 40px;
-}
-
 .profile-header {
     align-items: center;
     justify-content: space-between;

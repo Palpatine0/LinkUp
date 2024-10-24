@@ -53,7 +53,7 @@ export default {
                         method: 'POST',
                         data: {
                             code: userLoginCode,
-                            role: 1,
+                            role: 2,
                         },
                         success: (res) => {
                             if(res.data.status == 200) {

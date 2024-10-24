@@ -76,7 +76,8 @@
         "showToast": {
             "incorrectRC": "Referral Code Not Found",
             "authSuccess": "Auth success",
-            "authFailed": "Auth failed"
+            "authFailed": "Auth failed",
+            "signUpSuccess": "Sign up Success, please sign in"
         }
     },
 
@@ -108,6 +109,7 @@
     "//////": "order",
     "order": {
         "myOrders": "My Orders",
+        "signIn": "Check your orders after sign in",
         "candidates": "Candidates",
         "orderStatus": {
             "confirmed": "Confirmed",
@@ -200,7 +202,8 @@
 
     "//////": "chat",
     "chat": {
-        "chats": "Chats"
+        "chats": "Chats",
+        "signIn": "Access chat feature after sign in"
     },
 
     "//////": "profile",

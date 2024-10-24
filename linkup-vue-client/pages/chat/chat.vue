@@ -7,7 +7,7 @@
 
     <div v-if="!isUserLogin" class="center-h">
         <div class="background-icon">
-            <img src="/static/page/order/messages.svg">
+            <img src="/static/page/chat/messages.svg">
         </div>
         <div style="margin-top: -40px;">
             <app-button shaped @click="signIn">{{ $t('chat.signIn') }}</app-button>
@@ -39,23 +39,26 @@
 </template>
 
 <script>
-import app from "../../App.vue";
-
 export default {
     data() {
         return {
             isUserLogin: false,
-            userId: uni.getStorageSync(app.globalData.data.userInfoKey).id,
+            userId: uni.getStorageSync(getApp().globalData.data.userInfoKey).id,
             contactList: [],
         };
     },
     onShow() {
-        this.isUserLogin = uni.getStorageSync(app.globalData.data.userLoginKey) == true ? true : false;
+        this.isUserLogin = uni.getStorageSync(getApp().globalData.data.userLoginKey) == true ? true : false;
         if(this.isUserLogin) {
-            this.getDataList();
+            this.reload();
         }
     },
     methods: {
+        reload() {
+            if(this.isUserLogin) {
+                this.getDataList();
+            }
+        },
         getDataList() {
             this.contactList = [];
             if(this.$common.isEmpty(this.userId)) return;

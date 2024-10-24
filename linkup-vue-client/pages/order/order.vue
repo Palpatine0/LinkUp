@@ -6,17 +6,6 @@
         <img v-if="isUserLogin" src="/static/common/create.svg" style="width: 28px; height: 28px;" @click="orderInitiateRedirect"/>
     </div>
 
-    <!-- Search input -->
-    <!--<app-input
-        mode="text"
-        :placeholder="$t('pub.page.search')"
-        col="12"
-        class="mb-2"
-        v-model="searchKeyword"
-        @input="onSearchInput"
-    />-->
-
-
     <div v-if="!isUserLogin" class="center-h">
         <div class="background-icon">
             <img src="/static/page/order/rectangle-history-circle-user.svg">
@@ -26,6 +15,15 @@
         </div>
     </div>
     <div v-if="isUserLogin">
+        <!-- Search input -->
+        <app-input
+            mode="text"
+            :placeholder="$t('pub.page.search')"
+            col="12"
+            class="mb-2"
+            v-model="searchKeyword"
+            @input="onSearchInput"
+        />
         <!-- Order Category -->
         <scroll-view :scroll-top="0" scroll-x="true" class="order-type-selection">
             <div class="button-container">
@@ -118,7 +116,6 @@
 
 <script>
 import $common from "../../utils/common";
-import app from "../../App.vue";
 
 export default {
     computed: {
@@ -137,11 +134,10 @@ export default {
             serviceTypeConstant: {
                 TOUR_GUIDE: 1,
             },
-
         };
     },
     onShow() {
-        this.isUserLogin = uni.getStorageSync(app.globalData.data.userLoginKey) == true ? true : false;
+        this.isUserLogin = uni.getStorageSync(getApp().globalData.data.userLoginKey) == true ? true : false;
         if(this.isUserLogin) {
             this.reload()
         }

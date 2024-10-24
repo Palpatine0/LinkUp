@@ -146,7 +146,6 @@
 </template>
 
 <script>
-import app from "../../App.vue";
 import common from "../../utils/common";
 
 export default {
@@ -350,7 +349,6 @@ export default {
                 fail() {
                     uni.showToast({title: this.$t('register.showToast.authFailed'), icon: 'none'});
                     this.backToProfile()
-
                 }
             })
             uni.hideLoading();
@@ -401,9 +399,9 @@ export default {
                 },
                 success: (res) => {
                     this.userData.id = res.data.data.id;
-                    uni.setStorageSync(app.globalData.data.userLoginKey, true);
-                    uni.setStorageSync(app.globalData.data.userInfoKey, this.userData);
-                    uni.showToast({title: this.$t('register.showToast.authSuccess'), icon: 'none'});
+                    uni.setStorageSync(getApp().globalData.data.userLoginKey, true);
+                    uni.setStorageSync(getApp().globalData.data.userInfoKey, this.userData);
+                    uni.showToast({title: this.$t('register.showToast.signUpSuccess'), icon: 'none'});
                 },
                 fail: () => {
                     uni.showToast({title: this.$t('register.showToast.authFailed'), icon: 'none'});

@@ -65,8 +65,6 @@
 
 
 <script>
-import app from "../../App.vue";
-
 export default {
     data() {
         return {
@@ -86,8 +84,8 @@ export default {
         };
     },
     onShow() {
-        this.user = uni.getStorageSync(app.globalData.data.userInfoKey)
-        this.isUserLogin = uni.getStorageSync(app.globalData.data.userLoginKey) == true ? true : false;
+        this.user = uni.getStorageSync(getApp().globalData.data.userInfoKey)
+        this.isUserLogin = uni.getStorageSync(getApp().globalData.data.userLoginKey) == true ? true : false;
     },
     methods: {
         handleLinkClick(methodName) {

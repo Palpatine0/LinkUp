@@ -19,9 +19,6 @@
 </template>
 
 <script>
-
-import app from "../../App.vue";
-
 export default {
     name: "home",
     data() {
@@ -43,7 +40,7 @@ export default {
             console.log("uni.getStorageSync('referrerId')")
             console.log(uni.getStorageSync('referrerId'))
         }
-        this.user = uni.getStorageSync(app.globalData.data.userInfoKey)
+        this.user = uni.getStorageSync(getApp().globalData.data.userInfoKey)
         this.getDataList();
     },
     methods: {
