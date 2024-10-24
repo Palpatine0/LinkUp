@@ -3,7 +3,7 @@
     <!-- Heading section -->
     <div style="display: flex; align-items: center; justify-content: space-between;">
         <app-title type="h1" bold="true">{{ $t('order.myOrders') }}</app-title>
-        <img src="/static/common/create.svg" style="width: 28px; height: 28px;" @click="orderInitiateRedirect"/>
+        <img v-if="isUserLogin" src="/static/common/create.svg" style="width: 28px; height: 28px;" @click="orderInitiateRedirect"/>
     </div>
 
     <!-- Search input -->
@@ -16,98 +16,109 @@
         @input="onSearchInput"
     />-->
 
-    <!-- Order Category -->
-    <scroll-view :scroll-top="0" scroll-x="true" class="order-type-selection">
-        <div class="button-container">
-            <div :class="{ active: orderStatusType === -1 }" @click="setOrderStatusType(-1)"><span>{{ $t('order.orderStatusType.all') }}</span></div>
-            <div :class="{ active: orderStatusType === 0 }" @click="setOrderStatusType(0)"><span>{{ $t('order.orderStatusType.pending') }}</span></div>
-            <div :class="{ active: orderStatusType === 1 }" @click="setOrderStatusType(1)"><span>{{ $t('order.orderStatusType.confirmed') }}</span></div>
-            <div :class="{ active: orderStatusType === 2 }" @click="setOrderStatusType(2)"><span>{{ $t('order.orderStatusType.completed') }}</span></div>
-            <div :class="{ active: orderStatusType === 3 }" @click="setOrderStatusType(3)"><span>{{ $t('order.orderStatusType.canceled') }}</span></div>
+
+    <div v-if="!isUserLogin" class="center-h">
+        <div class="background-icon">
+            <img src="/static/page/order/rectangle-history-circle-user.svg">
         </div>
-    </scroll-view>
-
-
-    <!-- Orders Container using app-container -->
-    <scroll-view :scroll-top="0" scroll-y="true" style="height: 80vh" @scrolltoupper="reload" @scrolltolower="onReachBottom">
-        <div class="app-container" v-for="order in dataList" :key="order.id" @click="orderDetailRedirect(order.id)" style="display: flex;flex-direction: column;align-items: center">
-            <div class="order-schedule">
-                <div>{{ language != "zh-Hans" ? 'Service Schedule: ' : "服务时间" }}</div>
-                <div>
-                    {{ $common.stampToTime(order.serviceScheduleStart, {yyyy: false, ss: false}) }}
-                    -
-                    {{ $common.stampToTime(order.serviceScheduleEnd, {yyyy: false, ss: false, MM: false, dd: false}) }}
-                </div>
+        <div style="margin-top: -40px;">
+            <app-button shaped @click="signIn">{{ $t('order.signIn') }}</app-button>
+        </div>
+    </div>
+    <div v-if="isUserLogin">
+        <!-- Order Category -->
+        <scroll-view :scroll-top="0" scroll-x="true" class="order-type-selection">
+            <div class="button-container">
+                <div :class="{ active: orderStatusType === -1 }" @click="setOrderStatusType(-1)"><span>{{ $t('order.orderStatusType.all') }}</span></div>
+                <div :class="{ active: orderStatusType === 0 }" @click="setOrderStatusType(0)"><span>{{ $t('order.orderStatusType.pending') }}</span></div>
+                <div :class="{ active: orderStatusType === 1 }" @click="setOrderStatusType(1)"><span>{{ $t('order.orderStatusType.confirmed') }}</span></div>
+                <div :class="{ active: orderStatusType === 2 }" @click="setOrderStatusType(2)"><span>{{ $t('order.orderStatusType.completed') }}</span></div>
+                <div :class="{ active: orderStatusType === 3 }" @click="setOrderStatusType(3)"><span>{{ $t('order.orderStatusType.canceled') }}</span></div>
             </div>
+        </scroll-view>
+        <!-- Orders Container using app-container -->
+        <scroll-view :scroll-top="0" scroll-y="true" style="height: 80vh" @scrolltoupper="reload" @scrolltolower="onReachBottom">
+            <div class="app-container" v-for="order in dataList" :key="order.id" @click="orderDetailRedirect(order.id)" style="display: flex;flex-direction: column;align-items: center">
+                <div class="order-schedule">
+                    <div>{{ language != "zh-Hans" ? 'Service Schedule: ' : "服务时间" }}</div>
+                    <div>
+                        {{ $common.stampToTime(order.serviceScheduleStart, {yyyy: false, ss: false}) }}
+                        -
+                        {{ $common.stampToTime(order.serviceScheduleEnd, {yyyy: false, ss: false, MM: false, dd: false}) }}
+                    </div>
+                </div>
 
-            <div class="service-type-price">
-                <app-title bold="true" type="h3">{{ language != "zh-Hans" ? order.serviceType.name + ' Service' : order.serviceType.nameCn + "服务" }}</app-title>
-                <app-title type="h3">¥{{ order.price }}</app-title>
-            </div>
+                <div class="service-type-price">
+                    <app-title bold="true" type="h3">{{ language != "zh-Hans" ? order.serviceType.name + ' Service' : order.serviceType.nameCn + "服务" }}</app-title>
+                    <app-title type="h3">¥{{ order.price }}</app-title>
+                </div>
 
-            <div class="order-address">
-                <div>{{ order.address.addressName }}</div>
-                <div>{{ order.address.detail }}</div>
-            </div>
+                <div class="order-address">
+                    <div>{{ order.address.addressName }}</div>
+                    <div>{{ order.address.detail }}</div>
+                </div>
 
-            <div class="chat-user-order-status">
-                <span style="font-size: 14px; color: gray;">{{ order.createdAt }}</span>
-                <div v-if="order.status == 0" class="order-status">
-                    <span class="status-dot yellow-dot"></span>
-                    <div class="status-text">{{ $t('order.orderStatus.pending') }}</div>
+                <div class="chat-user-order-status">
+                    <span style="font-size: 14px; color: gray;">{{ order.createdAt }}</span>
+                    <div v-if="order.status == 0" class="order-status">
+                        <span class="status-dot yellow-dot"></span>
+                        <div class="status-text">{{ $t('order.orderStatus.pending') }}</div>
+                    </div>
+                    <div v-if="order.status == 1 && !isServiceInProgressState(order)" class="order-status">
+                        <span class="status-dot green-dot"></span>
+                        <div class="status-text">{{ $t('order.orderStatus.confirmed') }}</div>
+                    </div>
+                    <div v-if="order.status == 1 && isServiceInProgressState(order)" class="order-status">
+                        <span class="status-dot green-dot"></span>
+                        <div class="status-text">{{ $t('order.orderStatus.processing') }}</div>
+                    </div>
+                    <div v-if="order.status == 2" class="order-status">
+                        <span class="status-dot gray-dot"></span>
+                        <div class="status-text">{{ $t('order.orderStatus.completed') }}</div>
+                    </div>
+                    <div v-if="order.status == 3" class="order-status">
+                        <div class="status-dot red-dot"></div>
+                        <div class="status-text">{{ $t('order.orderStatus.canceled') }}</div>
+                    </div>
                 </div>
-                <div v-if="order.status == 1 && !isServiceInProgressState(order)" class="order-status">
-                    <span class="status-dot green-dot"></span>
-                    <div class="status-text">{{ $t('order.orderStatus.confirmed') }}</div>
-                </div>
-                <div v-if="order.status == 1 && isServiceInProgressState(order)" class="order-status">
-                    <span class="status-dot green-dot"></span>
-                    <div class="status-text">{{ $t('order.orderStatus.processing') }}</div>
-                </div>
-                <div v-if="order.status == 2" class="order-status">
-                    <span class="status-dot gray-dot"></span>
-                    <div class="status-text">{{ $t('order.orderStatus.completed') }}</div>
-                </div>
-                <div v-if="order.status == 3" class="order-status">
-                    <div class="status-dot red-dot"></div>
-                    <div class="status-text">{{ $t('order.orderStatus.canceled') }}</div>
-                </div>
-            </div>
 
-            <div v-if="$common.isEmpty(order.servantId)&&order.candidateCount>0&&order.status != 3" style="width: 100%">
-                <div class="divider"></div>
-                <div class="order-candidate">
-                    <div v-for="(servant, index) in topThreeServants(order.servants)" :key="servant.id" class="candidate-item">
-                        <div class="candidate-info">
-                            <img class="candidate-img" :src="servant.avatar" @click="chatWindowRedirect(servant.id)">
-                            <div class="candidate-item-price">¥{{ servant.quotedPrice }}</div>
+                <div v-if="$common.isEmpty(order.servantId)&&order.candidateCount>0&&order.status != 3" style="width: 100%">
+                    <div class="divider"></div>
+                    <div class="order-candidate">
+                        <div v-for="(servant, index) in topThreeServants(order.servants)" :key="servant.id" class="candidate-item">
+                            <div class="candidate-info">
+                                <img class="candidate-img" :src="servant.avatar" @click="chatWindowRedirect(servant.id)">
+                                <div class="candidate-item-price">¥{{ servant.quotedPrice }}</div>
+                            </div>
+                        </div>
+                        <div v-if="order.candidateCount > 3" class="candidate-item">
+                            <div style="background-color: white;padding: 9px 11px;border-radius: 25px;position: relative;top: -12px;">+{{ order.candidateCount - 3 }}</div>
                         </div>
                     </div>
-                    <div v-if="order.candidateCount > 3" class="candidate-item">
-                        <div style="background-color: white;padding: 9px 11px;border-radius: 25px;position: relative;top: -12px;">+{{ order.candidateCount - 3 }}</div>
-                    </div>
                 </div>
-            </div>
 
-            <div v-if="!$common.isEmpty(order.servantId)" style="width: 100%">
-                <div class="divider"></div>
-                <div class="order-candidate">
-                    <img style="width: 40px; height: 40px; border-radius: 50%; margin-right: 5px;" :src="order.servant.avatar" @click="chatWindowRedirect(order.servantId)">
-                    <div v-if="order.requiredServantType == serviceTypeConstant.TOUR_GUIDE" class="center-v">
-                        <div style="font-size: 18px">{{ $t('order.tourGuide') }}: {{ order.servant.nickname }}</div>
+                <div v-if="!$common.isEmpty(order.servantId)" style="width: 100%">
+                    <div class="divider"></div>
+                    <div class="order-candidate">
+                        <img style="width: 40px; height: 40px; border-radius: 50%; margin-right: 5px;" :src="order.servant.avatar" @click="chatWindowRedirect(order.servantId)">
+                        <div v-if="order.requiredServantType == serviceTypeConstant.TOUR_GUIDE" class="center-v">
+                            <div style="font-size: 18px">{{ $t('order.tourGuide') }}: {{ order.servant.nickname }}</div>
+                        </div>
                     </div>
                 </div>
             </div>
-        </div>
-        <div v-if="loading" class="loading-text">{{ $t('pub.page.loading') }}</div>
-        <div v-else-if="!hasMore" class="no-more-data-container-list">{{ $t('pub.page.noMoreData') }}</div>
-    </scroll-view>
+            <div v-if="loading" class="loading-text">{{ $t('pub.page.loading') }}</div>
+            <div v-else-if="!hasMore" class="no-more-data-container-list">{{ $t('pub.page.noMoreData') }}</div>
+        </scroll-view>
+    </div>
+
 </div>
 </template>
 
 
 <script>
 import $common from "../../utils/common";
+import app from "../../App.vue";
 
 export default {
     computed: {
@@ -117,6 +128,7 @@ export default {
     },
     data() {
         return {
+            isUserLogin: false,
             dataList: [],
             searchKeyword: '',
 
@@ -128,15 +140,18 @@ export default {
 
         };
     },
-    onLoad() {
-        if(!this.$common.isEmpty(uni.getStorageSync(getApp().globalData.data.userInfoKey).id)) {
+    onShow() {
+        this.isUserLogin = uni.getStorageSync(app.globalData.data.userLoginKey) == true ? true : false;
+        if(this.isUserLogin) {
             this.reload()
         }
     },
     methods: {
         async reload() {
-            this.resetPagination();
-            await this.getDataList();
+            if(this.isUserLogin) {
+                this.resetPagination();
+                await this.getDataList();
+            }
         },
         buildApiParams() {
             let url = getApp().globalData.data.requestUrl + this.$API.order.search;
@@ -292,6 +307,14 @@ export default {
             this.reload();
         },
 
+        async signIn() {
+            uni.showLoading({title: this.$t('pub.showLoading.loading')});
+            await getApp().globalData.signIn()
+            this.user = uni.getStorageSync(getApp().globalData.data.userInfoKey)
+            this.isUserLogin = uni.getStorageSync(getApp().globalData.data.userLoginKey)
+            uni.hideLoading();
+        },
+
         // Redirects
         orderInitiateRedirect() {
             uni.navigateTo({
@@ -340,13 +363,6 @@ export default {
     color: white;
     font-weight: bold;
     margin: 8px 0;
-}
-
-
-.order-icon {
-    width: 40px;
-    height: 40px;
-    margin-right: 10px;
 }
 
 .status-dot {

@@ -87,11 +87,11 @@ export default {
     },
     onShow() {
         this.user = uni.getStorageSync(app.globalData.data.userInfoKey)
-        this.isUserLogin = uni.getStorageSync(app.globalData.data.userLoginKey)
+        this.isUserLogin = uni.getStorageSync(app.globalData.data.userLoginKey) == true ? true : false;
     },
     methods: {
         handleLinkClick(methodName) {
-            if (this[methodName] && typeof this[methodName] === 'function') {
+            if(this[methodName] && typeof this[methodName] === 'function') {
                 this[methodName]();
             } else {
                 console.warn(`Method ${methodName} is not defined.`);

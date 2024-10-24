@@ -5,26 +5,36 @@
         <app-title type="h1" bold="true">{{ $t('chat.chats') }}</app-title>
     </div>
 
-    <!-- Search input -->
-    <app-input mode="text" :placeholder="$t('pub.page.search')" col="12" class="mb-2"/>
-
-    <!-- Contact List -->
-    <scroll-view :scroll-top="0" scroll-y="true" style="height: 80vh">
-        <div v-for="(contact, index) in contactList" :key="contact.id">
-            <div
-                @click="contactRedirect(contact.id)"
-                class="contact-item"
-            >
-                <img :src="contact.avatar" alt="contact.name" class="avatar">
-                <div class="info">
-                    <h2 class="name">{{ contact.nickname }}</h2>
-                    <p class="contact-number">{{ contact.lastMessage }}</p>
-                </div>
-            </div>
-            <!-- Separator div instead of border-bottom -->
-            <div v-if="index !== contactList.length - 1" class="separator"></div>
+    <div v-if="!isUserLogin" class="center-h">
+        <div class="background-icon">
+            <img src="/static/page/order/messages.svg">
         </div>
-    </scroll-view>
+        <div style="margin-top: -40px;">
+            <app-button shaped @click="signIn">{{ $t('chat.signIn') }}</app-button>
+        </div>
+    </div>
+    <div v-if="isUserLogin">
+        <!-- Search input -->
+        <app-input mode="text" :placeholder="$t('pub.page.search')" col="12" class="mb-2"/>
+        <!-- Contact List -->
+        <scroll-view :scroll-top="0" scroll-y="true" style="height: 80vh">
+            <div v-for="(contact, index) in contactList" :key="contact.id">
+                <div
+                    @click="contactRedirect(contact.id)"
+                    class="contact-item"
+                >
+                    <img :src="contact.avatar" alt="contact.name" class="avatar">
+                    <div class="info">
+                        <h2 class="name">{{ contact.nickname }}</h2>
+                        <p class="contact-number">{{ contact.lastMessage }}</p>
+                    </div>
+                </div>
+                <!-- Separator div instead of border-bottom -->
+                <div v-if="index !== contactList.length - 1" class="separator"></div>
+            </div>
+        </scroll-view>
+    </div>
+
 </div>
 </template>
 
@@ -34,65 +44,42 @@ import app from "../../App.vue";
 export default {
     data() {
         return {
+            isUserLogin: false,
             userId: uni.getStorageSync(app.globalData.data.userInfoKey).id,
             contactList: [],
         };
     },
     onShow() {
-        this.contactList = []
-        if(!this.$common.isEmpty(this.userId)) {
-            this.getUserList();
+        this.isUserLogin = uni.getStorageSync(app.globalData.data.userLoginKey) == true ? true : false;
+        if(this.isUserLogin) {
+            this.getDataList();
         }
     },
     methods: {
-        // Step 1: Fetch messages to find unique user IDs who sent/received messages
-        getUserList() {
+        getDataList() {
+            this.contactList = [];
+            if(this.$common.isEmpty(this.userId)) return;
             if(this.loading) return; // Prevent multiple requests
             this.loading = true;
             const uniqueUserIds = new Set(); // To store all unique contact IDs
 
-            // Step 1: Find messages where current user is the sender
             uni.request({
-                url: getApp().globalData.data.requestUrl + this.$API.message.searchContacts,
+                url: getApp().globalData.data.requestUrl + this.$API.conversation.search,
                 method: 'POST',
                 data: {
-                    senderId: this.userId,
+                    clientId: this.userId,
                     page: this.page,
                     size: this.pageSize,
                 },
-                success: (resR) => {
-                    const sentMessages = resR.data.list;
-                    sentMessages.forEach(message => {
-                        uniqueUserIds.add(message.recipientId);
+                success: (res) => {
+                    const contactData = res.data.list;
+                    contactData.forEach(contact => {
+                        uniqueUserIds.add(contact.servantId);
                     });
-
-
-                    // Step 2: Find messages where current user is the recipient
-                    uni.request({
-                        url: getApp().globalData.data.requestUrl + this.$API.message.searchContacts,
-                        method: 'POST',
-                        data: {
-                            recipientId: this.userId,
-                            page: this.page,
-                            size: this.pageSize,
-                        },
-                        success: (resS) => {
-                            const receivedMessages = resS.data.list;
-                            // Gather all sender IDs
-                            receivedMessages.forEach(message => {
-                                uniqueUserIds.add(message.senderId);
-                            });
-
-                            // Fetch details for all unique contacts
-                            uniqueUserIds.forEach(id => {
-                                this.getUserDetails(id);
-                            });
-
-                            this.loading = false; // Finished loading
-                        },
-                        fail: (err) => {
-                            this.loading = false;
-                        }
+                    console.log("uniqueUserIds")
+                    console.log(uniqueUserIds)
+                    uniqueUserIds.forEach(id => {
+                        this.getUserDetails(id);
                     });
                 },
                 fail: (err) => {
@@ -100,8 +87,6 @@ export default {
                 }
             });
         },
-
-        // Step 2: Fetch user details for the unique user IDs found in the messages
         getUserDetails(id) {
             uni.request({
                 url: getApp().globalData.data.requestUrl + this.$API.user.search,
@@ -119,6 +104,14 @@ export default {
                     this.loading = false;
                 }
             });
+        },
+
+        async signIn() {
+            uni.showLoading({title: this.$t('pub.showLoading.loading')});
+            await getApp().globalData.signIn()
+            this.user = uni.getStorageSync(getApp().globalData.data.userInfoKey)
+            this.isUserLogin = uni.getStorageSync(getApp().globalData.data.userLoginKey)
+            uni.hideLoading();
         },
 
         // Redirects

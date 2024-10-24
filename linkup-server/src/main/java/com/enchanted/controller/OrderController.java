@@ -36,6 +36,10 @@ public class OrderController {
         int page = requestData.get("page") != null ? Integer.parseInt(requestData.get("page").toString()) : 1;
         int size = requestData.get("size") != null ? Integer.parseInt(requestData.get("size").toString()) : 10;
 
+        if (requestData.get("clientId") == null) {
+            return R.error("Empty user data");
+        }
+
         requestData.remove("page");
         requestData.remove("size");
 
@@ -83,7 +87,7 @@ public class OrderController {
         Long servantId = Long.parseLong(requestData.get("servantId").toString());
         BigDecimal quotedPrice = BigDecimal.valueOf(Long.parseLong(requestData.get("quotedPrice").toString()));
 
-        boolean isAssigned = orderService.assignServant(orderId, servantId,quotedPrice);
+        boolean isAssigned = orderService.assignServant(orderId, servantId, quotedPrice);
         if (isAssigned) {
             return R.ok("Servant assigned to order successfully");
         } else {

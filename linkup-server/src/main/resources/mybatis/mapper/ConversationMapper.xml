@@ -8,8 +8,8 @@
     <select id="search" resultType="com.enchanted.entity.Conversation">
         SELECT * FROM conversation
         <where>
-            <if test="params.userId != null and params.userId != ''">
-                AND user_id = #{params.userId}
+            <if test="params.clientId != null and params.clientId != ''">
+                AND client_id = #{params.clientId}
             </if>
             <if test="params.servantId != null and params.servantId != ''">
                 AND servant_id = #{params.servantId}

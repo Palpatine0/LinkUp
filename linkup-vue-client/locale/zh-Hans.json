@@ -77,7 +77,8 @@
         "showToast": {
             "incorrectRC": "邀请码异常",
             "authSuccess": "授权成功",
-            "authFailed": "授权失败"
+            "authFailed": "授权失败",
+            "signUpSuccess": "注册成功,请重新登录"
         }
     },
 
@@ -90,6 +91,7 @@
     "//////": "order",
     "order": {
         "myOrders": "我的订单",
+        "signIn": "登录查看我的订单",
         "candidates": "抢单人数",
         "servant": "达人",
         "tourGuide": "导游",
@@ -214,7 +216,8 @@
 
     "//////": "chat",
     "chat": {
-        "chats": "聊天"
+        "chats": "聊天",
+        "signIn": "登录查看我的消息"
     },
 
 
