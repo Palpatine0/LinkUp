@@ -11,8 +11,8 @@ import com.enchanted.mapper.UserClientMapper;
 import com.enchanted.mapper.UserMapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.enchanted.mapper.UserServantMapper;
+import com.enchanted.service.IFileService;
 import com.enchanted.service.IUserService;
-import com.enchanted.util.AliyunOSSUtil;
 import com.enchanted.util.ConversionUtils;
 import com.enchanted.util.HttpClientUtil;
 import com.enchanted.util.WeChatUtil;
@@ -35,6 +35,9 @@ import java.util.*;
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserService {
 
     @Autowired
+    private IFileService fileService;
+
+    @Autowired
     private UserMapper userMapper;
 
     @Autowired
@@ -52,7 +55,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         HashMap<String, String> map = new HashMap<>();
         int insert = userMapper.insert(user);
         // generate qr code
-        genQrCodeImage(this.getAccessToken(), String.valueOf(user.getId()));
+        genQrCodeImage(this.getAccessToken(), String.valueOf(user.getId()), user.getIdentifier());
         if (user.getRole() == 1) {
             UserClient userClient = new UserClient();
             userClient.setUserId(user.getId());
@@ -81,18 +84,18 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         return jsonObject.get("access_token").toString();
     }
 
-    private void genQrCodeImage(String accessToken, String referrerId) {
+    private void genQrCodeImage(String accessToken, String referrerId, String identifier) {
         Map<String, Object> body = new HashMap<>();
         body.put("path", "pages/home/home?referrerId=" + referrerId);
         String url = WeChatConstant.QR_CODE_Url + "?access_token=" + accessToken;
         byte[] qrCodeBytes = getWechatQrcodeByHttpClient(url, body);
-        String fileName = "public/user/referral-qr-code/" + referrerId + ".png";  // Customize the file name as needed
-        String referralQRCode = AliyunOSSUtil.uploadToOSS(fileName, qrCodeBytes);
+        String filePath = "public/user/" + identifier + "/referral-qr-code/";
+        String fileName = "referral-qr-code.png";
+        String referralQRCode = fileService.upload(qrCodeBytes, filePath, fileName);
         User user = new User();
         user.setReferralQrCode(referralQRCode);
         user.setId(Long.parseLong(referrerId));
         userMapper.updateById(user);
-//        user.setReferralQrCode(referralQRCode);
     }
 
     private byte[] getWechatQrcodeByHttpClient(String url, Map<String, Object> body) {
@@ -138,7 +141,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     }
 
     @Override
-    public Map referralCodeValidation(String referralCode,String role) {
+    public Map referralCodeValidation(String referralCode, String role) {
         HashMap<String, String> map = new HashMap<>();
         QueryWrapper<User> wrapper = new QueryWrapper<>();
         wrapper.eq("referral_code", referralCode);

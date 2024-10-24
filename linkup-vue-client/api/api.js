@@ -74,5 +74,10 @@ var $API = {
         search: '/review/search',
         update: '/review/update',
     },
+
+    // File
+    file:{
+        signature:"/file/signature"
+    }
 }
 export default $API;

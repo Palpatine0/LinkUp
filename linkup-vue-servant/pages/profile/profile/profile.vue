@@ -69,18 +69,9 @@ export default {
     data() {
         return {
             allowEdit: false,
-            showSubmitButton: false, // Controls visibility of the submit button
-            user: {
-                gender: 0,
-                age: null,
-                nickname: '',
-                isIdentifyCertified: "0", // Default value in case data hasn't loaded
-            },
-            originalUser: { // This will hold the original data to compare
-                gender: 0,
-                age: null,
-                nickname: ''
-            },
+            showSubmitButton: false,
+            user: {},
+            originalUser: {},
             genderRange: [this.$t('pub.gender.m'), this.$t('pub.gender.f')],
             selectedGenderText: '',
             ageRange: Array.from({length: 83}, (_, i) => i + 18),
@@ -92,7 +83,7 @@ export default {
         // Load user data first
         const storedUser = uni.getStorageSync(app.globalData.data.userInfoKey);
         this.user = {...storedUser};
-        this.originalUser = {...storedUser}; // Save a copy of the original user data
+        this.originalUser = {...storedUser};
 
         // Once user data is loaded, set allowEdit
         this.allowEdit = this.user.isIdentifyCertified === "0";
@@ -103,7 +94,7 @@ export default {
         this.selectedAgeText = this.ageRange[this.ageRangeIndex];
     },
     watch: {
-        // Watch for changes in user data to trigger submit button visibility
+        'user.avatar': 'checkForChanges',
         'user.nickname': 'checkForChanges',
         'user.gender': 'checkForChanges',
         'user.age': 'checkForChanges'
@@ -116,40 +107,69 @@ export default {
                     this.$t('component>chat>chatItemSelector>gallery.takePhoto')
                 ],
                 success: (res) => {
-                    if(res.tapIndex === 0) {
-                        uni.chooseImage({
-                            count: 12,
-                            sizeType: ['original', 'compressed'],
-                            sourceType: ['album'],
-                            success: (res) => {
-                                Promise.all(
-                                    res.tempFilePaths.map((item) => {
-                                        return new Promise((resolve, reject) => {
-                                            fs.readFile({
-                                                filePath: item,
-                                                encoding: 'base64',
-                                                success: (res) => {
-                                                    // TODO: update user avatar url
-                                                    resolve('data:image/png;base64,' + res.data);
+                    let sourceType = res.tapIndex === 0 ? ['album'] : ['camera'];
+                    uni.chooseImage({
+                        count: 1,
+                        sizeType: ['original', 'compressed'],
+                        sourceType: sourceType,
+                        success: (chooseResult) => {
+                            const filePath = chooseResult.tempFilePaths[0];
+                            // Request the policy from the backend
+                            uni.request({
+                                url: getApp().globalData.data.requestUrl + $API.file.signature,
+                                method: 'GET',
+                                data: {
+                                    dir: "public/user/" + this.user.identifier + "/avatar/"
+                                },
+                                success: (policyRes) => {
+                                    if(policyRes.statusCode === 200 && policyRes.data.status === 200) {
+                                        const policyData = policyRes.data.data;
+                                        const host = policyData.host;
+                                        const dir = policyData.dir;
+
+                                        // Generate a unique filename
+                                        const filename = dir + Date.now() + '_' + Math.floor(Math.random() * 10000);
+
+                                        // Prepare formData
+                                        let formData = {
+                                            'key': filename,
+                                            'policy': policyData.policy,
+                                            'OSSAccessKeyId': policyData.accessid,
+                                            'signature': policyData.signature,
+                                            'success_action_status': '200',
+                                        };
+
+                                        // Upload file directly to OSS
+                                        uni.uploadFile({
+                                            url: host,
+                                            filePath: filePath,
+                                            name: 'file',
+                                            formData: formData,
+                                            success: (uploadFileRes) => {
+                                                if(uploadFileRes.statusCode === 200) {
+                                                    // Update user avatar URL
+                                                    const imageUrl = host + '/' + filename;
+                                                    this.user.avatar = imageUrl;
+                                                    console.log("imageUrl")
+                                                    console.log(imageUrl)
+                                                } else {
+                                                    uni.showToast({title: 'Upload failed', icon: 'none'});
                                                 }
-                                            });
+                                            },
+                                            fail: () => {
+                                                uni.showToast({title: 'Upload failed', icon: 'none'});
+                                            }
                                         });
-                                    })
-                                ).then((results) => {
-                                    that.uploadLivePic(results);
-                                });
-                            }
-                        });
-                    } else {
-                        uni.chooseImage({
-                            count: 12,
-                            sizeType: ['original', 'compressed'],
-                            sourceType: ['camera'],
-                            success: (res) => {
-                                // TODO: update user avatar url
-                            }
-                        });
-                    }
+                                    } else {
+                                        uni.showToast({title: 'Failed to get policy', icon: 'none'});
+                                    }
+                                },
+                                fail: () => {
+                                    uni.showToast({title: 'Failed to get policy', icon: 'none'});
+                                }
+                            });
+                        }
+                    });
                 }
             });
         },
@@ -169,13 +189,14 @@ export default {
         },
 
         checkForChanges() {
-            // Compare the originalUser with the current user
-            if(this.user.nickname !== this.originalUser.nickname ||
+            if(
+                this.user.avatar !== this.originalUser.avatar ||
+                this.user.nickname !== this.originalUser.nickname ||
                 this.user.gender !== this.originalUser.gender ||
                 this.user.age !== this.originalUser.age) {
-                this.showSubmitButton = true; // Show the submit button if there are changes
+                this.showSubmitButton = true;
             } else {
-                this.showSubmitButton = false; // Hide if no changes
+                this.showSubmitButton = false;
             }
         },
 
@@ -193,10 +214,9 @@ export default {
                 success: (res) => {
                     if(res.data.status === 200) {
                         uni.setStorageSync(app.globalData.data.userInfoKey, this.user);
-                        uni.setStorageSync(app.globalData.data.userLoginKey, true);
                         uni.showToast({title: this.$t('pub.showToast.success'), icon: 'none'});
-                        this.showSubmitButton = false; // Hide the submit button after successful submission
-                        this.originalUser = {...this.user}; // Update originalUser after successful submit
+                        this.showSubmitButton = false;
+                        this.originalUser = {...this.user};
                     } else {
                         uni.showToast({title: this.$t('pub.showToast.fail'), icon: 'none'});
                     }

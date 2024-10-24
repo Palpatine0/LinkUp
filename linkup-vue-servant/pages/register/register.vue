@@ -276,6 +276,8 @@ export default {
         async getUserInfo(e) {
             uni.showLoading({title: this.$t('pub.showLoading.loading')});
 
+            this.$set(this.userData, 'identifier', this.$common.generateUniqueCode('1', 8));
+
             // fetch user config data (openid)
             this.userData = {
                 ...this.userData,
@@ -289,8 +291,6 @@ export default {
                 return new Promise((resolve) => {
                     uni.getSetting({
                         success(res) {
-                            console.log("Inside getSetting success");
-                            console.log(res.authSetting);
                             if (res.authSetting['scope.userInfo'] != undefined && res.authSetting['scope.userInfo'] == true) {
                                 uni.getUserInfo({
                                     success: function (res) {
@@ -308,8 +308,6 @@ export default {
                                         });
                                     },
                                     fail(err) {
-                                        console.log("fail const getUserData = () => {")
-                                        console.log(err)
                                         uni.showToast({title: this.$t('register.showToast.authFailed'), icon: 'none'});
                                         this.backToProfile()
                                     }
@@ -391,7 +389,6 @@ export default {
                 url: getApp().globalData.data.requestUrl + this.$API.user.save,
                 method: 'POST',
                 data: {
-                    identifier: this.$common.generateUniqueCode('1', 8),
                     referralCode: this.$common.generateUniqueCode('a1a', 2),
                     role: 2,
                     referrerId: this.referrerId,
