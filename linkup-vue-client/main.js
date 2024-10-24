@@ -12,11 +12,11 @@ import bus from "./bus/bus";
 import './style/common.css';
 import './style/animat.css'
 
-import AppTitle from './components/common/app-title.vue';
-import AppInput from './components/common/app-input.vue';
-import AppContainer from './components/common/app-container.vue';
-import AppButton from './components/common/app-button.vue';
-import UserList from './components/page/user-list/user-list.vue';
+import AppTitle from './components/common/base/app-title.vue';
+import AppInput from './components/common/base/app-input.vue';
+import AppContainer from './components/common/base/app-container.vue';
+import AppButton from './components/common/base/app-button.vue';
+import UserList from './components/common/user-list/user-list.vue';
 
 
 // common
@@ -24,8 +24,9 @@ Vue.component('app-title', AppTitle);
 Vue.component('app-input', AppInput);
 Vue.component('app-container', AppContainer);
 Vue.component('app-button', AppButton);
-// page
 Vue.component('user-list', UserList);
+
+// page
 Vue.mixin(globalMixin)
 Vue.mixin(paginationMixin)
 
