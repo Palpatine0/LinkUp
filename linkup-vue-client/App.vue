@@ -6,10 +6,10 @@ import $API from "./api/api";
 export default {
     globalData: {
         data: {
-            // dev
+            // Dev
             requestUrl: "https://localhost:8090",
             socketUrl: "wss://localhost:8090",
-            // prd
+            // QA
             // requestUrl: "https://looking.cool:8090",
             // socketUrl: "wss://looking.cool:8090",
 

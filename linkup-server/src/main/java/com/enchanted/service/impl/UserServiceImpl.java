@@ -12,6 +12,7 @@ import com.enchanted.mapper.UserMapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.enchanted.mapper.UserServantMapper;
 import com.enchanted.service.IUserService;
+import com.enchanted.util.AliyunOSSUtil;
 import com.enchanted.util.ConversionUtils;
 import com.enchanted.util.HttpClientUtil;
 import com.enchanted.util.WeChatUtil;
@@ -85,7 +86,8 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         body.put("path", "pages/home/home?referrerId=" + referrerId);
         String url = WeChatConstant.QR_CODE_Url + "?access_token=" + accessToken;
         byte[] qrCodeBytes = getWechatQrcodeByHttpClient(url, body);
-        String referralQRCode = Base64.getEncoder().encodeToString(qrCodeBytes);
+        String fileName = "public/user/referral-qr-code/" + referrerId + ".png";  // Customize the file name as needed
+        String referralQRCode = AliyunOSSUtil.uploadToOSS(fileName, qrCodeBytes);
         User user = new User();
         user.setReferralQrCode(referralQRCode);
         user.setId(Long.parseLong(referrerId));

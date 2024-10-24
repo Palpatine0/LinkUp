@@ -133,8 +133,8 @@
             "allAge": "All Ages"
         },
         "showToast": {
-            "selectAddr": "please select an address",
-            "selectSchedule": "please select a schedule"
+            "selectAddr": "Please select an address",
+            "selectSchedule": "Please select a schedule"
         }
     },
     "order>orderDetail": {

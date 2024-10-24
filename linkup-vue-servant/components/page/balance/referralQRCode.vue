@@ -4,7 +4,7 @@
     <div class="widget-center coup-anim">
         <div class="share-header">{{$t('component>balance>referralQRCode.yourReferralQRCode')}}</div>
         <div class="qrcode-container">
-            <img class="qrcode" :src="referralQrCode" alt="QR Code">
+            <img class="qrcode" :src="userInfo.referralQrCode" alt="QR Code">
             <div class="share-tip">{{$t('component>balance>referralQRCode.descA')}}</div>
             <div class="share-tip">{{$t('component>balance>referralQRCode.descB')}}</div>
         </div>
@@ -20,7 +20,6 @@ export default {
     },
     data() {
         return {
-            referralQrCode: 'data:image/jpeg;base64,' + this.userInfo.referralQrCode.replace(/[\r\n]/g, "")
         }
     },
     methods: {
