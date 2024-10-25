@@ -51,8 +51,8 @@ export default {
             serviceTypeId: '',
             serviceType: {},
             userServant: {},
-            topSectionHeight: 46,
-            scrollViewHeight: 54,
+            topSectionHeight: 66,
+            scrollViewHeight: 24,
             maxScroll: 30,
             activeTab: 'details'
         };
@@ -80,13 +80,13 @@ export default {
 
         onScroll(event) {
             const scrollTop = event.target.scrollTop;
-            let newTopHeight = 46 - (scrollTop / 10);
-            let newScrollViewHeight = 54 + (scrollTop / 10);
+            let newTopHeight = 66 - (scrollTop / 10);
+            let newScrollViewHeight = 24 + (scrollTop / 10);
 
-            if (newTopHeight < 25) {
+            if(newTopHeight < 25) {
                 newTopHeight = 25;
             }
-            if (newScrollViewHeight > 75) {
+            if(newScrollViewHeight > 75) {
                 newScrollViewHeight = 75;
             }
             this.topSectionHeight = newTopHeight;
