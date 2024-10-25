@@ -337,7 +337,8 @@ export default {
             uni.authorize({
                 scope: 'scope.userFuzzyLocation',
                 success() {
-                    uni.getFuzzyLocation({
+                    // TODO: apply this API, then uncomment this code block
+                    /*uni.getFuzzyLocation({
                         type: 'wgs84',
                         success(res) {
                             that.userData = {
@@ -349,7 +350,8 @@ export default {
                             uni.setStorageSync('longitudeFuzzy', res.longitude);
                             that.step++
                         },
-                    });
+                    });*/
+                    that.step++
                 },
                 fail() {
                     uni.showToast({title: this.$t('register.showToast.authFailed'), icon: 'none'});

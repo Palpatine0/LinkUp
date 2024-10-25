@@ -28,9 +28,11 @@ export default {
             serviceTypeList: []
         };
     },
-    onLoad(e) {
-        if(!this.$common.isEmpty(e.referrerId)) {
-            uni.setStorageSync('referrerId', e.referrerId);
+    onLoad(param) {
+        console.log("HOME PARAM")
+        console.log(param)
+        if(!this.$common.isEmpty(param.referrerId)) {
+            uni.setStorageSync('referrerId', param.referrerId);
             console.log("uni.getStorageSync('referrerId')")
             console.log(uni.getStorageSync('referrerId'))
         }

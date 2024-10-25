@@ -52,7 +52,7 @@ public class UserController {
     @PostMapping("/user-config")
     public R getConfigInfo(@RequestBody Map<String, String> dto) {
         String code = dto.get("code");
-        String role = dto.get("role");
+        int role = Integer.parseInt(dto.get("role"));
         return R.ok().put("data", userService.getConfigInfo(code,role));
     }
 

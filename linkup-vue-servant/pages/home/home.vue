@@ -70,7 +70,15 @@ export default {
             addressMap: {},
         };
     },
-    onLoad() {
+    onLoad(param) {
+        console.log("HOME PARAM")
+        console.log(param)
+        if(!this.$common.isEmpty(param.referrerId)) {
+            uni.setStorageSync('referrerId', param.referrerId);
+            console.log("uni.getStorageSync('referrerId')")
+            console.log(uni.getStorageSync('referrerId'))
+        }
+        this.user = uni.getStorageSync(getApp().globalData.data.userInfoKey)
         this.reload();
     },
     methods: {

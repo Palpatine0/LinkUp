@@ -3,6 +3,7 @@ package com.enchanted.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.enchanted.constant.UserConstant;
 import com.enchanted.constant.WeChatConstant;
 import com.enchanted.entity.User;
 import com.enchanted.entity.UserClient;
@@ -54,13 +55,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     public Map<String, String> saveInfo(User user) {
         HashMap<String, String> map = new HashMap<>();
         int insert = userMapper.insert(user);
-        // generate qr code
-        genQrCodeImage(this.getAccessToken(), String.valueOf(user.getId()), user.getIdentifier());
-        if (user.getRole() == 1) {
+        genQrCodeImage(this.getAccessToken(user.getRole()), String.valueOf(user.getId()), user.getIdentifier());
+        if (user.getRole() == UserConstant.CLIENT) {
             UserClient userClient = new UserClient();
             userClient.setUserId(user.getId());
             userClientMapper.insert(userClient);
-        } else if (user.getRole() == 2) {
+        } else if (user.getRole() == UserConstant.SERVANT) {
             UserServant userServant = new UserServant();
             userServant.setUserId(user.getId());
             userServantMapper.insert(userServant);
@@ -77,8 +77,13 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         return (Page<User>) userPage;
     }
 
-    private String getAccessToken() {
-        String url = WeChatConstant.ACCESS_TOKEN_URL + "?grant_type=client_credential&appid=" + WeChatConstant.APP_ID + "&secret=" + WeChatConstant.SECRET;
+    private String getAccessToken(int role) {
+        String url = "";
+        if (role == UserConstant.CLIENT) {
+            url = WeChatConstant.ACCESS_TOKEN_URL + "?grant_type=client_credential&appid=" + WeChatConstant.APP_ID_CLIENT + "&secret=" + WeChatConstant.SECRET_CLIENT;
+        } else if (role == UserConstant.SERVANT) {
+            url = WeChatConstant.ACCESS_TOKEN_URL + "?grant_type=client_credential&appid=" + WeChatConstant.APP_ID_SERVANT + "&secret=" + WeChatConstant.SECRET_SERVANT;
+        }
         String token = httpClientUtil.sendHttpGet(url);
         JSONObject jsonObject = JSON.parseObject(token);
         return jsonObject.get("access_token").toString();
@@ -122,9 +127,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     }
 
     @Override
-    public Map<String, String> getConfigInfo(String code, String role) {
+    public Map<String, String> getConfigInfo(String code, int role) {
         HashMap<String, String> map = new HashMap<>();
-        JSONObject object = WeChatUtil.getUserConfigInfo(code);
+        JSONObject object = WeChatUtil.getUserConfigInfo(code, role);
         map.put("openid", object.get("openid").toString());
         map.put("sessionKey", object.get("session_key").toString());
         QueryWrapper<User> wrapper = new QueryWrapper<>();

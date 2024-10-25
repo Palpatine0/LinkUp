@@ -1,6 +1,6 @@
 {
     "name" : "linkup-vue-servant",
-    "appid" : "__UNI__6FC84D5",
+    "appid" : "__UNI__4DDA6D0",
     "description" : "",
     "versionName" : "1.0.0",
     "versionCode" : "100",
@@ -42,7 +42,7 @@
     },
     "quickapp" : {},
     "mp-weixin" : {
-        "appid" : "wxdbc6d6a058de05f7",
+        "appid" : "wx073fbba9bea301b8",
         "setting" : {
             "urlCheck" : false,
             "es6" : true
@@ -58,7 +58,8 @@
                 "desc" : "为了给您提供完整的服务，请授权您的地理位置信息"
             }
         },
-        "requiredPrivateInfos" : [ "chooseLocation", "getFuzzyLocation" ],
+        "requiredPrivateInfos" : [ "chooseLocation" ],
+        // "getFuzzyLocation"
         "usingComponents" : true
     },
     "mp-alipay" : {

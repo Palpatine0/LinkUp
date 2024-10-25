@@ -2,6 +2,7 @@ package com.enchanted.util;
 
 import com.alibaba.fastjson.JSONObject;
 
+import com.enchanted.constant.UserConstant;
 import com.enchanted.constant.WeChatConstant;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -13,8 +14,13 @@ import java.net.URLConnection;
 @Slf4j(topic = "WechatUtils")
 @Component
 public class WeChatUtil {
-    public static JSONObject getUserConfigInfo(String code) {
-        String url = "https://api.weixin.qq.com/sns/jscode2session?appid=" + WeChatConstant.APP_ID + "&secret=" + WeChatConstant.SECRET + "&js_code=" + code + "&grant_type=authorization_code";
+    public static JSONObject getUserConfigInfo(String code, int role) {
+        String url = "";
+        if (role == UserConstant.CLIENT) {
+            url = WeChatConstant.USER_INFO_URL + WeChatConstant.APP_ID_CLIENT + "&secret=" + WeChatConstant.SECRET_CLIENT + "&js_code=" + code + "&grant_type=authorization_code";
+        } else if (role == UserConstant.SERVANT) {
+            url = WeChatConstant.USER_INFO_URL + WeChatConstant.APP_ID_SERVANT + "&secret=" + WeChatConstant.SECRET_SERVANT + "&js_code=" + code + "&grant_type=authorization_code";
+        }
         PrintWriter out = null;
         BufferedReader in = null;
         String line;
@@ -38,8 +44,7 @@ public class WeChatUtil {
             return jsonObject;
         } catch (Exception e) {
             e.printStackTrace();
-        }
-        finally {
+        } finally {
             try {
                 if (out != null) {
                     out.close();
