@@ -27,6 +27,8 @@
         :randomNum="randomNum"
         :senderId="userId"
         :contactId="contactId"
+        :conversationId="conversationId"
+        :conversation="conversation"
         @handleSend="handleSend"
     />
 
@@ -38,7 +40,6 @@
 import ChatHeader from '../../../../components/page/chat/chat-header.vue';
 import MessageBubble from '../../../../components/page/chat/message-bubble.vue';
 import MessageInput from '../../../../components/page/chat/message-input.vue';
-import app from "../../../../App.vue";
 
 export default {
     name: "chat-window",
@@ -50,15 +51,20 @@ export default {
     data() {
         return {
             randomNum: new Date().valueOf() + this.$common.getRandom(1000),
-            userId: uni.getStorageSync(app.globalData.data.userInfoKey).id,
-            user: {},
+
             isUserInfoLoaded: false,
+
+            userId: uni.getStorageSync(getApp().globalData.data.userInfoKey).id,
+            user: {},
+
             contactId: '',
             contact: {},
-            messages: [],
+
+            conversationId: null,
+            conversation: {},
 
             scrollTop: 0,
-
+            messages: [],
             socketOpen: false,
             socketTask: null,
         };
@@ -67,6 +73,7 @@ export default {
         this.contactId = parseInt(params.contactId);
         await this.getUser();
         await this.getContact();
+        await this.getConversation();
         this.connectWebSocket();
     },
     onUnload() {
@@ -111,8 +118,33 @@ export default {
                 });
             });
         },
+        getConversation() {
+            return new Promise((resolve, reject) => {
+                uni.request({
+                    url: getApp().globalData.data.requestUrl + this.$API.conversation.search,
+                    method: 'POST',
+                    data: {
+                        clientId: this.userId,
+                        servantId: this.contactId,
+                    },
+                    success: (res) => {
+                        if(res.data.status === 200 && res.data.list && res.data.list.length > 0) {
+                            this.conversation = res.data.list[0];
+                            this.conversationId = this.conversation.id;
+                        } else {
+                            this.conversation = {};
+                            this.conversationId = null;
+                        }
+                        resolve();
+                    },
+                    fail: (err) => {
+                        reject(err);
+                    },
+                });
+            });
+        },
         getMessages() {
-            return new Promise(async (resolve, reject) => {
+            return new Promise(async(resolve, reject) => {
                 if(this.loading || !this.hasMore) return;
                 this.loading = true;
 
@@ -125,7 +157,7 @@ export default {
                         page: this.page,
                         size: this.pageSize
                     },
-                    success: async (res) => {
+                    success: async(res) => {
                         const fetchedMessages = res.data.list;
 
                         // If fewer messages are returned than requested, assume no more to load
@@ -191,7 +223,7 @@ export default {
             });
         },
 
-        handleSend(messageContent,conversationId) {
+        handleSend(messageContent, conversationId) {
             if(this.socketOpen) {
                 const tempId = Date.now();
                 const messageData = {
@@ -226,7 +258,6 @@ export default {
             } else {
             }
         },
-
         sendReadReceipt() {
             // Collect unread message IDs from messages sent by the contact
             const unreadMessageIds = this.messages

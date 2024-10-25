@@ -1,6 +1,9 @@
 <template>
 <div class="chat-page">
-    <ChatHeader :username="contact.nickname" :avatar="contact.avatar"/>
+    <ChatHeader
+        :username="contact.nickname"
+        :avatar="contact.avatar"
+    />
 
     <scroll-view
         v-show="isUserInfoLoaded"
@@ -20,7 +23,9 @@
         </div>
     </scroll-view>
 
-    <MessageInput @handleSend="handleSend"/>
+    <MessageInput
+        @handleSend="handleSend"
+    />
 </div>
 </template>
 
@@ -29,7 +34,6 @@
 import ChatHeader from '../../../../components/page/chat/chat-header.vue';
 import MessageBubble from '../../../../components/page/chat/message-bubble.vue';
 import MessageInput from '../../../../components/page/chat/message-input.vue';
-import app from "../../../../App.vue";
 
 export default {
     name: "chat-window",
@@ -40,22 +44,25 @@ export default {
     },
     data() {
         return {
-            conversationId: '',
-            userId: uni.getStorageSync(app.globalData.data.userInfoKey).id,
-            user: {},
             isUserInfoLoaded: false,
+
+            userId: uni.getStorageSync(getApp().globalData.data.userInfoKey).id,
+            user: {},
+
             contactId: '',
             contact: {},
-            messages: [],
+
+            conversationId: null,
+            conversation: {},
 
             scrollTop: 0,
-
+            messages: [],
             socketOpen: false,
             socketTask: null,
         };
     },
     async onLoad(params) {
-        this.contactId = params.contactId;
+        this.contactId = parseInt(params.contactId);
         await this.getUser();
         await this.getContact();
         await this.getConversation()
@@ -103,7 +110,7 @@ export default {
                 });
             });
         },
-        async getConversation() {
+        getConversation() {
             return new Promise((resolve, reject) => {
                 uni.request({
                     url: getApp().globalData.data.requestUrl + this.$API.conversation.search,
@@ -113,7 +120,8 @@ export default {
                         servantId: this.userId,
                     },
                     success: (res) => {
-                        this.conversationId = res.data.list[0].id;
+                        this.conversation = res.data.list[0];
+                        this.conversationId = this.conversation.id;
                         resolve();
                     },
                     fail: (err) => {
@@ -201,7 +209,7 @@ export default {
                 this.scrollTop += 100;
             });
         },
-        // Handle sending a new message
+
         handleSend(messageContent) {
             if(this.socketOpen) {
                 const tempId = Date.now();
@@ -342,10 +350,10 @@ export default {
                             msg.isRead = 1;
                         }
                     });
-                }else if (messageType === 'error') {
-                    if(messageData=="No permission to initiate conversation"){
+                } else if(messageType === 'error') {
+                    if(messageData == "No permission to initiate conversation") {
                         for (let i = this.messages.length - 1; i >= 0; i--) {
-                            if (this.messages[i].senderId === this.userId) {
+                            if(this.messages[i].senderId === this.userId) {
                                 this.$set(this.messages[i], 'erroring', 1);
                                 break;
                             }

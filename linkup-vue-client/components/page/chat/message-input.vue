@@ -36,10 +36,27 @@ export default {
         randomNum: {type: String},
         senderId: {type: String},
         contactId: {type: String},
+        conversationId: {type: String},
+        conversation: {type: Object},
     },
     components: {
         ChatItemSelector,
         Gift
+    },
+    data() {
+        return {
+            conversationId: '',
+            conversation: {},
+
+            message: '',
+
+            canSendMessage: false,
+
+            conversationExpirationTime: '',
+
+            isChatItemSelectorToggleVisible: false,
+            isGiftVisible: false,
+        };
     },
     mounted() {
         this.isEligibleSendMsg()
@@ -50,59 +67,38 @@ export default {
             }
         );
     },
-    data() {
-        return {
-            conversationId: '',
-            conversation: {},
-            message: '',
-            canSendMessage: false,
-            isChatItemSelectorToggleVisible: false,
-            isGiftVisible: false,
-            conversationExpirationTime: ''
-        };
-    },
     methods: {
         isEligibleSendMsg() {
-            uni.request({
-                url: getApp().globalData.data.requestUrl + this.$API.conversation.search,
-                method: 'POST',
-                data: {
-                    clientId: uni.getStorageSync(app.globalData.data.userInfoKey).id,
-                    servantId: this.contactId,
-                },
-                success: (res) => {
-                    if(res.data.status === 200 && res.data.list && res.data.list.length > 0) {
-                        this.conversation = res.data.list[0];
-                        this.conversationId = this.conversation.id; // Store the conversation ID
-                        const currentTime = new Date().getTime();
-                        const expirationTime = new Date(this.conversation.expirationTime).getTime();
-
-                        // Calculate remaining time in seconds
-                        const remainingTime = Math.floor((expirationTime - currentTime) / 1000);
-                        if(remainingTime > 0) {
-                            this.canSendMessage = true;
-                            this.$bus.$emit(
-                                'updateCanSendMessage' + this.randomNum,
-                                this.canSendMessage
-                            );
-                            this.isGiftVisible = false
-                            this.conversationExpirationTime = this.$t('componentPage>chat>chatWindow.conversationExpireAt') + this.$common.stampToTime(this.conversation.expirationTime, {yyyy: false, ss: false, MM: false, dd: false})
-                            this.enableChatForDuration(remainingTime);
-                        } else {
-                            this.canSendMessage = false;
-                            this.isGiftVisible = true;
-                            this.conversationExpirationTime = ''
-                        }
-                    } else {
-                        this.canSendMessage = false;
-                        this.isGiftVisible = true;
-                        this.conversationId = null;
-                    }
-                },
-                fail: (err) => {
-                },
-            });
+            if(this.conversation && Object.keys(this.conversation).length > 0) {
+                const currentTime = new Date().getTime();
+                const expirationTime = new Date(this.conversation.expirationTime).getTime();
+                const remainingTime = Math.floor((expirationTime - currentTime) / 1000);
+                if(remainingTime > 0) {
+                    this.canSendMessage = true;
+                    this.$bus.$emit(
+                        'updateCanSendMessage' + this.randomNum,
+                        this.canSendMessage
+                    );
+                    this.conversationExpirationTime = this.$t('componentPage>chat>chatWindow.conversationExpireAt') + this.$common.stampToTime(this.conversation.expirationTime, {yyyy: false, ss: false, MM: false, dd: false,});
+                    this.enableChatForDuration(remainingTime);
+                    this.isGiftVisible = false
+                } else {
+                    this.canSendMessage = false;
+                    this.conversationExpirationTime = '';
+                }
+            } else {
+                this.canSendMessage = false;
+                this.isGiftVisible = true;
+                this.conversationExpirationTime = '';
+            }
         },
+        enableChatForDuration(duration) {
+            this.canSendMessage = true;
+            setTimeout(() => {
+                this.canSendMessage = false;
+            }, duration * 1000);
+        },
+
         sendMessage() {
             if(!this.canSendMessage) {
                 uni.showModal({
@@ -120,12 +116,7 @@ export default {
                 }
             }
         },
-        enableChatForDuration(duration) {
-            this.canSendMessage = true;
-            setTimeout(() => {
-                this.canSendMessage = false;
-            }, duration * 1000);
-        },
+
         handleGiftSelection(selectedGift) {
             this.processGiftPurchase(selectedGift);
         },
@@ -141,32 +132,38 @@ export default {
                 success: (res) => {
                     if(res.data.status == 200) {
                         uni.showToast({title: this.$t('pub.showToast.success'), icon: 'none'});
-                        this.conversationId = res.data.conversationId;
-                        this.isEligibleSendMsg()
+                        this.$parent.getConversation();
                     } else if(res.data.status == 500) {
-                        if(res.data.message == "Insufficient looking coins to purchase the gift") {
-                            if(this.language != "zh-Hans") {
+                        if(res.data.message == 'Insufficient looking coins to purchase the gift') {
+                            if(this.language != 'zh-Hans') {
                                 uni.showToast({title: res.data.message, icon: 'none'});
                             } else {
-                                uni.showToast({title: "你的领客币余额不足", icon: 'none'});
+                                uni.showToast({title: '你的领客币余额不足', icon: 'none'});
                             }
                         }
                     }
-
                 },
                 fail: (error) => {
                     uni.showToast({title: this.$t('pub.showToast.fail'), icon: 'none'});
-                }
+                },
             });
-
         },
 
+        // Toggles
         chatItemSelectorToggle() {
             this.isChatItemSelectorToggleVisible = !this.isChatItemSelectorToggleVisible
         },
         giftToggle() {
             this.isGiftVisible = !this.isGiftVisible
         }
+    },
+    watch: {
+        conversation: {
+            immediate: true,
+            handler() {
+                this.isEligibleSendMsg();
+            },
+        },
     },
 };
 </script>
