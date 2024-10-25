@@ -74,13 +74,6 @@ public class MessageServiceImpl extends ServiceImpl<MessageMapper, Message> impl
         return (Page<Message>) messagePage;
     }
 
-    @Override
-    public Page<Message> searchContacts(Map<String, Object> params, int page, int size) {
-        IPage<Message> messagePage = new Page<>(page, size);
-        messagePage = messageMapper.searchContacts(messagePage, params);
-        return (Page<Message>) messagePage;
-    }
-
     /*U*/
     @Override
     public boolean update(Long id, Map<String, Object> changes) {

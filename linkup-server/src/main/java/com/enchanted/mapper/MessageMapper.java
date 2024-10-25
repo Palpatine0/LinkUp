@@ -13,7 +13,5 @@ import java.util.Map;
 public interface MessageMapper extends BaseMapper<Message> {
     IPage<Message> search(IPage<Message> page, @Param("params") Map<String, Object> params);
 
-    IPage<Message> searchContacts(IPage<Message> page, @Param("params") Map<String, Object> params);
-
     int markAsRead(@Param("messageIds") List<Long> messageIds);
 }

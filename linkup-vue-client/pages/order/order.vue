@@ -139,7 +139,7 @@ export default {
     onShow() {
         this.isUserLogin = uni.getStorageSync(getApp().globalData.data.userLoginKey) == true ? true : false;
         if(this.isUserLogin) {
-            this.reload()
+            this.reload();
         }
     },
     methods: {

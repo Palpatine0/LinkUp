@@ -36,32 +36,6 @@
         ORDER BY created_at DESC
     </select>
 
-    <select id="searchContacts" resultType="com.enchanted.entity.Message">
-        SELECT * FROM `message`
-        <where>
-            <if test="params.id != null and params.id != ''">
-                AND id = #{params.id}
-            </if>
-            <if test="params.senderId != null and params.senderId != ''">
-                AND sender_id = #{params.senderId}
-            </if>
-            <if test="params.recipientId != null and params.recipientId != ''">
-                AND recipient_id = #{params.recipientId}
-            </if>
-            <if test="params.status != null">
-                AND status = #{params.status}
-            </if>
-            <if test="params.isRead != null">
-                AND is_read = #{params.isRead}
-            </if>
-            <if test="params.keyword != null and params.keyword != ''">
-                AND content LIKE CONCAT('%', #{params.keyword}, '%')
-            </if>
-            <!-- Add more conditions as needed -->
-        </where>
-        ORDER BY created_at DESC
-    </select>
-
     <update id="markAsRead">
         UPDATE `message`
         SET is_read = 1

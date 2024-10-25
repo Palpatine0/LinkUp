@@ -18,7 +18,7 @@
         <app-input mode="text" :placeholder="$t('pub.page.search')" col="12" class="mb-2"/>
         <!-- Contact List -->
         <scroll-view :scroll-top="0" scroll-y="true" style="height: 80vh">
-            <div v-for="(contact, index) in contactList" :key="contact.id">
+            <div v-for="(contact, index) in dataList" :key="contact.id">
                 <div
                     @click="contactRedirect(contact.id)"
                     class="contact-item"
@@ -30,7 +30,7 @@
                     </div>
                 </div>
                 <!-- Separator div instead of border-bottom -->
-                <div v-if="index !== contactList.length - 1" class="separator"></div>
+                <div v-if="index !== dataList.length - 1" class="separator"></div>
             </div>
         </scroll-view>
     </div>
@@ -44,7 +44,7 @@ export default {
         return {
             isUserLogin: false,
             userId: uni.getStorageSync(getApp().globalData.data.userInfoKey).id,
-            contactList: [],
+            dataList: [],
         };
     },
     onShow() {
@@ -56,54 +56,57 @@ export default {
     methods: {
         reload() {
             if(this.isUserLogin) {
+                this.resetPagination();
                 this.getDataList();
             }
         },
+        buildApiParams() {
+            let url = getApp().globalData.data.requestUrl + this.$API.conversation.searchContacts;
+            let method = 'POST';
+            let baseData = {
+                clientId: uni.getStorageSync(getApp().globalData.data.userInfoKey).id,
+                page: this.page,
+                size: this.pageSize,
+            };
+            let data = {};
+
+            if(this.searchKeyword && this.searchKeyword.trim() !== '') {
+                data = {
+                    ...baseData,
+                    keyword: this.searchKeyword,
+                };
+            } else {
+                data = {
+                    ...baseData,
+                };
+            }
+            return {url, method, data};
+        },
+        onSearchInput() {
+            this.reload();
+        },
         getDataList() {
-            this.contactList = [];
-            if(this.$common.isEmpty(this.userId)) return;
-            if(this.loading) return; // Prevent multiple requests
+            if(this.loading || !this.hasMore) return
             this.loading = true;
-            const uniqueUserIds = new Set(); // To store all unique contact IDs
+            const {url, method, data} = this.buildApiParams();
 
             uni.request({
-                url: getApp().globalData.data.requestUrl + this.$API.conversation.search,
-                method: 'POST',
-                data: {
-                    clientId: this.userId,
-                    page: this.page,
-                    size: this.pageSize,
-                },
+                url: url,
+                method: method,
+                data: data,
                 success: (res) => {
-                    const contactData = res.data.list;
-                    contactData.forEach(contact => {
-                        uniqueUserIds.add(contact.servantId);
-                    });
-                    console.log("uniqueUserIds")
-                    console.log(uniqueUserIds)
-                    uniqueUserIds.forEach(id => {
-                        this.getUserDetails(id);
-                    });
+                    const contacts = res.data.list;
+                    if(this.page === 1) {
+                        this.dataList = [];
+                    }
+                    if(contacts.length < this.pageSize) {
+                        this.hasMore = false;
+                    }
+                    this.dataList = this.dataList.concat(contacts);
+
+                    this.page += 1;
                 },
-                fail: (err) => {
-                    this.loading = false;
-                }
-            });
-        },
-        getUserDetails(id) {
-            uni.request({
-                url: getApp().globalData.data.requestUrl + this.$API.user.search,
-                method: "POST",
-                data: {
-                    id: id,
-                },
-                success: (res) => {
-                    this.contactList.push(res.data.list[0])
-                },
-                complete: () => {
-                    this.loading = false;
-                },
-                fail: (err) => {
+                complete: (err) => {
                     this.loading = false;
                 }
             });

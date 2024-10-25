@@ -23,4 +23,28 @@
         WHERE servant_response_required = 1
         AND last_client_message_time &lt;= #{thresholdTime}
     </select>
+
+    <select id="searchContacts" resultType="com.enchanted.entity.User">
+        SELECT u.*
+        FROM conversation c
+        INNER JOIN `user` u ON
+        <choose>
+            <when test="clientId != null">
+                c.servant_id = u.id
+            </when>
+            <when test="servantId != null">
+                c.client_id = u.id
+            </when>
+        </choose>
+        WHERE
+        <choose>
+            <when test="clientId != null">
+                c.client_id = #{clientId}
+            </when>
+            <when test="servantId != null">
+                c.servant_id = #{servantId}
+            </when>
+        </choose>
+        ORDER BY c.last_client_message_time DESC
+    </select>
 </mapper>

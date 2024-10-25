@@ -2,6 +2,7 @@ package com.enchanted.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.enchanted.entity.Conversation;
+import com.enchanted.entity.User;
 import com.enchanted.service.IConversationService;
 import com.enchanted.vo.R;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -38,6 +39,18 @@ public class ConversationController {
         requestData.remove("size");
 
         Page<Conversation> conversationPage = conversationService.search(requestData, page, size);
+        return R.paginate(conversationPage);
+    }
+
+    @PostMapping("/search-contacts")
+    public R searchContacts(@RequestBody Map<String, Object> requestData) {
+        int page = requestData.get("page") != null ? Integer.parseInt(requestData.get("page").toString()) : 1;
+        int size = requestData.get("size") != null ? Integer.parseInt(requestData.get("size").toString()) : 10;
+
+        requestData.remove("page");
+        requestData.remove("size");
+
+        Page<User> conversationPage = conversationService.searchContacts(requestData, page, size);
         return R.paginate(conversationPage);
     }
 

@@ -3,6 +3,8 @@ package com.enchanted.service;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.enchanted.entity.Conversation;
+import com.enchanted.entity.Message;
+import com.enchanted.entity.User;
 
 import java.util.Map;
 
@@ -13,6 +15,8 @@ public interface IConversationService extends IService<Conversation> {
 
     /* R */
     Page<Conversation> search(Map<String, Object> params, int page, int size);
+
+    Page<User> searchContacts(Map<String, Object> params, int page, int size);
 
     /* U */
     boolean update(Long id, Map<String, Object> changes);

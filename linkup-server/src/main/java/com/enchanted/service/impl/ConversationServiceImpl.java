@@ -39,6 +39,7 @@ public class ConversationServiceImpl extends ServiceImpl<ConversationMapper, Con
 
     @Autowired
     private MessageMapper messageMapper;
+
     @Autowired
     private GiftMapper giftMapper;
 
@@ -55,6 +56,28 @@ public class ConversationServiceImpl extends ServiceImpl<ConversationMapper, Con
         conversationPage = conversationMapper.search(conversationPage, params);
         return (Page<Conversation>) conversationPage;
     }
+
+    @Override
+    public Page<User> searchContacts(Map<String, Object> params, int page, int size) {
+        Long clientId = params.get("clientId") != null ? Long.parseLong(params.get("clientId").toString()) : null;
+        Long servantId = params.get("servantId") != null ? Long.parseLong(params.get("servantId").toString()) : null;
+
+        if (clientId == null && servantId == null) {
+            // Return an empty page if neither clientId nor servantId is provided
+            return new Page<>();
+        }
+
+        Page<User> userPage = new Page<>(page, size);
+
+        IPage<User> resultPage = conversationMapper.searchContacts(userPage, clientId, servantId);
+
+        userPage.setRecords(resultPage.getRecords());
+        userPage.setTotal(resultPage.getTotal());
+
+        return userPage;
+    }
+
+
 
     /* U */
     @Override

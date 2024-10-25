@@ -20,8 +20,6 @@ public interface IMessageService extends IService<Message> {
     /*R*/
     Page<Message> search(Map<String, Object> params, int page, int size);
 
-    Page<Message> searchContacts(Map<String, Object> params, int page, int size);
-
     /*U*/
     boolean update(Long id, Map<String, Object> changes);
 

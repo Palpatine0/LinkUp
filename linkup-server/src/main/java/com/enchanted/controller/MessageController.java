@@ -97,21 +97,6 @@ public class MessageController {
         return R.paginate(messagePage);
     }
 
-    @PostMapping("/search-contacts")
-    public R searchContacts(@RequestBody Map<String, Object> requestData) {
-        int page = requestData.get("page") != null ? Integer.parseInt(requestData.get("page").toString()) : 1;
-        int size = requestData.get("size") != null ? Integer.parseInt(requestData.get("size").toString()) : 20;
-
-        if (requestData.get("senderId") == null || requestData.get("recipientId") == null) {
-            return R.error("Empty user data");
-        }
-
-        requestData.remove("page");
-        requestData.remove("size");
-
-        Page<Message> messagePage = messageService.searchContacts(requestData, page, size);
-        return R.paginate(messagePage);
-    }
 
     @GetMapping("/files/{filename:.+}")
     public ResponseEntity<Resource> getFile(@PathVariable String filename) {

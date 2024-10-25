@@ -22,12 +22,12 @@ var $API = {
     // Conversation
     conversation: {
         search: '/conversation/search',
+        searchContacts: '/conversation/search-contacts',
     },
     // Message
     message: {
         save: '/message/save',
         search: '/message/search',
-        searchContacts: '/message/search-contacts',
         markAsRead: '/message/mark-read',
     },
 
