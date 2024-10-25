@@ -51,8 +51,9 @@ export default {
             message: '',
 
             canSendMessage: false,
-
             conversationExpirationTime: '',
+
+            timeouts: [],
 
             isChatItemSelectorToggleVisible: false,
             isGiftVisible: false,
@@ -66,6 +67,9 @@ export default {
                 this.isGiftVisible = visibility;
             }
         );
+    },
+    beforeDestroy() {
+        this.timeouts.forEach((id) => clearTimeout(id));
     },
     methods: {
         isEligibleSendMsg() {
@@ -94,9 +98,10 @@ export default {
         },
         enableChatForDuration(duration) {
             this.canSendMessage = true;
-            setTimeout(() => {
+            const timeout = setTimeout(() => {
                 this.canSendMessage = false;
             }, duration * 1000);
+            this.timeouts.push(timeout);
         },
 
         sendMessage() {

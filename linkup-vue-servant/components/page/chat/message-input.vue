@@ -8,6 +8,7 @@
         rows="1"
         maxlength="2000"
         auto-height
+        :placeholder="conversationExpirationTime"
     ></textarea>
     <img src="/static/page/chat/send.svg" alt="Send" class="send-button" @click="sendMessage"/>
     <ChatItemSelector v-if="isChatItemSelectorToggleVisible"></ChatItemSelector>
@@ -20,24 +21,96 @@ import ChatItemSelector from "./chat-item-selector.vue";
 export default {
     name: "message-input",
     components: {
-        ChatItemSelector
+        ChatItemSelector,
+    },
+    props: {
+        conversationId: {type: [String, Number], default: null},
+        conversation: {type: Object, default: () => ({})},
     },
     data() {
         return {
             message: '',
-            isChatItemSelectorToggleVisible: false
+
+            canSendMessage: false,
+            conversationExpirationTime: '',
+
+            timeouts: [],
+
+            isChatItemSelectorToggleVisible: false,
         };
     },
+    mounted() {
+        this.isEligibleSendMsg();
+    },
+    beforeDestroy() {
+        this.timeouts.forEach((id) => clearTimeout(id));
+    },
+
     methods: {
+        isEligibleSendMsg() {
+            if(this.conversation && Object.keys(this.conversation).length > 0) {
+                const currentTime = new Date().getTime();
+                const expirationTime = new Date(this.conversation.expirationTime).getTime();
+                const remainingTime = Math.floor((expirationTime - currentTime) / 1000);
+                if(remainingTime > 0) {
+                    this.canSendMessage = true;
+                    this.conversationExpirationTime = this.$t('componentPage>chat>chatWindow.conversationExpireAt') + this.$common.stampToTime(this.conversation.expirationTime, {yyyy: false, ss: false, MM: false, dd: false,});
+                    this.enableChatForDuration(remainingTime);
+                } else {
+                    this.canSendMessage = false;
+                    this.conversationExpirationTime = '';
+                    const timeout = setTimeout(() => {
+                        this.checkForConversationUpdate();
+                    }, 1000);
+                    this.timeouts.push(timeout);
+                }
+            } else {
+                this.canSendMessage = false;
+                this.conversationExpirationTime = '';
+            }
+        },
+        enableChatForDuration(duration) {
+            const timeout = setTimeout(() => {
+                this.canSendMessage = false;
+                this.checkForConversationUpdate();
+            }, duration * 1000);
+            this.timeouts.push(timeout);
+        },
+        checkForConversationUpdate() {
+            if(this.$parent && typeof this.$parent.getConversation === 'function') {
+                this.$parent.getConversation().then(() => {
+                    this.isEligibleSendMsg();
+                });
+            }
+        },
         sendMessage() {
-            if(this.message.trim()) {
-                this.$emit('handleSend', this.message.trim());
-                this.message = '';
+            if(!this.canSendMessage) {
+                uni.showModal({
+                    title: this.$t('componentPage>chat>chatWindow.insufficientTimeModal.title'),
+                    content: this.$t('componentPage>chat>chatWindow.insufficientTimeModal.content'),
+                    showCancel: false,
+                    confirmText: this.$t('pub.modal.button.confirm'),
+                    cancelText: this.$t('pub.modal.button.cancel'),
+                });
+                return;
+            } else {
+                if(this.message.trim()) {
+                    this.$emit('handleSend', this.message.trim());
+                    this.message = '';
+                }
             }
         },
         chatItemSelectorToggle() {
-            this.isChatItemSelectorToggleVisible = !this.isChatItemSelectorToggleVisible
-        }
+            this.isChatItemSelectorToggleVisible = !this.isChatItemSelectorToggleVisible;
+        },
+    },
+    watch: {
+        conversation: {
+            immediate: true,
+            handler() {
+                this.isEligibleSendMsg();
+            },
+        },
     },
 };
 </script>

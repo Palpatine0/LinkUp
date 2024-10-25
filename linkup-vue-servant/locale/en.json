@@ -292,6 +292,11 @@
     "componentPage>service>serviceDetail": {},
     "componentPage>service>serviceDetail>servantList": {},
     "componentPage>chat>chatWindow": {
+        "conversationExpireAt": "Chat available until",
+        "insufficientTimeModal": {
+            "title": "Awaiting a Gift to Start Chatting",
+            "content": "You’re unable to send a message until the user sends a gift. Once a gift is received, you’ll be able to respond and chat with the user for a limited time, depending on the gift type."
+        },
         "showToast": {
             "cannotSendMsg": "You cannot send the message to a client belongs a closed order, unless they sent messages to you"
         }

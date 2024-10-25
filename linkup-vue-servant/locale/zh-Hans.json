@@ -292,6 +292,11 @@
     "componentPage>service>serviceDetail": {},
     "componentPage>service>serviceDetail>servantList": {},
     "componentPage>chat>chatWindow": {
+        "conversationExpireAt": "聊天可用至",
+        "insufficientTimeModal": {
+            "title": "等待用户赠送礼物以开启聊天",
+            "content": "在用户发送礼物之前，您无法发送消息。当收到礼物后，您可以在有限时间内与用户聊天，具体时长取决于礼物类型。"
+        },
         "showToast": {
             "cannotSendMsg": "您不能在订单结束后联系用户，除非他们主动联系您"
         }

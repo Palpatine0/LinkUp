@@ -24,11 +24,12 @@
     </scroll-view>
 
     <MessageInput
+        :conversationId="conversationId"
+        :conversation="conversation"
         @handleSend="handleSend"
     />
 </div>
 </template>
-
 
 <script>
 import ChatHeader from '../../../../components/page/chat/chat-header.vue';
@@ -65,7 +66,7 @@ export default {
         this.contactId = parseInt(params.contactId);
         await this.getUser();
         await this.getContact();
-        await this.getConversation()
+        await this.getConversation();
         this.connectWebSocket();
     },
     onUnload() {
@@ -80,7 +81,7 @@ export default {
                     url: getApp().globalData.data.requestUrl + this.$API.user.search,
                     method: 'POST',
                     data: {
-                        id: this.userId
+                        id: this.userId,
                     },
                     success: (res) => {
                         this.user = res.data.list[0];
@@ -373,7 +374,6 @@ export default {
         }
     }
 };
-
 </script>
 
 <style scoped>
