@@ -70,8 +70,8 @@
         "step4Title": "What is your name?",
         "step4Desc": "Other users will refer to you by this name",
         "step4Placeholder": "Enter your username",
-        "step5Title": "Choose an awesome avatar!",
-        "step5Desc": "Select an avatar by clicking the img below",
+        "step5Title": "Upload an awesome avatar!",
+        "step5Desc": "Upload your recent pic as your avatar ",
         "successSignUp": "Sign Up Complete!",
         "showToast": {
             "incorrectRC": "Referral Code Not Found",

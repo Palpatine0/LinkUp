@@ -71,7 +71,7 @@
         "step4Desc": "请输入您的用户名，让我们更好地了解您",
         "step4Placeholder": "请输入您的用户名",
         "step5Title": "您的头像?",
-        "step5Desc": "点击下方图片以切换不同的头像",
+        "step5Desc": "请上传一张您本人的真实照片",
         "successSignUp": "注册成功!",
         "showToast": {
             "incorrectRC": "邀请码异常",

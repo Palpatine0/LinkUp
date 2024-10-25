@@ -134,8 +134,13 @@
             <p class="center-h">{{ $t('register.step5Desc') }}</p>
         </div>
 
-        <div class="button-wrapper center-h" style="margin-top: 5vh;">
+        <div class="button-wrapper center-h" style="margin-top: 10vh;">
             <img :src="avatar" class="avatar" @click="changeAvatar">
+            <div style="width: 100%;display: flex;flex-direction: row-reverse;">
+                <div class="upload center">
+                    <img src="/static/page/register/up-to-bracket.svg" @click="mediaSelector()">
+                </div>
+            </div>
         </div>
         <app-button shaped size="very-large" class="button-continuation-register" @click="setUserInfo()" width="85vw">
             {{ $t('register.successSignUp') }}
@@ -147,6 +152,7 @@
 
 <script>
 import common from "../../utils/common";
+import $API from "../../api/api";
 
 export default {
     name: "auth",
@@ -181,18 +187,19 @@ export default {
 
             // step 5
             avatarList: [
-                "https://i.imghippo.com/files/9BX9D1726433062.webp",
-                "https://i.imghippo.com/files/RHBfw1726433075.webp",
-                "https://i.imghippo.com/files/4mxDr1726433090.jpg",
-                "https://i.imghippo.com/files/gksLM1726433102.avif",
-                "https://i.imghippo.com/files/KMncW1726433120.webp",
-                "https://i.imghippo.com/files/nHLzE1726433130.webp",
-                "https://i.imghippo.com/files/f3DeT1726433144.jpg",
-                "https://i.imghippo.com/files/Uhflq1726433155.avif",
-                "https://i.imghippo.com/files/wIn1U1726433165.webp",
-                "https://i.imghippo.com/files/U369F1726433184.webp",
-                "https://i.imghippo.com/files/THZqA1726433199.avif",
-                "https://i.imghippo.com/files/MkOeo1726433215.avif"
+                "https://project-looking.oss-cn-beijing.aliyuncs.com/public/image/default-avatar/AGI2.webp",
+                "https://project-looking.oss-cn-beijing.aliyuncs.com/public/image/default-avatar/Building-an-early-warning-system-for-LLM-aided-biological-threat-creation.webp",
+                "https://project-looking.oss-cn-beijing.aliyuncs.com/public/image/default-avatar/Business.jpg",
+                "https://project-looking.oss-cn-beijing.aliyuncs.com/public/image/default-avatar/CustomBlogCover.avif",
+                "https://project-looking.oss-cn-beijing.aliyuncs.com/public/image/default-avatar/DALL_E.jpg",
+                "https://project-looking.oss-cn-beijing.aliyuncs.com/public/image/default-avatar/Explore_what_s_possible_with_the_Cookbook.webp",
+                "https://project-looking.oss-cn-beijing.aliyuncs.com/public/image/default-avatar/Mac_App_Hero.jpg",
+                "https://project-looking.oss-cn-beijing.aliyuncs.com/public/image/default-avatar/apple-art-2a-3x4.webp",
+                "https://project-looking.oss-cn-beijing.aliyuncs.com/public/image/default-avatar/introducing_the_gpt_store.webp",
+                "https://project-looking.oss-cn-beijing.aliyuncs.com/public/image/default-avatar/practices-for-governing-agentic-ai-systems.avif",
+                "https://project-looking.oss-cn-beijing.aliyuncs.com/public/image/default-avatar/start-building-and-api-call.webp",
+                "https://project-looking.oss-cn-beijing.aliyuncs.com/public/image/default-avatar/the-latest-milestone-in-openai-s-effort-in-scalling-up-deep-learning.webp",
+                "https://project-looking.oss-cn-beijing.aliyuncs.com/public/image/default-avatar/weak-to-strong-generalization.avif",
             ],
             avatar: "",
         }
@@ -291,18 +298,18 @@ export default {
                 return new Promise((resolve) => {
                     uni.getSetting({
                         success(res) {
-                            if (res.authSetting['scope.userInfo'] != undefined && res.authSetting['scope.userInfo'] == true) {
+                            if(res.authSetting['scope.userInfo'] != undefined && res.authSetting['scope.userInfo'] == true) {
                                 uni.getUserInfo({
-                                    success: function (res) {
+                                    success: function(res) {
                                         resolve(res.userInfo);
                                     },
                                 });
-                            }else{
+                            } else {
                                 uni.authorize({
                                     scope: 'scope.userInfo',
                                     success() {
                                         uni.getUserInfo({
-                                            success: function (res) {
+                                            success: function(res) {
                                                 resolve(res.userInfo);
                                             },
                                         });
@@ -381,6 +388,84 @@ export default {
             const randomIndex = Math.floor(Math.random() * this.avatarList.length);
             this.avatar = this.avatarList[randomIndex];
             this.$set(this.userData, 'avatar', this.avatar);
+        },
+        mediaSelector() {
+            uni.showActionSheet({
+                itemList: [
+                    this.$t('component>chat>chatItemSelector>gallery.choseFromAlbum'),
+                    this.$t('component>chat>chatItemSelector>gallery.takePhoto')
+                ],
+                success: (res) => {
+                    let sourceType = res.tapIndex === 0 ? ['album'] : ['camera'];
+                    uni.chooseImage({
+                        count: 1,
+                        sizeType: ['original', 'compressed'],
+                        sourceType: sourceType,
+                        success: (chooseResult) => {
+                            const filePath = chooseResult.tempFilePaths[0];
+                            uni.showLoading({title: this.$t('pub.showLoading.loading')});
+                            uni.request({
+                                url: getApp().globalData.data.requestUrl + $API.file.signature,
+                                method: 'GET',
+                                data: {
+                                    dir: 'public/user/' + this.userData.identifier + '/avatar/'
+                                },
+                                success: (policyRes) => {
+                                    if(policyRes.statusCode === 200 && policyRes.data.status === 200) {
+                                        const policyData = policyRes.data.data;
+                                        const host = policyData.host;
+                                        const dir = policyData.dir;
+
+                                        // Generate a unique filename
+                                        const filename = dir + Date.now() + '_' + Math.floor(Math.random() * 10000);
+
+                                        // Prepare formData
+                                        let formData = {
+                                            'key': filename,
+                                            'policy': policyData.policy,
+                                            'OSSAccessKeyId': policyData.accessid,
+                                            'signature': policyData.signature,
+                                            'success_action_status': '200',
+                                        };
+
+                                        // Upload file directly to OSS
+                                        uni.uploadFile({
+                                            url: host,
+                                            filePath: filePath,
+                                            name: 'file',
+                                            formData: formData,
+                                            success: (uploadFileRes) => {
+                                                uni.hideLoading();
+                                                if(uploadFileRes.statusCode === 200) {
+                                                    const imageUrl = host + '/' + filename;
+                                                    this.userData.avatar = imageUrl;
+                                                    this.avatar = imageUrl;
+                                                    console.log("imageUrl")
+                                                    console.log(imageUrl)
+                                                    this.$set(this.userData, 'avatar', imageUrl);
+                                                } else {
+                                                    uni.showToast({title: 'Upload failed', icon: 'none'});
+                                                }
+                                            },
+                                            fail: () => {
+                                                uni.hideLoading();
+                                                uni.showToast({title: 'Upload failed', icon: 'none'});
+                                            }
+                                        });
+                                    } else {
+                                        uni.hideLoading();
+                                        uni.showToast({title: 'Failed to get policy', icon: 'none'});
+                                    }
+                                },
+                                fail: () => {
+                                    uni.hideLoading();
+                                    uni.showToast({title: 'Failed to get policy', icon: 'none'});
+                                }
+                            });
+                        }
+                    });
+                }
+            });
         },
 
         // done
@@ -551,6 +636,18 @@ export default {
     height: 230px;
     object-fit: cover;
     border-radius: 50%;
-    margin-bottom: -20px;
+}
+
+.upload {
+    margin-top: -70px;
+    background-color: #b2c8f8;
+    border-radius: 50%;
+    width: 60px;
+    height: 60px;
+}
+
+.upload img {
+    width: 26px;
+    height: 26px;
 }
 </style>

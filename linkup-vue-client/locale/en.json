@@ -72,7 +72,7 @@
         "step4Desc": "Other users will refer to you by this name",
         "step4Placeholder": "Enter your username",
         "step5Title": "Choose an awesome avatar!",
-        "step5Desc": "Select an avatar by clicking the img below",
+        "step5Desc": "Select an avatar by clicking the img below or update an img",
         "successSignUp": "Sign Up Complete!",
         "showToast": {
             "incorrectRC": "Referral Code Not Found",
