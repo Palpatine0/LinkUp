@@ -3,7 +3,7 @@
     <!-- Heading section -->
     <div style="display: flex; align-items: center; justify-content: space-between;">
         <app-title type="h1" bold="true">{{ $t('order.myOrders') }}</app-title>
-        <img v-if="isUserLogin" src="/static/common/create.svg" style="width: 28px; height: 28px;" @click="orderInitiateRedirect"/>
+        <!--<img v-if="isUserLogin" src="/static/common/create.svg" style="width: 28px; height: 28px;" @click="orderInitiateRedirect"/>-->
     </div>
 
     <div v-if="!isUserLogin" class="center-h">
@@ -184,7 +184,7 @@ export default {
                 url: url,
                 method: method,
                 data: data,
-                success: async (res) => {
+                success: async(res) => {
                     const orders = res.data.list;
                     if(this.page === 1) {
                         this.dataList = [];
@@ -194,7 +194,7 @@ export default {
                     }
                     this.dataList = this.dataList.concat(orders);
 
-                    for (const order of orders) {
+                    for(const order of orders) {
                         order.createdAt = order.createdAt ? this.$common.stampToTime(order.createdAt) : '';
 
                         if(!this.$common.isEmpty(order.servantId)) {
