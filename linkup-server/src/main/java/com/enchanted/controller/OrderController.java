@@ -36,10 +36,6 @@ public class OrderController {
         int page = requestData.get("page") != null ? Integer.parseInt(requestData.get("page").toString()) : 1;
         int size = requestData.get("size") != null ? Integer.parseInt(requestData.get("size").toString()) : 10;
 
-        if (requestData.get("clientId") == null) {
-            return R.error("Empty user data");
-        }
-
         requestData.remove("page");
         requestData.remove("size");
 

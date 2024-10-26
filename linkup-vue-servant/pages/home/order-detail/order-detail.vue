@@ -114,8 +114,10 @@ export default {
                 },
                 success: (res) => {
                     const userId = uni.getStorageSync(getApp().globalData.data.userInfoKey).id;
-                    this.isQuotedPriceRequestSent = res.data.list.some(item => item.servantId === userId);
-                    this.increasedQuotedPriceRequestOptType = 1
+                    this.isQuotedPriceRequestSent = res.data.list.some(item => item.servantId == userId);
+                    if(this.isQuotedPriceRequestSent){
+                        this.increasedQuotedPriceRequestOptType = 1
+                    }
                 },
             });
         },

@@ -23,26 +23,24 @@ export default {
     name: "home",
     data() {
         return {
-            user: {},
             userList: [],
             serviceTypeList: []
         };
     },
-    onLoad(param) {
-        console.log("HOME PARAM")
-        console.log(param)
+    onShow(param) {
+        this.reload();
         if(!this.$common.isEmpty(param.referrerId)) {
             uni.setStorageSync('referrerId', param.referrerId);
-            console.log("uni.getStorageSync('referrerId')")
-            console.log(uni.getStorageSync('referrerId'))
         }
-        this.user = uni.getStorageSync(getApp().globalData.data.userInfoKey)
-        this.getDataList();
     },
     methods: {
+        reload(){
+            console.log("reload(){")
+            this.getDataList();
+        },
         getDataList() {
-            if(!this.hasMore || this.loading) return;
-            this.loading = true;
+            // if(!this.hasMore || this.loading) return;
+            // this.loading = true;
             uni.request({
                 url: getApp().globalData.data.requestUrl + this.$API.user.search,
                 method: "POST",
@@ -53,7 +51,7 @@ export default {
                 },
                 success: (res) => {
                     let users = res.data.list;
-                    users = users.filter(user => user.id !== this.user.id);
+                    users = users.filter(user => user.id !== uni.getStorageSync(getApp().globalData.data.userInfoKey).id,);
 
                     if(this.page === 1) {
                         this.userList = [];

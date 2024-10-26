@@ -199,8 +199,6 @@ export default {
         };
     },
     onLoad(param) {
-        console.log("param");
-        console.log(param);
         this.formData.requiredServantType = param.serviceType;
         this.serviceName = param.serviceName;
         this.serviceNameCn = param.serviceNameCn;
@@ -312,7 +310,7 @@ export default {
                     url: getApp().globalData.data.requestUrl + this.$API.user.search,
                     method: 'POST',
                     data: {
-                        id: uni.getStorageSync(app.globalData.data.userInfoKey).id,
+                        id: uni.getStorageSync(getApp().globalData.data.userInfoKey).id,
                     },
                     success: (res) => {
                         this.user = res.data.list[0];
