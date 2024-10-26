@@ -39,7 +39,10 @@
                         <div class="address-details">
                             {{ address.addressName }}
                         </div>
-                        <span style="font-size: 14px; color: gray;">{{ address.detail }}</span>
+                        <div class="justify-SB">
+                            <span style="font-size: 14px; color: gray;">{{ address.detail }}</span>
+                            <img class="icon" src="/static/common/trash-can-solid.svg" @click.stop="deleteAddress(address.id)">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -61,10 +64,13 @@ export default {
         };
     },
     onShow() {
-        this.resetPagination();
-        this.getDataList();
+        this.reload()
     },
     methods: {
+        reload(){
+            this.resetPagination();
+            this.getDataList();
+        },
         buildApiParams() {
             let url = getApp().globalData.data.requestUrl + this.$API.address.search;
             let method = 'POST';
@@ -118,6 +124,34 @@ export default {
                 },
                 complete: () => {
                     this.loading = false;
+                },
+            });
+        },
+
+        deleteAddress(aid,){
+            uni.showModal({
+                title: this.$t('pub.modal.title.confirm'),
+                content: this.$t('pub.modal.content.confirm'),
+                showCancel: true,
+                confirmText: this.$t('pub.modal.button.confirm'),
+                cancelText: this.$t('pub.modal.button.cancel'),
+                success: (res) => {
+                    if(res.confirm) {
+                        uni.request({
+                            url: getApp().globalData.data.requestUrl + this.$API.address.delete,
+                            method: 'POST',
+                            data: {
+                                id: aid
+                            },
+                            success: (res) => {
+                                uni.showToast({title: this.$t('pub.showToast.success'), icon: 'none'});
+                                this.reload()
+                            },
+                            fail: (err) => {
+                                uni.showToast({title: this.$t('pub.showToast.fail'), icon: 'none'});
+                            }
+                        });
+                    }
                 },
             });
         },

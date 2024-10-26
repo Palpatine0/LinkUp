@@ -14,7 +14,9 @@
         "button": {
             "confirm": "Confirm",
             "cancel": "Cancel",
-            "submit": "Submit"
+            "submit": "Submit",
+            "save": "Save",
+            "update": "Update"
         },
         "gender": {
             "m": "Male",
@@ -35,10 +37,12 @@
         },
         "modal": {
             "title": {
-                "auth": "Authorization"
+                "auth": "Authorization",
+                "confirm": "Confirm"
             },
             "content": {
-                "auth": "To use the full version of this app, place allow us to access some of your account info"
+                "auth": "To use the full version of this app, place allow us to access some of your account info",
+                "confirm": "Confirm your option"
             },
             "button": {
                 "confirm": "Confirm",

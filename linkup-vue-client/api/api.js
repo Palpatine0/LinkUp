@@ -60,6 +60,7 @@ var $API = {
         save: '/address/save',
         search: '/address/search',
         update: '/address/update',
+        delete: '/address/delete',
     },
 
     // Gift

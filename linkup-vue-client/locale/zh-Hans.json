@@ -14,7 +14,9 @@
         "button": {
             "confirm": "确认",
             "cancel": "取消",
-            "submit": "提交"
+            "submit": "提交",
+            "save": "保存",
+            "update": "更新"
         },
         "gender": {
             "m": "男",
@@ -35,10 +37,12 @@
         },
         "modal": {
             "title": {
-                "auth": "授权"
+                "auth": "授权",
+                "confirm": "请确认"
             },
             "content": {
-                "auth": "请授权您的个人信息以使用完整服务"
+                "auth": "请授权您的个人信息以使用完整服务",
+                "confirm": "请确认您的操作"
             },
             "button": {
                 "confirm": "确认",
