@@ -39,7 +39,9 @@
         class="input-common input-number"
         placeholder=" "
     />
+
     <label :class="{ 'placeholder-move': isFocused || hasValue }" class="placeholder">{{ placeholder }}</label>
+    <div v-if="validationMessage" class="validation-message">{{ validationMessage }}</div>
 </div>
 </template>
 
@@ -51,18 +53,18 @@ export default {
         };
     },
     props: {
-        value: { type: [String, Number], default: '' },
-        mode: { type: String, default: 'text' },
-        col: { type: String, default: '12' },
-        placeholder: { type: String, default: '' },
-        color: { type: String, default: '#f3f2f6' }, // Prop for background color
+        value: {type: [String, Number], default: ''},
+        mode: {type: String, default: 'text'},
+        placeholder: {type: String, default: ''},
+        color: {type: String, default: '#f3f2f6'},
+        col: {type: String, default: '12'},
+        validationMessage: {type: String, default: ''},
     },
     computed: {
         colPercentage() {
             return (this.col / 12) * 100;
         },
         hasValue() {
-            // Check if value is not null, undefined, or an empty string
             return this.value !== null && this.value !== undefined && this.value !== '';
         },
     },
@@ -73,8 +75,8 @@ export default {
         onNumberInput(event) {
             const value = event.target.value;
             // Ensure the input is numeric only
-            const numericValue = value.replace(/[^0-9]/g, ''); // Removes any non-numeric characters
-            this.$emit('input', numericValue); // Emit only numeric value
+            const numericValue = value.replace(/[^0-9]/g, '');
+            this.$emit('input', numericValue);
         },
     },
 };
@@ -125,5 +127,14 @@ export default {
 
 .input-focused {
     /* Add styles for focused input if necessary */
+}
+
+.validation-message {
+    color: red;
+    font-size: 12px;
+    margin-top: 4px;
+    position: absolute;
+    top: 34px;
+    left: 10px;
 }
 </style>

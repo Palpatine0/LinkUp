@@ -290,7 +290,9 @@
         "detailedAddress": "Detailed Address",
         "detailPlaceholder": "Please enter detailed address",
         "saveBtn": "Save",
-        "updateBtn": "Update"
+        "updateBtn": "Update",
+
+        "phoneValidationMessage": "Please enter a 11 digit number"
     },
 
     "//////": "profile > data",

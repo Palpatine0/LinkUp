@@ -290,7 +290,9 @@
         "detailedAddress": "详细地址",
         "detailPlaceholder": "请输入详细地址",
         "saveBtn": "保存地址",
-        "updateBtn": "更新地址"
+        "updateBtn": "更新地址",
+
+        "phoneValidationMessage": "请输入11位的手机号"
     },
 
     "//////": "profile > data",

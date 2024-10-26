@@ -25,6 +25,8 @@
         col="12"
         class="mb-2"
         v-model="address.phoneNumber"
+        @input="clearPhoneValidation"
+        :validationMessage="showValidationMessage ? phoneValidationMessage : ''"
     />
 
     <!-- Location -->
@@ -77,7 +79,10 @@ export default {
                 latitude: null,
                 longitude: null,
             },
-            addressId: null
+            addressId: null,
+
+            phoneValidationMessage: this.$t('profile>address>addressManage.phoneValidationMessage'),
+            showValidationMessage: false
         };
     },
     onLoad(options) {
@@ -157,20 +162,25 @@ export default {
             })
         },
 
+        clearPhoneValidation() {
+            this.showValidationMessage = false; // Hide the validation message
+        },
+
         // Submit address form
         formSubmit() {
-            const url = this.addressId ? getApp().globalData.data.requestUrl + this.$API.address.update : getApp().globalData.data.requestUrl + this.$API.address.save;
-            const method = this.addressId ? 'POST' : 'POST';
-
-            const addressData = {
-                ...this.address,
-                id: this.addressId ? this.addressId : undefined
-            };
+            if (this.address.phoneNumber.length !== 11) {
+                this.phoneValidationMessage = this.$t('profile>address>addressManage.phoneValidationMessage');
+                this.showValidationMessage = true;
+                return;
+            }
 
             uni.request({
-                url: url,
-                method: method,
-                data: addressData,
+                url: this.addressId ? getApp().globalData.data.requestUrl + this.$API.address.update : getApp().globalData.data.requestUrl + this.$API.address.save,
+                method: 'POST',
+                data: {
+                    ...this.address,
+                    id: this.addressId ? this.addressId : undefined
+                },
                 success: (res) => {
                     uni.showToast({title: this.$t('pub.showToast.success'), icon: 'none'});
                     uni.navigateTo({
