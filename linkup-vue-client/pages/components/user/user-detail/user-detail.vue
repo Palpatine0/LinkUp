@@ -32,8 +32,8 @@
         </scroll-view>
 
         <!-- Button Section (Fixed at Bottom) -->
-        <div class="fix-bottom">
-            <div class="app-button" @click="chatWindowRedirect">{{$t('componentPage>user>userDetail.startChatting')}}</div>
+        <div v-if="showChatBtn" class="fix-bottom">
+            <div class="app-button" @click="chatWindowRedirect">{{ $t('componentPage>user>userDetail.startChatting') }}</div>
         </div>
     </div>
 </div>
@@ -46,13 +46,21 @@ export default {
             userId: '',
             user: {},
             userServant: {},
-            topSectionHeight: 46, // Initial height of the top section
-            scrollViewHeight: 54, // Initial height of the scroll view
-            maxScroll: 30, // Maximum amount the top section can shrink
+
+            topSectionHeight: 46,
+            scrollViewHeight: 54,
+            maxScroll: 30,
+
+            showChatBtn: true
         };
     },
     onLoad(params) {
-        this.userId = params.userId; // Assuming you're using Vue Router
+        console.log("UD")
+        console.log(params)
+        this.userId = params.userId;
+        if(!this.$common.isEmpty(params.showChatBtn)) {
+            this.showChatBtn = params.showChatBtn == "false" ? false : true;
+        }
         this.getUser();
         this.getUserServant();
     },
@@ -94,10 +102,10 @@ export default {
             let newScrollViewHeight = 54 + (scrollTop / 10);
 
             // Set minimum and maximum height limits
-            if (newTopHeight < 25) {
+            if(newTopHeight < 25) {
                 newTopHeight = 25; // Minimum height
             }
-            if (newScrollViewHeight > 75) {
+            if(newScrollViewHeight > 75) {
                 newScrollViewHeight = 75; // Maximum height
             }
 

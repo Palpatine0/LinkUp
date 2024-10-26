@@ -3,6 +3,7 @@
     <ChatHeader
         :randomNum="randomNum"
         :username="contact.nickname"
+        :uid="contact.id"
         :avatar="contact.avatar"
     />
 
@@ -369,6 +370,8 @@ export default {
                 this.socketOpen = false;
             });
         },
+
+
     }
 };
 
