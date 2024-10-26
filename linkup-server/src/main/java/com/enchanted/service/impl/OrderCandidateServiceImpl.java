@@ -55,7 +55,6 @@ public class OrderCandidateServiceImpl extends ServiceImpl<OrderCandidateMapper,
                 order.setCountdownStartAt(new Date());
                 orderService.updateById(order);
             }
-            orderService.startServantSelectionMonitor(orderCandidate.getOrderId());
         }else {
             Order order = orderService.getById(orderCandidate.getOrderId());
             order.setStatus(0);
@@ -63,10 +62,6 @@ public class OrderCandidateServiceImpl extends ServiceImpl<OrderCandidateMapper,
             candidateCount++;
             order.setCandidateCount(candidateCount);
             orderService.updateById(order);
-        }
-
-        if (isSaved) {
-            orderService.stopAutoRefundMonitor(orderCandidate.getOrderId());
         }
 
         return isSaved;

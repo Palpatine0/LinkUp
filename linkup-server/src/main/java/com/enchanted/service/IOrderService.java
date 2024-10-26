@@ -28,15 +28,6 @@ public interface IOrderService extends IService<Order> {
 
     boolean reviewClient(Long orderId);
 
-    void startServantSelectionMonitor(Long orderId);
-
-    void stopServantSelectionMonitor(Long orderId);
-
-    void startAutoRefundMonitor(Long orderId);
-
-    void stopAutoRefundMonitor(Long orderId);
-
-
     /*D*/
     boolean delete(Long id);
 

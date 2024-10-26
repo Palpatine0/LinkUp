@@ -11,10 +11,10 @@
                 <div class="flex" style="margin: 3px 0 30px -6px">
                     <div class="gender-icon-wrapper">
                         <div v-if="user.gender == 0">
-                            <img class="gender-icon" src="/static/miscellaneous/male.svg" style="margin: 1px 0 0 10px !important;">
+                            <div class="gender-icon">👨‍💻</div>
                         </div>
                         <div v-else>
-                            <img class="gender-icon" src="/static/miscellaneous/female.svg" style="margin: 1px 0 0 10px !important;">
+                            <div class="gender-icon">👩‍💻</div>
                         </div>
                     </div>
                     <app-title type="h3" bold="true" style="color: white; position: relative; left: 10px; top: -2px;">
@@ -55,8 +55,6 @@ export default {
         };
     },
     onLoad(params) {
-        console.log("UD")
-        console.log(params)
         this.userId = params.userId;
         if(!this.$common.isEmpty(params.showChatBtn)) {
             this.showChatBtn = params.showChatBtn == "false" ? false : true;
@@ -199,7 +197,12 @@ export default {
 .gender-icon-wrapper {
     background-color: white;
     border-radius: 15px;
-    width: 40px;
+    width: 42px;
     height: 22px;
+}
+
+.gender-icon {
+    margin: -4px 0 0 10px;
+    font-size: 20px;
 }
 </style>

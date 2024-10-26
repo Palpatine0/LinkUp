@@ -18,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Lazy;
 import org.springframework.scheduling.TaskScheduler;
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.ReflectionUtils;
@@ -29,6 +30,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.concurrent.ConcurrentHashMap;
@@ -59,14 +61,6 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
     @Autowired
     private UserMapper userMapper;
 
-    @Autowired
-    private TaskScheduler taskScheduler;
-
-    // Maps to keep track of scheduled tasks
-    private final Map<Long, ScheduledFuture<?>> autoRefundTasks = new ConcurrentHashMap<>();
-    private final Map<Long, ScheduledFuture<?>> autoSelectionRefundTasks = new ConcurrentHashMap<>();
-    private final Map<Long, ScheduledFuture<?>> autoRatingTasks = new ConcurrentHashMap<>();
-    private final Map<Long, ScheduledFuture<?>> autoCompletionTasks = new ConcurrentHashMap<>();
 
     /*C*/
     @Override
@@ -106,7 +100,6 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             transaction.setDescriptionCn(TransactionConstant.CLIENT_ORDER_PAYMENT_CN);
             transactionService.save(transaction);
         }
-        startAutoRefundMonitor(order.getId());
         return isSaved;
     }
 
@@ -123,71 +116,6 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         return "LK-ORD-" + currentTime + "-" + randomNumber;
     }
 
-    @Override
-    public void startAutoRefundMonitor(Long orderId) {
-        Runnable task = () -> {
-            // Check if any candidates picked this order
-            boolean hasCandidates = orderCandidateService.hasCandidatesForOrder(orderId);
-
-            // If no candidate picked the order, auto-refund the order
-            if (!hasCandidates) {
-                Order order = this.getById(orderId);
-                if (order != null && order.getServantId() == null) {
-                    cancelOrder(order);  // No servant picked, full refund
-                }
-            }
-
-            // Remove the task from the map after execution
-            autoRefundTasks.remove(orderId);
-        };
-
-        // Schedule the task with the delay from constants
-        ScheduledFuture<?> future = taskScheduler.schedule(
-            task,
-            new Date(System.currentTimeMillis() + OrderConstant.AUTO_REFUND_MONITOR_DELAY)
-        );
-
-        autoRefundTasks.put(orderId, future);
-    }
-
-    @Override
-    public void stopAutoRefundMonitor(Long orderId) {
-        ScheduledFuture<?> future = autoRefundTasks.get(orderId);
-        if (future != null && !future.isCancelled()) {
-            future.cancel(true);
-            autoRefundTasks.remove(orderId);
-        }
-    }
-
-    @Override
-    public void startServantSelectionMonitor(Long orderId) {
-        Runnable task = () -> {
-            Order order = this.getById(orderId);
-            if (order != null && order.getServantId() == null) {
-                cancelOrder(order);
-            }
-
-            // Remove the task from the map after execution
-            autoSelectionRefundTasks.remove(orderId);
-        };
-
-        // Schedule the task with the delay from constants
-        ScheduledFuture<?> future = taskScheduler.schedule(
-            task,
-            new Date(System.currentTimeMillis() + OrderConstant.SERVANT_SELECTION_MONITOR_DELAY)
-        );
-
-        autoSelectionRefundTasks.put(orderId, future);
-    }
-
-    @Override
-    public void stopServantSelectionMonitor(Long orderId) {
-        ScheduledFuture<?> future = autoSelectionRefundTasks.get(orderId);
-        if (future != null && !future.isCancelled()) {
-            future.cancel(true);
-            autoSelectionRefundTasks.remove(orderId);
-        }
-    }
 
     /*R*/
     @Override
@@ -248,6 +176,98 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         return retBool(updated);
     }
 
+    /**
+     * Auto Refund Monitor
+     * This scheduled method checks for pending orders with no candidates after a specified delay
+     * and cancels them with a full refund to the client.
+     */
+    @Scheduled(fixedDelay = 60000) // Runs every minute
+    public void autoRefundMonitor() {
+        Date now = new Date();
+        Date thresholdTime = new Date(now.getTime() - OrderConstant.AUTO_REFUND_MONITOR_DELAY);
+
+        QueryWrapper<Order> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("status", OrderConstant.PENDING);
+        queryWrapper.isNull("servant_id");
+        queryWrapper.isNull("countdown_start_at");
+        queryWrapper.le("created_at", thresholdTime);
+
+        List<Order> ordersToRefund = orderMapper.selectList(queryWrapper);
+
+        for (Order order : ordersToRefund) {
+            boolean hasCandidates = orderCandidateService.hasCandidatesForOrder(order.getId());
+            if (!hasCandidates) {
+                cancelOrder(order);  // No servant picked, full refund
+            }
+        }
+    }
+
+    /**
+     * Servant Selection Monitor
+     * This scheduled method checks for pending orders where candidates have been added but no servant
+     * has been assigned within a specified delay, and cancels them.
+     */
+    @Scheduled(fixedDelay = 30000) // Runs every minute
+    public void servantSelectionMonitor() {
+        Date now = new Date();
+        Date thresholdTime = new Date(now.getTime() - OrderConstant.SERVANT_SELECTION_MONITOR_DELAY);
+
+        QueryWrapper<Order> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("status", OrderConstant.PENDING);
+        queryWrapper.isNull("servant_id");
+        queryWrapper.isNotNull("countdown_start_at");
+        queryWrapper.le("countdown_start_at", thresholdTime);
+
+        List<Order> ordersToCancel = orderMapper.selectList(queryWrapper);
+
+        for (Order order : ordersToCancel) {
+            cancelOrder(order);
+        }
+    }
+
+    /**
+     * Order Completion Monitor
+     * This scheduled method checks for orders in processing state where the service schedule end time
+     * has passed and marks them as completed.
+     */
+    @Scheduled(fixedDelay = 60000) // Runs every minute
+    public void orderCompletionMonitor() {
+        Date now = new Date();
+
+        QueryWrapper<Order> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("status", OrderConstant.PROCESSING);
+        queryWrapper.le("service_schedule_end", now);
+
+        List<Order> ordersToComplete = orderMapper.selectList(queryWrapper);
+
+        for (Order order : ordersToComplete) {
+            updateStatus(order.getId(), OrderConstant.COMPLETED);
+        }
+    }
+
+    /**
+     * Auto Rating Monitor
+     * This scheduled method checks for completed orders that haven't been rated within a specified delay
+     * and automatically rates them as GOOD.
+     */
+    @Scheduled(fixedDelay = 60000) // Runs every minute
+    public void autoRatingMonitor() {
+        Date now = new Date();
+        Date thresholdTime = new Date(now.getTime() - OrderConstant.AUTO_RATING_MONITOR_DELAY);
+
+        QueryWrapper<Order> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("status", OrderConstant.COMPLETED);
+        queryWrapper.isNull("performance_rating");
+        queryWrapper.le("completed_at", thresholdTime);
+
+        List<Order> ordersToAutoRate = orderMapper.selectList(queryWrapper);
+
+        for (Order order : ordersToAutoRate) {
+            rateServant(order.getId(), OrderConstant.GOOD);
+        }
+    }
+
+
     @Override
     @Transactional
     public boolean updateStatus(Long orderId, int newStatus) {
@@ -305,31 +325,8 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
         // Save the updated order with the servantId
         int updated = orderMapper.updateById(order);
-        if (updated > 0) {
-            startOrderCompletionMonitor(orderId, order.getServiceScheduleEnd());
-        }
 
         return updated > 0;
-    }
-
-    public void startOrderCompletionMonitor(Long orderId, Date serviceScheduleEnd) {
-        Runnable task = () -> {
-            Order order = this.getById(orderId);
-            if (order != null && order.getStatus() == OrderConstant.PROCESSING) {
-                updateStatus(orderId, OrderConstant.COMPLETED);
-            }
-            autoCompletionTasks.remove(orderId);
-        };
-        ScheduledFuture<?> future = taskScheduler.schedule(task, serviceScheduleEnd);
-        autoCompletionTasks.put(orderId, future);
-    }
-
-    public void stopOrderCompletionMonitor(Long orderId) {
-        ScheduledFuture<?> future = autoCompletionTasks.get(orderId);
-        if (future != null && !future.isCancelled()) {
-            future.cancel(true);
-            autoCompletionTasks.remove(orderId);
-        }
     }
 
 
@@ -371,10 +368,6 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         Conversation conversation = conversationMapper.selectOne(wrapper);
         conversation.setIsServantMessagingAvailable(0);
         conversationMapper.updateById(conversation);
-
-        // monitor control
-        stopAutoRefundMonitor(order.getId());
-        startAutoRatingMonitor(order.getId());
     }
 
     private void sendClientReferrerCommission(Order order) {
@@ -511,8 +504,6 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         order.setCanceledAt(new Date());
         orderMapper.updateById(order);
 
-        stopAutoRefundMonitor(order.getId());
-
         // Store the transaction
         Transaction transaction = new Transaction();
         transaction.setCurrencyType(Integer.valueOf(OrderConstant.BALANCE));
@@ -533,7 +524,6 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
      * @param order
      */
     public void processingOrder(Order order) {
-        stopAutoRefundMonitor(order.getId());
         QueryWrapper<Conversation> wrapper = new QueryWrapper<>();
         wrapper.eq("client_id", order.getClientId());
         wrapper.eq("servant_id", order.getServantId());
@@ -576,9 +566,6 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
 
         // Adjust servant's payment based on the rating
         payServantPerformanceAmount(order, rating);
-
-        // Stop the auto-rating monitor task
-        stopAutoRatingMonitor(orderId);
 
         return true;
     }
@@ -669,34 +656,6 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
             transaction.setDescription(TransactionConstant.SERVANT_PERFORMANCE_PAYMENT);
             transaction.setDescriptionCn(TransactionConstant.SERVANT_PERFORMANCE_PAYMENT_CN);
             transactionService.save(transaction);
-        }
-    }
-
-    public void startAutoRatingMonitor(Long orderId) {
-
-        Runnable task = () -> {
-            Order order = this.getById(orderId);
-            if (order != null && order.getPerformanceRating() == null) {
-                rateServant(orderId, OrderConstant.GOOD);
-            }
-            // Remove the task from the map after execution
-            autoRatingTasks.remove(orderId);
-        };
-
-        // Schedule the task with the delay from constants
-        ScheduledFuture<?> future = taskScheduler.schedule(
-            task,
-            new Date(System.currentTimeMillis() + OrderConstant.AUTO_RATING_MONITOR_DELAY)
-        );
-
-        autoRatingTasks.put(orderId, future);
-    }
-
-    public void stopAutoRatingMonitor(Long orderId) {
-        ScheduledFuture<?> future = autoRatingTasks.get(orderId);
-        if (future != null && !future.isCancelled()) {
-            future.cancel(true);
-            autoRatingTasks.remove(orderId);
         }
     }
 

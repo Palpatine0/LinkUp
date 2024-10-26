@@ -180,7 +180,7 @@
         <!-- SERVICE COMPLETE -->
         <div v-if="order.status==orderConstant.COMPLETED" class="center-h">
             <div class="center-h">
-                <img style="width: 140px" src="/static/page/order/check-double.svg">
+                <img style="width: 140px" src="/static/page/order/order-detail/check-double.svg">
             </div>
             <div class="tips-text">
                 <div>{{ $t('order>orderDetail.serviceComplete') }}</div>

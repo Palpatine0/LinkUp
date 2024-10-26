@@ -7,11 +7,11 @@ export default {
     globalData: {
         data: {
             // Dev
-            // requestUrl: "https://localhost:8090",
-            // socketUrl: "wss://localhost:8090",
+            requestUrl: "https://localhost:8090",
+            socketUrl: "wss://localhost:8090",
             // QA
-            requestUrl: "https://looking.cool:8090",
-            socketUrl: "wss://looking.cool:8090",
+            // requestUrl: "https://looking.cool:8090",
+            // socketUrl: "wss://looking.cool:8090",
 
             userLoginKey: "userLoginKey",
             userInfoKey: "userInfoKey",

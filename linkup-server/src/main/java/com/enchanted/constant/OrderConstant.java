@@ -35,8 +35,6 @@ public class OrderConstant {
 
     // Count down timing
     public static final int AUTO_REFUND_MONITOR_DELAY = (int) TimeUnit.MINUTES.toMillis(30);
-    //    public static final int AUTO_REFUND_MONITOR_DELAY = (int) TimeUnit.SECONDS.toMillis(15);
     public static final int SERVANT_SELECTION_MONITOR_DELAY = (int) TimeUnit.MINUTES.toMillis(10);
-    //    public static final int SERVANT_SELECTION_MONITOR_DELAY = (int) TimeUnit.SECONDS.toMillis(10);
     public static final int AUTO_RATING_MONITOR_DELAY = (int) TimeUnit.DAYS.toMillis(1);
 }

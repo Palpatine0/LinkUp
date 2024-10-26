@@ -11,10 +11,10 @@
                 <div class="flex" style="margin: 3px 0 30px -6px">
                     <div class="gender-icon-wrapper">
                         <div v-if="user.gender == 0">
-                            <img class="gender-icon" src="/static/miscellaneous/male.svg" style="margin: 1px 0 0 10px !important;">
+                            <div class="gender-icon">👨‍💻</div>
                         </div>
                         <div v-else>
-                            <img class="gender-icon" src="/static/miscellaneous/female.svg" style="margin: 1px 0 0 10px !important;">
+                            <div class="gender-icon">👩‍💻</div>
                         </div>
                     </div>
                     <app-title type="h3" bold="true" style="color: white; position: relative; left: 10px; top: -2px;">
@@ -32,8 +32,8 @@
         </scroll-view>
 
         <!-- Button Section (Fixed at Bottom) -->
-        <div class="fix-bottom">
-            <div class="app-button" @click="contactRedirect">{{$t('componentPage>user>userDetail.startChatting')}}</div>
+        <div v-if="showChatBtn" class="fix-bottom">
+            <div class="app-button" @click="chatWindowRedirect">{{ $t('componentPage>user>userDetail.startChatting') }}</div>
         </div>
     </div>
 </div>
@@ -46,13 +46,19 @@ export default {
             userId: '',
             user: {},
             userServant: {},
-            topSectionHeight: 46, // Initial height of the top section
-            scrollViewHeight: 54, // Initial height of the scroll view
-            maxScroll: 30, // Maximum amount the top section can shrink
+
+            topSectionHeight: 46,
+            scrollViewHeight: 54,
+            maxScroll: 30,
+
+            showChatBtn: true
         };
     },
     onLoad(params) {
-        this.userId = params.userId; // Assuming you're using Vue Router
+        this.userId = params.userId;
+        if(!this.$common.isEmpty(params.showChatBtn)) {
+            this.showChatBtn = params.showChatBtn == "false" ? false : true;
+        }
         this.getUser();
         this.getUserServant();
     },
@@ -94,10 +100,10 @@ export default {
             let newScrollViewHeight = 54 + (scrollTop / 10);
 
             // Set minimum and maximum height limits
-            if (newTopHeight < 25) {
+            if(newTopHeight < 25) {
                 newTopHeight = 25; // Minimum height
             }
-            if (newScrollViewHeight > 75) {
+            if(newScrollViewHeight > 75) {
                 newScrollViewHeight = 75; // Maximum height
             }
 
@@ -107,7 +113,7 @@ export default {
         },
 
         // Handle contact redirect
-        contactRedirect() {
+        chatWindowRedirect() {
             uni.navigateTo({
                 url: '/pages/components/chat/chat-window/chat-window?contactId=' + this.userId
             });
@@ -191,7 +197,12 @@ export default {
 .gender-icon-wrapper {
     background-color: white;
     border-radius: 15px;
-    width: 40px;
+    width: 42px;
     height: 22px;
+}
+
+.gender-icon {
+    margin: -4px 0 0 10px;
+    font-size: 20px;
 }
 </style>

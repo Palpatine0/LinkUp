@@ -100,7 +100,7 @@ public class ConversationServiceImpl extends ServiceImpl<ConversationMapper, Con
     }
 
     @Scheduled(fixedDelay = ConversationConstant.SERVANT_PENALTY_MONITOR_DELAY) // Runs every minute
-    public void monitorConversations() {
+    public void OverdueConversationsMonitor() {
         Date now = new Date();
         Date thresholdTime = new Date(now.getTime() - ConversationConstant.SERVANT_PENALTY_MONITOR_DELAY);
         List<Conversation> overdueConversations = this.getOverdueConversations(thresholdTime);
