@@ -121,8 +121,13 @@ export default {
                         servantId: this.userId,
                     },
                     success: (res) => {
-                        this.conversation = res.data.list[0];
-                        this.conversationId = this.conversation.id;
+                        if(res.data.status === 200 && res.data.list && res.data.list.length > 0) {
+                            this.conversation = res.data.list[0];
+                            this.conversationId = this.conversation.id;
+                        } else {
+                            this.conversation = {};
+                            this.conversationId = null;
+                        }
                         resolve();
                     },
                     fail: (err) => {
@@ -132,7 +137,7 @@ export default {
             });
         },
         getMessages() {
-            return new Promise(async (resolve, reject) => {
+            return new Promise(async(resolve, reject) => {
                 if(this.loading || !this.hasMore) return;
                 this.loading = true;
 
@@ -145,7 +150,7 @@ export default {
                         page: this.page,
                         size: this.pageSize
                     },
-                    success: async (res) => {
+                    success: async(res) => {
                         const fetchedMessages = res.data.list;
 
                         // If fewer messages are returned than requested, assume no more to load
@@ -183,8 +188,8 @@ export default {
                         type: 'readReceipt',
                         data: {
                             messageIds: unreadMessageIds,
-                            recipientId: this.userId, // The user who read the messages
-                            senderId: this.contactId   // The user who sent the messages
+                            senderId: this.userId,
+                            recipientId: this.contactId
                         }
                     };
                     const messageStr = JSON.stringify(readReceiptData);
@@ -328,32 +333,56 @@ export default {
                 const messageObject = JSON.parse(res.data);
                 const messageData = messageObject.data;
                 const messageType = messageObject.type;
-                if(messageType === 'message') {
-                    // Handle incoming chat message
-                    if(messageData.senderId == this.contactId || messageData.recipientId == this.contactId) {
-                        this.messages.push({
-                            id: messageData.id,
-                            content: messageData.content,
-                            senderId: messageData.senderId,
-                            createdAt: messageData.createdAt,
-                            isRead: messageData.isRead,
-                        });
-                        this.scrollTop = 0;
 
-                        // Send read receipt immediately
-                        if(messageData.senderId == this.contactId) {
-                            this.sendImmediateReadReceipt([messageData.id]);
+                if(messageType === 'message') {
+                    const msgSenderId = messageData.senderId;
+                    const msgRecipientId = messageData.recipientId;
+
+                    // Handle incoming chat message
+                    if(msgSenderId == this.contactId || msgRecipientId == this.contactId) {
+                        if(msgSenderId == this.userId) {
+                            // Update local message with database ID
+                            const index = this.messages.findIndex(msg => msg.tempId == messageData.tempId);
+                            if(index !== -1) {
+                                this.$set(this.messages, index, {
+                                    ...this.messages[index],
+                                    id: messageData.id,
+                                    createdAt: messageData.createdAt,
+                                    isRead: messageData.isRead,
+                                });
+                            } else {
+                                console.warn('User A - Message with tempId not found:', messageData.tempId);
+                            }
+                        } else {
+                            // Handle incoming message from the contact
+                            this.messages.push({
+                                id: messageData.id,
+                                content: messageData.content,
+                                senderId: messageData.senderId,
+                                createdAt: messageData.createdAt,
+                                isRead: messageData.isRead,
+                            });
+                            this.scrollTop = 0;
+
+                            // Send read receipt immediately
+                            if(msgSenderId == this.contactId) {
+                                this.sendImmediateReadReceipt([messageData.id]);
+                            }
                         }
                     }
                 } else if(messageType === 'readReceipt') {
-                    this.messages.forEach(msg => {
-                        if(messageData.tempMessageIds.includes(msg.id) || messageData.messageIds.includes(msg.id)) {
-                            msg.isRead = 1;
+                    const messageIds = (messageData.messageIds || []).map(id => String(id));
+                    const tempMessageIds = (messageData.tempMessageIds || []).map(id => String(id));
+                    this.messages.forEach((msg, index) => {
+                        const msgIdStr = String(msg.id);
+                        const msgTempIdStr = String(msg.tempId);
+                        if(messageIds.includes(msgIdStr) || tempMessageIds.includes(msgTempIdStr)) {
+                            this.$set(this.messages[index], 'isRead', 1);
                         }
                     });
                 } else if(messageType === 'error') {
                     if(messageData == "No permission to initiate conversation") {
-                        for (let i = this.messages.length - 1; i >= 0; i--) {
+                        for(let i = this.messages.length - 1; i >= 0; i--) {
                             if(this.messages[i].senderId === this.userId) {
                                 this.$set(this.messages[i], 'erroring', 1);
                                 break;

@@ -32,10 +32,8 @@
         :conversation="conversation"
         @handleSend="handleSend"
     />
-
 </div>
 </template>
-
 
 <script>
 import ChatHeader from '../../../../components/page/chat/chat-header.vue';
@@ -196,8 +194,8 @@ export default {
                         type: 'readReceipt',
                         data: {
                             messageIds: unreadMessageIds,
-                            recipientId: this.userId,
-                            senderId: this.contactId
+                            senderId: this.userId,
+                            recipientId: this.contactId
                         }
                     };
                     const messageStr = JSON.stringify(readReceiptData);
@@ -220,7 +218,7 @@ export default {
         },
         loadMoreMessages() {
             this.getMessages().then(() => {
-                this.scrollTop += 100; // Adjust this value based on how many messages are loaded and the estimated height
+                this.scrollTop += 100;
             });
         },
 
@@ -277,6 +275,7 @@ export default {
                 this.socketTask.send({
                     data: JSON.stringify(readReceiptData),
                     success: () => {
+                        // Update local messages to mark as read
                         this.messages.forEach(msg => {
                             if(unreadMessageIds.includes(msg.id)) {
                                 msg.isRead = 1;
@@ -340,27 +339,51 @@ export default {
                 const messageObject = JSON.parse(res.data);
                 const messageData = messageObject.data;
                 const messageType = messageObject.type;
-                if(messageType === 'message') {
-                    // Handle incoming chat message
-                    if(messageData.senderId == this.contactId || messageData.recipientId == this.contactId) {
-                        this.messages.push({
-                            id: messageData.id,
-                            content: messageData.content,
-                            senderId: messageData.senderId,
-                            createdAt: messageData.createdAt,
-                            isRead: messageData.isRead,
-                        });
-                        this.scrollTop = 0;
 
-                        // Send read receipt immediately
-                        if(messageData.senderId == this.contactId) {
-                            this.sendImmediateReadReceipt([messageData.id]);
+                if(messageType === 'message') {
+                    const msgSenderId = messageData.senderId;
+                    const msgRecipientId = messageData.recipientId;
+
+                    // Handle incoming chat message
+                    if(msgSenderId == this.contactId || msgRecipientId == this.contactId) {
+                        if(msgSenderId == this.userId) {
+                            // Update local message with database ID
+                            const index = this.messages.findIndex(msg => msg.tempId == messageData.tempId);
+                            if(index !== -1) {
+                                this.$set(this.messages, index, {
+                                    ...this.messages[index],
+                                    id: messageData.id,
+                                    createdAt: messageData.createdAt,
+                                    isRead: messageData.isRead,
+                                });
+                            } else {
+                                console.warn('User A - Message with tempId not found:', messageData.tempId);
+                            }
+                        } else {
+                            // Handle incoming message from the contact
+                            this.messages.push({
+                                id: messageData.id,
+                                content: messageData.content,
+                                senderId: messageData.senderId,
+                                createdAt: messageData.createdAt,
+                                isRead: messageData.isRead,
+                            });
+                            this.scrollTop = 0;
+
+                            // Send read receipt immediately
+                            if(msgSenderId == this.contactId) {
+                                this.sendImmediateReadReceipt([messageData.id]);
+                            }
                         }
                     }
                 } else if(messageType === 'readReceipt') {
-                    this.messages.forEach(msg => {
-                        if(messageData.tempMessageIds.includes(msg.id) || messageData.messageIds.includes(msg.id)) {
-                            msg.isRead = 1;
+                    const messageIds = (messageData.messageIds || []).map(id => String(id));
+                    const tempMessageIds = (messageData.tempMessageIds || []).map(id => String(id));
+                    this.messages.forEach((msg, index) => {
+                        const msgIdStr = String(msg.id);
+                        const msgTempIdStr = String(msg.tempId);
+                        if(messageIds.includes(msgIdStr) || tempMessageIds.includes(msgTempIdStr)) {
+                            this.$set(this.messages[index], 'isRead', 1);
                         }
                     });
                 }
@@ -369,12 +392,9 @@ export default {
             this.socketTask.onError((err) => {
                 this.socketOpen = false;
             });
-        },
-
-
+        }
     }
 };
-
 </script>
 
 <style scoped>

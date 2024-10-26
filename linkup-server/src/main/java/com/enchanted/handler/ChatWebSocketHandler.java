@@ -37,7 +37,6 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         Long userId = getUserIdFromSession(session);
         if (userId != null) {
             userSessions.put(userId, session);
-            System.out.println("User " + userId + " connected.");
         } else {
             session.close();
         }
@@ -48,7 +47,6 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         Long userId = getUserIdFromSession(session);
         if (userId != null) {
             userSessions.remove(userId);
-            System.out.println("User " + userId + " disconnected.");
         }
     }
 
@@ -123,6 +121,7 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         sendMessageData.put("type", "message");
         Map<String, Object> sendData = new HashMap<>();
         sendData.put("id", chatMessage.getId());
+        sendData.put("tempId", tempId);
         sendData.put("senderId", senderId);
         sendData.put("recipientId", recipientId);
         sendData.put("content", content);
@@ -136,6 +135,12 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         WebSocketSession recipientSession = userSessions.get(recipientId);
         if (recipientSession != null && recipientSession.isOpen()) {
             recipientSession.sendMessage(new TextMessage(sendMessageStr));
+        }
+
+        // Send message back to sender to update local message with database ID
+        WebSocketSession senderSession = userSessions.get(senderId);
+        if (senderSession != null && senderSession.isOpen() && senderSession != session) {
+            senderSession.sendMessage(new TextMessage(sendMessageStr));
         }
     }
 
@@ -169,8 +174,10 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         WebSocketSession senderSession = userSessions.get(originalSenderId);
         if (senderSession != null && senderSession.isOpen()) {
             senderSession.sendMessage(new TextMessage(readReceiptStr));
+        } else {
         }
     }
+
 
     private Long getUserIdFromSession(WebSocketSession session) {
         Map<String, String> params = parseQueryParams(session.getUri().getQuery());
