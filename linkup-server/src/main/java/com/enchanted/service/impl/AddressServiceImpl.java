@@ -7,6 +7,7 @@ import com.enchanted.entity.Address;
 import com.enchanted.mapper.AddressMapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.enchanted.service.IAddressService;
+import com.enchanted.util.ConversionUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
@@ -44,9 +45,16 @@ public class AddressServiceImpl extends ServiceImpl<AddressMapper, Address> impl
 
         changes.forEach((field, value) -> {
             Field classField = ReflectionUtils.findField(Address.class, field);
+
             if (classField != null) {
                 classField.setAccessible(true);
-                ReflectionUtils.setField(classField, address, value);
+                // Check for type mismatch and convert if necessary
+                if (!classField.getType().isAssignableFrom(value.getClass())) {
+                    Object convertedValue = ConversionUtils.convertValueToRequiredType(value, classField.getType());
+                    ReflectionUtils.setField(classField, address, convertedValue);
+                } else {
+                    ReflectionUtils.setField(classField, address, value);
+                }
             }
         });
 

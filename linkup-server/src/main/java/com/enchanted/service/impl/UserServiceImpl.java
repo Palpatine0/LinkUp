@@ -181,7 +181,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             Field classField = ReflectionUtils.findField(User.class, field);
             if (classField != null) {
                 classField.setAccessible(true);
-                // Check for type mismatch and convert if necessary
                 if (!classField.getType().isAssignableFrom(value.getClass())) {
                     Object convertedValue = ConversionUtils.convertValueToRequiredType(value, classField.getType());
                     ReflectionUtils.setField(classField, user, convertedValue);

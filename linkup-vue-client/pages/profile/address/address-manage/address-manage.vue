@@ -80,15 +80,18 @@ export default {
                 longitude: null,
             },
             addressId: null,
-
+            initialAddress: {}, // New: to store initial state
             phoneValidationMessage: this.$t('profile>address>addressManage.phoneValidationMessage'),
             showValidationMessage: false
         };
     },
     onLoad(options) {
         if (options.addressId) {
-            this.addressId = options.addressId;
+            this.addressId = parseInt(options.addressId);
             this.getAddressDetail(this.addressId);
+        } else {
+            // If creating a new address, store the initial empty state
+            this.initialAddress = { ...this.address };
         }
     },
     methods: {
@@ -100,11 +103,24 @@ export default {
                 data: {id: addressId},
                 success: (res) => {
                     this.address = res.data.list[0];
+                    // Store the initial loaded state
+                    this.initialAddress = { ...this.address };
                 },
                 fail: (err) => {
                     uni.showToast({title: this.$t('pub.showToast.loadingFail'), icon: 'none'});
                 }
             });
+        },
+
+        // Utility function to detect changes
+        getChangedFields() {
+            const changes = {};
+            for (let key in this.address) {
+                if (this.address[key] !== this.initialAddress[key]) {
+                    changes[key] = this.address[key];
+                }
+            }
+            return changes;
         },
 
         // Location selection
@@ -124,16 +140,11 @@ export default {
         handleChooseLocation() {
             uni.authorize({
                 scope: 'scope.userLocation',
-                success: () => { // Change to arrow function
+                success: () => {
                     uni.chooseLocation({
                         latitude: uni.getStorageSync(app.globalData.data.userInfoKey).latitudeFuzzy || '',
                         longitude: uni.getStorageSync(app.globalData.data.userInfoKey).longitudeFuzzy || '',
-                        success: (res) => { // Change to arrow function
-                            console.log("res");
-                            console.log(res);
-                            uni.setStorageSync('currentLocation', res);
-                            console.log("this.address");
-                            console.log(this.address); // Now `this` should refer to the Vue component
+                        success: (res) => {
                             this.address.address = res.address;
                             this.address.addressName = res.name;
                             this.address.latitude = res.latitude;
@@ -168,19 +179,24 @@ export default {
 
         // Submit address form
         formSubmit() {
-            if (this.address.phoneNumber.length !== 11) {
+            if(this.address.phoneNumber.length !== 11) {
                 this.phoneValidationMessage = this.$t('profile>address>addressManage.phoneValidationMessage');
                 this.showValidationMessage = true;
                 return;
             }
 
+            // Only send changed fields if updating
+            const dataToSend = this.addressId ? this.getChangedFields() : this.address;
+            if(this.addressId) {
+                dataToSend.id = this.addressId; // Include ID for update
+            }
+
             uni.request({
-                url: this.addressId ? getApp().globalData.data.requestUrl + this.$API.address.update : getApp().globalData.data.requestUrl + this.$API.address.save,
+                url: this.addressId
+                    ? getApp().globalData.data.requestUrl + this.$API.address.update
+                    : getApp().globalData.data.requestUrl + this.$API.address.save,
                 method: 'POST',
-                data: {
-                    ...this.address,
-                    id: this.addressId ? this.addressId : undefined
-                },
+                data: dataToSend,
                 success: (res) => {
                     uni.showToast({title: this.$t('pub.showToast.success'), icon: 'none'});
                     uni.navigateTo({
