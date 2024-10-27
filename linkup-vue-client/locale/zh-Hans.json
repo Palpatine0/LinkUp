@@ -32,7 +32,8 @@
             "fail": "操作失败",
             "loadingFail": "加载失败",
             "imgInvalidFileType": "文件类型无效。请选择图片文件(jpg，jpeg，png，gif 或 webp)",
-            "videoInvalidFileType": "仅支持视频文件（mp4，avi，mov，mkv）"
+            "videoInvalidFileType": "仅支持视频文件(mp4，avi，mov，mkv)",
+            "emojiNotAllowed": "请不要在输入内容包含表情符号"
         },
         "showLoading": {
             "loading": "加载中..."

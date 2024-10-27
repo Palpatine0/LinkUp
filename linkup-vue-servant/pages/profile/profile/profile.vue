@@ -213,6 +213,15 @@ export default {
         },
 
         formSubmit() {
+            uni.showLoading({title: this.$t('pub.showLoading.loading')});
+            if (this.$common.isEmojiContains(this.user.nickname)) {
+                uni.hideLoading();
+                uni.showToast({
+                    title: this.$t('pub.showToast.emojiNotAllowed'),
+                    icon: 'none'
+                });
+                return;
+            }
             uni.request({
                 url: getApp().globalData.data.requestUrl + $API.user.update,
                 method: 'POST',
@@ -224,6 +233,7 @@ export default {
                     avatar: this.user.avatar,
                 },
                 success: (res) => {
+                    uni.hideLoading();
                     if(res.data.status === 200) {
                         uni.setStorageSync(app.globalData.data.userInfoKey, this.user);
                         uni.showToast({title: this.$t('pub.showToast.success'), icon: 'none'});

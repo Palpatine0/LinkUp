@@ -380,6 +380,13 @@ export default {
 
         // step 4
         updateUsername(event) {
+            if (this.$common.isEmojiContains(event.target.value)) {
+                uni.showToast({
+                    title: this.$t('pub.showToast.emojiNotAllowed'),
+                    icon: 'none'
+                });
+                return;
+            }
             this.$set(this.userData, 'nickname', event.target.value);
         },
 
