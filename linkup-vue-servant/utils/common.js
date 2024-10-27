@@ -182,6 +182,21 @@ var $common = {
         return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
     },
 
+    validateFileType(filePath, type) {
+        const fileExtension = filePath.split('.').pop().toLowerCase();
+
+        // Define allowed extensions for each type
+        const allowedExtensions = {
+            img: ['jpg', 'jpeg', 'png', 'webp'],
+            video: ['mp4', 'avi', 'mov', 'mkv']
+        };
+
+        if (!allowedExtensions[type].includes(fileExtension)) {
+            return false; // Invalid type
+        }
+        return true; // Valid type
+    },
+
     unDefined(v) {
         return v === undefined ? true : false;
     },

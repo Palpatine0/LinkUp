@@ -30,7 +30,9 @@
         "showToast": {
             "success": "Success",
             "fail": "Operation failed",
-            "loadingFail": "Loading failed"
+            "loadingFail": "Loading failed",
+            "imgInvalidFileType": "Invalid file type. Please select an image file (jpg, jpeg, png, gif, or webp)",
+            "videoInvalidFileType": "Only video files (mp4, avi, mov, mkv) are allowed."
         },
         "showLoading": {
             "loading": "Loading..."

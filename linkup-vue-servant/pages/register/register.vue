@@ -405,6 +405,15 @@ export default {
                         sourceType: sourceType,
                         success: (chooseResult) => {
                             const filePath = chooseResult.tempFilePaths[0];
+                            if (!this.$common.validateFileType(filePath, "img")) {
+                                uni.hideLoading();
+                                uni.showToast({
+                                    title: this.$t('pub.showToast.imgInvalidFileType'), // Image-specific message
+                                    icon: 'none'
+                                });
+                                return;
+                            }
+
                             uni.showLoading({title: this.$t('pub.showLoading.loading')});
                             uni.request({
                                 url: getApp().globalData.data.requestUrl + $API.file.signature,
@@ -442,8 +451,6 @@ export default {
                                                     const imageUrl = host + '/' + filename;
                                                     this.userData.avatar = imageUrl;
                                                     this.avatar = imageUrl;
-                                                    console.log("imageUrl")
-                                                    console.log(imageUrl)
                                                     this.$set(this.userData, 'avatar', imageUrl);
                                                 } else {
                                                     uni.showToast({title: 'Upload failed', icon: 'none'});

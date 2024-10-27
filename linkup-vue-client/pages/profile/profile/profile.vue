@@ -113,8 +113,18 @@ export default {
                         sizeType: ['original', 'compressed'],
                         sourceType: sourceType,
                         success: (chooseResult) => {
+                            uni.showLoading({title: this.$t('pub.showLoading.loading')});
+
                             const filePath = chooseResult.tempFilePaths[0];
-                            // Request the policy from the backend
+                            if (!this.$common.validateFileType(filePath, "img")) {
+                                uni.hideLoading();
+                                uni.showToast({
+                                    title: this.$t('pub.showToast.imgInvalidFileType'), // Image-specific message
+                                    icon: 'none'
+                                });
+                                return;
+                            }
+
                             uni.request({
                                 url: getApp().globalData.data.requestUrl + $API.file.signature,
                                 method: 'GET',
@@ -146,6 +156,7 @@ export default {
                                             name: 'file',
                                             formData: formData,
                                             success: (uploadFileRes) => {
+                                                uni.hideLoading();
                                                 if(uploadFileRes.statusCode === 200) {
                                                     // Update user avatar URL
                                                     const imageUrl = host + '/' + filename;
@@ -157,6 +168,7 @@ export default {
                                                 }
                                             },
                                             fail: () => {
+                                                uni.hideLoading();
                                                 uni.showToast({title: 'Upload failed', icon: 'none'});
                                             }
                                         });
