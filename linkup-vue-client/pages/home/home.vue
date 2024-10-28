@@ -11,12 +11,12 @@
     </div>
     <div style="display: flex">
         <picker mode="multiSelector" :range="[startAges, endAges]" :value="[startAgeIndex, endAgeIndex]" @change="onAgeRangeChange">
-            <app-button size="very-small" bold color="#f3f2f6" font-color="#192C77" width="120px">
+            <app-button size="very-small" bold color="#f3f2f6" font-color="#0A2342" width="80px">
                 {{ selectedAgeText ? selectedAgeText : $t('order>orderInitiate.options.allAge') }}
             </app-button>
         </picker>
-        <app-button size="very-small" bold color="#FFF" :font-color="genderType==0 ? '#192C77':'#CCC'" width="60px" @click="setGenderType(0)">{{ $t('pub.gender.m') }}</app-button>
-        <app-button size="very-small" bold color="#FFF" :font-color="genderType==1 ? '#192C77':'#CCC'" width="60px" @click="setGenderType(1)">{{ $t('pub.gender.f') }}</app-button>
+        <app-button size="very-small" bold color="#FFF" :font-color="genderType==0 ? '#0A2342':'#CCC'" width="60px" @click="setGenderType(0)">{{ $t('pub.gender.m') }}</app-button>
+        <app-button size="very-small" bold color="#FFF" :font-color="genderType==1 ? '#0A2342':'#CCC'" width="60px" @click="setGenderType(1)">{{ $t('pub.gender.f') }}</app-button>
     </div>
     <!-- Scroll View for User List -->
     <user-list :userList="userList" height="60vh" @user-click="userDetailRedirect"/>
@@ -188,5 +188,4 @@ export default {
     font-size: 35px;
     font-weight: bold;
 }
-
 </style>

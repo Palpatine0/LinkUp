@@ -1,14 +1,11 @@
 <template>
 <div class="page" style="background-color: #f3f2f6;">
     <!-- Profile Section -->
-    <div v-if="isUserLogin" class="mb-4">
-        <div class="profile-header center-h">
-            <div class="center-h">
-                <img :src="user.avatar" alt="Profile Photo" class="profile-photo"/>
-            </div>
-            <div class="profile-info">
-                <h1 class="profile-name">{{ user.nickname }}</h1>
-            </div>
+    <div v-if="isUserLogin" class="mb-4 center-h">
+        <div class="profile-header">
+            <img :src="user.avatar" alt="Profile Photo" class="profile-photo"/>
+            <h1 class="profile-name">{{ user.nickname }}</h1>
+            <h3 class="hidden" style="color: #8B8B8B" @click="$common.addToClipboard(user.identifier)">ID: {{user.identifier}}</h3>
         </div>
     </div>
     <div v-if="!isUserLogin" class="mb-4">
@@ -16,7 +13,7 @@
             <div class="center-h">
                 <img src="/static/page/profile/logo.jpg" alt="Profile Photo" class="profile-photo"/>
             </div>
-            <div class="profile-info">
+            <div class="profile-info center-h">
                 <app-button shaped size="small" @click="signIn">
                     {{ $t('profile.signIn') }}
                 </app-button>
@@ -65,7 +62,14 @@
 
 
 <script>
+import $common from "../../utils/common";
+
 export default {
+    computed: {
+        $common() {
+            return $common
+        }
+    },
     data() {
         return {
             isUserLogin: false,
@@ -157,7 +161,7 @@ export default {
 
 <style scoped>
 .profile-header {
-    align-items: center;
+    text-align: center;
     justify-content: space-between;
 }
 
@@ -168,12 +172,12 @@ export default {
 }
 
 .profile-info {
+    width: 100vw;
 }
 
 .profile-name {
     font-size: 20px;
     font-weight: bold;
-    text-align: center;
 }
 
 .link-item {

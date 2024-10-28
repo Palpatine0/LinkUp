@@ -1,8 +1,9 @@
 <template>
 <div class="page">
     <div class="profile-header center-h mb-2">
-        <div class="center-h" @click="mediaSelector()">
-            <img :src="user.avatar" alt="Profile Photo" class="profile-photo"/>
+        <div class="center-h" >
+            <img :src="user.avatar" alt="Profile Photo" class="profile-photo" @click="mediaSelector()"/>
+            <h3 style="color: #8B8B8B" @click="$common.addToClipboard(user.identifier)">ID: {{user.identifier}}</h3>
         </div>
     </div>
 
@@ -251,13 +252,13 @@ export default {
 
 <style scoped>
 .profile-header {
-    align-items: center;
+    text-align: center;
     justify-content: space-between;
 }
 
 .profile-photo {
-    width: 150px;
-    height: 150px;
+    width: 180px;
+    height: 180px;
     border-radius: 50%;
 }
 
