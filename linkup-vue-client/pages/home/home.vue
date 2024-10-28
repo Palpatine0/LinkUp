@@ -9,46 +9,96 @@
             {{ $t('home.tourGuideServices') }}
         </div>
     </div>
+    <div style="display: flex">
+        <picker mode="multiSelector" :range="[startAges, endAges]" :value="[startAgeIndex, endAgeIndex]" @change="onAgeRangeChange">
+            <app-button size="very-small" bold color="#f3f2f6" font-color="#192C77" width="120px">
+                {{ selectedAgeText ? selectedAgeText : $t('order>orderInitiate.options.allAge') }}
+            </app-button>
+        </picker>
+        <app-button size="very-small" bold color="#FFF" :font-color="genderType==0 ? '#192C77':'#CCC'" width="60px" @click="setGenderType(0)">{{ $t('pub.gender.m') }}</app-button>
+        <app-button size="very-small" bold color="#FFF" :font-color="genderType==1 ? '#192C77':'#CCC'" width="60px" @click="setGenderType(1)">{{ $t('pub.gender.f') }}</app-button>
+    </div>
     <!-- Scroll View for User List -->
-    <user-list
-        :userList="userList"
-        height="60vh"
-        @user-click="userDetailRedirect"
-    />
+    <user-list :userList="userList" height="60vh" @user-click="userDetailRedirect"/>
 </div>
 </template>
+
 
 <script>
 export default {
     name: "home",
-    data() {
+    data() {9
         return {
             userList: [],
-            serviceTypeList: []
+            serviceTypeList: [],
+            genderType: '',
+            startAges: Array.from({ length: 83 }, (_, i) => i + 18), // Ages from 18 to 100
+            endAges: Array.from({ length: 83 }, (_, i) => i + 18), // Ages from 18 to 100
+            startAgeIndex: 0,
+            endAgeIndex: 82, // Default to max age
+            selectedAgeText: "",
         };
     },
     onShow(param) {
         this.reload();
+        if(uni.getStorageSync(getApp().globalData.data.userInfoKey).gender == null) {
+            this.genderType = -1
+        } else {
+            uni.getStorageSync(getApp().globalData.data.userInfoKey).gender == 0 ? this.genderType = 1 : this.genderType = 0
+        }
+
+        this.ageRangeIndex = 0;
+        this.selectedAgeText = "";
+        this.selectedAgeIcon = "👤";
+
         if(!this.$common.isEmpty(param.referrerId)) {
             uni.setStorageSync('referrerId', param.referrerId);
         }
     },
+    computed: {
+        ageRangeDisplay() {
+            return [this.$t('order>orderInitiate.options.allAge'), ...Array.from({ length: 83 }, (_, i) => (i + 18).toString())];
+        }
+    },
     methods: {
-        reload(){
-            console.log("reload(){")
+        reload() {
+            this.resetPagination();
             this.getDataList();
         },
+        buildApiParams() {
+            let url = getApp().globalData.data.requestUrl + this.$API.user.search;
+            let method = 'POST';
+            let baseData = {
+                role: 2,
+                gender: this.genderType,
+                page: this.page,
+                size: this.pageSize,
+            };
+
+            // Include age range if selected
+            if (this.selectedAgeText) {
+                baseData.ageMin = this.startAges[this.startAgeIndex];
+                baseData.ageMax = this.endAges[this.endAgeIndex];
+            }
+
+            let data = this.searchKeyword && this.searchKeyword.trim() !== ''
+                ? { ...baseData, keyword: this.searchKeyword }
+                : { ...baseData };
+
+            return { url, method, data };
+        },
+
+
         getDataList() {
-            // if(!this.hasMore || this.loading) return;
-            // this.loading = true;
+            if(!this.hasMore || this.loading) return;
+            this.loading = true;
+
+            const {url, method, data} = this.buildApiParams();
+
             uni.request({
-                url: getApp().globalData.data.requestUrl + this.$API.user.search,
-                method: "POST",
-                data: {
-                    page: this.page,
-                    size: this.pageSize,
-                    role: 2
-                },
+                url: url,
+                method: method,
+                data: data,
                 success: (res) => {
                     let users = res.data.list;
                     users = users.filter(user => user.id !== uni.getStorageSync(getApp().globalData.data.userInfoKey).id,);
@@ -77,6 +127,34 @@ export default {
                     this.serviceTypeList = res.data.list;
                 },
             });
+        },
+
+        onAgeRangeChange(e) {
+            this.startAgeIndex = e.detail.value[0];
+            this.endAgeIndex = e.detail.value[1];
+
+            const startAge = this.startAges[this.startAgeIndex];
+            const endAge = this.endAges[this.endAgeIndex];
+
+            if (startAge > endAge) {
+                uni.showToast({
+                    title: this.$t('pub.showToast.invalidAgeRange'),
+                    icon: 'none'
+                });
+                return;
+            }
+
+            this.selectedAgeText = `${startAge} - ${endAge}`;
+            this.reload();
+        },
+
+        setGenderType(type) {
+            if(type == this.genderType) {
+                this.genderType = -1
+            } else {
+                this.genderType = type
+            }
+            this.reload()
         },
 
         // redirects

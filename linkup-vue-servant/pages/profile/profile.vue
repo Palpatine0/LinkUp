@@ -17,7 +17,7 @@
                 <img src="/static/page/profile/logo.jpg" alt="Profile Photo" class="profile-photo"/>
             </div>
             <div class="profile-info">
-                <app-button shaped size="very-small" @click="signIn">
+                <app-button shaped size="small" @click="signIn">
                     {{ $t('profile.signIn') }}
                 </app-button>
             </div>

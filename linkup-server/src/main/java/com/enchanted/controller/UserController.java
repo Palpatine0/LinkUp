@@ -30,12 +30,16 @@ public class UserController {
         int page = requestData.get("page") != null ? Integer.parseInt(requestData.get("page").toString()) : 1;
         int size = requestData.get("size") != null ? Integer.parseInt(requestData.get("size").toString()) : 10;
 
+        Integer ageMin = requestData.get("ageMin") != null ? Integer.parseInt(requestData.get("ageMin").toString()) : null;
+        Integer ageMax = requestData.get("ageMax") != null ? Integer.parseInt(requestData.get("ageMax").toString()) : null;
+
         requestData.remove("page");
         requestData.remove("size");
 
-        Page<User> userPage = userService.search(requestData, page, size);
+        Page<User> userPage = userService.search(requestData, page, size, ageMin, ageMax);
         return R.paginate(userPage);
     }
+
 
     @PostMapping("/search-servant")
     public R searchServant(@RequestBody Map<String, Object> requestData) {

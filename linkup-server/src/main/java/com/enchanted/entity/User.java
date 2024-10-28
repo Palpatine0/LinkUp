@@ -52,7 +52,7 @@ public class User {
      * 0: male;
      * 1: female
      */
-    private String gender;
+    private Integer gender;
 
     private String avatar;
 

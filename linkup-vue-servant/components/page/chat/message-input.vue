@@ -122,6 +122,7 @@ export default {
     border-top: 1px solid #ddd;
     align-items: center;
     padding: 10px;
+    padding-bottom: 20px;
 }
 
 .message-input {

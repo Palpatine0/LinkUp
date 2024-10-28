@@ -1,24 +1,26 @@
 <template>
 <div
-    :class="['button-common', shaped ? 'button-shaped' : 'button-normal', sizeClass]"
+    :class="['button-common', shaped ? 'button-shaped' : 'button-normal', sizeClass, { 'bold-text': bold }]"
     @click="$emit('click')"
-    :style="{ width: width, backgroundColor: color }"
+    :style="{ width: width, backgroundColor: color, color: fontColor }"
 >
-    <slot />
+    <slot/>
 </div>
 </template>
 
 <script>
 export default {
     props: {
-        shaped: { type: Boolean, default: false },
-        size: { type: String, default: 'medium' },
-        width: { type: String, default: '100%' },
-        color: { type: String, default: '#007BFF' },
+        shaped: {type: Boolean, default: false},
+        size: {type: String, default: 'medium'},
+        width: {type: String, default: '100%'},
+        color: {type: String, default: '#007BFF'},
+        fontColor: {type: String, default: '#FFFFFF'},
+        bold: {type: Boolean, default: false}
     },
     computed: {
         sizeClass() {
-            switch (this.size) {
+            switch(this.size) {
                 case 'very-small':
                     return 'button-very-small';
                 case 'small':
@@ -34,19 +36,13 @@ export default {
                 default:
                     return 'button-medium'; // Default size
             }
-        },
-    },
-    // Ensure there's no 'size' in data
-    data() {
-        return {
-            // other data properties
-        };
-    },
-};
+        }
+    }
+}
 </script>
+
 <style>
 .button-common {
-    color: white;
     text-align: center;
     display: inline-block; /* Makes it behave like a button */
     box-sizing: border-box;
@@ -55,6 +51,7 @@ export default {
     width: 100%; /* Default width is 100% but can be overridden */
 }
 
+/* Shape styles */
 .button-shaped {
     border-radius: 25px;
 }
@@ -65,9 +62,9 @@ export default {
 
 /* Define size classes */
 .button-very-small {
-    padding: 3px 10px;
-    font-size: 16px;
-    height: 30px;
+    padding: 2px 8px;
+    font-size: 14px;
+    height: 26px;
 }
 
 .button-small {
@@ -98,5 +95,9 @@ export default {
     padding: 16px 32px;
     font-size: 24px;
     height: 60px;
+}
+
+.bold-text {
+    font-weight: bold;
 }
 </style>

@@ -71,11 +71,16 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     /*R*/
     @Override
-    public Page<User> search(Map<String, Object> params, int page, int size) {
+    public Page<User> search(Map<String, Object> params, int page, int size, Integer ageMin, Integer ageMax) {
+        if (ageMin != null && ageMax != null) {
+            params.put("ageMin", ageMin);
+            params.put("ageMax", ageMax);
+        }
         IPage<User> userPage = new Page<>(page, size);
         userPage = userMapper.search(userPage, params);
         return (Page<User>) userPage;
     }
+
 
     private String getAccessToken(int role) {
         String url = "";

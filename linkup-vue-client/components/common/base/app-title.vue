@@ -10,14 +10,8 @@
 <script>
 export default {
     props: {
-        type: {
-            type: String,
-            default: 'p'
-        },
-        bold: {
-            type: Boolean,
-            default: false
-        }
+        type: {type: String, default: 'p'},
+        bold: {type: Boolean, default: false}
     }
 }
 </script>

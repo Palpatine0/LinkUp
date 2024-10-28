@@ -22,7 +22,7 @@
             <if test="params.nickname != null and params.nickname != ''">
                 AND nickname LIKE CONCAT('%', #{params.nickname}, '%')
             </if>
-            <if test="params.gender != null and params.gender != ''">
+            <if test="params.gender == 0 or params.gender == 1">
                 AND gender = #{params.gender}
             </if>
             <if test="params.ageMin != null and params.ageMax != null">
@@ -31,6 +31,7 @@
         </where>
         ORDER BY created_at DESC
     </select>
+
 
     <select id="searchServant" resultType="com.enchanted.entity.User">
         SELECT

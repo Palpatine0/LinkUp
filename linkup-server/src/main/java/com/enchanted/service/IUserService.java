@@ -11,7 +11,7 @@ public interface IUserService extends IService<User> {
     Map saveInfo(User user);
 
     /*R*/
-    Page<User> search(Map<String, Object> params, int page, int size); // <-- Added search method
+    Page<User> search(Map<String, Object> params, int page, int size, Integer ageMin, Integer ageMax);
 
     Page<User> searchServant(Map<String, Object> params, int page, int size); // <-- Added search method
 
