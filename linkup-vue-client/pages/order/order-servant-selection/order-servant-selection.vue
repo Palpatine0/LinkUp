@@ -2,13 +2,12 @@
 <div class="page">
     <app-title type="h1" bold="true">{{ $t('order>orderServantSelection.selectServantType') }}</app-title>
     <div v-for="item in servantTypeList" :key="item.id">
-        <app-container color="#f3f2f6" col="12" @click="orderInitiateRedirect(item.id,item.name,item.nameCn)">
-            <div style="height: 100px">
-                <app-title type="h1" style="position: relative;bottom: -55px">
-                    {{  language != "zh-Hans" ? item.name : item.nameCn }}
-                </app-title>
+        <div class="app-container service-info" :style="{backgroundImage: `url(${item.coverImg})`, backgroundRepeat: 'no-repeat',backgroundPosition: 'center center',backgroundSize: '135%'}"  @click="orderInitiateRedirect(item.id,item.name,item.nameCn)">
+            <div class="gradient-overlay" style="border-bottom-right-radius: 15px;border-bottom-left-radius: 15px"></div>
+            <div class="service-info-text">
+                {{  language != "zh-Hans" ? item.name : item.nameCn }}
             </div>
-        </app-container>
+        </div>
     </div>
 </div>
 </template>
@@ -46,5 +45,19 @@ export default {
 </script>
 
 <style scoped>
+.service-info {
+    height: 160px;
+    position: relative;
+}
 
+.service-info-text {
+    position: absolute;
+    bottom: 40px;
+    width: 100%;
+    z-index: 100;
+    height: 20px;
+    color: white;
+    font-size: 35px;
+    font-weight: bold;
+}
 </style>

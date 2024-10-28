@@ -54,8 +54,11 @@
         <app-button v-if="!isQuotedPriceRequestSent" shaped @click="priceRequestToggle">
             {{ $t('home>orderDetail.acceptOrder') }}
         </app-button>
-        <app-button v-else shaped @click="priceRequestToggle">
+        <app-button v-else-if="isQuotedPriceRequestSent&&!isQuotedPriceRequestUpdated" shaped @click="priceRequestToggle">
             {{ $t('home>orderDetail.updateQuotedPrice') }}
+        </app-button>
+        <app-button v-if="isQuotedPriceRequestUpdated" shaped color="#CCC">
+            {{ $t('home>orderDetail.quotedPriceSent') }}
         </app-button>
     </div>
 
@@ -82,6 +85,7 @@ export default {
             order: {},
 
             isQuotedPriceRequestSent: false,
+            isQuotedPriceRequestUpdated: false,
 
             increasedQuotedPriceRequestOptType: 0,
             increasedQuotedPriceRequestVisible: false,
@@ -114,9 +118,16 @@ export default {
                 },
                 success: (res) => {
                     const userId = uni.getStorageSync(getApp().globalData.data.userInfoKey).id;
-                    this.isQuotedPriceRequestSent = res.data.list.some(item => item.servantId == userId);
-                    if(this.isQuotedPriceRequestSent){
-                        this.increasedQuotedPriceRequestOptType = 1
+                    const userOrderCandidate = res.data.list.find(item => item.servantId === userId);
+                    this.isQuotedPriceRequestSent = !!userOrderCandidate;
+
+                    if(this.isQuotedPriceRequestSent) {
+                        this.increasedQuotedPriceRequestOptType = 1;
+                        if(userOrderCandidate.quotedPriceUpdatedAt === null) {
+                            this.isQuotedPriceRequestUpdated = false;
+                        } else {
+                            this.isQuotedPriceRequestUpdated = true;
+                        }
                     }
                 },
             });

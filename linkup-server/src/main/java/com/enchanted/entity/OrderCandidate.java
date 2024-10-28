@@ -22,6 +22,9 @@ public class OrderCandidate {
     @TableField("quoted_price")
     private BigDecimal quotedPrice;
 
+    @TableField("quoted_price_updated_at")
+    private Date quotedPriceUpdatedAt;
+
     @TableField("is_closed")
     private Boolean isClosed;
 

@@ -18,7 +18,6 @@
 
         <!-- Display Requested Price -->
         <div class="no-more-data">
-            <div class="credit">{{ $t('component>order>increasedQuotedPriceRequest.tips') }}</div>
             <div v-if="optType==1" class="credit bold">{{ $t('component>order>increasedQuotedPriceRequest.updateQuotedPriceTips') }}</div>
         </div>
 
@@ -38,6 +37,7 @@ export default {
             initialPrice: this.order.price || 0,
             quotedPrice: this.order.price || 0,
             maxPrice: this.order.price * 2,
+            quotedPriceUpdatedAt: false,
         };
     },
     props: {
@@ -47,6 +47,7 @@ export default {
     async mounted() {
         if(this.optType == 1) {
             await this.getOrderCandidate()
+            this.isPriceUpdatedOnce = this.orderCandidate && this.orderCandidate.isUpdatedOnce;
         }
     },
     methods: {
@@ -56,7 +57,7 @@ export default {
         async getOrderCandidate() {
             const getOrderCandidate = () => {
                 return new Promise(
-                    (resolve, reject) => {
+                    (resolve) => {
                         uni.request({
                             url: getApp().globalData.data.requestUrl + this.$API.orderCandidate.search,
                             method: 'POST',
@@ -67,73 +68,57 @@ export default {
                             success: (res) => {
                                 if(res.data.status == 200) {
                                     let orderCandidate = res.data.list[0];
-                                    this.initialPrice = orderCandidate.quotedPrice
-                                    this.quotedPrice = orderCandidate.quotedPrice
-                                    this.orderCandidateId = orderCandidate.id
-                                    resolve()
+                                    this.initialPrice = orderCandidate.quotedPrice;
+                                    this.quotedPrice = orderCandidate.quotedPrice;
+                                    this.orderCandidateId = orderCandidate.id;
+                                    this.$common.isEmpty(orderCandidate.quotedPriceUpdatedAt) ? this.isPriceUpdatedOnce = false : this.isPriceUpdatedOnce = true;
+                                    resolve();
                                 }
                             },
                         });
-                    }
-                )
-            }
-            await getOrderCandidate()
+                    });
+            };
+            await getOrderCandidate();
         },
         confirmPriceRequest() {
-            if(this.quotedPrice < this.initialPrice || this.quotedPrice > this.maxPrice) {
-                uni.showToast({
-                    title: this.$t('component>order>increasedQuotedPriceRequest.showToast.priceRange') + `¥${this.initialPrice.toFixed(2)} - ¥${this.maxPrice.toFixed(2)}`,
-                    icon: 'none'
-                });
+            if(this.isPriceUpdatedOnce) {
+                uni.showToast({title: 'Price update is allowed only once.', icon: 'none'});
+                return;
             } else {
+                const url = this.optType === 0 ? this.$API.orderCandidate.save : this.$API.orderCandidate.update;
 
-                if(this.optType == 0) {
-                    uni.request({
-                        url: getApp().globalData.data.requestUrl + this.$API.orderCandidate.save,
-                        method: 'POST',
-                        data: {
-                            orderId: this.order.id,
-                            servantId: uni.getStorageSync(getApp().globalData.data.userInfoKey)?.id,
-                            quotedPrice: this.quotedPrice,
-                        },
-                        success: (res) => {
-                            if(res.data.status == 200) {
-                                uni.showToast({title: this.$t('component>order>increasedQuotedPriceRequest.showToast.sent'), icon: 'none'});
-                                this.$parent.getOrder();
-                                this.close();
-                            } else {
-                                uni.showToast({title: this.$t('pub.showToast.fail'), icon: 'none'});
-                            }
-                        },
-                        fail: () => {
+                const data = this.optType === 0 ?
+                    {
+                        orderId: this.order.id,
+                        servantId: uni.getStorageSync(getApp().globalData.data.userInfoKey)?.id,
+                        quotedPrice: this.quotedPrice
+                    }
+                    : {
+                        id: this.orderCandidateId,
+                        quotedPrice: this.quotedPrice,
+                    };
+
+                uni.request({
+                    url: getApp().globalData.data.requestUrl + url,
+                    method: 'POST',
+                    data,
+                    success: (res) => {
+                        if(res.data.status == 200) {
+                            this.isPriceUpdatedOnce = true;
+                            uni.showToast({title: this.$t('component>order>increasedQuotedPriceRequest.showToast.sent'), icon: 'none'});
+                            this.$parent.getOrder();
+                            this.close();
+                        } else {
                             uni.showToast({title: this.$t('pub.showToast.fail'), icon: 'none'});
-                        },
-                    });
-                } else {
-                    uni.request({
-                        url: getApp().globalData.data.requestUrl + this.$API.orderCandidate.update,
-                        method: 'POST',
-                        data: {
-                            id: this.orderCandidateId,
-                            orderId: this.order.id,
-                            servantId: uni.getStorageSync(getApp().globalData.data.userInfoKey)?.id,
-                            quotedPrice: this.quotedPrice,
-                        },
-                        success: (res) => {
-                            if(res.data.status == 200) {
-                                uni.showToast({title: this.$t('component>order>increasedQuotedPriceRequest.showToast.sent'), icon: 'none'});
-                                this.$parent.getOrder();
-                                this.close();
-                            } else {
-                                uni.showToast({title: this.$t('pub.showToast.fail'), icon: 'none'});
-                            }
-                        },
-                        fail: () => {
-                            uni.showToast({title: this.$t('pub.showToast.fail'), icon: 'none'});
-                        },
-                    });
-                }
+                        }
+                    },
+                    fail: () => {
+                        uni.showToast({title: this.$t('pub.showToast.fail'), icon: 'none'});
+                    },
+                });
             }
+
+
         },
     },
 };

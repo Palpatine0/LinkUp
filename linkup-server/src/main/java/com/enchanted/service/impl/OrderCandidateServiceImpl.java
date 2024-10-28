@@ -55,7 +55,7 @@ public class OrderCandidateServiceImpl extends ServiceImpl<OrderCandidateMapper,
                 order.setCountdownStartAt(new Date());
                 orderService.updateById(order);
             }
-        }else {
+        } else {
             Order order = orderService.getById(orderCandidate.getOrderId());
             order.setStatus(0);
             Integer candidateCount = order.getCandidateCount();
@@ -132,6 +132,13 @@ public class OrderCandidateServiceImpl extends ServiceImpl<OrderCandidateMapper,
         if (orderCandidate == null) {
             return false;
         }
+        Date quotedPriceUpdatedAt = orderCandidate.getQuotedPriceUpdatedAt();
+        if (quotedPriceUpdatedAt != null) {
+            throw new IllegalStateException("Servant can only update the quoted price once.");
+        } else {
+            orderCandidate.setQuotedPriceUpdatedAt(new Date());
+        }
+
 
         changes.forEach((field, value) -> {
             Field classField = ReflectionUtils.findField(OrderCandidate.class, field);
