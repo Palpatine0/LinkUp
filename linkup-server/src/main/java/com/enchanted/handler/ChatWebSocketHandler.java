@@ -142,7 +142,35 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         if (senderSession != null && senderSession.isOpen() && senderSession != session) {
             senderSession.sendMessage(new TextMessage(sendMessageStr));
         }
+
+//        sendContactUpdate(recipientId, senderId);
     }
+
+    /*private void sendContactUpdate(Long recipientId, Long senderId) {
+        WebSocketSession recipientSession = userSessions.get(recipientId);
+        if (recipientSession != null && recipientSession.isOpen()) {
+            // Get unread count and latest message
+            int unreadCount = messageMapper.countUnreadMessages(recipientId, senderId);
+            Message latestMessage = messageMapper.getLatestMessage(senderId, recipientId);
+
+            if (latestMessage != null) {
+                Map<String, Object> contactUpdateData = new HashMap<>();
+                contactUpdateData.put("type", "contactUpdate");
+                Map<String, Object> data = new HashMap<>();
+                data.put("senderId", senderId);
+                data.put("latestMessage", latestMessage.getContent());
+                data.put("timestamp", latestMessage.getCreatedAt());
+                data.put("unreadCount", unreadCount);
+                contactUpdateData.put("data", data);
+
+                try {
+                    recipientSession.sendMessage(new TextMessage(objectMapper.writeValueAsString(contactUpdateData)));
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }*/
 
     private void handleReadReceipt(WebSocketSession session, Map<String, Object> data) throws Exception {
         List<Integer> messageIdIntegers = (List<Integer>) data.get("messageIds");

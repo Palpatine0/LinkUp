@@ -3,11 +3,11 @@
     <img :src="avatar" class="avatar" @click="userDetailRedirect(uid)"/>
     <span class="username">{{ username }}</span>
 
-    <app-button v-if="!canSendMessage" shaped size="small" @click="handleClick('chatNow')">
+    <app-button v-if="!canSendMessage" shaped size="small" @click="handleClick('chatNow')"  >
         {{ $t('componentPage>chat>chatWindow.chatNow') }}
     </app-button>
 
-    <app-button v-else shaped size="small" @click="handleClick('keepChatting')">
+    <app-button v-else shaped size="small" @click="handleClick('keepChatting')"  >
         {{ $t('componentPage>chat>chatWindow.keepChatting') }}
     </app-button>
 </div>
@@ -59,6 +59,7 @@ export default {
     align-items: center;
     padding: 10px 20px 10px 21px;
     background-color: #f3f2f6;
+    height: 42px;
 }
 
 .avatar {

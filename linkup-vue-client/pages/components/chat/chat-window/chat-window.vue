@@ -17,6 +17,8 @@
     >
         <div v-for="message in messages" :key="message.id">
             <MessageBubble
+                :senderAvatar="user.avatar"
+                :receiverAvatar="contact.avatar"
                 :content="message.content"
                 :msgBelongs="message.senderId === userId"
                 :isRead="message.isRead"
