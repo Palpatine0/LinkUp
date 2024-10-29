@@ -19,6 +19,7 @@
             <MessageBubble
                 :senderAvatar="user.avatar"
                 :receiverAvatar="contact.avatar"
+                :receiverId="contact.id"
                 :content="message.content"
                 :msgBelongs="message.senderId === userId"
                 :isRead="message.isRead"
@@ -393,7 +394,15 @@ export default {
             this.socketTask.onError((err) => {
                 this.socketOpen = false;
             });
-        }
+        },
+
+        // redirects
+        userDetailRedirect(uid) {
+            uni.navigateTo({
+                url: '/pages/components/user/user-detail/user-detail?userId=' + uid + '&showChatBtn=' + false,
+            });
+        },
+
     }
 };
 </script>

@@ -1,6 +1,6 @@
 <template>
 <div :class="['message-container', msgBelongs ? 'sender-container' : 'receiver-container']">
-    <img :src="msgBelongs ? senderAvatar : receiverAvatar" alt="avatar" class="avatar"/>
+    <img :src="msgBelongs ? senderAvatar : receiverAvatar" alt="avatar" class="avatar" @click="msgBelongs ? '':$parent.userDetailRedirect(receiverId)"/>
     <div :class="['message-bubble', msgBelongs ? 'sender' : 'receiver']">
         <p class="message-content">{{ content }}</p>
         <!-- read indicator -->
@@ -18,8 +18,9 @@
 <script>
 export default {
     props: {
-        senderAvatar: { type: String, required: true },
-        receiverAvatar: { type: String, required: true },
+        senderAvatar: {type: String, required: true},
+        receiverAvatar: {type: String, required: true},
+        receiverId: {type: Number},
         content: {type: String, required: true},
         msgBelongs: {type: Boolean, default: false},
         isRead: {type: Boolean, default: false},

@@ -1,6 +1,6 @@
 <template>
 <div class="chat-header">
-    <img :src="avatar" class="avatar" @click="userDetailRedirect(uid)"/>
+    <img :src="avatar" class="avatar" @click="$parent.userDetailRedirect(uid)"/>
     <span class="username">{{ username }}</span>
 
     <app-button v-if="!canSendMessage" shaped size="small" @click="handleClick('chatNow')"  >
@@ -42,13 +42,6 @@ export default {
                     true
                 );
             }
-        },
-
-        // redirects
-        userDetailRedirect(userId) {
-            uni.navigateTo({
-                url: '/pages/components/user/user-detail/user-detail?userId=' + userId + '&showChatBtn=' + false,
-            });
         },
     }
 };

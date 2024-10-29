@@ -11,7 +11,7 @@
                 <div class="flex" style="margin: 3px 0 30px -6px">
                     <div class="gender-icon-wrapper">
                         <div v-if="user.gender == 0">
-                            <div class="gender-icon">👨‍💻</div>
+                            <div class="gender-icon">👨‍💻‍</div>
                         </div>
                         <div v-else>
                             <div class="gender-icon">👩‍💻</div>
