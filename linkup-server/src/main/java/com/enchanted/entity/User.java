@@ -93,4 +93,10 @@ public class User {
     // Transient fields
     @TableField(exist = false)
     private BigDecimal quotedPrice;
+
+    @TableField(exist = false)
+    private Message latestMessage;
+
+    @TableField(exist = false)
+    private Integer unreadMessageCount;
 }

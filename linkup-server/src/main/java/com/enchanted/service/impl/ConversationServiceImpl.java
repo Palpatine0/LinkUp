@@ -68,16 +68,57 @@ public class ConversationServiceImpl extends ServiceImpl<ConversationMapper, Con
         }
 
         Page<User> userPage = new Page<>(page, size);
-
         IPage<User> resultPage = conversationMapper.searchContacts(userPage, clientId, servantId);
+        List<User> usersWithMessages = resultPage.getRecords();
 
-        userPage.setRecords(resultPage.getRecords());
+        for (User user : usersWithMessages) {
+            // Retrieve conversation ID based on clientId and servantId
+            Conversation conversation = conversationMapper.selectOne(
+                new QueryWrapper<Conversation>()
+                    .eq("client_id", clientId != null ? clientId : user.getId())
+                    .eq("servant_id", servantId != null ? servantId : user.getId())
+            );
+
+            if (conversation != null) {
+                Long conversationId = conversation.getId();
+
+                // Get the latest message for this conversation
+                Message latestMessage = getLatestMessage(conversationId);
+                user.setLatestMessage(latestMessage);
+
+                // Count unread messages for this conversation
+                int unreadMessageCount = countUnreadMessages(clientId != null ? clientId : servantId, conversationId);
+                user.setUnreadMessageCount(unreadMessageCount);
+            }
+        }
+
+        userPage.setRecords(usersWithMessages);
         userPage.setTotal(resultPage.getTotal());
 
         return userPage;
     }
 
 
+
+    @Override
+    public Message getLatestMessage(Long conversationId) {
+        QueryWrapper<Message> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("conversation_id", conversationId)
+            .orderByDesc("created_at")
+            .last("LIMIT 1");
+
+        return messageMapper.selectOne(queryWrapper);
+    }
+
+    @Override
+    public int countUnreadMessages(Long userId, Long conversationId) {
+        QueryWrapper<Message> queryWrapper = new QueryWrapper<>();
+        queryWrapper.eq("recipient_id", userId)
+            .eq("conversation_id", conversationId)
+            .eq("is_read", 0);
+
+        return Math.toIntExact(messageMapper.selectCount(queryWrapper));
+    }
 
     /* U */
     @Override
@@ -113,6 +154,7 @@ public class ConversationServiceImpl extends ServiceImpl<ConversationMapper, Con
     public List<Conversation> getOverdueConversations(Date thresholdTime) {
         return conversationMapper.selectOverdueConversations(thresholdTime);
     }
+
     @Transactional
     public void processUnansweredConversation(Conversation conversation) {
         Long clientId = conversation.getClientId();
@@ -198,6 +240,7 @@ public class ConversationServiceImpl extends ServiceImpl<ConversationMapper, Con
             // Handle exception
         }
     }
+
     private boolean isFirstMessageAfterGiftPurchase(Conversation conversation) {
         Long clientId = conversation.getClientId();
         Long conversationId = conversation.getId();

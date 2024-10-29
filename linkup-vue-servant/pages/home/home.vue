@@ -16,13 +16,7 @@
     />
 
     <!-- Orders Container using app-container -->
-    <scroll-view
-        :scroll-top="0"
-        scroll-y="true"
-        style="height: 80vh"
-        @scrolltoupper="reload"
-        @scrolltolower="onReachBottom"
-    >
+    <scroll-view :scroll-top="0" scroll-y="true" style="height: 80vh" @scrolltoupper="reload" @scrolltolower="onReachBottom">
         <div class="app-container" v-for="order in orderList" :key="order.id" @click="orderDetailRedirect(order.id)" style="display: flex;flex-direction: column;align-items: center">
             <div class="order-schedule">
                 <div>{{ language != "zh-Hans" ? 'Service Schedule: ' : "服务时间" }}</div>

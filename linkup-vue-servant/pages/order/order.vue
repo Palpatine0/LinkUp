@@ -24,7 +24,7 @@
             @input="onSearchInput"
         />
         <!-- Order Category -->
-        <scroll-view :scroll-top="0" scroll-x="true" class="order-type-selection">
+        <scroll-view :scroll-top="0" scroll-x="true" class="order-type-selection" @scrolltoupper="reload" @scrolltolower="onReachBottom">
             <div class="button-container">
                 <div :class="{ active: orderStatusType === -1 }" @click="setOrderStatusType(-1)"><span>{{ $t('order.orderStatusType.all') }}</span></div>
                 <div :class="{ active: orderStatusType === 1 }" @click="setOrderStatusType(1)"><span>{{ $t('order.orderStatusType.confirmed') }}</span></div>

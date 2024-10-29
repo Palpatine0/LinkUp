@@ -76,7 +76,7 @@ var $common = {
 
         // Check if the given date is today
         if (date.toDateString() === now.toDateString()) {
-            return date.getHours() + ':' + date.getMinutes(); // Return hour and min for today
+            return date.getHours().toString().padStart(2, '0') + ':' + date.getMinutes().toString().padStart(2, '0');
         }
 
         // Check if the given date is yesterday
@@ -86,13 +86,11 @@ var $common = {
             return 'Yesterday';
         }
 
-        // Otherwise return mm-dd-hh-min
+        // For all other dates, return only the month and day without time
         var month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-indexed
         var day = date.getDate().toString().padStart(2, '0');
-        var hours = date.getHours().toString().padStart(2, '0');
-        var minutes = date.getMinutes().toString().padStart(2, '0');
 
-        return month + '-' + day + ' ' + hours + ':' + minutes;
+        return `${month}-${day}`;
     },
 
     /**

@@ -17,16 +17,24 @@
         <!-- Search input -->
         <app-input mode="text" :placeholder="$t('pub.page.search')" col="12" class="mb-2"/>
         <!-- Contact List -->
-        <scroll-view :scroll-top="0" scroll-y="true" style="height: 80vh">
+        <scroll-view :scroll-top="0" scroll-y="true" style="height: 80vh" @scrolltoupper="reload" @scrolltolower="onReachBottom">
             <div v-for="(contact, index) in dataList" :key="contact.id">
-                <div
-                    @click="contactRedirect(contact.id)"
-                    class="contact-item"
-                >
-                    <img :src="contact.avatar" alt="contact.name" class="avatar">
-                    <div class="info">
-                        <h2 class="name">{{ contact.nickname }}</h2>
-                        <p class="contact-number">{{ contact.lastMessage }}</p>
+                <div class="contact-item" @click="contactRedirect(contact.id)">
+                    <div class="mr-2 flex">
+                        <div style="width: 50px;"><img :src="contact.avatar" alt="contact.name" class="avatar"></div>
+                        <div v-if="contact.unreadMessageCount > 0" class="unread-badge center">
+                            <span>{{ contact.unreadMessageCount }}</span>
+                        </div>
+                    </div>
+
+                    <div class="justify-SB" style="width: 100%;">
+                        <div>
+                            <h2 class="name">{{ contact.nickname }}</h2>
+                            <p class="latest-msg">{{ contact.latestMessage.content }}</p>
+                        </div>
+                        <div>
+                            <div class="latest-msg-time">{{ $common.timeToStampRecord(contact.latestMessage.createdAt) }}</div>
+                        </div>
                     </div>
                 </div>
                 <!-- Separator div instead of border-bottom -->
@@ -34,23 +42,41 @@
             </div>
         </scroll-view>
     </div>
-
 </div>
 </template>
 
 <script>
+import $common from "../../utils/common";
+
 export default {
+    computed: {
+        $common() {
+            return $common
+        }
+    },
     data() {
         return {
             isUserLogin: false,
             userId: uni.getStorageSync(getApp().globalData.data.userInfoKey).id,
             dataList: [],
+            messageHandler: null,
         };
     },
     onShow() {
-        this.isUserLogin = uni.getStorageSync(getApp().globalData.data.userLoginKey) == true ? true : false;
+        this.isUserLogin = uni.getStorageSync(getApp().globalData.data.userLoginKey) === true;
         if(this.isUserLogin) {
+            this.$webSocket.connectWebSocket(uni.getStorageSync(getApp().globalData.data.userInfoKey).id);
+
             this.reload();
+
+            this.messageHandler = this.handleWebSocketMessage.bind(this);
+            this.$webSocket.addMessageHandler(this.messageHandler);
+        }
+    },
+    onHide() {
+        if(this.messageHandler) {
+            this.$webSocket.removeMessageHandler(this.messageHandler);
+            this.messageHandler = null;
         }
     },
     methods: {
@@ -86,7 +112,7 @@ export default {
             this.reload();
         },
         getDataList() {
-            if(this.loading || !this.hasMore) return
+            if(this.loading || !this.hasMore) return;
             this.loading = true;
             const {url, method, data} = this.buildApiParams();
 
@@ -110,6 +136,40 @@ export default {
                     this.loading = false;
                 }
             });
+        },
+        handleWebSocketMessage(data) {
+            if(data.type === 'contactUpdate') {
+                this.updateContactList(data.data);
+            }
+        },
+        updateContactList(updateData) {
+            console.log("updateData")
+            console.log(updateData)
+            const contactIndex = this.dataList.findIndex(contact => contact.id == updateData.clientId);
+            console.log("contactIndex")
+            console.log(contactIndex)
+            if(contactIndex !== -1) {
+                this.$set(this.dataList, contactIndex, {
+                    ...this.dataList[contactIndex],
+                    latestMessage: {
+                        content: updateData.latestMessage,
+                    },
+                    messageTime: updateData.messageTime,
+                    unreadMessageCount: updateData.unreadMessageCount,
+                });
+            } else {
+                const newContact = {
+                    id: updateData.conversationId,
+                    nickname: updateData.nickname || "New Contact",  // Make sure nickname is pulled from data
+                    avatar: updateData.avatar || "/path/to/default-avatar.jpg",
+                    latestMessage: {
+                        content: updateData.latestMessage,
+                    },
+                    messageTime: updateData.messageTime,
+                    unreadMessageCount: updateData.unreadMessageCount,
+                };
+                this.dataList.unshift(newContact); // Add as a new contact at the top
+            }
         },
 
         async signIn() {
@@ -152,14 +212,32 @@ export default {
     margin-right: 10px;
 }
 
-.info .name {
+.name {
     font-size: 16px;
     font-weight: bold;
     margin: 0;
 }
 
-.info .contact-number {
+.latest-msg {
     font-size: 14px;
     color: #666;
+}
+
+.latest-msg-time {
+    font-size: 12px;
+    color: gray;
+}
+
+.unread-badge {
+    background-color: #2676f7;
+    color: white;
+    border-radius: 50%;
+    font-size: 12px;
+    width: 16px;
+    height: 16px;
+    border: 2px solid;
+    position: absolute;
+    top: 42px;
+    left: 45px;
 }
 </style>

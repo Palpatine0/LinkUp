@@ -9,7 +9,7 @@
             <img v-else style="width: 12px;height: 12px" src="/static/page/chat/circle-regular.svg">
         </div>
         <div v-if="msgBelongs && erroring" class="erroring-exclamation">
-            <img style="width: 20px;height: 20px" src="/static/page/chat/circle-exclamation.svg">
+            <img style="width: 18px;height: 18px" src="/static/page/chat/circle-exclamation.svg">
         </div>
     </div>
 </div>
@@ -55,7 +55,7 @@ export default {
     display: inline-block; /* Allows bubble to fit content width */
     width: auto; /* Automatically adjusts to the content length */
     max-width: 60%; /* Maximum width the bubble can grow to */
-    margin: 6px 10px;
+    margin: 5px 10px;
     padding: 10px;
     border-radius: 16px;
     color: #000;
@@ -87,9 +87,9 @@ export default {
 .erroring-exclamation {
     background-color: #FFF;
     border-radius: 50%;
-    margin-top: -20px;
+    margin-top: -12px;
     align-self: flex-end;
     position: absolute;
-    margin-left: -33px;
+    margin-left: -34px;
 }
 </style>

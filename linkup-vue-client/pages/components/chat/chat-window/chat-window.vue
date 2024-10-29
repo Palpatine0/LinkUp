@@ -338,8 +338,6 @@ export default {
                 this.getMessages();
             });
             this.socketTask.onMessage((res) => {
-                console.log("this.messages")
-                console.log(this.messages)
                 const messageObject = JSON.parse(res.data);
                 const messageData = messageObject.data;
                 const messageType = messageObject.type;

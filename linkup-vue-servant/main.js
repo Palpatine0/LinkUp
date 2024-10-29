@@ -7,6 +7,7 @@ import paginationMixin from './utils/paginationMixin';
 import common from "./utils/common";
 import messages from './locale/index.js'
 import API from "./api/api";
+import * as webSocket from './websocket/websocket';
 import bus from "./bus/bus";
 
 import './style/common.css';
@@ -25,6 +26,7 @@ Vue.component('app-container', AppContainer);
 Vue.component('app-button', AppButton);
 Vue.component('user-list', UserList);
 
+// page
 Vue.mixin(globalMixin)
 Vue.mixin(paginationMixin)
 
@@ -32,6 +34,7 @@ Vue.prototype.$common = common;
 Vue.use(VueI18n)
 Vue.prototype.$API = API;
 Vue.prototype.$bus = bus;
+Vue.prototype.$webSocket = webSocket;
 Vue.config.productionTip = false
 
 // i18n

@@ -2,6 +2,7 @@
 import app from "./App.vue";
 import $common from "./utils/common";
 import $API from "./api/api";
+import * as $webSocket from "./websocket/websocket";
 
 export default {
     globalData: {
@@ -80,6 +81,7 @@ export default {
                                 if(!$common.isEmpty(res.data.list)) {
                                     uni.setStorageSync(app.globalData.data.userInfoKey, res.data.list[0]);
                                     uni.setStorageSync(app.globalData.data.userLoginKey, true);
+                                    $webSocket.connectWebSocket(res.data.list[0].id);
                                     resolve(res)
                                 } else {
                                     uni.showToast({title: this.$t('app.showToast.loginFail'), icon: 'none'});
@@ -89,7 +91,6 @@ export default {
                     });
                 };
                 await syncToStorage()
-
             } else if(userConfigData.isNewUser == "1") {
                 uni.navigateTo({
                     url: `/pages/register/register?userConfigData=${encodeURIComponent(JSON.stringify(userConfigData))}`,
@@ -100,7 +101,6 @@ export default {
             uni.removeStorageSync(app.globalData.data.userInfoKey);
             uni.removeStorageSync(app.globalData.data.userLoginKey);
         },
-
     },
     onShareAppMessage() {
         var shareTitle = "Come check this app!!";

@@ -106,11 +106,13 @@ export default {
             this.user = uni.getStorageSync(getApp().globalData.data.userInfoKey)
             this.isUserLogin = uni.getStorageSync(getApp().globalData.data.userLoginKey)
             uni.hideLoading();
+
         },
         async signOut() {
             await getApp().globalData.signOut()
             this.user = {}
             this.isUserLogin = false
+            this.$webSocket.closeWebSocket()
             uni.switchTab({
                 url: '/pages/profile/profile'
             });

@@ -18,6 +18,10 @@ public interface IConversationService extends IService<Conversation> {
 
     Page<User> searchContacts(Map<String, Object> params, int page, int size);
 
+    Message getLatestMessage(Long conversationId);
+
+    int countUnreadMessages(Long userId, Long conversationId);
+
     /* U */
     boolean update(Long id, Map<String, Object> changes);
 

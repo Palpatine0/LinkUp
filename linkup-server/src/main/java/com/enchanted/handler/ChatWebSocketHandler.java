@@ -2,9 +2,11 @@ package com.enchanted.handler;
 
 import com.enchanted.entity.Conversation;
 import com.enchanted.entity.Message;
+import com.enchanted.mapper.ConversationMapper;
 import com.enchanted.mapper.MessageMapper;
 import com.enchanted.service.IConversationService;
 import com.enchanted.service.IMessageService;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -12,6 +14,7 @@ import org.springframework.web.socket.*;
 
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 
+import java.io.IOException;
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
@@ -28,7 +31,9 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     @Autowired
     private MessageMapper messageMapper;
 
-    // Map to track user sessions
+    @Autowired
+    private ConversationMapper conversationMapper;
+
     private static Map<Long, WebSocketSession> userSessions = new ConcurrentHashMap<>();
     private ObjectMapper objectMapper = new ObjectMapper();
 
@@ -74,61 +79,20 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         // Validate the conversation
         Conversation conversation = conversationService.getById(conversationId);
         if (conversation == null) {
-            session.sendMessage(new TextMessage("{\"type\":\"error\",\"message\":\"Invalid conversation ID.\"}"));
+            sendErrorMessage(session, "Invalid conversation ID.");
             return;
         }
 
-        // Update conversation
-        if (senderId.equals(conversation.getClientId())) {
-            // Client sent a message, servant response is required
-            if (conversation.getIsServantMessagingAvailable() == 0) {
-                conversation.setIsServantMessagingAvailable(1);
-            }
-            conversation.setServantResponseRequired(1);
-            conversation.setLastClientMessageTime(new Date());
-            conversationService.updateById(conversation);
-        } else if (senderId.equals(conversation.getServantId())) {
-            if (conversation.getIsServantMessagingAvailable() == 0) {
-                // Send error message back to client
-                Map<String, Object> errorMessageData = new HashMap<>();
-                errorMessageData.put("type", "error");
-                errorMessageData.put("data", "No permission to initiate conversation");
-
-                String errorMessageStr = objectMapper.writeValueAsString(errorMessageData);
-                session.sendMessage(new TextMessage(errorMessageStr));
-                return;
-            }
-            // Servant responded, no response required
-            conversation.setServantResponseRequired(0);
-            conversationService.updateById(conversation);
+        // Update conversation fields as needed
+        if (!updateConversation(conversation, senderId, recipientId, session)) {
+            return;  // Stop further processing if there’s an error
         }
 
-        // Save message to the database
-        Message chatMessage = new Message();
-        chatMessage.setSenderId(senderId);
-        chatMessage.setRecipientId(recipientId);
-        chatMessage.setConversationId(conversationId);
-        chatMessage.setTempId(tempId);
-        chatMessage.setContent(content);
-        chatMessage.setMediaType(mediaType);
-        chatMessage.setStatus(1);
-        chatMessage.setIsRead(0);
-        chatMessage.setCreatedAt(new Date());
-        messageService.save(chatMessage);
+        // Save the message to the database
+        Message chatMessage = saveChatMessage(senderId, recipientId, conversationId, tempId, content, mediaType);
 
-        // Prepare message to send
-        Map<String, Object> sendMessageData = new HashMap<>();
-        sendMessageData.put("type", "message");
-        Map<String, Object> sendData = new HashMap<>();
-        sendData.put("id", chatMessage.getId());
-        sendData.put("tempId", tempId);
-        sendData.put("senderId", senderId);
-        sendData.put("recipientId", recipientId);
-        sendData.put("content", content);
-        sendData.put("mediaType", mediaType);
-        sendData.put("createdAt", chatMessage.getCreatedAt().toString());
-        sendData.put("isRead", chatMessage.getIsRead());
-        sendMessageData.put("data", sendData);
+        // Prepare and send the message to the recipient and sender
+        Map<String, Object> sendMessageData = prepareMessageData(chatMessage, tempId);
         String sendMessageStr = objectMapper.writeValueAsString(sendMessageData);
 
         // Send message to recipient if online
@@ -143,34 +107,102 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
             senderSession.sendMessage(new TextMessage(sendMessageStr));
         }
 
-//        sendContactUpdate(recipientId, senderId);
+        // Update contact list view for both sender and recipient
+        updateContactListForUser(conversationId, senderId);
+        updateContactListForUser(conversationId, recipientId);
     }
 
-    /*private void sendContactUpdate(Long recipientId, Long senderId) {
-        WebSocketSession recipientSession = userSessions.get(recipientId);
-        if (recipientSession != null && recipientSession.isOpen()) {
-            // Get unread count and latest message
-            int unreadCount = messageMapper.countUnreadMessages(recipientId, senderId);
-            Message latestMessage = messageMapper.getLatestMessage(senderId, recipientId);
+    // Helper to send an error message using session
+    private void sendErrorMessage(WebSocketSession session, String message) throws IOException, JsonProcessingException {
+        Map<String, Object> errorMessageData = new HashMap<>();
+        errorMessageData.put("type", "error");
+        errorMessageData.put("data", message);
 
-            if (latestMessage != null) {
-                Map<String, Object> contactUpdateData = new HashMap<>();
-                contactUpdateData.put("type", "contactUpdate");
-                Map<String, Object> data = new HashMap<>();
-                data.put("senderId", senderId);
-                data.put("latestMessage", latestMessage.getContent());
-                data.put("timestamp", latestMessage.getCreatedAt());
-                data.put("unreadCount", unreadCount);
-                contactUpdateData.put("data", data);
+        String errorMessageStr = objectMapper.writeValueAsString(errorMessageData);
+        session.sendMessage(new TextMessage(errorMessageStr));
+    }
 
-                try {
-                    recipientSession.sendMessage(new TextMessage(objectMapper.writeValueAsString(contactUpdateData)));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+    // Helper to update conversation status fields based on sender
+    private boolean updateConversation(Conversation conversation, Long senderId, Long recipientId, WebSocketSession session) throws IOException {
+        if (senderId.equals(conversation.getClientId())) {
+            if (conversation.getIsServantMessagingAvailable() == 0) {
+                conversation.setIsServantMessagingAvailable(1);
             }
+            conversation.setServantResponseRequired(1);
+            conversation.setLastClientMessageTime(new Date());
+            conversationService.updateById(conversation);
+            return true;
+        } else if (senderId.equals(conversation.getServantId())) {
+            if (conversation.getIsServantMessagingAvailable() == 0) {
+                sendErrorMessage(session, "No permission to initiate conversation.");
+                return false;
+            }
+            conversation.setServantResponseRequired(0);
+            conversationService.updateById(conversation);
+            return true;
         }
-    }*/
+        return false;
+    }
+
+    // Helper to save the chat message
+    private Message saveChatMessage(Long senderId, Long recipientId, Long conversationId, Long tempId, String content, Integer mediaType) {
+        Message chatMessage = new Message();
+        chatMessage.setSenderId(senderId);
+        chatMessage.setRecipientId(recipientId);
+        chatMessage.setConversationId(conversationId);
+        chatMessage.setTempId(tempId);
+        chatMessage.setContent(content);
+        chatMessage.setMediaType(mediaType);
+        chatMessage.setStatus(1); // Sent
+        chatMessage.setIsRead(0);
+        chatMessage.setCreatedAt(new Date());
+        messageService.save(chatMessage);
+        return chatMessage;
+    }
+
+    // Helper to prepare message data for WebSocket
+    private Map<String, Object> prepareMessageData(Message message, Long tempId) {
+        Map<String, Object> sendMessageData = new HashMap<>();
+        sendMessageData.put("type", "message");
+        Map<String, Object> sendData = new HashMap<>();
+        sendData.put("id", message.getId());
+        sendData.put("tempId", tempId);
+        sendData.put("senderId", message.getSenderId());
+        sendData.put("recipientId", message.getRecipientId());
+        sendData.put("content", message.getContent());
+        sendData.put("mediaType", message.getMediaType());
+        sendData.put("createdAt", message.getCreatedAt().toString());
+        sendData.put("isRead", message.getIsRead());
+        sendMessageData.put("data", sendData);
+        return sendMessageData;
+    }
+
+    // Helper to update the contact list for a user
+    private void updateContactListForUser(Long conversationId, Long userId) throws IOException {
+        Message latestMessage = conversationService.getLatestMessage(conversationId);
+        int unreadMessageCount = conversationService.countUnreadMessages(userId, conversationId);
+        Conversation conversation = conversationMapper.selectById(conversationId);
+
+        Map<String, Object> contactUpdateData = new HashMap<>();
+        contactUpdateData.put("type", "contactUpdate");
+        Map<String, Object> dataMap = new HashMap<>();
+        dataMap.put("conversationId", conversationId);
+        dataMap.put("unreadMessageCount", unreadMessageCount);
+        dataMap.put("latestMessage", latestMessage.getContent());
+        dataMap.put("messageTime", latestMessage.getCreatedAt());
+        dataMap.put("clientId", conversation.getClientId());
+        dataMap.put("servantId", conversation.getServantId());
+        contactUpdateData.put("data", dataMap);
+
+        String contactUpdateStr = objectMapper.writeValueAsString(contactUpdateData);
+
+        WebSocketSession userSession = userSessions.get(userId);
+        if (userSession != null && userSession.isOpen()) {
+            userSession.sendMessage(new TextMessage(contactUpdateStr));
+        }
+    }
+
+
 
     private void handleReadReceipt(WebSocketSession session, Map<String, Object> data) throws Exception {
         List<Integer> messageIdIntegers = (List<Integer>) data.get("messageIds");

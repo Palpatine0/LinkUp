@@ -497,6 +497,7 @@ export default {
                     this.userData.id = res.data.data.id;
                     uni.setStorageSync(getApp().globalData.data.userLoginKey, true);
                     uni.setStorageSync(getApp().globalData.data.userInfoKey, this.userData);
+                    this.$webSocket.connectWebSocket(this.userData.id);
                     uni.showToast({title: this.$t('register.showToast.signUpSuccess'), icon: 'none'});
                 },
                 fail: () => {
