@@ -7,6 +7,13 @@
 
     <!-- Search input -->
     <app-input mode="text" :placeholder="$t('pub.page.search')" col="12" class="mb-2" v-model="searchKeyword" @input="onSearchInput"/>
+    <scroll-view :scroll-top="0" scroll-x="true" class="order-type-selection" @scrolltoupper="reload" @scrolltolower="onReachBottom">
+        <div class="button-container">
+            <div :class="{ active: orderStatusType === -1 }" @click="setOrderStatusType(-1)"><span>{{ $t('home.orderStatusType.all') }}</span></div>
+            <div :class="{ active: orderStatusType === 1 }" @click="setOrderStatusType(1)"><span>{{ $t('home.orderStatusType.accepted') }}</span></div>
+            <div :class="{ active: orderStatusType === 2 }" @click="setOrderStatusType(2)"><span>{{ $t('home.orderStatusType.invalided') }}</span></div>
+        </div>
+    </scroll-view>
 
     <!-- Orders Container using app-container -->
     <scroll-view :scroll-top="0" scroll-y="true" style="height: 80vh" @scrolltoupper="reload" @scrolltolower="onReachBottom">
@@ -27,7 +34,7 @@
                 <div>{{ order.address.addressName }}</div>
                 <div>{{ order.address.detail }}</div>
                 <div>
-                    <p class="candidates">{{ $t('home.candidates')+': '+order.candidateCount}}</p>
+                    <p class="candidates">{{ $t('home.candidates') + ': ' + order.candidateCount }}</p>
                 </div>
             </div>
         </div>
@@ -37,13 +44,11 @@
 </div>
 </template>
 
-
 <script>
-
 import $common from "../../utils/common";
 
 export default {
-    name: "order",
+    name: "home",
     computed: {
         $common() {
             return $common
@@ -55,15 +60,14 @@ export default {
             orderList: [],
             searchKeyword: '',
             addressMap: {},
+            orderStatusType: -1,
         };
     },
     onShow(param) {
         this.reload();
-        this.user = uni.getStorageSync(getApp().globalData.data.userInfoKey)
-        if(!this.$common.isEmpty(param.referrerId)) {
+        this.user = uni.getStorageSync(getApp().globalData.data.userInfoKey);
+        if(!this.$common.isEmpty(param) && !this.$common.isEmpty(param.referrerId)) {
             uni.setStorageSync('referrerId', param.referrerId);
-            console.log("uni.getStorageSync('referrerId')")
-            console.log(uni.getStorageSync('referrerId'))
         }
     },
     methods: {
@@ -71,53 +75,62 @@ export default {
             this.resetPagination();
             this.getDataList();
         },
-        resetPagination() {
-            this.page = 1;
-            this.hasMore = true;
-            this.orderList = [];
-        },
         buildApiParams() {
-            let url = getApp().globalData.data.requestUrl + this.$API.order.search;
             let method = 'POST';
             let baseData = {
-                userGender: this.user.gender,
-                userAge: this.user.age,
-                status: "0",
                 page: this.page,
                 size: this.pageSize,
             };
-            let data = this.searchKeyword.trim() !== '' ? {...baseData, keyword: this.searchKeyword} : baseData;
-            return {url, method, data};
+
+            if (this.orderStatusType === -1) {
+                // Case 1: All Orders
+                let url = getApp().globalData.data.requestUrl + this.$API.order.search;
+                baseData.status = 0; // Pending status
+                baseData.servantId = null; // Not assigned
+                baseData.userGender = this.user.gender;
+                baseData.userAge = this.user.age;
+                if (this.searchKeyword.trim() !== '') {
+                    baseData.keyword = this.searchKeyword.trim();
+                }
+                return { url, method, data: baseData };
+            } else if (this.orderStatusType === 1 || this.orderStatusType === 2) {
+                // Case 2 and 3: Use new API endpoint
+                let url = getApp().globalData.data.requestUrl + this.$API.order.servantOrders;
+                baseData.servantId = this.user.id;
+                baseData.statusType = this.orderStatusType;
+                if (this.searchKeyword.trim() !== '') {
+                    baseData.keyword = this.searchKeyword.trim();
+                }
+                return { url, method, data: baseData };
+            }
         },
         onSearchInput() {
             this.reload();
         },
         async getDataList() {
-            if(this.loading || !this.hasMore || this.$common.isEmpty(uni.getStorageSync(getApp().globalData.data.userInfoKey).id)) return;
+            if (this.loading || !this.hasMore || this.$common.isEmpty(this.user.id)) return;
 
             this.loading = true;
-            const {url, method, data} = this.buildApiParams();
+            const { url, method, data } = this.buildApiParams();
 
             uni.request({
                 url: url,
                 method: method,
                 data: data,
-                success: (res) => {
+                success: async (res) => {
                     const orders = res.data.list;
-                    if(this.page === 1) this.orderList = [];
+                    if (this.page === 1) this.orderList = [];
 
-                    if(orders.length < this.pageSize) {
+                    if (orders.length < this.pageSize) {
                         this.hasMore = false;
                     }
 
+                    // Process orders if needed
                     orders.forEach((order) => {
                         order.createdAt = order.createdAt ? this.$common.stampToTime(order.createdAt) : '';
                     });
 
-                    // Update the order list
                     this.orderList = this.orderList.concat(orders);
-
-                    // Increment the page number for the next call
                     this.page += 1;
                 },
                 complete: () => {
@@ -125,25 +138,14 @@ export default {
                 },
             });
         },
-        isServiceInProgressState(order) {
-            if(order.serviceScheduleStart && order.serviceScheduleEnd) {
-                const currentTime = new Date().getTime();
-                const serviceStartTime = new Date(order.serviceScheduleStart).getTime();
-                const serviceEndTime = new Date(order.serviceScheduleEnd).getTime();
-                return currentTime >= serviceStartTime && currentTime <= serviceEndTime;
-            }
-            return false;
+        setOrderStatusType(type) {
+            this.orderStatusType = type;
+            this.reload();
         },
 
-        // Redirects
         orderDetailRedirect(orderId) {
             uni.navigateTo({
                 url: './order-detail/order-detail?orderId=' + orderId,
-            });
-        },
-        chatWindowRedirect(userId) {
-            uni.navigateTo({
-                url: '/pages/components/chat/chat-window/chat-window?contactId=' + userId
             });
         },
     },
@@ -242,5 +244,35 @@ export default {
     margin: 2px 0;
 }
 
+.order-type-selection {
+    display: flex;
+    border-radius: 19px;
+    height: 38px;
+    overflow-x: auto; /* Allow horizontal scrolling */
+}
 
+.button-container {
+    display: flex;
+    flex-grow: 1; /* Allow buttons to grow and fill space */
+}
+
+.order-type-selection div {
+    padding: 4px;
+    border-radius: 50px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.order-type-selection div.active {
+    background-color: #0A2342;
+    color: #FFF;
+}
+
+.order-type-selection div:not(.active) {
+    color: #0A2342;
+}
+
+.order-type-selection span {
+    padding: 0 8px;
+}
 </style>

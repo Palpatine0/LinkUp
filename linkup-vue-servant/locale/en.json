@@ -86,7 +86,12 @@
     "//////": "home",
     "home": {
         "nearby": "Order Nearby",
-        "candidates": "Candidates"
+        "candidates": "Candidates",
+        "orderStatusType": {
+            "all": "All",
+            "accepted": "Accepted",
+            "invalided": "Invalided"
+        }
     },
     "home>orderDetail": {
         "orderInfoBasic": {

@@ -50,6 +50,24 @@ public class OrderController {
         return R.ok().put("freeOrderPostingQuota", freeOrderPostingQuota);
     }
 
+    /**
+     * Get all orders a servant interested
+     * @param requestData
+     * @return
+     */
+    @PostMapping("/servant-orders")
+    public R getServantOrders(@RequestBody Map<String, Object> requestData) {
+        int page = requestData.get("page") != null ? Integer.parseInt(requestData.get("page").toString()) : 1;
+        int size = requestData.get("size") != null ? Integer.parseInt(requestData.get("size").toString()) : 10;
+
+        Long servantId = Long.parseLong(requestData.get("servantId").toString());
+        Integer statusType = requestData.get("statusType") != null ? Integer.parseInt(requestData.get("statusType").toString()) : -1;
+
+        Page<Order> orderPage = orderService.getServantOrders(servantId, statusType, page, size);
+        return R.paginate(orderPage);
+    }
+
+
     /*U*/
     @PostMapping("/update")
     public R update(@RequestBody Map<String, Object> requestData) {

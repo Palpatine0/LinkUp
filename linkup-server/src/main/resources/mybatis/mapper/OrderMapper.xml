@@ -120,4 +120,44 @@
     </select>
 
 
+    <select id="getServantOrders" resultMap="OrderWithAssociationsResultMap">
+        SELECT
+        o.*,
+        a.id AS address_id,
+        a.user_id AS address_user_id,
+        a.consignee,
+        a.phone_number,
+        a.address,
+        a.address_name,
+        a.detail,
+        a.latitude,
+        a.longitude,
+        a.is_deleted AS address_is_deleted,
+        a.created_at AS address_created_at,
+        st.id AS service_type_id,
+        st.name AS service_type_name,
+        st.name_cn AS service_type_name_cn,
+        st.cover_img AS service_type_cover_img,
+        st.intro_img AS service_type_intro_img,
+        st.is_deleted AS service_type_is_deleted,
+        st.created_at AS service_type_created_at
+        FROM `order` o
+        JOIN order_candidate oc ON oc.order_id = o.id
+        LEFT JOIN address a ON o.address_id = a.id
+        LEFT JOIN service_type st ON o.required_servant_type = st.id
+        <where>
+            o.is_deleted = 0
+            AND oc.is_deleted = 0
+            AND oc.servant_id = #{params.servantId}
+            <if test="params.statusType == 1">
+                AND o.status = 0
+                AND o.servant_id IS NULL
+            </if>
+            <if test="params.statusType == 2">
+                AND (o.status = 3 OR (o.servant_id IS NOT NULL AND o.servant_id != #{params.servantId}))
+            </if>
+        </where>
+        ORDER BY o.created_at DESC
+    </select>
+
 </mapper>

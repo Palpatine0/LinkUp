@@ -11,4 +11,6 @@ import java.util.Map;
 @Mapper
 public interface OrderMapper extends BaseMapper<Order> {
     IPage<Order> search(IPage<Order> page, @Param("params") Map<String, Object> params);
+
+    IPage<Order> getServantOrders(IPage<Order> page, @Param("params") Map<String, Object> params);
 }

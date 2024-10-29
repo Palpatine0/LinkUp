@@ -51,7 +51,7 @@ export default {
         this.selectedAgeText = "";
         this.selectedAgeIcon = "👤";
 
-        if(!this.$common.isEmpty(param.referrerId)) {
+        if(!this.$common.isEmpty(param) && !this.$common.isEmpty(param.referrerId)) {
             uni.setStorageSync('referrerId', param.referrerId);
         }
     },

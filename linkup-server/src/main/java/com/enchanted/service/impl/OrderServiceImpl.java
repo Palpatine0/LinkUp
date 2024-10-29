@@ -29,10 +29,7 @@ import java.math.RoundingMode;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ScheduledFuture;
 
@@ -131,6 +128,17 @@ public class OrderServiceImpl extends ServiceImpl<OrderMapper, Order> implements
         int quota = Math.max(0, OrderConstant.FREE_POSTING_QUOTA - freeAttemptsToday);
         return quota;
     }
+
+    @Override
+    public Page<Order> getServantOrders(Long servantId, Integer statusType, int page, int size) {
+        IPage<Order> orderPage = new Page<>(page, size);
+        Map<String, Object> params = new HashMap<>();
+        params.put("servantId", servantId);
+        params.put("statusType", statusType);
+        orderPage = orderMapper.getServantOrders(orderPage, params);
+        return (Page<Order>) orderPage;
+    }
+
 
     private int countFreeAttemptsToday(Long userId) {
         // Get the start and end of the current day

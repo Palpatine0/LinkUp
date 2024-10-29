@@ -17,6 +17,8 @@ public interface IOrderService extends IService<Order> {
 
     int getRemainingFreePostingQuota(Long userId);
 
+    Page<Order> getServantOrders(Long servantId, Integer statusType, int page, int size);
+
     /*U*/
     boolean update(Long id, Map<String, Object> changes);
 

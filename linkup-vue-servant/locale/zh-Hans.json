@@ -86,7 +86,12 @@
     "//////": "home",
     "home": {
         "nearby": "附近的订单",
-        "candidates": "抢单人数"
+        "candidates": "抢单人数",
+        "orderStatusType": {
+            "all": "全部",
+            "accepted": "已报价",
+            "invalided": "已失效"
+        }
     },
     "home>orderDetail": {
         "orderInfoBasic": {
