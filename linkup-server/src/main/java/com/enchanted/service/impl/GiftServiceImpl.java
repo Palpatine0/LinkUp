@@ -97,22 +97,34 @@ public class GiftServiceImpl extends ServiceImpl<GiftMapper, Gift> implements IG
         wrapper.eq("servant_id", recipientId);
         Conversation activeConversation = conversationMapper.selectOne(wrapper);
 
-
         Long conversationId;
+        Date newExpirationTime;
+
         if (activeConversation == null) {
-            // No active conversation found, create a new one
+            // No active conversation found, create a new one with a new expiration time
             Conversation newConversation = new Conversation();
             newConversation.setClientId(senderId);
             newConversation.setServantId(recipientId);
-            newConversation.setExpirationTime(new Date(System.currentTimeMillis() + (chatDuration * 60 * 1000)));
+            newExpirationTime = new Date(System.currentTimeMillis() + (chatDuration * 60 * 1000));
+            newConversation.setExpirationTime(newExpirationTime);
             newConversation.setServantResponseRequired(1);
             newConversation.setLastClientMessageTime(new Date());
             newConversation.setGiftId(giftId);
             conversationService.save(newConversation);
             conversationId = newConversation.getId();
         } else {
-            // Update the existing conversation
-            activeConversation.setExpirationTime(new Date(System.currentTimeMillis() + (chatDuration * 60 * 1000)));
+            // Update the existing conversation by extending its expiration time
+            Date currentExpirationTime = activeConversation.getExpirationTime();
+
+            // If the current expiration time is in the past, reset it to now and add the duration
+            if (currentExpirationTime == null || currentExpirationTime.before(new Date())) {
+                newExpirationTime = new Date(System.currentTimeMillis() + (chatDuration * 60 * 1000));
+            } else {
+                // Add the new duration to the current expiration time
+                newExpirationTime = new Date(currentExpirationTime.getTime() + (chatDuration * 60 * 1000));
+            }
+
+            activeConversation.setExpirationTime(newExpirationTime);
             activeConversation.setServantResponseRequired(1);
             activeConversation.setLastClientMessageTime(new Date());
             activeConversation.setGiftId(giftId);
