@@ -14,18 +14,18 @@
         <div class="balance-info">
             <div class="justify-SB" style="font-size: 24px;font-weight: bold">
                 {{ $t('profile>balance.lookingCardBalance') }}
-                <img class="looking-coin-qa" src="/static/page/balance/balance-question.svg" @click="lookingCardBalanceTips">
+                <img class="looking-coin-qa" :src="app.globalData.data.ossIconRequestUrl+'/page/profile/balance/balance-question.svg'" @click="lookingCardBalanceTips">
             </div>
             <div class="balance-amount">{{ $common.toNumber(user.balance, 'bigdecimal').toFixed(2) }}</div>
         </div>
         <div class="balance-opts">
             <div class="pay-button" @click="depositToggle()">
                 <div style="width: 70px">{{ $t('profile>balance.deposit') }}</div>
-                <img class="pay-button-icon" src="/static/page/balance/arrow-down-left.svg">
+                <img class="pay-button-icon" :src="app.globalData.data.ossIconRequestUrl+'/page/profile/balance/arrow-down-left.svg'">
             </div>
             <div class="pay-button" @click="withdrawToggle()">
                 <div style="width: 70px">{{ $t('profile>balance.withdraw') }}</div>
-                <img class="pay-button-icon" src="/static/page/balance/arrow-up-right.svg">
+                <img class="pay-button-icon" :src="app.globalData.data.ossIconRequestUrl+'/page/profile/balance/arrow-up-right.svg'">
             </div>
         </div>
     </div>
@@ -33,11 +33,11 @@
         <div class="balance-info">
             <div style="font-size: 24px;font-weight: bold;justify-content: space-between;display: flex">
                 <div>{{ $t('profile>balance.lookingCoinsBalance') }}</div>
-                <img class="looking-coin-qa" src="/static/page/balance/looking-coin-question.svg" @click="lookingCoinTips">
+                <img class="looking-coin-qa" :src="app.globalData.data.ossIconRequestUrl+'/page/profile/balance/looking-coin-question.svg'" @click="lookingCoinTips">
             </div>
             <div class="lc-balance-amount justify-SB">
                 <div>{{ user.lookingCoins }}</div>
-                <img class="looking-coin-transfer" src="/static/page/balance/up.svg" @click="coinWithdrawToggle">
+                <img class="looking-coin-transfer" :src="app.globalData.data.ossIconRequestUrl+'/page/profile/balance/up.svg'" @click="coinWithdrawToggle">
             </div>
         </div>
     </div>
@@ -52,7 +52,7 @@
                 <text class="div-more">{{ $t('profile>balance.viewMore') }}</text>
             </div>
             <div class="icon-wrapper center-v">
-                <img class="icon" src="/static/page/profile/balance/money-from-bracket.svg"></img>
+                <img class="icon" :src="app.globalData.data.ossIconRequestUrl+'/page/profile/balance/money-from-bracket.svg'"></img>
             </div>
         </div>
 
@@ -66,7 +66,7 @@
                 <text class="div-more">{{ $t('profile>balance.viewMore') }}</text>
             </div>
             <div class="icon-wrapper center-v">
-                <img class="icon" src="/static/page/profile/balance/qrcode.svg"></img>
+                <img class="icon" :src="app.globalData.data.ossIconRequestUrl+'/page/profile/balance/qrcode.svg'"></img>
             </div>
         </div>
     </div>
@@ -84,8 +84,14 @@ import Deposit from "../../../components/page/balance/deposit.vue";
 import Withdraw from "../../../components/page/balance/withdraw.vue";
 import ReferralQRCode from "../../../components/page/balance/referralQRCode.vue";
 import CoinWithdraw from "../../../components/page/balance/coin-withdraw.vue";
+import app from "../../../App.vue";
 
 export default {
+    computed: {
+        app() {
+            return app
+        }
+    },
     components: {
         Deposit,
         Withdraw,
@@ -120,7 +126,7 @@ export default {
             });
         },
 
-        lookingCardBalanceTips(){
+        lookingCardBalanceTips() {
             uni.showModal({
                 title: this.$t('profile>balance.lCardBalanceTipsModal.title'),
                 content: this.$t('profile>balance.lCardBalanceTipsModal.content'),
@@ -128,7 +134,7 @@ export default {
                 showCancel: false
             });
         },
-        lookingCoinTips(){
+        lookingCoinTips() {
             uni.showModal({
                 title: this.$t('profile>balance.lCoinTipsModal.title'),
                 content: this.$t('profile>balance.lCoinTipsModal.content'),
@@ -147,8 +153,8 @@ export default {
         qeShareToggle() {
             this.referralQRVisible = !this.referralQRVisible
         },
-        coinWithdrawToggle(){
-            this.coinWithdrawVisible=!this.coinWithdrawVisible
+        coinWithdrawToggle() {
+            this.coinWithdrawVisible = !this.coinWithdrawVisible
         },
 
         // Redirect

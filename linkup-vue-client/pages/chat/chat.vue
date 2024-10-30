@@ -111,6 +111,7 @@ export default {
             this.reload();
         },
         getDataList() {
+            console.log("START getDataList() {")
             if(this.loading || !this.hasMore) return;
             this.loading = true;
             const {url, method, data} = this.buildApiParams();
@@ -120,6 +121,7 @@ export default {
                 method: method,
                 data: data,
                 success: (res) => {
+                    console.log("DONE getDataList() {")
                     const contacts = res.data.list;
                     if(this.page === 1) {
                         this.dataList = [];

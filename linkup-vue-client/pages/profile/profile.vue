@@ -5,13 +5,13 @@
         <div class="profile-header">
             <img :src="user.avatar" alt="Profile Photo" class="profile-photo"/>
             <h1 class="profile-name">{{ user.nickname }}</h1>
-            <h3 class="hidden" style="color: #8B8B8B" @click="$common.addToClipboard(user.identifier)">ID: {{user.identifier}}</h3>
+            <h3 class="hidden" style="color: #8B8B8B" @click="$common.addToClipboard(user.identifier)">ID: {{ user.identifier }}</h3>
         </div>
     </div>
     <div v-if="!isUserLogin" class="mb-4">
         <div class="profile-header center-h">
             <div class="center-h">
-                <img src="/static/page/profile/logo.jpg" alt="Profile Photo" class="profile-photo"/>
+                <img :src="app.globalData.data.ossIconRequestUrl+'/page/profile/logo.jpg'" alt="Profile Photo" class="profile-photo"/>
             </div>
             <div class="profile-info center-h">
                 <app-button shaped size="small" @click="signIn">
@@ -22,7 +22,7 @@
     </div>
 
     <app-container v-if="isUserLogin" color="#fff" col="12" @click="profileRedirect">
-        <img src="/static/page/profile/profile.png" alt="" class="link-icon">
+        <img :src="app.globalData.data.ossIconRequestUrl+'/page/profile/profile.png'" alt="" class="link-icon">
         <span class="link-text">{{ $t('profile.profile') }}</span>
     </app-container>
 
@@ -63,11 +63,15 @@
 
 <script>
 import $common from "../../utils/common";
+import app from "../../App.vue";
 
 export default {
     computed: {
         $common() {
             return $common
+        },
+        app() {
+            return app
         }
     },
     data() {
@@ -75,15 +79,14 @@ export default {
             isUserLogin: false,
             user: {},
             linkItemsB: [
-                {label: "profile.balance", icon: "/static/page/profile/card.png", click: "balanceRedirect"},
-                {label: "profile.address", icon: "/static/page/profile/addr.jpg", click: "addressRedirect"},
-                {label: "profile.myFavorite", icon: "/static/page/profile/bookmark.jpg", click: "favoritesRedirect"},
-                // {label: "profile.tag", icon: "/static/page/profile/tag.svg", click: "tagsRedirect"},
+                {label: "profile.balance", icon: app.globalData.data.ossIconRequestUrl + "/page/profile/card.png", click: "balanceRedirect"},
+                {label: "profile.address", icon: app.globalData.data.ossIconRequestUrl + "/page/profile/addr.jpg", click: "addressRedirect"},
+                {label: "profile.myFavorite", icon: app.globalData.data.ossIconRequestUrl + "/page/profile/bookmark.jpg", click: "favoritesRedirect"},
+                // {label: "profile.tag", icon: app.globalData.data.ossIconRequestUrl+"/page/profile/tag.svg", click: "tagsRedirect"},
             ],
             linkItemsC: [
-                {label: "profile.data", icon: "/static/page/profile/db.jpg", click: "dataRedirect"},
-                {label: "pub.lang.curLang", icon: "/static/page/profile/globe.jpg", click: "languageSelector"},
-                // {label: "profile.tag", icon: "/static/page/profile/tag.svg", click: "tagsRedirect"},
+                {label: "profile.data", icon: app.globalData.data.ossIconRequestUrl + "/page/profile/db.jpg", click: "dataRedirect"},
+                {label: "pub.lang.curLang", icon: app.globalData.data.ossIconRequestUrl + "/page/profile/globe.jpg", click: "languageSelector"},
             ],
         };
     },
@@ -134,7 +137,7 @@ export default {
                     this.$i18n.locale = language[res.tapIndex].code
                     uni.setLocale()
                 },
-                fail: function (res) {
+                fail: function(res) {
                 }
             });
         },

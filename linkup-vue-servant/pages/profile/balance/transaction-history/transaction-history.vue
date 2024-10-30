@@ -17,16 +17,10 @@
 
     <!-- Toggle buttons for All Transactions / Income / Outcome -->
     <div class="currency-type-selection">
-        <button
-            :class="{ active: currencyType === 0 }"
-            @click="setCurrencyType(0)"
-        >
+        <button :class="{ active: currencyType === 0 }" @click="setCurrencyType(0)">
             {{ $t('profile>balance>transactionHistory.balance') }}
         </button>
-        <button
-            :class="{ active: currencyType === 1 }"
-            @click="setCurrencyType(1)"
-        >
+        <button :class="{ active: currencyType === 1 }" @click="setCurrencyType(1)">
             {{ $t('profile>balance>transactionHistory.lookingCoin') }}
         </button>
     </div>
@@ -46,9 +40,8 @@
             @click="transactionDetailRedirect(transaction.id)"
         >
             <div class="transaction-icon">
-                <!-- Display different icons based on the transaction type -->
-                <img v-if="transaction.transactionType === 1" src="/static/page/balance/hand-holding-circle-dollar.svg" alt="Received"/>
-                <img v-else src="/static/page/balance/circle-dollar-to-slot.svg" alt="Deducted"/>
+                <img v-if="transaction.transactionType === 1" :src="app.globalData.data.ossIconRequestUrl+'/page/profile/balance/hand-holding-circle-dollar.svg'" alt="Received"/>
+                <img v-else :src="app.globalData.data.ossIconRequestUrl+'/page/profile/balance/circle-dollar-to-slot.svg'" alt="Deducted"/>
             </div>
             <div class="transaction-details">
                 <div class="transaction-title">
@@ -77,11 +70,15 @@
 
 <script>
 import common from "../../../../utils/common";
+import app from "../../../../App.vue";
 
 export default {
     computed: {
         common() {
             return common;
+        },
+        app() {
+            return app
         }
     },
     data() {
@@ -229,7 +226,7 @@ export default {
 }
 
 .transaction-icon img {
-    width: 32px;
+    width: 40px;
     height: 25px;
 }
 
