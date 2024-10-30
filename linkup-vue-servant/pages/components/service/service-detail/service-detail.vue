@@ -1,5 +1,5 @@
 <template>
-<div style="height: 100vh;background-color: #f6f6f6">
+<div style="height: 100vh;background-color: #f3f2f6">
     <div class="user-card">
         <!-- Top Section with Image/Background -->
         <div class="top-section" :style="{'height': topSectionHeight + 'vh', 'background-image': `url(${serviceType.introImg})`}">

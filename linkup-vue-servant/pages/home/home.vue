@@ -9,12 +9,12 @@
         </div>
     </div>
 
-    <div v-if="grandOrderStatusType==1" class="button-container">
-        <app-button class="mr-1" size="small" shaped bold color="#f3f2f6" font-color="#0A2342" width="100px">
-            黄埔区
+    <div v-if="grandOrderStatusType==0" class="button-container">
+        <app-button class="mr-1" size="small" shaped bold color="#f6f6f6" font-color="#0A2342" width="100px">
+            天河区
             <img class="selector-icon" src="/static/common/down-arrow.svg">
         </app-button>
-        <app-button size="small" shaped bold color="#f3f2f6" font-color="#0A2342" width="130px" @click="orderSortBySelectionToggle">
+        <app-button size="small" shaped bold color="#f6f6f6" font-color="#0A2342" width="130px" @click="orderSortBySelectionToggle">
             <span v-if="orderSortBy == 0">{{ $t('home.orderSortBy.distance') }}</span>
             <span v-else-if="orderSortBy == 1">{{ $t('home.orderSortBy.price') }}</span>
             <img class="selector-icon" src="/static/common/down-arrow.svg">
@@ -78,7 +78,7 @@ export default {
             searchKeyword: '',
             addressMap: {},
 
-            grandOrderStatusType: 1,
+            grandOrderStatusType: 0,
             orderStatusType: -1,
             orderSortBy: 1,
 
@@ -166,7 +166,7 @@ export default {
                 this.orderStatusType = 1
                 this.reload();
             } else {
-                this.grandOrderStatusType = 1
+                this.grandOrderStatusType = 0
                 this.orderStatusType = -1
                 this.reload();
             }

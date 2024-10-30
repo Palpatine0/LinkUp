@@ -11,7 +11,7 @@
     </div>
     <div style="display: flex">
         <picker mode="multiSelector" :range="[startAges, endAges]" :value="[startAgeIndex, endAgeIndex]" @change="onAgeRangeChange">
-            <app-button size="small" shaped bold color="#f3f2f6" font-color="#0A2342" width="100px">
+            <app-button size="small" shaped bold color="#f6f6f6" font-color="#0A2342" width="100px">
                 {{ selectedAgeText ? selectedAgeText : $t('order>orderInitiate.options.allAge') }}
                 <img class="selector-icon" src="/static/common/down-arrow.svg">
             </app-button>

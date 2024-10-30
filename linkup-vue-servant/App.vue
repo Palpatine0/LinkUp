@@ -25,6 +25,7 @@ export default {
                 danger: '#F56C6C',
                 eucalyptus: '#44E1A6',
                 info: '#939393',
+                cultured: '#f6f6f6',
                 antiFlashWhite: '#f3f2f6',
                 navyBlue: '#192C77',
                 oxfordBlue: '#0A2342',
