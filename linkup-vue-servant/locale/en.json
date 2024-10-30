@@ -87,13 +87,17 @@
     "home": {
         "nearby": "Order Nearby",
         "candidates": "Candidates",
-        "grandOrderStatusType": {
+        "grandOrderType": {
             "orderPool": "Order Pool",
-            "myQuotedPrice": "My Quoted Price"
+            "myQuotedPrice": "Participated"
         },
-        "orderStatusType": {
-            "all": "All",
+        "orderSortBy": {
+            "distance": "Distance",
+            "price": "Price"
+        },
+        "orderType": {
             "accepted": "Accepted",
+            "confirmed": "Confirmed",
             "invalided": "Invalided"
         }
     },

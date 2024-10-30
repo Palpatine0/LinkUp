@@ -1,15 +1,30 @@
 <template>
 <div class="page">
     <!-- Heading section -->
-    <div style="display: flex; align-items: center; justify-content: space-between;">
-        <app-title type="h1" bold="true">{{ $t('home.nearby') }}</app-title>
+    <div class="flex" style="align-items: flex-end;">
+        <app-title type="h1" bold="true">{{ grandOrderStatusType == 0 ? $t('home.grandOrderType.orderPool') : $t('home.grandOrderType.myQuotedPrice') }}</app-title>
+        <div class="flex" style="margin: 6px" @click="setGrandOrderStatusType">
+            <img style="width: 22px;height: 22px;margin: 0 4px 0 8px" :src="grandOrderStatusType == 0?'/static/page/home/file-circle-check.svg':'/static/page/home/layer-group-solid.svg'">
+            <app-title type="p" bold="true" style="color: #939393">{{ grandOrderStatusType == 0 ? $t('home.grandOrderType.myQuotedPrice') : $t('home.grandOrderType.orderPool') }}</app-title>
+        </div>
     </div>
 
-    <scroll-view :scroll-top="0" scroll-x="true" class="order-type-selection" @scrolltoupper="reload" @scrolltolower="onReachBottom">
+    <div v-if="grandOrderStatusType==1" class="button-container">
+        <app-button class="mr-1" size="small" shaped bold color="#f3f2f6" font-color="#0A2342" width="100px">
+            黄埔区
+            <img class="selector-icon" src="/static/common/down-arrow.svg">
+        </app-button>
+        <app-button size="small" shaped bold color="#f3f2f6" font-color="#0A2342" width="130px" @click="orderSortBySelectionToggle">
+            <span v-if="orderSortBy == 0">{{ $t('home.orderSortBy.distance') }}</span>
+            <span v-else-if="orderSortBy == 1">{{ $t('home.orderSortBy.price') }}</span>
+            <img class="selector-icon" src="/static/common/down-arrow.svg">
+        </app-button>
+    </div>
+    <scroll-view v-else :scroll-top="0" scroll-x="true" class="order-type-selection" @scrolltoupper="reload" @scrolltolower="onReachBottom">
         <div class="button-container">
-            <div :class="{ active: orderStatusType === -1 }" @click="setOrderStatusType(-1)"><span>{{ $t('home.orderStatusType.all') }}</span></div>
-            <div :class="{ active: orderStatusType === 1 }" @click="setOrderStatusType(1)"><span>{{ $t('home.orderStatusType.accepted') }}</span></div>
-            <div :class="{ active: orderStatusType === 2 }" @click="setOrderStatusType(2)"><span>{{ $t('home.orderStatusType.invalided') }}</span></div>
+            <div :class="{ active: orderStatusType === 1 }" @click="setOrderStatusType(1)"><span>{{ $t('home.orderType.accepted') }}</span></div>
+            <div :class="{ active: orderStatusType === 3 }" @click="setOrderStatusType(3)"><span>{{ $t('home.orderType.confirmed') }}</span></div>
+            <div :class="{ active: orderStatusType === 2 }" @click="setOrderStatusType(2)"><span>{{ $t('home.orderType.invalided') }}</span></div>
         </div>
     </scroll-view>
 
@@ -39,14 +54,18 @@
         <div v-if="loading" class="loading-text">{{ $t('pub.page.loading') }}</div>
         <div v-else-if="!hasMore" class="no-more-data-container-list">{{ $t('pub.page.noMoreData') }}</div>
     </scroll-view>
+
+    <OrderSortBySelection v-if="orderSortBySelectionVisible"/>
 </div>
 </template>
 
 <script>
 import $common from "../../utils/common";
+import OrderSortBySelection from "../../components/page/home/order-sort-by-selection.vue";
 
 export default {
     name: "home",
+    components: {OrderSortBySelection},
     computed: {
         $common() {
             return $common
@@ -58,8 +77,12 @@ export default {
             orderList: [],
             searchKeyword: '',
             addressMap: {},
+
             grandOrderStatusType: 1,
             orderStatusType: -1,
+            orderSortBy: 1,
+
+            orderSortBySelectionVisible: false,
         };
     },
     onShow(param) {
@@ -81,43 +104,45 @@ export default {
                 size: this.pageSize,
             };
 
-            if (this.orderStatusType === -1) {
+            if(this.orderStatusType === -1) {
                 // Case 1: All Orders
                 let url = getApp().globalData.data.requestUrl + this.$API.order.search;
                 baseData.status = 0; // Pending status
                 baseData.servantId = null; // Not assigned
                 baseData.userGender = this.user.gender;
                 baseData.userAge = this.user.age;
-                if (this.searchKeyword.trim() !== '') {
-                    baseData.keyword = this.searchKeyword.trim();
+                if(this.grandOrderStatusType === 1 && this.orderSortBy === 1) {
+                    baseData.sortByPriceDesc = true;
                 }
-                return { url, method, data: baseData };
-            } else if (this.orderStatusType === 1 || this.orderStatusType === 2) {
+                return {url, method, data: baseData};
+            } else if(this.orderStatusType === 1 || this.orderStatusType === 2) {
                 // Case 2 and 3: Use new API endpoint
                 let url = getApp().globalData.data.requestUrl + this.$API.order.servantOrders;
                 baseData.servantId = this.user.id;
                 baseData.statusType = this.orderStatusType;
-                if (this.searchKeyword.trim() !== '') {
-                    baseData.keyword = this.searchKeyword.trim();
-                }
-                return { url, method, data: baseData };
+                return {url, method, data: baseData};
+            } else if(this.orderStatusType === 3) {
+                let url = getApp().globalData.data.requestUrl + this.$API.order.search;
+                baseData.status = 1; // Processing status
+                baseData.servantId = uni.getStorageSync(getApp().globalData.data.userInfoKey).id;
+                return {url, method, data: baseData};
             }
         },
         async getDataList() {
-            if (this.loading || !this.hasMore || this.$common.isEmpty(this.user.id)) return;
+            if(this.loading || !this.hasMore || this.$common.isEmpty(this.user.id)) return;
 
             this.loading = true;
-            const { url, method, data } = this.buildApiParams();
+            const {url, method, data} = this.buildApiParams();
 
             uni.request({
                 url: url,
                 method: method,
                 data: data,
-                success: async (res) => {
+                success: async(res) => {
                     const orders = res.data.list;
-                    if (this.page === 1) this.orderList = [];
+                    if(this.page === 1) this.orderList = [];
 
-                    if (orders.length < this.pageSize) {
+                    if(orders.length < this.pageSize) {
                         this.hasMore = false;
                     }
 
@@ -134,30 +159,51 @@ export default {
                 },
             });
         },
+
+        setGrandOrderStatusType() {
+            if(this.grandOrderStatusType == 0) {
+                this.grandOrderStatusType = 1
+                this.orderStatusType = 1
+                this.reload();
+            } else {
+                this.grandOrderStatusType = 1
+                this.orderStatusType = -1
+                this.reload();
+            }
+        },
         setOrderStatusType(type) {
             this.orderStatusType = type;
             this.reload();
         },
-        setGrandOrderStatusType(type) {
-            this.grandOrderStatusType = type;
+        setOrderSortBy(type) {
+            this.orderSortBy = type
             this.reload();
         },
 
+        // Toggles
+        orderSortBySelectionToggle() {
+            this.orderSortBySelectionVisible = !this.orderSortBySelectionVisible
+        },
+
+        // Redirects
         orderDetailRedirect(orderId) {
             uni.navigateTo({
                 url: './order-detail/order-detail?orderId=' + orderId,
             });
         },
+
     },
 };
 </script>
 
 
 <style scoped>
-.order-icon {
-    width: 40px;
-    height: 40px;
-    margin-right: 10px;
+.selector-icon {
+    width: 16px;
+    height: 16px;
+    position: relative;
+    top: 2px;
+    left: 4px;
 }
 
 .order-schedule {
@@ -249,6 +295,7 @@ export default {
     border-radius: 19px;
     height: 38px;
     overflow-x: auto; /* Allow horizontal scrolling */
+    margin: 10px 0;
 }
 
 .button-container {

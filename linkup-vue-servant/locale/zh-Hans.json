@@ -87,13 +87,17 @@
     "home": {
         "nearby": "附近的订单",
         "candidates": "抢单人数",
-        "grandOrderStatusType": {
+        "grandOrderType": {
             "orderPool": "订单池",
             "myQuotedPrice": "我的报价"
         },
-        "orderStatusType": {
-            "all": "全部",
+        "orderSortBy": {
+            "distance": "距离优先",
+            "price": "价格由高到低"
+        },
+        "orderType": {
             "accepted": "已报价",
+            "confirmed": "已确认",
             "invalided": "已失效"
         }
     },

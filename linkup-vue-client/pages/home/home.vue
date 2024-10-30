@@ -11,12 +11,13 @@
     </div>
     <div style="display: flex">
         <picker mode="multiSelector" :range="[startAges, endAges]" :value="[startAgeIndex, endAgeIndex]" @change="onAgeRangeChange">
-            <app-button size="very-small" bold color="#f3f2f6" font-color="#0A2342" width="80px">
+            <app-button size="small" shaped bold color="#f3f2f6" font-color="#0A2342" width="100px">
                 {{ selectedAgeText ? selectedAgeText : $t('order>orderInitiate.options.allAge') }}
+                <img class="selector-icon" src="/static/common/down-arrow.svg">
             </app-button>
         </picker>
-        <app-button size="very-small" bold color="#FFF" :font-color="genderType==0 ? '#0A2342':'#CCC'" width="60px" @click="setGenderType(0)">{{ $t('pub.gender.m') }}</app-button>
-        <app-button size="very-small" bold color="#FFF" :font-color="genderType==1 ? '#0A2342':'#CCC'" width="60px" @click="setGenderType(1)">{{ $t('pub.gender.f') }}</app-button>
+        <app-button size="small" bold color="#FFF" :font-color="genderType==0 ? '#0A2342':'#CCC'" width="60px" @click="setGenderType(0)">{{ $t('pub.gender.m') }}</app-button>
+        <app-button size="small" bold color="#FFF" :font-color="genderType==1 ? '#0A2342':'#CCC'" width="60px" @click="setGenderType(1)">{{ $t('pub.gender.f') }}</app-button>
     </div>
     <!-- Scroll View for User List -->
     <user-list :userList="userList" height="60vh" @user-click="userDetailRedirect"/>
@@ -27,13 +28,14 @@
 <script>
 export default {
     name: "home",
-    data() {9
+    data() {
+        9
         return {
             userList: [],
             serviceTypeList: [],
             genderType: '',
-            startAges: Array.from({ length: 83 }, (_, i) => i + 18), // Ages from 18 to 100
-            endAges: Array.from({ length: 83 }, (_, i) => i + 18), // Ages from 18 to 100
+            startAges: Array.from({length: 83}, (_, i) => i + 18), // Ages from 18 to 100
+            endAges: Array.from({length: 83}, (_, i) => i + 18), // Ages from 18 to 100
             startAgeIndex: 0,
             endAgeIndex: 82, // Default to max age
             selectedAgeText: "",
@@ -57,7 +59,7 @@ export default {
     },
     computed: {
         ageRangeDisplay() {
-            return [this.$t('order>orderInitiate.options.allAge'), ...Array.from({ length: 83 }, (_, i) => (i + 18).toString())];
+            return [this.$t('order>orderInitiate.options.allAge'), ...Array.from({length: 83}, (_, i) => (i + 18).toString())];
         }
     },
     methods: {
@@ -76,16 +78,16 @@ export default {
             };
 
             // Include age range if selected
-            if (this.selectedAgeText) {
+            if(this.selectedAgeText) {
                 baseData.ageMin = this.startAges[this.startAgeIndex];
                 baseData.ageMax = this.endAges[this.endAgeIndex];
             }
 
             let data = this.searchKeyword && this.searchKeyword.trim() !== ''
-                ? { ...baseData, keyword: this.searchKeyword }
-                : { ...baseData };
+                ? {...baseData, keyword: this.searchKeyword}
+                : {...baseData};
 
-            return { url, method, data };
+            return {url, method, data};
         },
 
 
@@ -136,7 +138,7 @@ export default {
             const startAge = this.startAges[this.startAgeIndex];
             const endAge = this.endAges[this.endAgeIndex];
 
-            if (startAge > endAge) {
+            if(startAge > endAge) {
                 uni.showToast({
                     title: this.$t('pub.showToast.invalidAgeRange'),
                     icon: 'none'
@@ -173,6 +175,13 @@ export default {
 </script>
 
 <style scoped>
+.selector-icon {
+    width: 16px;
+    height: 16px;
+    position: relative;
+    top: 2px;
+    left: 4px;
+}
 .service-info {
     height: 160px;
     position: relative;

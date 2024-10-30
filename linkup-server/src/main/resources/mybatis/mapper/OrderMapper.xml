@@ -116,7 +116,15 @@
                     )
                 </if>
             </where>
-        ORDER BY o.created_at DESC
+        ORDER BY
+        <choose>
+            <when test="params.sortByPriceDesc == true">
+                o.price DESC
+            </when>
+            <otherwise>
+                o.created_at DESC
+            </otherwise>
+        </choose>
     </select>
 
 
