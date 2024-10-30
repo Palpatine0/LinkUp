@@ -20,13 +20,12 @@
         <scroll-view :scroll-top="0" scroll-y="true" style="height: 80vh" @scrolltoupper="reload" @scrolltolower="onReachBottom">
             <div v-for="(contact, index) in dataList" :key="contact.id">
                 <div class="contact-item" @click="contactRedirect(contact.id)">
-                    <div class="mr-2 flex">
+                    <div style="width: 50px;" class="mr-2 flex">
                         <div style="width: 50px;"><img :src="contact.avatar" alt="contact.name" class="avatar"></div>
-                        <div v-if="contact.unreadMessageCount > 0" class="unread-badge center">
-                            <span>{{ contact.unreadMessageCount }}</span>
+                        <div v-if="contact.unreadMessageCount > 0" >
+                            <div class="unread-badge center">{{ contact.unreadMessageCount }}</div>
                         </div>
                     </div>
-
                     <div class="justify-SB" style="width: 100%;">
                         <div>
                             <h2 class="name">{{ contact.nickname }}</h2>
@@ -148,19 +147,16 @@ export default {
             const contactIndex = this.dataList.findIndex(contact => contact.id == updateData.servantId);
             console.log("contactIndex")
             console.log(contactIndex)
-            if(contactIndex !== -1) {
-                this.$set(this.dataList, contactIndex, {
-                    ...this.dataList[contactIndex],
-                    latestMessage: {
-                        content: updateData.latestMessage,
-                    },
-                    messageTime: updateData.messageTime,
-                    unreadMessageCount: updateData.unreadMessageCount,
+            if (contactIndex !== -1) {
+                this.$set(this.dataList[contactIndex], 'latestMessage', {
+                    content: updateData.latestMessage,
                 });
+                this.$set(this.dataList[contactIndex], 'messageTime', updateData.messageTime);
+                this.$set(this.dataList[contactIndex], 'unreadMessageCount', updateData.unreadMessageCount);
             } else {
                 const newContact = {
                     id: updateData.conversationId,
-                    nickname: updateData.nickname || "New Contact",  // Make sure nickname is pulled from data
+                    nickname: updateData.nickname || "New Contact",
                     avatar: updateData.avatar || "/path/to/default-avatar.jpg",
                     latestMessage: {
                         content: updateData.latestMessage,
@@ -168,7 +164,7 @@ export default {
                     messageTime: updateData.messageTime,
                     unreadMessageCount: updateData.unreadMessageCount,
                 };
-                this.dataList.unshift(newContact); // Add as a new contact at the top
+                this.dataList.unshift(newContact);
             }
         },
 
@@ -236,8 +232,8 @@ export default {
     width: 16px;
     height: 16px;
     border: 2px solid;
-    position: absolute;
-    top: 42px;
-    left: 45px;
+    position: relative;
+    top: 36px;
+    left: -16px;
 }
 </style>

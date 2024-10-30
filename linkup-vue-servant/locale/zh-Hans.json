@@ -87,6 +87,10 @@
     "home": {
         "nearby": "附近的订单",
         "candidates": "抢单人数",
+        "grandOrderStatusType": {
+            "orderPool": "订单池",
+            "myQuotedPrice": "我的报价"
+        },
         "orderStatusType": {
             "all": "全部",
             "accepted": "已报价",

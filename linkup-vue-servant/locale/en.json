@@ -87,6 +87,10 @@
     "home": {
         "nearby": "Order Nearby",
         "candidates": "Candidates",
+        "grandOrderStatusType": {
+            "orderPool": "Order Pool",
+            "myQuotedPrice": "My Quoted Price"
+        },
         "orderStatusType": {
             "all": "All",
             "accepted": "Accepted",

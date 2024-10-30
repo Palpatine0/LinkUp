@@ -5,8 +5,6 @@
         <app-title type="h1" bold="true">{{ $t('home.nearby') }}</app-title>
     </div>
 
-    <!-- Search input -->
-    <app-input mode="text" :placeholder="$t('pub.page.search')" col="12" class="mb-2" v-model="searchKeyword" @input="onSearchInput"/>
     <scroll-view :scroll-top="0" scroll-x="true" class="order-type-selection" @scrolltoupper="reload" @scrolltolower="onReachBottom">
         <div class="button-container">
             <div :class="{ active: orderStatusType === -1 }" @click="setOrderStatusType(-1)"><span>{{ $t('home.orderStatusType.all') }}</span></div>
@@ -60,6 +58,7 @@ export default {
             orderList: [],
             searchKeyword: '',
             addressMap: {},
+            grandOrderStatusType: 1,
             orderStatusType: -1,
         };
     },
@@ -104,9 +103,6 @@ export default {
                 return { url, method, data: baseData };
             }
         },
-        onSearchInput() {
-            this.reload();
-        },
         async getDataList() {
             if (this.loading || !this.hasMore || this.$common.isEmpty(this.user.id)) return;
 
@@ -140,6 +136,10 @@ export default {
         },
         setOrderStatusType(type) {
             this.orderStatusType = type;
+            this.reload();
+        },
+        setGrandOrderStatusType(type) {
+            this.grandOrderStatusType = type;
             this.reload();
         },
 

@@ -2,8 +2,10 @@ package com.enchanted.handler;
 
 import com.enchanted.entity.Conversation;
 import com.enchanted.entity.Message;
+import com.enchanted.entity.User;
 import com.enchanted.mapper.ConversationMapper;
 import com.enchanted.mapper.MessageMapper;
+import com.enchanted.mapper.UserMapper;
 import com.enchanted.service.IConversationService;
 import com.enchanted.service.IMessageService;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -36,6 +38,8 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
 
     private static Map<Long, WebSocketSession> userSessions = new ConcurrentHashMap<>();
     private ObjectMapper objectMapper = new ObjectMapper();
+    @Autowired
+    private UserMapper userMapper;
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception {
@@ -108,8 +112,8 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         }
 
         // Update contact list view for both sender and recipient
-        updateContactListForUser(conversationId, senderId);
-        updateContactListForUser(conversationId, recipientId);
+        updateContactListForUser(conversationId, senderId, recipientId);
+        updateContactListForUser(conversationId, recipientId, senderId);
     }
 
     // Helper to send an error message using session
@@ -178,10 +182,11 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
     }
 
     // Helper to update the contact list for a user
-    private void updateContactListForUser(Long conversationId, Long userId) throws IOException {
+    private void updateContactListForUser(Long conversationId, Long recipientId, Long senderId) throws IOException {
         Message latestMessage = conversationService.getLatestMessage(conversationId);
-        int unreadMessageCount = conversationService.countUnreadMessages(userId, conversationId);
+        int unreadMessageCount = conversationService.countUnreadMessages(recipientId, conversationId);
         Conversation conversation = conversationMapper.selectById(conversationId);
+        User sender = userMapper.selectById(senderId);
 
         Map<String, Object> contactUpdateData = new HashMap<>();
         contactUpdateData.put("type", "contactUpdate");
@@ -192,16 +197,17 @@ public class ChatWebSocketHandler extends TextWebSocketHandler {
         dataMap.put("messageTime", latestMessage.getCreatedAt());
         dataMap.put("clientId", conversation.getClientId());
         dataMap.put("servantId", conversation.getServantId());
+        dataMap.put("nickname", sender.getNickname());
+        dataMap.put("avatar", sender.getAvatar());
         contactUpdateData.put("data", dataMap);
 
         String contactUpdateStr = objectMapper.writeValueAsString(contactUpdateData);
 
-        WebSocketSession userSession = userSessions.get(userId);
+        WebSocketSession userSession = userSessions.get(recipientId);
         if (userSession != null && userSession.isOpen()) {
             userSession.sendMessage(new TextMessage(contactUpdateStr));
         }
     }
-
 
 
     private void handleReadReceipt(WebSocketSession session, Map<String, Object> data) throws Exception {
