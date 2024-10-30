@@ -223,6 +223,10 @@ var $common = {
         return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
     },
 
+    backToLastPage(){
+        uni.navigateBack()
+    },
+
     isEmpty: function(v) {
         if(v === "" || v === "undefined" || v === undefined || v === null) {
             return true;

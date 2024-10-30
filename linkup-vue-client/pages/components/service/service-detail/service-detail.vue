@@ -1,5 +1,8 @@
 <template>
 <div style="height: 100vh;background-color: #f3f2f6">
+    <div class="back-to-last-page-icon center" :style="{top: menuButtonHeight+'px'}" @click="$common.backToLastPage">
+        <img src="/static/common/back.svg">
+    </div>
     <div class="user-card">
         <!-- Top Section with Image/Background -->
         <div class="top-section" :style="{'height': topSectionHeight + 'vh', 'background-image': `url(${serviceType.introImg})`}">
@@ -19,6 +22,7 @@
                 <i class="fas fa-walking"></i> 下单须知
             </button>
         </div>
+
         <!-- Content Below Tabs -->
         <scroll-view :scroll-top="0" scroll-y="true" @scroll="onScroll" :style="{'height': scrollViewHeight + 'vh'}">
             <div class="middle-section">
@@ -51,15 +55,20 @@ export default {
             serviceTypeId: '',
             serviceType: {},
             userServant: {},
+
             topSectionHeight: 66,
             scrollViewHeight: 24,
             maxScroll: 30,
-            activeTab: 'details'
+
+            activeTab: 'details',
+
+            menuButtonHeight: 0
         };
     },
     onLoad(params) {
         this.serviceTypeId = params.serviceTypeId;
         this.getServiceType();
+        this.menuButtonHeight = uni.getMenuButtonBoundingClientRect().top;
     },
     methods: {
         getServiceType() {
@@ -73,7 +82,6 @@ export default {
             });
         },
 
-        // Change tab method
         changeTab(tab) {
             this.activeTab = tab; // Switch between 'details' and 'balance'
         },
@@ -93,6 +101,7 @@ export default {
             this.scrollViewHeight = newScrollViewHeight;
         },
 
+        //
         servantListRedirect() {
             uni.redirectTo({
                 url: '/pages/components/service/service-detail/servant-list/servant-list?serviceTypeId=' + this.serviceTypeId

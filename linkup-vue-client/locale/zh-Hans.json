@@ -311,6 +311,7 @@
 
     "//////": "components(page)",
     "componentPage>user>userDetail": {
+        "aboutMe": "关于我",
         "startChatting": "发起聊天"
     },
     "componentPage>service>serviceDetail": {},

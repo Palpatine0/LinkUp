@@ -163,7 +163,8 @@
                     "path": "user/user-detail/user-detail",
                     "style": {
                         "navigationBarTitleText": "",
-                        "navigationBarBackgroundColor": "#fefefe"
+                        "navigationBarBackgroundColor": "#fefefe",
+                        "navigationStyle":"custom"
                     }
                 },
                 // service

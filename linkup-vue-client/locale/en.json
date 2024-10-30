@@ -311,6 +311,7 @@
 
     "//////": "components(page)",
     "componentPage>user>userDetail": {
+        "aboutMe": "About Me",
         "startChatting": "Start Chatting"
     },
     "componentPage>service>serviceDetail": {},

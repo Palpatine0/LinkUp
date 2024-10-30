@@ -47,8 +47,8 @@ export default {
             user: {},
             userServant: {},
 
-            topSectionHeight: 46,
-            scrollViewHeight: 54,
+            topSectionHeight: 66,
+            scrollViewHeight: 24,
             maxScroll: 30,
 
             showChatBtn: true
@@ -91,36 +91,27 @@ export default {
             });
         },
 
-        // Scroll event to shrink the top section dynamically
         onScroll(event) {
             const scrollTop = event.target.scrollTop;
+            let newTopHeight = 66 - (scrollTop / 10);
+            let newScrollViewHeight = 24 + (scrollTop / 10);
 
-            // Calculate new height for the top section and scroll view
-            let newTopHeight = 46 - (scrollTop / 10); // Slower shrink speed
-            let newScrollViewHeight = 54 + (scrollTop / 10);
-
-            // Set minimum and maximum height limits
             if(newTopHeight < 25) {
-                newTopHeight = 25; // Minimum height
+                newTopHeight = 25;
             }
             if(newScrollViewHeight > 75) {
-                newScrollViewHeight = 75; // Maximum height
+                newScrollViewHeight = 75;
             }
-
-            // Update heights
             this.topSectionHeight = newTopHeight;
             this.scrollViewHeight = newScrollViewHeight;
         },
 
-        // Handle contact redirect
         chatWindowRedirect() {
             uni.navigateTo({
                 url: '/pages/components/chat/chat-window/chat-window?contactId=' + this.userId
             });
         },
     },
-
-
 };
 </script>
 

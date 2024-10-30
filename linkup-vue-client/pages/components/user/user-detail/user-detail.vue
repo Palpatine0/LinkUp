@@ -1,5 +1,8 @@
 <template>
-<div style="height: 100vh;">
+<div style="height: 100vh;background-color: #f3f2f6">
+    <div class="back-to-last-page-icon center" :style="{top: menuButtonHeight+'px'}" @click="$common.backToLastPage">
+        <img src="/static/common/back.svg">
+    </div>
     <div class="user-card">
         <!-- Top Section with Image/Background -->
         <div class="top-section" :style="{'height': topSectionHeight + 'vh', 'background-image': `url(${user.avatar})`}">
@@ -25,10 +28,11 @@
         </div>
 
         <!-- Middle Section (Details/Description) -->
-        <scroll-view :scroll-top="0" scroll-y="true" @scroll="onScroll" :style="{'height': scrollViewHeight + 'vh'}" class="mt-4">
-            <div class="middle-section">
-                <div class="detail-placeholder" v-for="n in 50" :key="n"></div>
-            </div>
+        <scroll-view :scroll-top="0" scroll-y="true" @scroll="onScroll" :style="{'height': scrollViewHeight + 'vh','padding':'18px','box-sizing': 'border-box'}" class="mt-1">
+            <app-container>
+                <app-title bold="true" type="h3" class="mb-2"><img class="title-icon" src="/static/page/component/user-detail/quote-left-solid.svg"> {{ $t('componentPage>user>userDetail.aboutMe') }}</app-title>
+                <app-title style="color:#939393;">{{ userServant.bio }}</app-title>
+            </app-container>
         </scroll-view>
 
         <!-- Button Section (Fixed at Bottom) -->
@@ -40,7 +44,14 @@
 </template>
 
 <script>
+import $common from "../../../../utils/common";
+
 export default {
+    computed: {
+        $common() {
+            return $common
+        }
+    },
     data() {
         return {
             userId: '',
@@ -51,7 +62,9 @@ export default {
             scrollViewHeight: 54,
             maxScroll: 30,
 
-            showChatBtn: true
+            showChatBtn: true,
+
+            menuButtonHeight: 0
         };
     },
     onLoad(params) {
@@ -61,9 +74,9 @@ export default {
         }
         this.getUser();
         this.getUserServant();
+        this.menuButtonHeight = uni.getMenuButtonBoundingClientRect().top;
     },
     methods: {
-        // Fetch user details
         getUser() {
             uni.request({
                 url: getApp().globalData.data.requestUrl + this.$API.user.search,
@@ -91,40 +104,37 @@ export default {
             });
         },
 
-        // Scroll event to shrink the top section dynamically
         onScroll(event) {
             const scrollTop = event.target.scrollTop;
-
-            // Calculate new height for the top section and scroll view
-            let newTopHeight = 46 - (scrollTop / 10); // Slower shrink speed
+            let newTopHeight = 46 - (scrollTop / 10);
             let newScrollViewHeight = 54 + (scrollTop / 10);
 
-            // Set minimum and maximum height limits
             if(newTopHeight < 25) {
-                newTopHeight = 25; // Minimum height
+                newTopHeight = 25;
             }
             if(newScrollViewHeight > 75) {
-                newScrollViewHeight = 75; // Maximum height
+                newScrollViewHeight = 75;
             }
-
-            // Update heights
             this.topSectionHeight = newTopHeight;
             this.scrollViewHeight = newScrollViewHeight;
         },
 
-        // Handle contact redirect
         chatWindowRedirect() {
             uni.navigateTo({
                 url: '/pages/components/chat/chat-window/chat-window?contactId=' + this.userId
             });
         },
     },
-
-
 };
 </script>
 
 <style scoped>
+.title-icon {
+    width: 20px;
+    height: 20px;
+    margin: 0 8px -2px 0;
+}
+
 .user-card {
     display: flex;
     flex-direction: column;
@@ -205,4 +215,6 @@ export default {
     margin: -4px 0 0 10px;
     font-size: 20px;
 }
+
+
 </style>
