@@ -139,12 +139,39 @@
                 }
             ]
         },
+        // profile > security
+        {
+            "root": "pages/profile/security",
+            "pages": [
+                {
+                    "path": "security",
+                    "style": {
+                        "navigationBarTitleText": "",
+                        "navigationBarBackgroundColor": "#fefefe"
+                    }
+                }
+            ]
+        },
         // profile > data
         {
             "root": "pages/profile/data",
             "pages": [
                 {
                     "path": "data",
+                    "style": {
+                        "navigationBarTitleText": "",
+                        "navigationBarBackgroundColor": "#fefefe"
+                    }
+                }
+            ]
+        },
+
+        // profile > real-name-authentication
+        {
+            "root": "pages/profile/real-name-authentication",
+            "pages": [
+                {
+                    "path": "real-name-authentication",
                     "style": {
                         "navigationBarTitleText": "",
                         "navigationBarBackgroundColor": "#fefefe"

@@ -21,6 +21,11 @@
         </div>
     </div>
 
+    <app-container class="justify-SB" v-if="isUserLogin" color="#2676f7" col="12" style="margin-top: -20px" @click="realNameAuthenticationRedirect">
+        <app-title bold style="color: #FFF">{{ $t('profile.authRequest') }}</app-title>
+        <app-button size="small" color="#FFF" font-color="#2676f7" shaped bold>{{$t('pub.button.getStarted')}}</app-button>
+    </app-container>
+
     <app-container v-if="isUserLogin" color="#fff" col="12" @click="profileRedirect">
         <img :src="app.globalData.data.ossIconRequestUrl+'/page/profile/profile.png'" alt="" class="link-icon">
         <span class="link-text">{{ $t('profile.profile') }}</span>
@@ -56,16 +61,19 @@
     </app-container>
 
     <div v-if="isUserLogin" class="sign-out-button app-button" @click="signOut">{{ $t('profile.signOut') }}</div>
-
+    <RealNameAuthentication v-if="realNameAuthenticationVisible"/>
 </div>
 </template>
-
 
 <script>
 import $common from "../../utils/common";
 import app from "../../App.vue";
+import RealNameAuthentication from "../../components/page/profile/real-name-authentication.vue";
 
 export default {
+    components: {
+        RealNameAuthentication
+    },
     computed: {
         $common() {
             return $common
@@ -82,12 +90,15 @@ export default {
                 {label: "profile.balance", icon: app.globalData.data.ossIconRequestUrl + "/page/profile/card.png", click: "balanceRedirect"},
                 {label: "profile.address", icon: app.globalData.data.ossIconRequestUrl + "/page/profile/addr.jpg", click: "addressRedirect"},
                 {label: "profile.myFavorite", icon: app.globalData.data.ossIconRequestUrl + "/page/profile/bookmark.jpg", click: "favoritesRedirect"},
+                // {label: "profile.security", icon: app.globalData.data.ossIconRequestUrl + "/page/profile/lock-keyhole.jpg", click: "securityRedirect"},
                 // {label: "profile.tag", icon: app.globalData.data.ossIconRequestUrl+"/page/profile/tag.svg", click: "tagsRedirect"},
             ],
             linkItemsC: [
                 {label: "profile.data", icon: app.globalData.data.ossIconRequestUrl + "/page/profile/db.jpg", click: "dataRedirect"},
                 {label: "pub.lang.curLang", icon: app.globalData.data.ossIconRequestUrl + "/page/profile/globe.jpg", click: "languageSelector"},
             ],
+
+            realNameAuthenticationVisible: false
         };
     },
     onShow() {
@@ -142,6 +153,11 @@ export default {
             });
         },
 
+        // Toggle
+        realNameAuthenticationToggle() {
+            this.realNameAuthenticationVisible=!this.realNameAuthenticationVisible
+        },
+
         // Redirects
         profileRedirect() {
             uni.navigateTo({
@@ -161,6 +177,16 @@ export default {
         dataRedirect() {
             uni.navigateTo({
                 url: './data/data',
+            });
+        },
+        securityRedirect() {
+            uni.navigateTo({
+                url: './security/security',
+            });
+        },
+        realNameAuthenticationRedirect() {
+            uni.navigateTo({
+                url: './real-name-authentication/real-name-authentication',
             });
         }
     }

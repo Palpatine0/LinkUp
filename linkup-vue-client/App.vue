@@ -9,11 +9,11 @@ export default {
         data: {
             // ** URL ** //
             // Dev
-            // requestUrl: "https://localhost:8090",
-            // socketUrl: "wss://localhost:8090",
+            requestUrl: "https://localhost:8090",
+            socketUrl: "wss://localhost:8090",
             // QA
-            requestUrl: "https://looking.cool:8090",
-            socketUrl: "wss://looking.cool:8090",
+            // requestUrl: "https://looking.cool:8090",
+            // socketUrl: "wss://looking.cool:8090",
 
             ossIconRequestUrl: "https://project-looking.oss-cn-beijing.aliyuncs.com/public/icon",
 
@@ -30,7 +30,7 @@ export default {
                 danger: '#F56C6C',
                 eucalyptus: '#44E1A6',
                 info: '#939393',
-                cultured: '#f6f6f6',
+                cultured: '#F9F9F9',
                 antiFlashWhite: '#f3f2f6',
                 navyBlue: '#192C77',
                 oxfordBlue: '#0A2342',

@@ -79,6 +79,7 @@ export default {
 
             linkItemsB: [
                 {label: "profile.balance", icon: app.globalData.data.ossIconRequestUrl + "/page/profile/card.png", click: "balanceRedirect"},
+                // {label: "profile.security", icon: app.globalData.data.ossIconRequestUrl + "/page/profile/lock-keyhole.jpg", click: "securityRedirect"},
                 // {label: "profile.address", icon: "/static/page/profile/addr.jpg", click: "addressRedirect"},
                 // {label: "profile.myFavorite", icon: "/static/page/profile/bookmark.jpg", click: "favoritesRedirect"},
                 // {label: "profile.tag", icon: "/static/page/profile/tag.svg", click: "tagsRedirect"},
@@ -93,7 +94,6 @@ export default {
     onShow() {
         this.user = uni.getStorageSync(getApp().globalData.data.userInfoKey)
         this.isUserLogin = uni.getStorageSync(getApp().globalData.data.userLoginKey) == true ? true : false;
-
     },
     methods: {
         handleLinkClick(methodName) {
@@ -159,6 +159,11 @@ export default {
         dataRedirect() {
             uni.navigateTo({
                 url: './data/data',
+            });
+        },
+        securityRedirect() {
+            uni.navigateTo({
+                url: './security/security',
             });
         }
     }

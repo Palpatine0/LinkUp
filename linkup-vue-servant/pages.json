@@ -140,6 +140,19 @@
                 }
             ]
         },
+        // profile > security
+        {
+            "root": "pages/profile/security",
+            "pages": [
+                {
+                    "path": "security",
+                    "style": {
+                        "navigationBarTitleText": "",
+                        "navigationBarBackgroundColor": "#fefefe"
+                    }
+                }
+            ]
+        },
         // profile > data
         {
             "root": "pages/profile/data",
