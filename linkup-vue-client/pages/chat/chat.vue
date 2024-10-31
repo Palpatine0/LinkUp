@@ -61,7 +61,7 @@ export default {
             messageHandler: null,
         };
     },
-    onShow() {
+    onLoad() {
         this.isUserLogin = uni.getStorageSync(getApp().globalData.data.userLoginKey) === true;
         if(this.isUserLogin) {
             this.$webSocket.connectWebSocket(uni.getStorageSync(getApp().globalData.data.userInfoKey).id);

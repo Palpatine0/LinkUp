@@ -229,6 +229,7 @@
         "balance": "余额",
         "address": "地址信息",
         "myFavorite": "我的收藏",
+        "security": "帐号与安全",
         "data": "数据与存储",
         "tag": "标签",
         "signIn": "微信一键登录",

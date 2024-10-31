@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.enchanted.mapper.BankCardMapper">
+
+    <select id="search" resultType="com.enchanted.entity.BankCard" >
+        SELECT * FROM bank_card
+        <where>
+            is_deleted = 0
+            <if test="params.id != null and params.id != ''">
+                AND id = #{params.id}
+            </if>
+            <if test="params.userId != null and params.userId != ''">
+                AND user_id = #{params.userId}
+            </if>
+            <if test="params.cardType != null and params.cardType != ''">
+                AND card_type = #{params.cardType}
+            </if>
+            <if test="params.cardIssuer != null and params.cardIssuer != ''">
+                AND card_issuer = #{params.cardIssuer}
+            </if>
+            <if test="params.cardNetwork != null and params.cardNetwork != ''">
+                AND card_network = #{params.cardNetwork}
+            </if>
+            <!-- Add more conditions as needed -->
+        </where>
+        ORDER BY created_at DESC
+    </select>
+
+</mapper>

@@ -16,7 +16,8 @@
             "cancel": "Cancel",
             "submit": "Submit",
             "save": "Save",
-            "update": "Update"
+            "update": "Update",
+            "getStarted": "Get Started"
         },
         "gender": {
             "m": "Male",
@@ -33,7 +34,8 @@
             "loadingFail": "Loading failed",
             "imgInvalidFileType": "Invalid file type. Please select an image file (jpg, jpeg, png, gif, or webp)",
             "videoInvalidFileType": "Only video files (mp4, avi, mov, mkv) are allowed",
-            "emojiNotAllowed": "Please avoid using emojis in this field"
+            "emojiNotAllowed": "Please avoid using emojis in this field",
+            "finishForm": "Please fill all inputs"
         },
         "showLoading": {
             "loading": "Loading..."
@@ -235,8 +237,10 @@
         "balance": "Balance",
         "address": "Address",
         "myFavorite": "My Favorite",
+        "security": "Account and Security",
         "data": "Data and Storage",
         "tag": "Tag",
+        "authRequest": "To enhance your experience and secure your account, please complete real-name verification.",
         "signIn": "Sign In",
         "signOut": "Sign Out"
     },
@@ -307,6 +311,13 @@
         "ds": "Data and Storage"
     },
 
+    "//////": "profile > real-name auth",
+    "profile>realNameAuthentication": {
+        "realNameAuthentication": "Real Name Authentication",
+        "realName": "Enter your real name",
+        "idCard": "Enter your ID card number"
+    },
+
 
 
     "//////": "components(page)",
@@ -368,9 +379,6 @@
         "showToast": {
             "selectAmount": "Please select or enter a valid amount"
         }
-    },
-    "component>chat>messageInput": {
-
     },
     "component>chat>chatItemSelector>gallery": {
         "panelHeader": "Gallery",
