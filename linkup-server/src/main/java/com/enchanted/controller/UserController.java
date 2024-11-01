@@ -57,14 +57,23 @@ public class UserController {
     public R getConfigInfo(@RequestBody Map<String, String> dto) {
         String code = dto.get("code");
         int role = Integer.parseInt(dto.get("role"));
-        return R.ok().put("data", userService.getConfigInfo(code,role));
+        return R.ok().put("data", userService.getConfigInfo(code, role));
     }
 
     @PostMapping("/referral-code-validation")
     public R referralCodeValidation(@RequestBody Map<String, String> dto) {
         String referralCode = dto.get("referralCode");
         String role = dto.get("role");
-        return R.ok().put("data", userService.referralCodeValidation(referralCode,role));
+        return R.ok().put("data", userService.referralCodeValidation(referralCode, role));
+    }
+
+    @PostMapping("/identity-validation")
+    public R identityValidation(@RequestBody Map<String, String> dto) {
+        Long id = Long.parseLong(dto.get("id").toString());
+        int role = Integer.parseInt(dto.get("role"));
+        String name = dto.get("name");
+        String idCardNumber = dto.get("idCardNumber");
+        return R.ok().put("data", userService.identityValidation(id, role, name, idCardNumber));
     }
 
     /*U*/

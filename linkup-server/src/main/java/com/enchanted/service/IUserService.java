@@ -15,9 +15,11 @@ public interface IUserService extends IService<User> {
 
     Page<User> searchServant(Map<String, Object> params, int page, int size); // <-- Added search method
 
-    Map getConfigInfo(String code,int role);
+    Map getConfigInfo(String code, int role);
 
-    Map referralCodeValidation(String referralCode,String role);
+    Map referralCodeValidation(String referralCode, String role);
+
+    Map identityValidation(Long id, int role, String name, String idCardNumber);
 
     /*U*/
     boolean update(Long id, Map<String, Object> changes);

@@ -15,9 +15,6 @@ public class User {
 
     private String identifier;
 
-    @TableField("is_identify_certified")
-    private String isIdentifyCertified;
-
     /**
      * 0: admin;
      * 1: client;
@@ -83,6 +80,24 @@ public class User {
 
     @TableField("last_withdrawal_date")
     private Date lastWithdrawalDate;
+
+    @TableField("is_identify_certified")
+    private Integer isIdentifyCertified;
+
+    @TableField("id_card_number")
+    private String idCardNumber;
+
+    @TableField("id_card_birthday")
+    private Date idCardBirthday;
+
+    @TableField("id_card_name")
+    private String idCardName;
+
+    @TableField("id_card_gender")
+    private Integer idCardGender;
+
+    @TableField("id_card_address")
+    private String idCardAddress;
 
     @TableField("is_deleted")
     private Integer isDeleted;

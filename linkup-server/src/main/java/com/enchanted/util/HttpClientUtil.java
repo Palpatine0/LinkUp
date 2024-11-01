@@ -47,34 +47,9 @@ public class HttpClientUtil {
         return LazyHolder.INSTANCE;
     }
 
+
     public String sendHttpPost(String httpUrl) {
         HttpPost httpPost = new HttpPost(httpUrl);
-        return sendHttpPost(httpPost);
-    }
-
-    public String sendHttpPost(String httpUrl, String params) {
-        HttpPost httpPost = new HttpPost(httpUrl);
-        try {
-            StringEntity stringEntity = new StringEntity(params, "UTF-8");
-            stringEntity.setContentType("application/x-www-form-urlencoded");
-            httpPost.setEntity(stringEntity);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return sendHttpPost(httpPost);
-    }
-
-    public String sendHttpPost(String httpUrl, Map<String, String> maps) {
-        HttpPost httpPost = new HttpPost(httpUrl);
-        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
-        for (String key : maps.keySet()) {
-            nameValuePairs.add(new BasicNameValuePair(key, maps.get(key)));
-        }
-        try {
-            httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs, "UTF-8"));
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         return sendHttpPost(httpPost);
     }
 
@@ -110,6 +85,52 @@ public class HttpClientUtil {
         }
         return responseContent;
     }
+
+    public String sendHttpPost(String httpUrl, Map<String, String> maps) {
+        HttpPost httpPost = new HttpPost(httpUrl);
+        List<NameValuePair> nameValuePairs = new ArrayList<NameValuePair>();
+        for (String key : maps.keySet()) {
+            nameValuePairs.add(new BasicNameValuePair(key, maps.get(key)));
+        }
+        try {
+            httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs, "UTF-8"));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return sendHttpPost(httpPost);
+    }
+
+    public String sendHttpPost(String httpUrl, String params) {
+        HttpPost httpPost = new HttpPost(httpUrl);
+        try {
+            StringEntity stringEntity = new StringEntity(params, "UTF-8");
+            stringEntity.setContentType("application/x-www-form-urlencoded");
+            httpPost.setEntity(stringEntity);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return sendHttpPost(httpPost);
+    }
+
+    public String sendHttpPost(String httpUrl, Map<String, String> params, Map<String, String> headers) {
+        HttpPost httpPost = new HttpPost(httpUrl);
+        List<NameValuePair> nameValuePairs = new ArrayList<>();
+        for (Map.Entry<String, String> entry : params.entrySet()) {
+            nameValuePairs.add(new BasicNameValuePair(entry.getKey(), entry.getValue()));
+        }
+        try {
+            httpPost.setEntity(new UrlEncodedFormEntity(nameValuePairs, "UTF-8"));
+            // Add headers
+            for (Map.Entry<String, String> header : headers.entrySet()) {
+                httpPost.addHeader(header.getKey(), header.getValue());
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return sendHttpPost(httpPost);
+    }
+
+
 
     public String sendHttpGet(String httpUrl) {
         HttpGet httpGet = new HttpGet(httpUrl);

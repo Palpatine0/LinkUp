@@ -3,6 +3,7 @@ package com.enchanted.service.impl;
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.enchanted.constant.ThirdPartyConstant;
 import com.enchanted.constant.UserConstant;
 import com.enchanted.constant.WeChatConstant;
 import com.enchanted.entity.User;
@@ -30,6 +31,11 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 
 import java.io.*;
 import java.lang.reflect.Field;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.ZoneId;
+import java.time.temporal.ChronoUnit;
 import java.util.*;
 
 @Service
@@ -166,6 +172,77 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         }
         return map;
     }
+
+    @Override
+    public Map<String, Object> identityValidation(Long id, int role, String name, String idCardNumber) {
+        Map<String, Object> resultMap = new HashMap<>();
+        String url = ThirdPartyConstant.ID_CARD_AUTH_URL;
+        String appCode = ThirdPartyConstant.ID_CARD_AUTH_CODE;
+
+        Map<String, String> params = new HashMap<>();
+        params.put("idcard", idCardNumber);
+        params.put("name", name);
+
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Authorization", "APPCODE " + appCode);
+
+        String response = httpClientUtil.sendHttpPost(url, params, headers);
+
+        JSONObject jsonObject = JSON.parseObject(response);
+        JSONObject resultObject = jsonObject.getJSONObject("result");
+        if (jsonObject.getInteger("code") == 0) {
+            String resultRes = resultObject.getString("res");
+            if (!resultRes.equals("1")) {
+                throw new IllegalArgumentException("Match failed");
+            } else {
+                if (resultRes.equals("3")) {
+                    throw new IllegalArgumentException("No record");
+                } else {
+                    resultMap.putAll(JSON.parseObject(response));
+                }
+            }
+        } else {
+            throw new IllegalArgumentException(jsonObject.getInteger("code").toString());
+        }
+
+        String resultIdCardNumber = resultObject.getString("idcard");
+        String resultName = resultObject.getString("name");
+        String resultSex = resultObject.getString("sex");
+        String resultBirthday = resultObject.getString("birthday");
+        String resultAddress = resultObject.getString("address");
+
+        User user = userMapper.selectById(id);
+        user.setIdCardNumber(resultIdCardNumber);
+        if (role == UserConstant.CLIENT) {
+            user.setIdCardName(resultName);
+        } else if (role == UserConstant.SERVANT) {
+            user.setIdCardName(resultName);
+            user.setNickname(resultName);
+        }
+        if (resultSex == "男") {
+            user.setIdCardGender(0);
+            user.setGender(0);
+        } else {
+            user.setIdCardGender(1);
+            user.setGender(1);
+        }
+        try {
+            Date idCardBirthday = new SimpleDateFormat("yyyyMMdd").parse(resultBirthday);
+            user.setIdCardBirthday(idCardBirthday);
+            LocalDate birthDate = idCardBirthday.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+            LocalDate currentDate = LocalDate.now();
+            int age = (int) ChronoUnit.YEARS.between(birthDate, currentDate);
+            user.setAge(age);
+        } catch (ParseException e) {
+            throw new IllegalArgumentException("Invalid date format for resultBirthday: " + resultBirthday, e);
+        }
+        user.setIdCardAddress(resultAddress);
+        user.setIsIdentifyCertified(1);
+        userMapper.updateById(user);
+
+        return resultMap;
+    }
+
 
     @Override
     public Page<User> searchServant(Map<String, Object> params, int page, int size) {
