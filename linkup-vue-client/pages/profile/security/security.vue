@@ -1,62 +1,57 @@
 <template>
-<div class="page">
+  <div class="page">
     <app-container color="#f3f2f6">
-        <div class="profile-header center-h mb-2">
-            <div class="center-h">
-                <img :src="user.avatar" alt="Profile Photo" class="profile-photo" @click="mediaSelector()"/>
-            </div>
+      <div class="profile-header center-h mb-2">
+        <div class="center-h">
+          <img :src="user.avatar" alt="Profile Photo" class="profile-photo" @click="mediaSelector()"/>
         </div>
+      </div>
     </app-container>
-</div>
+  </div>
 </template>
 
 <script>
-import app from "../../../App.vue";
-import $API from "../../../api/api";
-import RealNameAuthentication from "../../../components/page/profile/real-name-authentication.vue";
 
 export default {
-    components: {
-        RealNameAuthentication
-    },
-    data() {
-        return {
-            user: {},
-            realNameAuthenticationVisible: false
-        };
-    },
-    onLoad() {
-        this.user = uni.getStorageSync(app.globalData.data.userInfoKey);
-    },
-    methods: {
+  components: {},
+  data() {
+    return {
+      user: {},
+      realNameAuthenticationVisible: false
+    };
+  },
+  onLoad() {
+    this.user = uni.getStorageSync(app.globalData.data.userInfoKey);
+  },
+  methods: {
 
 
-        realNameAuthenticationToggle() {
-            this.realNameAuthenticationVisible=!this.realNameAuthenticationVisible
-        }
+    realNameAuthenticationToggle() {
+      this.realNameAuthenticationVisible = !this.realNameAuthenticationVisible
     }
+  }
 };
 </script>
 
 <style scoped>
 .profile-header {
-    text-align: center;
-    justify-content: space-between;
+  text-align: center;
+  justify-content: space-between;
 }
 
 .profile-photo {
-    width: 180px;
-    height: 180px;
-    border-radius: 50%;
+  width: 180px;
+  height: 180px;
+  border-radius: 50%;
 }
 
 .button-register-text {
-    font-size: 16px;
+  font-size: 16px;
 }
 
 .disabled {
-    pointer-events: none;
-    opacity: 0.5;
-    color: grey;
+  pointer-events: none;
+  opacity: 0.5;
+  color: grey;
 }
 </style>

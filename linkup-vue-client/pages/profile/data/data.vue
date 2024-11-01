@@ -23,11 +23,13 @@ export default {
     },
     onLoad() {
         const userInfo = uni.getStorageSync(app.globalData.data.userInfoKey)
-        console.warn(userInfo)
+        console.log("userInfo", userInfo)
+        const userVerification = uni.getStorageSync(app.globalData.data.userVerificationKey)
+        console.log("userVerification", userVerification)
         const sysInfo = uni.getStorageSync(app.globalData.data.systemInfoKey)
-        console.warn(sysInfo)
+        console.log("sysInfo", sysInfo)
         const language = uni.getStorageSync("language")
-        console.warn(language)
+        console.log("language", language)
     },
 };
 </script>

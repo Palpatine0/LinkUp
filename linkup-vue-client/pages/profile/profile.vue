@@ -4,6 +4,7 @@
     <div v-if="isUserLogin" class="mb-4 center-h">
         <div class="profile-header">
             <img :src="user.avatar" alt="Profile Photo" class="profile-photo"/>
+            <img v-if="isUserVerified" style="width: 25px;height: 25px;position: absolute;margin-top: 74px;margin-left: -24px;" :src="app.globalData.data.ossIconRequestUrl+'/page/profile/badge-check.svg'" @click="widgetToggle"/>
             <h1 class="profile-name">{{ user.nickname }}</h1>
             <h3 class="hidden" style="color: #8B8B8B" @click="$common.addToClipboard(user.identifier)">ID: {{ user.identifier }}</h3>
         </div>
@@ -14,16 +15,16 @@
                 <img :src="app.globalData.data.ossIconRequestUrl+'/page/profile/logo.jpg'" alt="Profile Photo" class="profile-photo"/>
             </div>
             <div class="profile-info center-h">
-                <app-button shaped size="small" @click="signIn">
+                <app-button shaped size="small" width="120px" click="signIn">
                     {{ $t('profile.signIn') }}
                 </app-button>
             </div>
         </div>
     </div>
 
-    <app-container class="justify-SB" v-if="isUserLogin" color="#2676f7" col="12" style="margin-top: -20px" @click="realNameAuthenticationRedirect">
+    <app-container class="justify-SB" v-if="isUserLogin&&!isUserVerified" color="#2676f7" col="12" style="margin-top: -20px" @click="realNameAuthenticationRedirect">
         <app-title bold style="color: #FFF">{{ $t('profile.authRequest') }}</app-title>
-        <app-button size="small" color="#FFF" font-color="#2676f7" shaped bold>{{$t('pub.button.getStarted')}}</app-button>
+        <app-button size="small" color="#FFF" font-color="#2676f7" shaped bold>{{ $t('pub.button.getStarted') }}</app-button>
     </app-container>
 
     <app-container v-if="isUserLogin" color="#fff" col="12" @click="profileRedirect">
@@ -34,10 +35,7 @@
 
     <!-- Other Options with Icons -->
     <app-container v-if="isUserLogin" color="#fff" col="12" type="list">
-        <div
-            v-for="(item, index) in linkItemsB"
-            :key="index"
-        >
+        <div v-for="(item, index) in linkItemsB" :key="index">
             <div class="link-item" @click="handleLinkClick(item.click)">
                 <img :src="item.icon" alt="" class="link-icon">
                 <span class="link-text">{{ $t(item.label) }}</span>
@@ -62,18 +60,15 @@
 
     <div v-if="isUserLogin" class="sign-out-button app-button" @click="signOut">{{ $t('profile.signOut') }}</div>
     <RealNameAuthentication v-if="realNameAuthenticationVisible"/>
+    <app-widget ref="appWidget" :widget="appWidget"/>
 </div>
 </template>
 
 <script>
 import $common from "../../utils/common";
 import app from "../../App.vue";
-import RealNameAuthentication from "../../components/page/profile/real-name-authentication.vue";
 
 export default {
-    components: {
-        RealNameAuthentication
-    },
     computed: {
         $common() {
             return $common
@@ -85,7 +80,10 @@ export default {
     data() {
         return {
             isUserLogin: false,
+            isUserVerified: false,
             user: {},
+
+
             linkItemsB: [
                 {label: "profile.balance", icon: app.globalData.data.ossIconRequestUrl + "/page/profile/card.png", click: "balanceRedirect"},
                 {label: "profile.address", icon: app.globalData.data.ossIconRequestUrl + "/page/profile/addr.jpg", click: "addressRedirect"},
@@ -98,12 +96,19 @@ export default {
                 {label: "pub.lang.curLang", icon: app.globalData.data.ossIconRequestUrl + "/page/profile/globe.jpg", click: "languageSelector"},
             ],
 
+            appWidget: {
+                visible: false,
+                title: this.$t('profile.appWidget.title'),
+                content: this.$t('profile.appWidget.content'),
+            },
+
             realNameAuthenticationVisible: false
         };
     },
-    onShow() {
+    async onShow() {
         this.user = uni.getStorageSync(getApp().globalData.data.userInfoKey)
         this.isUserLogin = uni.getStorageSync(getApp().globalData.data.userLoginKey) == true ? true : false;
+        this.isUserVerified = uni.getStorageSync(getApp().globalData.data.userVerificationKey) == true ? true : false;
     },
     methods: {
         handleLinkClick(methodName) {
@@ -125,6 +130,7 @@ export default {
             await getApp().globalData.signOut()
             this.user = {}
             this.isUserLogin = false
+            this.$webSocket.closeWebSocket()
             uni.switchTab({
                 url: '/pages/profile/profile'
             });
@@ -154,8 +160,8 @@ export default {
         },
 
         // Toggle
-        realNameAuthenticationToggle() {
-            this.realNameAuthenticationVisible=!this.realNameAuthenticationVisible
+        widgetToggle() {
+            this.$refs.appWidget.open();
         },
 
         // Redirects

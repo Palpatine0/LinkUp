@@ -6,7 +6,8 @@ var $API = {
         update: '/user/update',
         userConfig: '/user/user-config',
         searchServant: '/user/search-servant',
-        referralCodeValidation: '/user/referral-code-validation'
+        referralCodeValidation: '/user/referral-code-validation',
+        identityValidation: '/user/identity-validation'
     },
 
     // User Servant

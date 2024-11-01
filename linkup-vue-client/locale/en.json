@@ -240,9 +240,13 @@
         "security": "Account and Security",
         "data": "Data and Storage",
         "tag": "Tag",
-        "authRequest": "To enhance your experience and secure your account, please complete real-name verification.",
         "signIn": "Sign In",
-        "signOut": "Sign Out"
+        "signOut": "Sign Out",
+        "authRequest": "Please complete the real-name verification to secure your account in compliance with national regulations.",
+        "appWidget":{
+            "title": "Verified!\uD83C\uDF89",
+            "content": "Your account has been successfully verified."
+        }
     },
 
     "//////": "profile > profile",
@@ -313,9 +317,16 @@
 
     "//////": "profile > real-name auth",
     "profile>realNameAuthentication": {
-        "realNameAuthentication": "Real Name Authentication",
+        "verifyIdentity": "Verify your identity",
+        "tips": "You account profile (i.e: your gender, age etc) will be updated based on the info provides by your ID card information",
         "realName": "Enter your real name",
-        "idCard": "Enter your ID card number"
+        "idCard": "Enter your ID card number",
+        "showToast": {
+            "authSuccess": "Identity verified",
+            "matchFailed": "Provided name and ID number doesn't matched",
+            "noRecord": "We couldn't find your personal info, please contact us.",
+            "inputError": "Input error, please double check your name and ID card number"
+        }
     },
 
 

@@ -1,4 +1,5 @@
-import $API from "api/api"
+import $API from "../api/api";
+import app from "../App.vue";
 
 if(!String.prototype.replaceAll) {
     String.prototype.replaceAll = function(s1, s2) {
@@ -6,6 +7,25 @@ if(!String.prototype.replaceAll) {
     }
 }
 var $common = {
+    async getUser(id) {
+        const userData = () => {
+            return new Promise(
+                (resolve, reject) => {
+                    uni.request({
+                        url: app.globalData.data.requestUrl + $API.user.search,
+                        method: 'POST',
+                        data: {
+                            id: id
+                        },
+                        success: (res) => {
+                            resolve(res.data.list[0])
+                        }
+                    });
+                }
+            )
+        }
+        return await userData()
+    },
     generateUniqueCode: function(pattern, numCodes) {
         const bases = [];
         let totalPermutations = 1;
@@ -223,7 +243,7 @@ var $common = {
         return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
     },
 
-    backToLastPage(){
+    backToLastPage() {
         uni.navigateBack()
     },
 
