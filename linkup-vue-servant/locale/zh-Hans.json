@@ -14,7 +14,10 @@
         "button": {
             "confirm": "确认",
             "cancel": "取消",
-            "submit": "提交"
+            "submit": "提交",
+            "save": "保存",
+            "update": "更新",
+            "getStarted": "开始"
         },
         "gender": {
             "m": "男",
@@ -233,7 +236,12 @@
         "data": "数据与存储",
         "tag": "标签",
         "signIn": "微信一键登录",
-        "signOut": "退出登录"
+        "signOut": "退出登录",
+        "authRequest": "请完成实名验证，以符合国家法规并确保您的账户安全",
+        "appWidget":{
+            "title": "已认证!\uD83C\uDF89",
+            "content": "您的账号已经成功认证"
+        }
     },
 
     "//////": "profile > profile",
@@ -298,6 +306,20 @@
     "//////": "profile > data",
     "profile>data": {
         "ds": "数据与存储"
+    },
+
+    "//////": "profile > real-name auth",
+    "profile>realNameAuthentication": {
+        "verifyIdentity": "验证您的身份",
+        "tips": "您的个人信息(如生日性别等)将会被身份证的真实信息覆盖",
+        "realName": "请填写您的真实姓名",
+        "idCard": "请填写您的身份证号码",
+        "showToast": {
+            "authSuccess": "身份验证成功",
+            "matchFailed": "姓名与身份证号匹配失败",
+            "noRecord": "我们无法确认您的身份信息，请联系客服",
+            "inputError": "参数异常，请检查您的输入是否正确"
+        }
     },
 
 

@@ -228,7 +228,7 @@ export default {
                 method: 'POST',
                 data: {
                     referralCode: this.referralCode,
-                    role: 2,
+                    role: getApp().globalData.data.roleKey,
                 },
                 success: (res) => {
                     if(res.data.data.validRC == "1") {
@@ -382,7 +382,7 @@ export default {
 
         // step 4
         updateUsername(event) {
-            if (this.$common.isEmojiContains(event.target.value)) {
+            if(this.$common.isEmojiContains(event.target.value)) {
                 uni.showToast({
                     title: this.$t('pub.showToast.emojiNotAllowed'),
                     icon: 'none'
@@ -412,7 +412,7 @@ export default {
                         sourceType: sourceType,
                         success: (chooseResult) => {
                             const filePath = chooseResult.tempFilePaths[0];
-                            if (!this.$common.validateFileType(filePath, "img")) {
+                            if(!this.$common.validateFileType(filePath, "img")) {
                                 uni.hideLoading();
                                 uni.showToast({
                                     title: this.$t('pub.showToast.imgInvalidFileType'), // Image-specific message
@@ -491,13 +491,14 @@ export default {
                 method: 'POST',
                 data: {
                     referralCode: this.$common.generateUniqueCode('a1a', 2),
-                    role: 2,
+                    role: getApp().globalData.data.roleKey,
                     referrerId: this.referrerId,
                     ...this.userData
                 },
                 success: (res) => {
                     this.userData.id = res.data.data.id;
                     uni.setStorageSync(getApp().globalData.data.userLoginKey, true);
+                    uni.setStorageSync(getApp().globalData.data.userVerificationKey, false);
                     uni.setStorageSync(getApp().globalData.data.userInfoKey, this.userData);
                     this.$webSocket.connectWebSocket(this.userData.id);
                     uni.showToast({title: this.$t('register.showToast.signUpSuccess'), icon: 'none'});

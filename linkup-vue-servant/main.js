@@ -17,6 +17,7 @@ import AppTitle from './components/common/base/app-title.vue';
 import AppInput from './components/common/base/app-input.vue';
 import AppContainer from './components/common/base/app-container.vue';
 import AppButton from './components/common/base/app-button.vue';
+import AppWidget from "./components/common/base/app-widget.vue";
 import UserList from './components/common/user-list/user-list.vue';
 
 // common
@@ -24,6 +25,7 @@ Vue.component('app-title', AppTitle);
 Vue.component('app-input', AppInput);
 Vue.component('app-container', AppContainer);
 Vue.component('app-button', AppButton);
+Vue.component('app-widget', AppWidget);
 Vue.component('user-list', UserList);
 
 // page

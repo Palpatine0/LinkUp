@@ -15,7 +15,7 @@
                 <img :src="app.globalData.data.ossIconRequestUrl+'/page/profile/logo.jpg'" alt="Profile Photo" class="profile-photo"/>
             </div>
             <div class="profile-info center-h">
-                <app-button shaped size="small" width="120px" click="signIn">
+                <app-button shaped size="small" width="120px" @click="signIn">
                     {{ $t('profile.signIn') }}
                 </app-button>
             </div>

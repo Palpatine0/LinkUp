@@ -19,8 +19,10 @@ export default {
 
             // ** Key ** //
             userLoginKey: "userLoginKey",
+            userVerificationKey: "userVerificationKey",
             userInfoKey: "userInfoKey",
             systemInfoKey: "systemInfoKey",
+            roleKey: 2,
 
             // ** Color ** //
             colors: {
@@ -30,8 +32,9 @@ export default {
                 danger: '#F56C6C',
                 eucalyptus: '#44E1A6',
                 info: '#939393',
-                cultured: '#f6f6f6',
-                antiFlashWhite: '#f3f2f6',
+                cultured: '#F9F9F9', // special background
+                antiFlashWhite: '#f3f2f6', // common background
+                ghostWhite: '#f5f7fb', // mono background
                 navyBlue: '#192C77',
                 oxfordBlue: '#0A2342',
             }
@@ -60,7 +63,7 @@ export default {
                         method: 'POST',
                         data: {
                             code: userLoginCode,
-                            role: 2,
+                            role: this.data.roleKey,
                         },
                         success: (res) => {
                             if(res.data.status == 200) {
@@ -85,8 +88,10 @@ export default {
                             },
                             success: (res) => {
                                 if(!$common.isEmpty(res.data.list)) {
-                                    uni.setStorageSync(app.globalData.data.userInfoKey, res.data.list[0]);
+                                    const userData = res.data.list[0]
+                                    uni.setStorageSync(app.globalData.data.userInfoKey, userData);
                                     uni.setStorageSync(app.globalData.data.userLoginKey, true);
+                                    userData.isIdentifyCertified == 1 ? uni.setStorageSync(app.globalData.data.userVerificationKey, true) : uni.setStorageSync(app.globalData.data.userVerificationKey, false);
                                     $webSocket.connectWebSocket(res.data.list[0].id);
                                     resolve(res)
                                 } else {
@@ -106,6 +111,7 @@ export default {
         async signOut() {
             uni.removeStorageSync(app.globalData.data.userInfoKey);
             uni.removeStorageSync(app.globalData.data.userLoginKey);
+            uni.removeStorageSync(app.globalData.data.userVerificationKey);
         },
     },
     onShareAppMessage() {
@@ -117,28 +123,27 @@ export default {
             title: shareTitle,
             path: sharePath,
             imageUrl: shareImg,
-            success: function (res) {
+            success: function(res) {
             },
-            fail: function (res) {
+            fail: function(res) {
             }
         }
     },
     onLaunch() {
-
         // auth
         uni.authorize({
             scope: 'scope.userLocation',
-            success: function () {
+            success: function() {
             }
         })
         uni.authorize({
             scope: 'scope.chooseLocation',
-            success: function () {
+            success: function() {
             }
         })
         uni.authorize({
             scope: 'scope.userInfo',
-            success: function () {
+            success: function() {
             }
         })
 

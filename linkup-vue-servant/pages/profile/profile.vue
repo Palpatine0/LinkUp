@@ -4,6 +4,7 @@
     <div v-if="isUserLogin" class="mb-4 center-h">
         <div class="profile-header">
             <img :src="user.avatar" alt="Profile Photo" class="profile-photo"/>
+            <img v-if="isUserVerified" style="width: 25px;height: 25px;position: absolute;margin-top: 74px;margin-left: -24px;" :src="app.globalData.data.ossIconRequestUrl+'/page/profile/badge-check.svg'" @click="widgetToggle"/>
             <h1 class="profile-name">{{ user.nickname }}</h1>
             <h3 class="hidden" style="color: #8B8B8B" @click="$common.addToClipboard(user.identifier)">ID: {{ user.identifier }}</h3>
         </div>
@@ -14,12 +15,17 @@
                 <img :src="app.globalData.data.ossIconRequestUrl+'/page/profile/logo.jpg'" alt="Profile Photo" class="profile-photo"/>
             </div>
             <div class="profile-info center-h">
-                <app-button shaped size="small" @click="signIn">
+                <app-button shaped size="small" width="120px" @click="signIn">
                     {{ $t('profile.signIn') }}
                 </app-button>
             </div>
         </div>
     </div>
+
+    <app-container class="justify-SB" v-if="isUserLogin&&!isUserVerified" color="#2676f7" col="12" style="margin-top: -20px" @click="realNameAuthenticationRedirect">
+        <app-title bold style="color: #FFF">{{ $t('profile.authRequest') }}</app-title>
+        <app-button size="small" color="#FFF" font-color="#2676f7" shaped bold>{{ $t('pub.button.getStarted') }}</app-button>
+    </app-container>
 
     <app-container v-if="isUserLogin" color="#fff" col="12" @click="profileRedirect">
         <img :src="app.globalData.data.ossIconRequestUrl+'/page/profile/profile.png'" alt="" class="link-icon">
@@ -53,10 +59,10 @@
     </app-container>
 
     <div v-if="isUserLogin" class="sign-out-button app-button" @click="signOut">{{ $t('profile.signOut') }}</div>
-
+    <RealNameAuthentication v-if="realNameAuthenticationVisible"/>
+    <app-widget ref="appWidget" :widget="appWidget" />
 </div>
 </template>
-
 
 <script>
 import $common from "../../utils/common";
@@ -74,6 +80,7 @@ export default {
     data() {
         return {
             isUserLogin: false,
+            isUserVerified: false,
             user: {},
 
 
@@ -89,11 +96,20 @@ export default {
                 {label: "pub.lang.curLang", icon: app.globalData.data.ossIconRequestUrl + "/page/profile/globe.jpg", click: "languageSelector"},
                 // {label: "profile.tag", icon: "/static/page/profile/tag.svg", click: "tagsRedirect"},
             ],
+
+            appWidget:{
+                visible: false,
+                title: this.$t('profile.appWidget.title'),
+                content: this.$t('profile.appWidget.content'),
+            },
+
+            realNameAuthenticationVisible: false
         };
     },
-    onShow() {
+    async onShow() {
         this.user = uni.getStorageSync(getApp().globalData.data.userInfoKey)
         this.isUserLogin = uni.getStorageSync(getApp().globalData.data.userLoginKey) == true ? true : false;
+        this.isUserVerified = uni.getStorageSync(getApp().globalData.data.userVerificationKey) == true ? true : false;
     },
     methods: {
         handleLinkClick(methodName) {
@@ -110,7 +126,6 @@ export default {
             this.user = uni.getStorageSync(getApp().globalData.data.userInfoKey)
             this.isUserLogin = uni.getStorageSync(getApp().globalData.data.userLoginKey)
             uni.hideLoading();
-
         },
         async signOut() {
             await getApp().globalData.signOut()
@@ -145,6 +160,11 @@ export default {
             });
         },
 
+        // Toggle
+        widgetToggle() {
+            this.$refs.appWidget.open();
+        },
+
         // Redirects
         profileRedirect() {
             uni.navigateTo({
@@ -164,6 +184,11 @@ export default {
         securityRedirect() {
             uni.navigateTo({
                 url: './security/security',
+            });
+        },
+        realNameAuthenticationRedirect() {
+            uni.navigateTo({
+                url: './real-name-authentication/real-name-authentication',
             });
         }
     }

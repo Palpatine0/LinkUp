@@ -1,9 +1,31 @@
+import $API from "../api/api";
+import app from "../App.vue";
+
 if(!String.prototype.replaceAll) {
     String.prototype.replaceAll = function(s1, s2) {
         return this.replace(new RegExp(s1, "gm"), s2);
     }
 }
 var $common = {
+    async getUser(id) {
+        const userData = () => {
+            return new Promise(
+                (resolve, reject) => {
+                    uni.request({
+                        url: app.globalData.data.requestUrl + $API.user.search,
+                        method: 'POST',
+                        data: {
+                            id: id
+                        },
+                        success: (res) => {
+                            resolve(res.data.list[0])
+                        }
+                    });
+                }
+            )
+        }
+        return await userData()
+    },
     generateUniqueCode: function(pattern, numCodes) {
         const bases = [];
         let totalPermutations = 1;
@@ -219,6 +241,10 @@ var $common = {
         const minutes = Math.floor((seconds % 3600) / 60);
         const secs = seconds % 60;
         return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    },
+
+    backToLastPage() {
+        uni.navigateBack()
     },
 
     isEmpty: function(v) {

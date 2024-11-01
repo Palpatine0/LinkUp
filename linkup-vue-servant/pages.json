@@ -167,6 +167,20 @@
             ]
         },
 
+        // profile > real-name-authentication
+        {
+            "root": "pages/profile/real-name-authentication",
+            "pages": [
+                {
+                    "path": "real-name-authentication",
+                    "style": {
+                        "navigationBarTitleText": "",
+                        "navigationBarBackgroundColor": "#f5f7fb"
+                    }
+                }
+            ]
+        },
+
         // ** components ** //
         {
             "root": "pages/components",

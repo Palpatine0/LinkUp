@@ -1,9 +1,9 @@
 <template>
 <div class="page">
     <div class="profile-header center-h mb-2">
-        <div class="center-h" >
+        <div class="center-h">
             <img :src="user.avatar" alt="Profile Photo" class="profile-photo" @click="mediaSelector()"/>
-            <h3 style="color: #8B8B8B" @click="$common.addToClipboard(user.identifier)">ID: {{user.identifier}}</h3>
+            <h3 style="color: #8B8B8B" @click="$common.addToClipboard(user.identifier)">ID: {{ user.identifier }}</h3>
         </div>
     </div>
 
@@ -13,6 +13,7 @@
         mode="text"
         :placeholder="$t('profile>profile.nicknamePlaceholder')"
         v-model="user.nickname"
+        :disabled="disabled"
     />
 
     <!--Gender-->
@@ -24,8 +25,8 @@
             :range="genderRange"
             :value="user.gender"
             @change="bindGenderPickerChange"
-            :disabled="!allowEdit"
-            :style="{ color: allowEdit ? '#000' : 'gray' }"
+            :disabled="disabled"
+            :style="{ color: !disabled ? '#000' : 'gray' }"
         >
             <span>
                 <span class="button-register-text">
@@ -44,8 +45,8 @@
             :range="ageRange"
             :value="ageRangeIndex"
             @change="bindAgePickerChange"
-            :disabled="!allowEdit"
-            :style="{ color: allowEdit ? '#000' : 'gray' }"
+            :disabled="disabled"
+            :style="{ color: !disabled ? '#000' : 'gray' }"
         >
             <span>
                 <span class="button-register-text">
@@ -65,11 +66,17 @@
 <script>
 import app from "../../../App.vue";
 import $API from "../../../api/api";
+import $common from "../../../utils/common";
 
 export default {
+    computed: {
+        $common() {
+            return $common
+        }
+    },
     data() {
         return {
-            allowEdit: false,
+            disabled: false,
             showSubmitButton: false,
             user: {},
             originalUser: {},
@@ -86,8 +93,7 @@ export default {
         this.user = {...storedUser};
         this.originalUser = {...storedUser};
 
-        // Once user data is loaded, set allowEdit
-        this.allowEdit = this.user.isIdentifyCertified === "0";
+        this.disabled = uni.getStorageSync(getApp().globalData.data.userVerificationKey) == true ? true : false;
 
         // Set other values based on user data
         this.selectedGenderText = this.genderRange[this.user.gender];
@@ -117,7 +123,7 @@ export default {
                             uni.showLoading({title: this.$t('pub.showLoading.loading')});
 
                             const filePath = chooseResult.tempFilePaths[0];
-                            if (!this.$common.validateFileType(filePath, "img")) {
+                            if(!this.$common.validateFileType(filePath, "img")) {
                                 uni.hideLoading();
                                 uni.showToast({
                                     title: this.$t('pub.showToast.imgInvalidFileType'), // Image-specific message
@@ -215,7 +221,7 @@ export default {
 
         formSubmit() {
             uni.showLoading({title: this.$t('pub.showLoading.loading')});
-            if (this.$common.isEmojiContains(this.user.nickname)) {
+            if(this.$common.isEmojiContains(this.user.nickname)) {
                 uni.hideLoading();
                 uni.showToast({
                     title: this.$t('pub.showToast.emojiNotAllowed'),

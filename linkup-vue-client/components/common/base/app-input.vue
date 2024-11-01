@@ -11,6 +11,7 @@
         @input="onInput"
         class="input-common input-text"
         placeholder=" "
+        :disabled="disabled"
     />
 
     <!-- Textarea -->
@@ -24,6 +25,7 @@
         @input="onInput"
         class="input-common textarea"
         placeholder=" "
+        :disabled="disabled"
     ></textarea>
 
     <!-- Number Input -->
@@ -38,12 +40,14 @@
         @input="onNumberInput"
         class="input-common input-number"
         placeholder=" "
+        :disabled="disabled"
     />
 
     <label :class="{ 'placeholder-move': isFocused || hasValue }" class="placeholder">{{ placeholder }}</label>
     <div v-if="validationMessage" class="validation-message">{{ validationMessage }}</div>
 </div>
 </template>
+
 
 <script>
 export default {
@@ -59,7 +63,9 @@ export default {
         color: {type: String, default: '#f3f2f6'},
         col: {type: String, default: '12'},
         validationMessage: {type: String, default: ''},
+        disabled: {type: Boolean, default: false}
     },
+
     computed: {
         colPercentage() {
             return (this.col / 12) * 100;
@@ -137,4 +143,11 @@ export default {
     top: 34px;
     left: 10px;
 }
+
+.input-common:disabled {
+    background-color: #e0e0e0;
+    color: #a0a0a0;
+    cursor: not-allowed;
+}
+
 </style>
