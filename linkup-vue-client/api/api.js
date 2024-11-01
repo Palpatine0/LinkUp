@@ -80,6 +80,15 @@ var $API = {
     // File
     file:{
         signature:"/file/signature"
+    },
+
+    // Bankcard
+    bankcard:{
+        save: '/bankCard/save',
+        search: '/bankCard/search',
+        searchBank: '/bankCard/search-bank',
+        update: '/bankCard/update',
+        validation: '/bankCard/validation',
     }
 }
 export default $API;

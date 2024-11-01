@@ -60,7 +60,6 @@ export default {
               url: '/pages/profile/profile',
             });
           } else {
-            console.log(res.data)
             if (res.data.message == "Match failed") {
               uni.showToast({title: this.$t('profile>realNameAuthentication.showToast.matchFailed'), icon: 'none'});
             } else if (res.data.message == "No record") {

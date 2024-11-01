@@ -6,13 +6,9 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.enchanted.constant.ThirdPartyConstant;
 import com.enchanted.constant.UserConstant;
 import com.enchanted.constant.WeChatConstant;
-import com.enchanted.entity.User;
-import com.enchanted.entity.UserClient;
-import com.enchanted.entity.UserServant;
-import com.enchanted.mapper.UserClientMapper;
-import com.enchanted.mapper.UserMapper;
+import com.enchanted.entity.*;
+import com.enchanted.mapper.*;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.enchanted.mapper.UserServantMapper;
 import com.enchanted.service.IFileService;
 import com.enchanted.service.IUserService;
 import com.enchanted.util.ConversionUtils;
@@ -52,6 +48,12 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
     @Autowired
     private UserServantMapper userServantMapper;
+
+    @Autowired
+    private BankMapper bankMapper;
+
+    @Autowired
+    private BankCardMapper bankCardMapper;
 
     @Autowired
     private HttpClientUtil httpClientUtil;
@@ -198,7 +200,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
                 if (resultRes.equals("3")) {
                     throw new IllegalArgumentException("No record");
                 } else {
-                    resultMap.putAll(JSON.parseObject(response));
+                    resultMap.put("result", "Success");
                 }
             }
         } else {
@@ -242,7 +244,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
 
         return resultMap;
     }
-
 
     @Override
     public Page<User> searchServant(Map<String, Object> params, int page, int size) {

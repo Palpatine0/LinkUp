@@ -23,7 +23,7 @@
                 <div style="width: 70px">{{ $t('profile>balance.deposit') }}</div>
                 <img class="pay-button-icon" :src="app.globalData.data.ossIconRequestUrl+'/page/profile/balance/arrow-down-left.svg'">
             </div>
-            <div class="pay-button" @click="withdrawToggle()">
+            <div class="pay-button" @click="withdrawRedirect()">
                 <div style="width: 70px">{{ $t('profile>balance.withdraw') }}</div>
                 <img class="pay-button-icon" :src="app.globalData.data.ossIconRequestUrl+'/page/profile/balance/arrow-up-right.svg'">
             </div>
@@ -161,6 +161,11 @@ export default {
         orderHistoryRedirect() {
             uni.navigateTo({
                 url: '/pages/profile/balance/transaction-history/transaction-history'
+            })
+        },
+        withdrawRedirect() {
+            uni.navigateTo({
+                url: '/pages/profile/balance/withdraw/withdraw'
             })
         },
     },

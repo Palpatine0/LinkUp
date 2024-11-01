@@ -1,6 +1,7 @@
 package com.enchanted.controller;
 
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.enchanted.entity.Bank;
 import com.enchanted.entity.BankCard;
 import com.enchanted.service.IBankCardService;
 import com.enchanted.vo.R;
@@ -11,7 +12,7 @@ import java.util.Map;
 
 @CrossOrigin
 @RestController
-@RequestMapping("/bank_card")
+@RequestMapping("/bankCard")
 public class BankCardController {
 
     @Autowired
@@ -28,17 +29,38 @@ public class BankCardController {
         }
     }
 
+    @PostMapping("/validation")
+    public R bankCardValidation(@RequestBody Map<String, String> dto) {
+        Long userId = Long.parseLong(dto.get("userId").toString());
+        String name = dto.get("name");
+        String idCardNumber = dto.get("idCardNumber");
+        String bankCardNumber = dto.get("bankCardNumber");
+        return R.ok().put("data", bankCardService.bankCardValidation(userId, name, idCardNumber, bankCardNumber));
+    }
+
     /* R */
     @PostMapping("/search")
     public R search(@RequestBody Map<String, Object> requestData) {
         int page = requestData.get("page") != null ? Integer.parseInt(requestData.get("page").toString()) : 1;
-        int size = requestData.get("size") != null ? Integer.parseInt(requestData.get("size").toString()) : 10;
+        int size = requestData.get("size") != null ? Integer.parseInt(requestData.get("size").toString()) : 200;
 
         requestData.remove("page");
         requestData.remove("size");
 
         Page<BankCard> bankCardPage = bankCardService.search(requestData, page, size);
         return R.paginate(bankCardPage);
+    }
+
+    @PostMapping("/search-bank")
+    public R searchBank(@RequestBody Map<String, Object> requestData) {
+        int page = requestData.get("page") != null ? Integer.parseInt(requestData.get("page").toString()) : 1;
+        int size = requestData.get("size") != null ? Integer.parseInt(requestData.get("size").toString()) : 10;
+
+        requestData.remove("page");
+        requestData.remove("size");
+
+        Page<Bank> bankPage = bankCardService.searchBank(requestData, page, size);
+        return R.paginate(bankPage);
     }
 
     /* U */

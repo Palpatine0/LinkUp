@@ -15,17 +15,20 @@ public class BankCard {
     @TableField("user_id")
     private Long userId;
 
-    @TableField("card_number")
-    private String cardNumber;
+    @TableField("bank_id")
+    private Long bankId;
 
-    @TableField("card_type")
-    private String cardType;
+    private String identifier;
 
-    @TableField("card_issuer")
-    private String cardIssuer;
+    private String name;
 
-    @TableField("card_network")
-    private String cardNetwork;
+    /**
+     * 0: debit card
+     * 1: credit card
+     */
+    private Integer type;
+
+    private String issuer;
 
     /**
      * 0: not deleted;

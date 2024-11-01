@@ -200,6 +200,29 @@ public class HttpClientUtil {
         return responseContent;
     }
 
+    public String sendHttpGet(String httpUrl, Map<String, String> params, Map<String, String> headers) {
+        // Append query parameters to the URL
+        StringBuilder urlWithParams = new StringBuilder(httpUrl);
+        if (params != null && !params.isEmpty()) {
+            urlWithParams.append("?");
+            for (Map.Entry<String, String> entry : params.entrySet()) {
+                urlWithParams.append(entry.getKey()).append("=").append(entry.getValue()).append("&");
+            }
+            urlWithParams.deleteCharAt(urlWithParams.length() - 1);
+        }
+
+        HttpGet httpGet = new HttpGet(urlWithParams.toString());
+
+        // Add headers
+        if (headers != null) {
+            for (Map.Entry<String, String> header : headers.entrySet()) {
+                httpGet.addHeader(header.getKey(), header.getValue());
+            }
+        }
+
+        return sendHttpGet(httpGet);
+    }
+
     public static HttpResponse sendXMLDataByPost(String url, String xmlData)
         throws ClientProtocolException, IOException {
         HttpClient httpClient = HttpClients.createDefault();

@@ -116,6 +116,13 @@
                         "navigationBarTitleText": "",
                         "navigationBarBackgroundColor": "#fefefe"
                     }
+                },
+                {
+                    "path": "withdraw/withdraw",
+                    "style": {
+                        "navigationBarTitleText": "",
+                        "navigationBarBackgroundColor": "#f3f2f6"
+                    }
                 }
             ]
         },

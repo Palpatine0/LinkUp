@@ -288,6 +288,18 @@
         "income": "Income",
         "expanse": "Expanse"
     },
+    "profile>balance>withdraw": {
+        "withdrawHistory": "Withdraw History",
+        "addAilpay": "Add your Ailpay",
+        "addBankCard": "Add a Bank Card",
+        "showToast": {
+            "authSuccess": "Success",
+            "existedBankCard": "Existed bank card",
+            "matchFailed": "Verification failed. Please confirm if your real name, recorded ID number, and the bank card you entered match",
+            "invalidCard": "Your card is invalid. Please contact us",
+            "inputError": "Input error, please double check the correctness of the data submitted."
+        }
+    },
 
     "//////": "profile > address",
     "profile>address": {

@@ -288,6 +288,18 @@
         "income": "收入",
         "expanse": "支出"
     },
+    "profile>balance>withdraw": {
+        "withdrawHistory": "提款记录",
+        "addAilpay": "点击添加支付宝",
+        "addBankCard": "点击添加银行卡",
+        "showToast": {
+            "authSuccess": "银行卡添加成功",
+            "existedBankCard": "请不要添加重复的银行卡",
+            "matchFailed": "验证失败，请确认你的真实姓名, 记录身份证号与您输入的银行卡是否匹配",
+            "invalidCard": "卡号异常，请联系客服",
+            "inputError": "参数异常，请检查您的输入是否正确"
+        }
+    },
 
     "//////": "profile > address",
     "profile>address": {

@@ -29,4 +29,8 @@
         ORDER BY created_at DESC
     </select>
 
+    <select id="searchBank" resultType="com.enchanted.entity.Bank" >
+        SELECT * FROM bank
+    </select>
+
 </mapper>
