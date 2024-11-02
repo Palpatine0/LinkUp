@@ -93,7 +93,7 @@ export default {
         this.user = {...storedUser};
         this.originalUser = {...storedUser};
 
-        this.disabled = uni.getStorageSync(getApp().globalData.data.userVerificationKey) == true ? true : false;
+        this.disabled = this.$common.isUserVerified()
 
         // Set other values based on user data
         this.selectedGenderText = this.genderRange[this.user.gender];

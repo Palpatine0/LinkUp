@@ -35,7 +35,9 @@
             "videoInvalidFileType": "仅支持视频文件(mp4，avi，mov，mkv)",
             "emojiNotAllowed": "请不要在输入内容包含表情符号",
             "finishForm": "请填写表单",
-            "dataExisted": "数据已存在"
+            "dataExisted": "数据已存在",
+            "signInToContinue": "请登录以继续",
+            "verifyToContinue": "请实名认证以继续"
         },
         "showLoading": {
             "loading": "加载中..."

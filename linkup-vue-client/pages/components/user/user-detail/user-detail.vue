@@ -120,6 +120,10 @@ export default {
         },
 
         chatWindowRedirect() {
+            if(!this.$common.isUserLoggedIn()) {
+                uni.showToast({title: this.$t('pub.showToast.signInToContinue'), icon: 'none'});
+                return
+            }
             uni.navigateTo({
                 url: '/pages/components/chat/chat-window/chat-window?contactId=' + this.userId
             });

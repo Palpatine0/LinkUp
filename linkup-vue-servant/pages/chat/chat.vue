@@ -5,7 +5,7 @@
         <app-title type="h1" bold="true">{{ $t('chat.chats') }}</app-title>
     </div>
 
-    <div v-if="!isUserLogin" class="center-h">
+    <div v-if="!isUserLoggedIn" class="center-h">
         <div class="background-icon">
             <img src="/static/page/chat/messages.svg">
         </div>
@@ -13,7 +13,7 @@
             <app-button shaped @click="signIn">{{ $t('chat.signIn') }}</app-button>
         </div>
     </div>
-    <div v-if="isUserLogin">
+    <div v-if="isUserLoggedIn">
         <!-- Search input -->
         <app-input mode="text" :placeholder="$t('pub.page.search')" col="12" class="mb-2"/>
         <!-- Contact List -->
@@ -55,15 +55,15 @@ export default {
     },
     data() {
         return {
-            isUserLogin: false,
+            isUserLoggedIn: false,
             userId: uni.getStorageSync(getApp().globalData.data.userInfoKey).id,
             dataList: [],
             messageHandler: null,
         };
     },
     onLoad() {
-        this.isUserLogin = uni.getStorageSync(getApp().globalData.data.userLoginKey) === true;
-        if(this.isUserLogin) {
+        this.isUserLoggedIn = this.$common.isUserLoggedIn()
+        if(this.isUserLoggedIn) {
             this.$webSocket.connectWebSocket(uni.getStorageSync(getApp().globalData.data.userInfoKey).id);
 
             this.reload();
@@ -80,7 +80,7 @@ export default {
     },
     methods: {
         reload() {
-            if(this.isUserLogin) {
+            if(this.isUserLoggedIn) {
                 this.resetPagination();
                 this.getDataList();
             }
@@ -172,7 +172,7 @@ export default {
             uni.showLoading({title: this.$t('pub.showLoading.loading')});
             await getApp().globalData.signIn()
             this.user = uni.getStorageSync(getApp().globalData.data.userInfoKey)
-            this.isUserLogin = uni.getStorageSync(getApp().globalData.data.userLoginKey)
+            this.isUserLoggedIn = this.$common.isUserLoggedIn()
             uni.hideLoading();
         },
 

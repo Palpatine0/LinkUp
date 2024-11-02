@@ -35,7 +35,9 @@
             "videoInvalidFileType": "Only video files (mp4, avi, mov, mkv) are allowed",
             "emojiNotAllowed": "Please avoid using emojis in this field",
             "finishForm": "Please fill all inputs",
-            "dataExisted": "Data Existed"
+            "dataExisted": "Data Existed",
+            "signInToContinue": "Please sign in to continue",
+            "verifyToContinue": "Please verify your identity to continue"
         },
         "showLoading": {
             "loading": "Loading..."

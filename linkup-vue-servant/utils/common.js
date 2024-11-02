@@ -7,6 +7,13 @@ if(!String.prototype.replaceAll) {
     }
 }
 var $common = {
+    isUserLoggedIn(){
+        return uni.getStorageSync(app.globalData.data.userLoginKey) == true ? true : false
+    },
+    isUserVerified(){
+        return uni.getStorageSync(app.globalData.data.userVerificationKey) == true ? true : false
+    },
+
     async getUser(id) {
         const userData = () => {
             return new Promise(

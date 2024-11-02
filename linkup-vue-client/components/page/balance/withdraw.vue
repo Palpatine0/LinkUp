@@ -68,15 +68,8 @@ export default {
         },
 
         confirmWithdraw() {
-            const today = new Date();
-            const dayOfWeek = today.getDay();  // 0 = Sunday, 6 = Saturday
             const userlastWithdrawDate = new Date(this.userInfo.lastWithdrawalDate);
             const sameDayWithdraw = userlastWithdrawDate.toDateString() === today.toDateString();
-
-            if (dayOfWeek === 0 || dayOfWeek === 6) {
-                uni.showToast({title: this.$t('component>balance>withdraw.showToast.weekendError'), icon: 'none'});
-                return;
-            }
 
             if (sameDayWithdraw) {
                 uni.showToast({title: this.$t('component>balance>withdraw.showToast.oneWithdrawPerDay'), icon: 'none'});

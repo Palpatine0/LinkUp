@@ -164,6 +164,10 @@ export default {
             })
         },
         withdrawRedirect() {
+            if(!this.$common.isUserVerified()) {
+                uni.showToast({title: this.$t('pub.showToast.verifyToContinue'), icon: 'none'});
+                return
+            }
             uni.navigateTo({
                 url: '/pages/profile/balance/withdraw/withdraw'
             })

@@ -35,6 +35,10 @@ export default {
             });
         },
         orderInitiateRedirect(serviceType, serviceName, serviceNameCn) {
+            if(!this.$common.isUserLoggedIn()) {
+                uni.showToast({title: this.$t('pub.showToast.signInToContinue'), icon: 'none'});
+                return
+            }
             uni.redirectTo({
                 url: '../order-initiate/order-initiate?serviceType=' + serviceType + '&serviceName=' + serviceName + '&serviceNameCn=' + serviceNameCn,
             });

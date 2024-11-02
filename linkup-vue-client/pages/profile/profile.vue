@@ -1,7 +1,7 @@
 <template>
 <div class="page" style="background-color: #f3f2f6;">
     <!-- Profile Section -->
-    <div v-if="isUserLogin" class="mb-4 center-h">
+    <div v-if="isUserLoggedIn" class="mb-4 center-h">
         <div class="profile-header">
             <img :src="user.avatar" alt="Profile Photo" class="profile-photo"/>
             <img v-if="isUserVerified" style="width: 25px;height: 25px;position: absolute;margin-top: 74px;margin-left: -24px;" :src="app.globalData.data.ossIconRequestUrl+'/page/profile/badge-check.svg'" @click="widgetToggle"/>
@@ -9,7 +9,7 @@
             <h3 class="hidden" style="color: #8B8B8B" @click="$common.addToClipboard(user.identifier)">ID: {{ user.identifier }}</h3>
         </div>
     </div>
-    <div v-if="!isUserLogin" class="mb-4">
+    <div v-if="!isUserLoggedIn" class="mb-4">
         <div class="profile-header center-h">
             <div class="center-h">
                 <img :src="app.globalData.data.ossIconRequestUrl+'/page/profile/logo.jpg'" alt="Profile Photo" class="profile-photo"/>
@@ -22,19 +22,19 @@
         </div>
     </div>
 
-    <app-container class="justify-SB" v-if="isUserLogin&&!isUserVerified" color="#2676f7" col="12" style="margin-top: -20px" @click="realNameAuthenticationRedirect">
+    <app-container class="justify-SB" v-if="isUserLoggedIn&&!isUserVerified" color="#2676f7" col="12" style="margin-top: -20px" @click="realNameAuthenticationRedirect">
         <app-title bold style="color: #FFF">{{ $t('profile.authRequest') }}</app-title>
         <app-button size="small" color="#FFF" font-color="#2676f7" shaped bold>{{ $t('pub.button.getStarted') }}</app-button>
     </app-container>
 
-    <app-container v-if="isUserLogin" color="#fff" col="12" @click="profileRedirect">
+    <app-container v-if="isUserLoggedIn" color="#fff" col="12" @click="profileRedirect">
         <img :src="app.globalData.data.ossIconRequestUrl+'/page/profile/profile.png'" alt="" class="link-icon">
         <span class="link-text">{{ $t('profile.profile') }}</span>
     </app-container>
 
 
     <!-- Other Options with Icons -->
-    <app-container v-if="isUserLogin" color="#fff" col="12" type="list">
+    <app-container v-if="isUserLoggedIn" color="#fff" col="12" type="list">
         <div v-for="(item, index) in linkItemsB" :key="index">
             <div class="link-item" @click="handleLinkClick(item.click)">
                 <img :src="item.icon" alt="" class="link-icon">
@@ -58,7 +58,7 @@
         </div>
     </app-container>
 
-    <div v-if="isUserLogin" class="sign-out-button app-button" @click="signOut">{{ $t('profile.signOut') }}</div>
+    <div v-if="isUserLoggedIn" class="sign-out-button app-button" @click="signOut">{{ $t('profile.signOut') }}</div>
     <RealNameAuthentication v-if="realNameAuthenticationVisible"/>
     <app-widget ref="appWidget" :widget="appWidget"/>
 </div>
@@ -79,7 +79,7 @@ export default {
     },
     data() {
         return {
-            isUserLogin: false,
+            isUserLoggedIn: false,
             isUserVerified: false,
             user: {},
 
@@ -107,8 +107,8 @@ export default {
     },
     async onShow() {
         this.user = uni.getStorageSync(getApp().globalData.data.userInfoKey)
-        this.isUserLogin = uni.getStorageSync(getApp().globalData.data.userLoginKey) == true ? true : false;
-        this.isUserVerified = uni.getStorageSync(getApp().globalData.data.userVerificationKey) == true ? true : false;
+        this.isUserLoggedIn = this.$common.isUserLoggedIn()
+        this.isUserVerified = this.$common.isUserVerified()
     },
     methods: {
         handleLinkClick(methodName) {
@@ -123,13 +123,13 @@ export default {
             uni.showLoading({title: this.$t('pub.showLoading.loading')});
             await getApp().globalData.signIn()
             this.user = uni.getStorageSync(getApp().globalData.data.userInfoKey)
-            this.isUserLogin = uni.getStorageSync(getApp().globalData.data.userLoginKey)
+            this.isUserLoggedIn = this.$common.isUserLoggedIn()
             uni.hideLoading();
         },
         async signOut() {
             await getApp().globalData.signOut()
             this.user = {}
-            this.isUserLogin = false
+            this.isUserLoggedIn = false
             this.$webSocket.closeWebSocket()
             uni.switchTab({
                 url: '/pages/profile/profile'

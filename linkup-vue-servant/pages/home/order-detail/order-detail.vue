@@ -135,6 +135,10 @@ export default {
 
         // Toggle
         priceRequestToggle() {
+            if(!this.$common.isUserVerified()) {
+                uni.showToast({title: this.$t('pub.showToast.verifyToContinue'), icon: 'none'});
+                return
+            }
             this.increasedQuotedPriceRequestVisible = !this.increasedQuotedPriceRequestVisible
         },
     }
