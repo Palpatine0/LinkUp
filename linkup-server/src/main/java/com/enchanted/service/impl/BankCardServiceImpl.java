@@ -46,7 +46,7 @@ public class BankCardServiceImpl extends ServiceImpl<BankCardMapper, BankCard> i
         bankCardWrapper.eq("identifier", bankCard.getIdentifier());
         BankCard existedBankCard = bankCardMapper.selectOne(bankCardWrapper);
         if (existedBankCard != null) {
-            throw new IllegalArgumentException("Existed bank card");
+            throw new IllegalArgumentException("Data Existed");
         }
 
         User user = userMapper.selectById(bankCard.getUserId());

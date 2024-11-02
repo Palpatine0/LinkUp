@@ -12,7 +12,7 @@ import java.util.Map;
 
 @CrossOrigin
 @RestController
-@RequestMapping("/bankCard")
+@RequestMapping("/bank-card")
 public class BankCardController {
 
     @Autowired

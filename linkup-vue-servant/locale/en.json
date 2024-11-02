@@ -32,7 +32,10 @@
             "fail": "Operation failed",
             "loadingFail": "Loading failed",
             "imgInvalidFileType": "Invalid file type. Please select an image file (jpg, jpeg, png, gif, or webp)",
-            "emojiNotAllowed": "Please avoid using emojis in this field."
+            "videoInvalidFileType": "Only video files (mp4, avi, mov, mkv) are allowed",
+            "emojiNotAllowed": "Please avoid using emojis in this field",
+            "finishForm": "Please fill all inputs",
+            "dataExisted": "Data Existed"
         },
         "showLoading": {
             "loading": "Loading..."
@@ -303,7 +306,6 @@
         "private": "Private",
         "company": "Business",
         "showToast": {
-            "existedBankCard": "Existed bank card",
             "matchFailed": "Verification failed. Please confirm if your real name, recorded ID number, and the bank card you entered match",
             "invalidCard": "Your card is invalid. Please contact us",
             "inputError": "Input error, please double check the correctness of the data submitted."

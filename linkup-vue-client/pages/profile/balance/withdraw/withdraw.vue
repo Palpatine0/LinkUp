@@ -1,10 +1,27 @@
 <template>
 <div class="page" style="background-color: #f3f2f6">
     <div class="mb-2">
-        <div v-if="$common.isEmpty(ailPayAccount)" class="center mb-2" @click="addPaymentAccountRedirect(0)">
+        <!-- Alipay -->
+        <div v-if="$common.unDefined(ailPayAccount)" class="center mb-2" @click="addPaymentAccountRedirect(0)">
             <img style="width: 74%;height: 160px;" :src="app.globalData.data.ossImageRequestUrl+'/miscellaneous/card-slot.jpg'">
             <app-title bold style="position: absolute;top: 114px;color: #7f7f7f">{{ $t('profile>balance>withdraw.addAilpay') }}</app-title>
         </div>
+        <div v-else class="center mb-2">
+            <app-container color="#3474ff" style="color: #FFF" col="12">
+                <div class="justify-SB" style="width: 60vw">
+                    <img style="width: 50px; height: 50px;" :src="app.globalData.data.ossIconRequestUrl+'/page/profile/balance/withdraw/ailpay.jpg'" mode="aspectFill"/>
+                    <div style="text-align: end">
+                        <app-title bold type="h3">{{ ailPayAccount.name }}</app-title>
+                    </div>
+                </div>
+                <app-title class="mt-4" style="text-align: end;display: block;">
+                    <img style="width: 120px; height: 40px;" :src="app.globalData.data.ossIconRequestUrl+'/page/profile/balance/withdraw/ailpay-text.jpg'" mode="aspectFill"/>
+                </app-title>
+            </app-container>
+            <img src="/static/common/create-gray.svg" class="right-icon" @click="addPaymentAccountRedirect(1)"/>
+        </div>
+
+        <!-- Bank Card -->
         <div v-if="!bankcardList.length>0" class="center mb-2" @click="addPaymentAccountRedirect(1)">
             <img style="width: 74%;height: 160px;" :src="app.globalData.data.ossImageRequestUrl+'/miscellaneous/card-slot.jpg'">
             <app-title bold style="position: absolute;top: 296px;color: #7f7f7f">{{ $t('profile>balance>withdraw.addBankCard') }}</app-title>
@@ -17,7 +34,7 @@
                             <img style="width: 50px; height: 50px;" :src="bankcard.bank.logo" mode="aspectFill"/>
                             <div style="text-align: end">
                                 <app-title bold type="h3">{{ bankcard.type == 0 ? $t('profile>balance>withdraw.debitCard') : $t('profile>balance>withdraw.creditCard') }}</app-title>
-                                <app-title @click.stop="toggleCardVisibility(index)">{{ getDisplayIdentifier(bankcard, index) }}</app-title>
+                                <app-title @click.stop="cardVisibilityToggle(index)">{{ getDisplayIdentifier(bankcard, index) }}</app-title>
                             </div>
                         </div>
                         <app-title v-if="language != 'zh-Hans'" class="mt-4" style="text-align: end;display: block;" type="h1" bold="true">
@@ -35,7 +52,7 @@
     <app-container color="#f3f2f6">
         <div class="tips">{{ $t('profile>balance>withdraw.tips') }}</div>
     </app-container>
-    <app-title type="h2" bold>{{ $t('profile>balance>withdraw.withdrawHistory') }}</app-title>
+    <app-title v-if="withdrawHistoryList.length>0" type="h2" bold>{{ $t('profile>balance>withdraw.withdrawHistory') }}</app-title>
 </div>
 </template>
 
@@ -57,6 +74,7 @@ export default {
         return {
             bankcardList: [],
             ailPayAccount: [],
+            withdrawHistoryList: [],
             user: '',
             showFullIdentifier: {} // Track visibility of full card numbers by index
         };
@@ -68,10 +86,11 @@ export default {
     methods: {
         reload() {
             this.getBankCards();
+            this.getAilpayAccount();
         },
         getBankCards() {
             uni.request({
-                url: getApp().globalData.data.requestUrl + this.$API.bankcard.search,
+                url: getApp().globalData.data.requestUrl + this.$API.bankCard.search,
                 method: 'POST',
                 data: {
                     userId: this.user.id,
@@ -89,21 +108,41 @@ export default {
                 }
             });
         },
-        addPaymentAccountRedirect(type) {
-            uni.navigateTo({
-                url: `/pages/profile/balance/withdraw/add-payment-account/add-payment-account?paymentMethodType=${type}&userId=${this.user.id}`
+        getAilpayAccount() {
+            uni.request({
+                url: getApp().globalData.data.requestUrl + this.$API.ailpayAccount.search,
+                method: 'POST',
+                data: {
+                    userId: this.user.id,
+                },
+                success: (res) => {
+                    this.ailPayAccount = res.data.list[0];
+                },
+                fail: () => {
+                    uni.showToast({title: this.$t('pub.showToast.fail'), icon: 'none'});
+                }
             });
         },
-        toggleCardVisibility(index) {
-            this.showFullIdentifier[index] = !this.showFullIdentifier[index];
-        },
+
         getDisplayIdentifier(bankcard, index) {
             if(this.showFullIdentifier[index]) {
                 return bankcard.identifier;
             } else {
                 return "···· ···· ···· " + bankcard.identifier.slice(-4);
             }
-        }
+        },
+
+        // Toggle
+        cardVisibilityToggle(index) {
+            this.showFullIdentifier[index] = !this.showFullIdentifier[index];
+        },
+
+        // Redirect
+        addPaymentAccountRedirect(type) {
+            uni.navigateTo({
+                url: `/pages/profile/balance/withdraw/add-payment-account/add-payment-account?paymentMethodType=${type}&userId=${this.user.id}`
+            });
+        },
     }
 };
 </script>

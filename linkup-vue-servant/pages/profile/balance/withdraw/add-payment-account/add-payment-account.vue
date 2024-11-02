@@ -8,7 +8,7 @@
     <div v-if="paymentMethodType==0" class="page-mono-form">
         <input
             type="text"
-            v-model="ailpayAccountName"
+            v-model="ailpayAccountData.name"
             :placeholder="$t('profile>balance>withdraw>addPaymentAccount.ailpayPlaceholder')"
         />
     </div>
@@ -53,12 +53,16 @@ export default {
                 issuer: '',
                 accountType: -1
             },
-            ailpayAccountName: ''
+            ailpayAccountData: {
+                userId: '',
+                name:''
+            }
         }
     },
     onLoad(params) {
         this.paymentMethodType = params.paymentMethodType;
         this.bankcardData.userId = params.userId;
+        this.ailpayAccountData.userId = params.userId;
     },
     methods: {
         onAccountTypeChange(event) {
@@ -66,50 +70,72 @@ export default {
         },
         saveBankCard() {
             // Validate inputs
-            if(this.paymentMethodType == 0 && !this.ailpayAccountName) {
-                uni.showToast({title: this.$t('profile>balance>withdraw>addPaymentAccount.showToast.inputError'), icon: 'none', duration: 6000});
+            if(this.paymentMethodType == 0 && !this.ailpayAccountData.name) {
+                uni.showToast({title: this.$t('pub.showToast.finishForm'), icon: 'none'});
                 return;
             }
             if(this.paymentMethodType == 1 && (!this.bankcardData.identifier || !this.bankcardData.issuer || this.bankcardData.accountType === -1)) {
-                uni.showToast({title: this.$t('profile>balance>withdraw>addPaymentAccount.showToast.inputError'), icon: 'none', duration: 6000});
+                uni.showToast({title: this.$t('pub.showToast.finishForm'), icon: 'none'});
                 return;
             }
             uni.showLoading({title: this.$t('pub.showLoading.loading')});
-            // Proceed with the request if validation passes
-            uni.request({
-                url: getApp().globalData.data.requestUrl + this.$API.bankcard.save,
-                method: 'POST',
-                data: {
-                    ...this.bankcardData
-                },
-                success: async(res) => {
-                    uni.hideLoading();
-                    if(res.data.status === 200) {
-                        uni.showToast({title: this.$t('pub.showToast.success'), icon: 'none'});
-                        this.$common.backToLastPage();
-                    } else {
-                        let errorMessage = '';
-                        switch(res.data.message) {
-                            case "Existed bank card":
-                                errorMessage = this.$t('profile>balance>withdraw>addPaymentAccount.showToast.existedBankCard');
-                                break;
-                            case "Match failed":
-                                errorMessage = this.$t('profile>balance>withdraw>addPaymentAccount.showToast.matchFailed');
-                                break;
-                            case "Invalid card":
-                                errorMessage = this.$t('profile>balance>withdraw>addPaymentAccount.showToast.invalidCard');
-                                break;
-                            default:
-                                errorMessage = this.$t('profile>balance>withdraw>addPaymentAccount.showToast.inputError');
+            if(this.paymentMethodType == 0) {
+                uni.request({
+                    url: getApp().globalData.data.requestUrl + this.$API.ailpayAccount.save,
+                    method: 'POST',
+                    data: {
+                        ...this.ailpayAccountData
+                    },
+                    success: async(res) => {
+                        uni.hideLoading();
+                        if(res.data.status === 200) {
+                            uni.showToast({title: this.$t('pub.showToast.success'), icon: 'none'});
+                            uni.navigateBack()
+                        } else {
+                            uni.showToast({title: this.$t('pub.showToast.fail'), icon: 'none'});
                         }
-                        uni.showToast({title: errorMessage, icon: 'none', duration: 6000});
+                    },
+                    fail: () => {
+                        uni.hideLoading();
+                        uni.showToast({title: this.$t('pub.showToast.fail'), icon: 'none'});
                     }
-                },
-                fail: () => {
-                    uni.hideLoading();
-                    uni.showToast({title: this.$t('pub.showToast.fail'), icon: 'none'});
-                }
-            });
+                });
+            } else if(this.paymentMethodType == 1) {
+                uni.request({
+                    url: getApp().globalData.data.requestUrl + this.$API.bankCard.save,
+                    method: 'POST',
+                    data: {
+                        ...this.bankcardData
+                    },
+                    success: async(res) => {
+                        uni.hideLoading();
+                        if(res.data.status === 200) {
+                            uni.showToast({title: this.$t('pub.showToast.success'), icon: 'none'});
+                            this.$common.backToLastPage()
+                        } else {
+                            let errorMessage = '';
+                            switch(res.data.message) {
+                                case "Data Existed":
+                                    errorMessage = this.$t('pub.showToast.dataExisted');
+                                    break;
+                                case "Match failed":
+                                    errorMessage = this.$t('profile>balance>withdraw>addPaymentAccount.showToast.matchFailed');
+                                    break;
+                                case "Invalid card":
+                                    errorMessage = this.$t('profile>balance>withdraw>addPaymentAccount.showToast.invalidCard');
+                                    break;
+                                default:
+                                    errorMessage = this.$t('profile>balance>withdraw>addPaymentAccount.showToast.inputError');
+                            }
+                            uni.showToast({title: errorMessage, icon: 'none', duration: 6000});
+                        }
+                    },
+                    fail: () => {
+                        uni.hideLoading();
+                        uni.showToast({title: this.$t('pub.showToast.fail'), icon: 'none'});
+                    }
+                });
+            }
         }
     }
 };

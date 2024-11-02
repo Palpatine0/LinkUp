@@ -86,12 +86,19 @@ var $API = {
     },
 
     // Bankcard
-    bankcard:{
-        save: '/bankCard/save',
-        search: '/bankCard/search',
-        searchBank: '/bankCard/search-bank',
-        update: '/bankCard/update',
-        validation: '/bankCard/validation',
+    bankCard:{
+        save: '/bank-card/save',
+        search: '/bank-card/search',
+        searchBank: '/bank-card/search-bank',
+        update: '/bank-card/update',
+        validation: '/bank-card/validation',
+    },
+
+    // Ailpay account
+    ailpayAccount: {
+        save: '/alipay-account/save',
+        search: '/alipay-account/search',
+        update: '/alipay-account/update',
     }
 }
 export default $API;
