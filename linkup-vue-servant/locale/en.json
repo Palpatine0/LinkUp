@@ -298,6 +298,10 @@
         "tipsBankCard": "Link a bank card to enable quick and easy withdrawals",
         "ailpayPlaceholder": "Enter your Ailpay account",
         "bankCardPlaceholder": "Enter your bank card",
+        "issuerPlaceholder": "Enter the issuing bank branch",
+        "accountTypePlaceholder": "Select your card account type",
+        "private": "Private",
+        "company": "Business",
         "showToast": {
             "existedBankCard": "Existed bank card",
             "matchFailed": "Verification failed. Please confirm if your real name, recorded ID number, and the bank card you entered match",

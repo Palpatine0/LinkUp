@@ -103,6 +103,28 @@
     outline: none;
 }
 
+.page-mono-form picker{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 15px 20px;
+    font-size: 16px;
+    color: #333;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 30px;
+    text-align: center;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.12);
+    transition: box-shadow 0.3s ease, border-color 0.3s ease;
+    width: 80%;
+}
+
+.page-mono-form picker:hover {
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    border-color: #007bff;
+}
+
+
 /** Base components **/
 .app-container {
     padding: 15px;

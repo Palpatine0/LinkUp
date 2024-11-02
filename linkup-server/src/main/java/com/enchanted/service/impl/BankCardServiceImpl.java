@@ -52,21 +52,22 @@ public class BankCardServiceImpl extends ServiceImpl<BankCardMapper, BankCard> i
         User user = userMapper.selectById(bankCard.getUserId());
         JSONObject resultObject = this.bankCardValidation(bankCard.getUserId(), user.getIdCardName(), user.getIdCardNumber(), bankCard.getIdentifier());
 
+        String abbr = resultObject.getString("abbr");
+        String name = resultObject.getString("cardName");
+        String bankName = resultObject.getString("bankName");
+        String type = resultObject.getString("cardType");
+        String issuanceLocation = resultObject.getString("area");
 
-        String resultAbbr = resultObject.getString("abbr");
-        String resultCardName = resultObject.getString("cardName");
-        String resultBankName = resultObject.getString("bankName");
-        String resultCardType = resultObject.getString("cardType");
-
-        bankCard.setName(resultCardName);
-        if (resultCardType.equals("借记卡")) {
+        bankCard.setName(name);
+        bankCard.setIssuanceLocation(issuanceLocation);
+        if (type.equals("借记卡")) {
             bankCard.setType(0);
-        } else if (resultCardType.equals("贷记卡")) {
+        } else if (type.equals("贷记卡")) {
             bankCard.setType(1);
         }
 
         QueryWrapper<Bank> bankWrapper = new QueryWrapper<>();
-        bankWrapper.eq("abbr", resultAbbr);
+        bankWrapper.eq("abbr", abbr);
         Bank bank = bankMapper.selectOne(bankWrapper);
 
         boolean inserted = false;
@@ -75,8 +76,8 @@ public class BankCardServiceImpl extends ServiceImpl<BankCardMapper, BankCard> i
             inserted = bankCardMapper.insert(bankCard) > 0;
         } else {
             Bank newBank = new Bank();
-            newBank.setAbbr(resultAbbr);
-            newBank.setName(resultBankName);
+            newBank.setAbbr(abbr);
+            newBank.setName(bankName);
             bankMapper.insert(newBank);
             bankCard.setBankId(newBank.getId());
             inserted = bankCardMapper.insert(bankCard) > 0;

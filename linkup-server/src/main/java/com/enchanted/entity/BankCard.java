@@ -24,6 +24,9 @@ public class BankCard {
 
     private String issuer;
 
+    @TableField("issuance_location")
+    private String issuanceLocation;
+
     /**
      * 0: debit card
      * 1: credit card
