@@ -7,7 +7,7 @@
             <app-title bold style="position: absolute;top: 114px;color: #7f7f7f">{{ $t('profile>balance>withdraw.addAilpay') }}</app-title>
         </div>
         <div v-else class="center mb-2">
-            <app-container color="#3474ff" style="color: #FFF" col="12">
+            <app-container color="#3474ff" style="color: #FFF" col="12" @click="withdrawToggle">
                 <div class="justify-SB" style="width: 60vw">
                     <img style="width: 50px; height: 50px;" :src="app.globalData.data.ossIconRequestUrl+'/page/profile/balance/withdraw/ailpay.jpg'" mode="aspectFill"/>
                     <div style="text-align: end">
@@ -18,7 +18,6 @@
                     <img style="width: 120px; height: 40px;" :src="app.globalData.data.ossIconRequestUrl+'/page/profile/balance/withdraw/ailpay-text.jpg'" mode="aspectFill"/>
                 </app-title>
             </app-container>
-            <img src="/static/common/create-gray.svg" class="right-icon" @click="addPaymentAccountRedirect(1)"/>
         </div>
 
         <!-- Bank Card -->
@@ -29,7 +28,7 @@
         <z-swiper v-else v-model="bankcardList" :options="{slidesPerView: 'auto', centeredSlides: true, spaceBetween: 14}" style="width: 100%">
             <z-swiper-item v-for="(bankcard, index) in bankcardList" :key="index" :custom-style="{width: '500rpx'}">
                 <demo-item :item="bankcard">
-                    <app-container color="#FFF" style="color: #505050" col="12">
+                    <app-container color="#FFF" style="color: #505050" col="12" @click="withdrawToggle">
                         <div class="justify-SB">
                             <img style="width: 50px; height: 50px;" :src="bankcard.bank.logo" mode="aspectFill"/>
                             <div style="text-align: end">
@@ -49,16 +48,21 @@
             </z-swiper-item>
         </z-swiper>
     </div>
+
     <app-container color="#f3f2f6">
         <div class="tips">{{ $t('profile>balance>withdraw.tips') }}</div>
     </app-container>
+
     <app-title v-if="withdrawHistoryList.length>0" type="h2" bold>{{ $t('profile>balance>withdraw.withdrawHistory') }}</app-title>
+
+    <Withdraw v-if="withdrawVisible" :userInfo="user"></Withdraw>
 </div>
 </template>
 
 <script>
 import app from "../../../../App.vue";
 import $common from "../../../../utils/common";
+import Withdraw from "../../../../components/page/balance/withdraw.vue";
 
 export default {
     name: "withdraw",
@@ -70,13 +74,20 @@ export default {
             return app;
         }
     },
+    components: {
+        Withdraw
+    },
     data() {
         return {
-            bankcardList: [],
-            ailPayAccount: [],
-            withdrawHistoryList: [],
             user: '',
-            showFullIdentifier: {} // Track visibility of full card numbers by index
+
+            ailPayAccount: [],
+            bankcardList: [],
+            showFullIdentifier: {},
+
+            withdrawHistoryList: [],
+
+            withdrawVisible: false,
         };
     },
     onShow() {
@@ -135,6 +146,9 @@ export default {
         // Toggle
         cardVisibilityToggle(index) {
             this.showFullIdentifier[index] = !this.showFullIdentifier[index];
+        },
+        withdrawToggle() {
+            this.withdrawVisible = !this.withdrawVisible
         },
 
         // Redirect
