@@ -20,8 +20,11 @@
                                 <app-title @click.stop="toggleCardVisibility(index)">{{ getDisplayIdentifier(bankcard, index) }}</app-title>
                             </div>
                         </div>
-                        <app-title class="mt-4" style="text-align: end;display: block;" type="h1" bold="true">
-                            {{ language != "zh-Hans" ? bankcard.bank.abbr : bankcard.bank.name }}
+                        <app-title v-if="language != 'zh-Hans'" class="mt-4" style="text-align: end;display: block;" type="h1" bold="true">
+                            {{ bankcard.bank.abbr }}
+                        </app-title>
+                        <app-title v-else class="mt-4" style="text-align: end;display: block;" type="h2" bold="true">
+                            {{ bankcard.bank.name }}
                         </app-title>
                     </app-container>
                     <img v-if="index === bankcardList.length - 1" src="/static/common/create-gray.svg" class="right-icon" @click="addPaymentAccountRedirect(1)"/>
@@ -99,7 +102,7 @@ export default {
             if(this.showFullIdentifier[index]) {
                 return bankcard.identifier;
             } else {
-                return "···· " + bankcard.identifier.slice(-4);
+                return "···· ···· ···· " + bankcard.identifier.slice(-4);
             }
         }
     }
