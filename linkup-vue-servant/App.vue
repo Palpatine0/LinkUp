@@ -16,6 +16,7 @@ export default {
             // socketUrl: "wss://looking.cool:8090",
 
             ossIconRequestUrl: "https://project-looking.oss-cn-beijing.aliyuncs.com/public/icon",
+            ossImageRequestUrl: "https://project-looking.oss-cn-beijing.aliyuncs.com/public/image",
 
             // ** Key ** //
             userLoginKey: "userLoginKey",

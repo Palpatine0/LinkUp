@@ -28,8 +28,6 @@ public class BankCard {
      */
     private Integer type;
 
-    private String issuer;
-
     /**
      * 0: not deleted;
      * 1: deleted
@@ -39,4 +37,7 @@ public class BankCard {
 
     @TableField("created_at")
     private Date createdAt;
+
+    @TableField(exist = false)
+    private Bank bank;
 }

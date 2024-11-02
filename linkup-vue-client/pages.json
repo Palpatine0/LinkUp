@@ -123,6 +123,13 @@
                         "navigationBarTitleText": "",
                         "navigationBarBackgroundColor": "#f3f2f6"
                     }
+                },
+                {
+                    "path": "withdraw/add-payment-account/add-payment-account",
+                    "style": {
+                        "navigationBarTitleText": "",
+                        "navigationBarBackgroundColor": "#f5f7fb"
+                    }
                 }
             ]
         },

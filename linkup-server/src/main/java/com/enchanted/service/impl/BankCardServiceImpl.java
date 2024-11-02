@@ -43,7 +43,7 @@ public class BankCardServiceImpl extends ServiceImpl<BankCardMapper, BankCard> i
     @Override
     public Map bankCardValidation(Long userId, String name, String idCardNumber, String bankCardNumber) {
         QueryWrapper<BankCard> bankCardWrapper = new QueryWrapper<>();
-        bankCardWrapper.eq("userid", userId);
+        bankCardWrapper.eq("user_id", userId);
         bankCardWrapper.eq("identifier", bankCardNumber);
         BankCard existedBankCard = bankCardMapper.selectOne(bankCardWrapper);
         if (existedBankCard != null) {

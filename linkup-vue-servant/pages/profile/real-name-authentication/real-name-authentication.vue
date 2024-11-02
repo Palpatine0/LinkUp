@@ -18,7 +18,7 @@
         />
     </div>
     <div class="fix-bottom">
-        <app-button shaped size="very-large" @click="authUserIdentity" width="85vw">
+        <app-button shaped size="very-large" @click="validateUserIdentity" width="85vw">
             {{ $t('pub.button.confirm') }}
         </app-button>
     </div>
@@ -37,7 +37,7 @@ export default {
         idCardNumber: '',
     },
     methods: {
-        authUserIdentity() {
+        validateUserIdentity() {
             uni.showLoading({title: this.$t('pub.showLoading.loading')});
             uni.request({
                 url: getApp().globalData.data.requestUrl + $API.user.identityValidation,

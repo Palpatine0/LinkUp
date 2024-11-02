@@ -5,28 +5,48 @@
 
 <mapper namespace="com.enchanted.mapper.BankCardMapper">
 
-    <select id="search" resultType="com.enchanted.entity.BankCard" >
-        SELECT * FROM bank_card
+    <resultMap id="BankCardWithBank" type="com.enchanted.entity.BankCard">
+        <id property="id" column="id"/>
+        <result property="userId" column="user_id"/>
+        <result property="bankId" column="bank_id"/>
+        <result property="identifier" column="identifier"/>
+        <result property="name" column="name"/>
+        <result property="type" column="type"/>
+        <result property="isDeleted" column="is_deleted"/>
+        <result property="createdAt" column="created_at"/>
+
+        <!-- Nested Bank object -->
+        <association property="bank" javaType="com.enchanted.entity.Bank">
+            <id property="id" column="bank_id"/>
+            <result property="name" column="bank_name"/>
+            <result property="abbr" column="bank_abbr"/>
+            <result property="logo" column="bank_logo"/>
+        </association>
+    </resultMap>
+
+    <select id="search" resultMap="BankCardWithBank">
+        SELECT bc.*,
+        b.name AS bank_name,
+        b.abbr AS bank_abbr,
+        b.logo AS bank_logo
+        FROM bank_card bc
+        LEFT JOIN bank b ON bc.bank_id = b.id
         <where>
-            is_deleted = 0
+            bc.is_deleted = 0
             <if test="params.id != null and params.id != ''">
-                AND id = #{params.id}
+                AND bc.id = #{params.id}
             </if>
             <if test="params.userId != null and params.userId != ''">
-                AND user_id = #{params.userId}
+                AND bc.user_id = #{params.userId}
             </if>
-            <if test="params.cardType != null and params.cardType != ''">
-                AND card_type = #{params.cardType}
+            <if test="params.type != null and params.cardType != ''">
+                AND bc.type = #{params.cardType}
             </if>
-            <if test="params.cardIssuer != null and params.cardIssuer != ''">
-                AND card_issuer = #{params.cardIssuer}
+            <if test="params.name != null and params.name != ''">
+                AND b.name = #{params.name}
             </if>
-            <if test="params.cardNetwork != null and params.cardNetwork != ''">
-                AND card_network = #{params.cardNetwork}
-            </if>
-            <!-- Add more conditions as needed -->
         </where>
-        ORDER BY created_at DESC
+        ORDER BY bc.created_at DESC
     </select>
 
     <select id="searchBank" resultType="com.enchanted.entity.Bank" >
