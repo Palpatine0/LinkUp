@@ -268,8 +268,8 @@ var $common = {
         return false;
     },
     removeSpace: function(v, filterKeyArr) {
-        if(this.isString(v)) {
-            return v.trim();
+        if (this.isString(v)) {
+            return v.replace(/\s+/g, '')
         } else if(this.isObject(v)) {
             let obj = this.copy(v);
             let arr = this.toArray(filterKeyArr);

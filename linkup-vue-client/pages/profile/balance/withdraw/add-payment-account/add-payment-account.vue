@@ -27,7 +27,7 @@
     </div>
 
     <div class="fix-bottom">
-        <app-button shaped size="very-large" @click="saveBankCard" width="85vw">
+        <app-button shaped size="very-large" @click="savePaymentMethod" width="85vw">
             {{ $t('pub.button.confirm') }}
         </app-button>
     </div>
@@ -59,7 +59,7 @@ export default {
         this.ailpayAccountData.userId = params.userId;
     },
     methods: {
-        saveBankCard() {
+        savePaymentMethod() {
             // Validate inputs
             if(this.paymentMethodType == 0 && !this.ailpayAccountData.name) {
                 uni.showToast({title: this.$t('pub.showToast.finishForm'), icon: 'none'});
@@ -92,6 +92,7 @@ export default {
                     }
                 });
             } else if(this.paymentMethodType == 1) {
+                this.$common.removeSpace(this.bankcardData.identifier);
                 uni.request({
                     url: getApp().globalData.data.requestUrl + this.$API.bankCard.save,
                     method: 'POST',

@@ -34,7 +34,7 @@
     </div>
 
     <div class="fix-bottom">
-        <app-button shaped size="very-large" @click="saveBankCard" width="85vw">
+        <app-button shaped size="very-large" @click="savePaymentMethod" width="85vw">
             {{ $t('pub.button.confirm') }}
         </app-button>
     </div>
@@ -68,7 +68,7 @@ export default {
         onAccountTypeChange(event) {
             this.bankcardData.accountType = parseInt(event.detail.value);
         },
-        saveBankCard() {
+        savePaymentMethod() {
             // Validate inputs
             if(this.paymentMethodType == 0 && !this.ailpayAccountData.name) {
                 uni.showToast({title: this.$t('pub.showToast.finishForm'), icon: 'none'});
