@@ -283,6 +283,28 @@
         "income": "Income",
         "expanse": "Expanse"
     },
+    "profile>balance>withdraw": {
+        "withdrawHistory": "Withdraw History",
+        "addAilpay": "Add your Ailpay",
+        "addBankCard": "Add a Bank Card",
+        "tips": "Third-party platforms such as WeChat and banks are charging service fee (0.6%). We will charge you for these additional fee (minimum of ¥5) in this case. Appreciate for your understanding.",
+        "debitCard": "Debit Card",
+        "creditCard": "Credit Card"
+    },
+    "profile>balance>withdraw>addPaymentAccount": {
+        "addAilpay": "Add Your Alipay Account",
+        "addBankCard": "Add a New Bank Card",
+        "tipsAilpay": "Connect Alipay to start withdrawing your balance instantly",
+        "tipsBankCard": "Link a bank card to enable quick and easy withdrawals",
+        "ailpayPlaceholder": "Enter your Ailpay account",
+        "bankCardPlaceholder": "Enter your bank card",
+        "showToast": {
+            "existedBankCard": "Existed bank card",
+            "matchFailed": "Verification failed. Please confirm if your real name, recorded ID number, and the bank card you entered match",
+            "invalidCard": "Your card is invalid. Please contact us",
+            "inputError": "Input error, please double check the correctness of the data submitted."
+        }
+    },
 
     "//////": "profile > address",
     "profile>address": {

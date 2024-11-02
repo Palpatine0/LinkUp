@@ -283,6 +283,29 @@
         "income": "收入",
         "expanse": "支出"
     },
+    "profile>balance>withdraw": {
+        "withdrawHistory": "提款记录",
+        "addAilpay": "点击添加支付宝账号",
+        "addBankCard": "点击添加银行卡",
+        "tips": "因支付宝、微信及银行等第三方平台需要收取手续费0.6%。受此影响，需按此标准收取手续费(最低5元), 敬请理解",
+        "debitCard": "储蓄卡",
+        "creditCard": "信用卡"
+    },
+    "profile>balance>withdraw>addPaymentAccount": {
+        "addBankCard": "添加您的银行卡",
+        "addAilpay": "添加您的支付宝账号",
+        "tipsBankCard": "绑定您的银行卡以进行余额提现",
+        "tipsAilpay": "绑定您的支付宝账号以进行余额提现",
+        "bankCardPlaceholder": "请填写您的银行卡号码",
+        "ailpayPlaceholder": "请填写您的支付宝账号",
+        "showToast": {
+            "authSuccess": "银行卡添加成功",
+            "existedBankCard": "请不要添加重复的银行卡",
+            "matchFailed": "验证失败，请确认你的真实姓名, 记录身份证号与您输入的银行卡是否匹配",
+            "invalidCard": "卡号异常，请联系客服",
+            "inputError": "参数异常，请检查您的输入是否正确"
+        }
+    },
 
     "//////": "profile > address",
     "profile>address": {
