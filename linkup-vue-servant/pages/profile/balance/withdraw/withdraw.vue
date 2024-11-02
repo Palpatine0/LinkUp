@@ -90,9 +90,8 @@ export default {
             });
         },
         addPaymentAccountRedirect(type) {
-            const {id, idCardName, idCardNumber} = this.user;
             uni.navigateTo({
-                url: `/pages/profile/balance/withdraw/add-payment-account/add-payment-account?paymentMethodType=${type}&userId=${id}&userName=${idCardName}&idCardNumber=${idCardNumber}`
+                url: `/pages/profile/balance/withdraw/add-payment-account/add-payment-account?paymentMethodType=${type}&userId=${this.user.id}`
             });
         },
         toggleCardVisibility(index) {
@@ -119,5 +118,4 @@ export default {
     top: 70px;
     left: 98%;
 }
-
 </style>

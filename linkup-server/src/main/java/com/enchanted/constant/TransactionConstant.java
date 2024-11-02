@@ -9,6 +9,7 @@ public class TransactionConstant {
     // Currency types
     public static final int BALANCE_CURRENCY = 0;
     public static final int LOOKING_COIN_CURRENCY = 1;
+    public static final int CNY_CURRENCY = 2;
 
     // Description
     public static final String WITHDRAW = "Withdraw";

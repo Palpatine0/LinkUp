@@ -22,11 +22,20 @@ public class BankCard {
 
     private String name;
 
+    private String issuer;
+
     /**
      * 0: debit card
      * 1: credit card
      */
     private Integer type;
+
+    /**
+     * 0: private account
+     * 1: company account
+     */
+    @TableField("account_type")
+    private Integer accountType;
 
     /**
      * 0: not deleted;

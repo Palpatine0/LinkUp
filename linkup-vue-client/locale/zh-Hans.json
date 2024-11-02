@@ -297,12 +297,13 @@
         "creditCard": "信用卡"
     },
     "profile>balance>withdraw>addPaymentAccount": {
-        "addBankCard": "添加您的银行卡",
         "addAilpay": "添加您的支付宝账号",
-        "tipsBankCard": "绑定您的银行卡以进行余额提现",
+        "addBankCard": "添加您的银行卡",
         "tipsAilpay": "绑定您的支付宝账号以进行余额提现",
-        "bankCardPlaceholder": "请填写您的银行卡号码",
+        "tipsBankCard": "绑定您的银行卡以进行余额提现",
         "ailpayPlaceholder": "请填写您的支付宝账号",
+        "bankCardPlaceholder": "请填写您的银行卡号码",
+        "issuerPlaceholder": "请填写该银行卡的开户行",
         "showToast": {
             "authSuccess": "银行卡添加成功",
             "existedBankCard": "请不要添加重复的银行卡",

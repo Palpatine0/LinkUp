@@ -5,22 +5,29 @@
         <p class="center-h">{{ paymentMethodType == 0 ? $t('profile>balance>withdraw>addPaymentAccount.tipsAilpay') : $t('profile>balance>withdraw>addPaymentAccount.tipsBankCard') }}</p>
     </div>
 
-    <div class="page-mono-form">
+    <div v-if="paymentMethodType==0" class="page-mono-form">
         <input
-            v-if="paymentMethodType==0"
             type="text"
-            v-model="bankCardNumber"
+            v-model="ailpayAccountName"
             :placeholder="$t('profile>balance>withdraw>addPaymentAccount.ailpayPlaceholder')"
         />
+    </div>
+    <div v-else class="page-mono-form">
         <input
-            v-else
             type="text"
-            v-model="bankCardNumber"
+            v-model="bankcardData.identifier"
             :placeholder="$t('profile>balance>withdraw>addPaymentAccount.bankCardPlaceholder')"
         />
+        <input
+            type="text"
+            v-model="bankcardData.issuer"
+            :placeholder="$t('profile>balance>withdraw>addPaymentAccount.issuerPlaceholder')"
+        />
+
     </div>
+
     <div class="fix-bottom">
-        <app-button shaped size="very-large" @click="validateBankCard" width="85vw">
+        <app-button shaped size="very-large" @click="saveBankCard" width="85vw">
             {{ $t('pub.button.confirm') }}
         </app-button>
     </div>
@@ -34,28 +41,26 @@ export default {
     data() {
         return {
             paymentMethodType: 0,
-            user: {},
-            bankCardNumber: '',
+            bankcardData: {
+                userId: '',
+                identifier: '',
+                issuer: '',
+                accountType: 0
+            },
+            ailpayAccountName: ''
         }
     },
     onLoad(params) {
         this.paymentMethodType = params.paymentMethodType;
-        this.user = {
-            id: params.userId,
-            idCardName: params.userName,
-            idCardNumber: params.idCardNumber
-        };
+        this.bankcardData.userId = params.userId
     },
     methods: {
-        validateBankCard() {
+        saveBankCard() {
             uni.request({
-                url: getApp().globalData.data.requestUrl + this.$API.bankcard.validation,
+                url: getApp().globalData.data.requestUrl + this.$API.bankcard.save,
                 method: 'POST',
                 data: {
-                    userId: this.user.id,
-                    name: this.user.idCardName,
-                    idCardNumber: this.user.idCardNumber,
-                    bankCardNumber: this.bankCardNumber,
+                    ...this.bankcardData
                 },
                 success: async(res) => {
                     uni.hideLoading();

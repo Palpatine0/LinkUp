@@ -8,9 +8,11 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.enchanted.constant.ThirdPartyConstant;
 import com.enchanted.entity.Bank;
 import com.enchanted.entity.BankCard;
+import com.enchanted.entity.User;
 import com.enchanted.mapper.BankCardMapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.enchanted.mapper.BankMapper;
+import com.enchanted.mapper.UserMapper;
 import com.enchanted.service.IBankCardService;
 import com.enchanted.util.ConversionUtils;
 import com.enchanted.util.HttpClientUtil;
@@ -33,40 +35,75 @@ public class BankCardServiceImpl extends ServiceImpl<BankCardMapper, BankCard> i
 
     @Autowired
     private HttpClientUtil httpClientUtil;
+    @Autowired
+    private UserMapper userMapper;
 
     /* C */
     @Override
     public boolean save(BankCard bankCard) {
-        return bankCardMapper.insert(bankCard) > 0;
-    }
-
-    @Override
-    public Map bankCardValidation(Long userId, String name, String idCardNumber, String bankCardNumber) {
         QueryWrapper<BankCard> bankCardWrapper = new QueryWrapper<>();
-        bankCardWrapper.eq("user_id", userId);
-        bankCardWrapper.eq("identifier", bankCardNumber);
+        bankCardWrapper.eq("user_id", bankCard.getUserId());
+        bankCardWrapper.eq("identifier", bankCard.getIdentifier());
         BankCard existedBankCard = bankCardMapper.selectOne(bankCardWrapper);
         if (existedBankCard != null) {
             throw new IllegalArgumentException("Existed bank card");
         }
-        Map<String, Object> resultMap = new HashMap<>();
+
+        User user = userMapper.selectById(bankCard.getUserId());
+        JSONObject resultObject = this.bankCardValidation(bankCard.getUserId(), user.getIdCardName(), user.getIdCardNumber(), bankCard.getIdentifier());
+
+
+        String resultAbbr = resultObject.getString("abbr");
+        String resultCardName = resultObject.getString("cardName");
+        String resultBankName = resultObject.getString("bankName");
+        String resultCardType = resultObject.getString("cardType");
+
+        bankCard.setName(resultCardName);
+        if (resultCardType.equals("借记卡")) {
+            bankCard.setType(0);
+        } else if (resultCardType.equals("贷记卡")) {
+            bankCard.setType(1);
+        }
+
+        QueryWrapper<Bank> bankWrapper = new QueryWrapper<>();
+        bankWrapper.eq("abbr", resultAbbr);
+        Bank bank = bankMapper.selectOne(bankWrapper);
+
+        boolean inserted = false;
+        if (bank != null) {
+            bankCard.setBankId(bank.getId());
+            inserted = bankCardMapper.insert(bankCard) > 0;
+        } else {
+            Bank newBank = new Bank();
+            newBank.setAbbr(resultAbbr);
+            newBank.setName(resultBankName);
+            bankMapper.insert(newBank);
+            bankCard.setBankId(newBank.getId());
+            inserted = bankCardMapper.insert(bankCard) > 0;
+        }
+
+        return inserted;
+    }
+
+    @Override
+    public JSONObject bankCardValidation(Long userId, String userName, String userIdCardNumber, String userBankCardNumber) {
+
         String url = ThirdPartyConstant.BANK_CARD_AUTH_URL;
         String appCode = ThirdPartyConstant.BANK_CARD_AUTH_CODE;
 
         Map<String, String> params = new HashMap<>();
-        params.put("idcard", idCardNumber);
-        params.put("name", name);
-        params.put("cardno", bankCardNumber);
+        params.put("idcard", userIdCardNumber);
+        params.put("name", userName);
+        params.put("cardno", userBankCardNumber);
 
         Map<String, String> headers = new HashMap<>();
         headers.put("Authorization", "APPCODE " + appCode);
 
         String response = httpClientUtil.sendHttpGet(url, params, headers);
         JSONObject jsonObject = JSON.parseObject(response);
-        JSONObject resultObject = jsonObject.getJSONObject("data");
 
         if (jsonObject.getInteger("code") == 0) {
-            resultMap.put("result", "Success");
+            // good to go
         } else if (jsonObject.getInteger("code") == 1) {
             throw new IllegalArgumentException("Match failed");
         } else if (jsonObject.getInteger("code") == 2) {
@@ -75,34 +112,8 @@ public class BankCardServiceImpl extends ServiceImpl<BankCardMapper, BankCard> i
             throw new IllegalArgumentException("Invalid card");
         }
 
-        String resultAbbr = resultObject.getString("abbr");
-        String resultCardName = resultObject.getString("cardName");
-        String resultBankName = resultObject.getString("bankName");
-        String resultCardType = resultObject.getString("cardType");
-        BankCard bankCard = new BankCard();
-        bankCard.setUserId(userId);
-        bankCard.setIdentifier(bankCardNumber);
-        bankCard.setName(resultCardName);
-        if (resultCardType.equals("借记卡")) {
-            bankCard.setType(0);
-        } else if (resultCardType.equals("贷记卡")) {
-            bankCard.setType(1);
-        }
-        QueryWrapper<Bank> bankWrapper = new QueryWrapper<>();
-        bankWrapper.eq("abbr", resultAbbr);
-        Bank bank = bankMapper.selectOne(bankWrapper);
-        if (bank != null) {
-            bankCard.setBankId(bank.getId());
-            bankCardMapper.insert(bankCard);
-        } else {
-            Bank newBank = new Bank();
-            newBank.setAbbr(resultAbbr);
-            newBank.setName(resultBankName);
-            bankMapper.insert(newBank);
-            bankCard.setBankId(newBank.getId());
-            bankCardMapper.insert(bankCard);
-        }
-        return resultMap;
+        JSONObject resultObject = jsonObject.getJSONObject("data");
+        return resultObject;
     }
 
     /* R */
