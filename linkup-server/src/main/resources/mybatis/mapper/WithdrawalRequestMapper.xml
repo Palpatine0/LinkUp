@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.enchanted.mapper.WithdrawalRequestMapper">
+
+    <resultMap id="WithdrawalRequestResultMap" type="com.enchanted.entity.WithdrawalRequest">
+        <id column="id" property="id"/>
+        <result column="user_id" property="userId"/>
+        <result column="admin_id" property="adminId"/>
+        <result column="amount" property="amount"/>
+        <result column="method" property="method"/>
+        <result column="method_id" property="methodId"/>
+        <result column="status" property="status"/>
+        <result column="created_at" property="createdAt"/>
+        <result column="updated_at" property="updatedAt"/>
+        <result column="is_deleted" property="isDeleted"/>
+        <result column="icon" property="icon"/>
+    </resultMap>
+
+    <select id="search" resultMap="WithdrawalRequestResultMap">
+        SELECT wr.*,
+        CASE
+        WHEN wr.method = 0 THEN 'https://project-looking.oss-cn-beijing.aliyuncs.com/public/icon/page/profile/balance/withdraw/ailpay.jpg'
+        WHEN wr.method = 1 THEN b.logo
+        ELSE 'https://project-looking.oss-cn-beijing.aliyuncs.com/public/icon/page/profile/balance/withdraw/default-bank.svg'
+        END AS icon
+        FROM withdrawal_request wr
+        LEFT JOIN bank_card bc ON wr.method_id = bc.id
+        LEFT JOIN bank b ON bc.bank_id = b.id
+        <where>
+            <if test="params.userId != null">
+                AND wr.user_id = #{params.userId}
+            </if>
+            <if test="params.status != null">
+                AND wr.status = #{params.status}
+            </if>
+            <if test="params.method != null">
+                AND wr.method = #{params.method}
+            </if>
+            <if test="params.isDeleted != null">
+                AND wr.is_deleted = #{params.isDeleted}
+            </if>
+            <if test="params.adminId != null">
+                AND wr.admin_id = #{params.adminId}
+            </if>
+        </where>
+        ORDER BY wr.created_at DESC
+    </select>
+
+
+</mapper>

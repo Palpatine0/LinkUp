@@ -61,7 +61,7 @@ export default {
             messageHandler: null,
         };
     },
-    onLoad() {
+    onShow() {
         this.isUserLoggedIn = this.$common.isUserLoggedIn()
         if(this.isUserLoggedIn) {
             this.$webSocket.connectWebSocket(uni.getStorageSync(getApp().globalData.data.userInfoKey).id);

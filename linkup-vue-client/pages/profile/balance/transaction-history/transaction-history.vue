@@ -50,7 +50,7 @@
                     {{ transaction.amount.toFixed(2) }}
                 </div>
                 <div class="transaction-datetime">
-                    <span>{{ common.timeToStampRecord(transaction.createdAt) }}</span>
+                    <span>{{ $common.timeToStampRecord(transaction.createdAt) }}</span>
                 </div>
             </div>
         </div>
@@ -63,11 +63,12 @@
 <script>
 import common from "../../../../utils/common";
 import app from "../../../../App.vue";
+import $common from "../../../../utils/common";
 
 export default {
     computed: {
-        common() {
-            return common;
+        $common() {
+            return $common
         },
         app() {
             return app

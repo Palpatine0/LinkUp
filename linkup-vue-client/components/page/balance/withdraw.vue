@@ -25,7 +25,7 @@
 
         <!-- Display Selected Amount -->
         <div class="no-more-data">
-            <div class="credit">¥{{ withdrawAmount.toFixed(2) }}</div>
+            <div class="credit">¥{{ withdrawAmount == null ? 0 : withdrawAmount.toFixed(2) }}</div>
         </div>
 
         <!-- Confirm Button -->
@@ -40,60 +40,87 @@
 export default {
     data() {
         return {
-            withdrawAmount: 0,
-            balance: this.userInfo.balance || 0, // user's current balance
+            withdrawAmount: null,
+            balance: this.user.balance || 0, // user's current balance
         };
     },
-    props: {userInfo: Object},
+    props: {
+        user: Object,
+        method: Number,
+        methodId: Number
+    },
     methods: {
         close() {
             this.$parent.withdrawToggle(false);
         },
         validateAmount() {
-            // Ensure valid input and limit to two decimal places
             let amount = this.withdrawAmount.toString();
             amount = amount.replace(/[^0-9.]/g, '');
 
-            if (amount.includes('.')) {
+            if(amount.includes('.')) {
                 const parts = amount.split('.');
-                if (parts[1].length > 2) {
+                if(parts[1].length > 2) {
                     amount = parts[0] + '.' + parts[1].slice(0, 2);
                 }
             }
 
             this.withdrawAmount = parseFloat(amount) || 0;
-            if (this.withdrawAmount > this.balance) {
+            if(this.withdrawAmount > this.balance) {
                 this.withdrawAmount = this.balance;
             }
         },
 
         confirmWithdraw() {
-            const userlastWithdrawDate = new Date(this.userInfo.lastWithdrawalDate);
+            const today = new Date();
+            const userlastWithdrawDate = new Date(this.user.lastWithdrawalDate);
             const sameDayWithdraw = userlastWithdrawDate.toDateString() === today.toDateString();
 
-            if (sameDayWithdraw) {
+            if(sameDayWithdraw) {
                 uni.showToast({title: this.$t('component>balance>withdraw.showToast.oneWithdrawPerDay'), icon: 'none'});
                 return;
             }
 
-            if (this.withdrawAmount <= 0 || this.withdrawAmount > this.balance) {
+            if(this.withdrawAmount <= 0) {
                 uni.showToast({title: this.$t('component>balance>withdraw.showToast.invalidAmount'), icon: 'none'});
-            } else if (this.withdrawAmount < 100) {
+            } else if(this.withdrawAmount > this.user.balance) {
+                uni.showToast({title: this.$t('component>balance>withdraw.showToast.insufficientBalance') + this.user.balance, icon: 'none'});
+            } else if(this.withdrawAmount < 100) {
                 uni.showToast({title: this.$t('component>balance>withdraw.showToast.minWithdrawAmount'), icon: 'none'});
             } else {
                 const updatedBalance = parseFloat((this.balance - this.withdrawAmount).toFixed(2));
-
-                // Update the user's balance and withdrawal date
+                // Update the user's  withdrawal date
+                uni.request({
+                    url: getApp().globalData.data.requestUrl + this.$API.withdrawalRequest.save,
+                    method: 'POST',
+                    data: {
+                        userId: this.user.id,
+                        amount: this.withdrawAmount,
+                        method: this.method,
+                        methodId: this.methodId,
+                    },
+                    success: (res) => {
+                        if(res.data.code == 0) {
+                            uni.showToast({title: this.$t('pub.showToast.success'), icon: 'none'});
+                            this.$parent.getUser();
+                            this.close();
+                        } else {
+                            uni.showToast({title: this.$t('pub.showToast.fail'), icon: 'none'});
+                        }
+                    },
+                    fail: (err) => {
+                        uni.showToast({title: this.$t('pub.showToast.fail'), icon: 'none'});
+                    },
+                });
                 uni.request({
                     url: getApp().globalData.data.requestUrl + this.$API.user.update,
                     method: 'POST',
                     data: {
-                        id: this.userInfo.id,
+                        id: this.user.id,
                         balance: updatedBalance,
                         lastWithdrawalDate: today,
                     },
                     success: (res) => {
-                        if (res.data.code == 0) {
+                        if(res.data.code == 0) {
                             uni.showToast({title: this.$t('pub.showToast.success'), icon: 'none'});
                             this.$parent.getUser();
                             this.close();
@@ -106,13 +133,12 @@ export default {
                         uni.showToast({title: this.$t('pub.showToast.fail'), icon: 'none'});
                     },
                 });
-
                 // Log the transaction
                 uni.request({
                     url: getApp().globalData.data.requestUrl + this.$API.transaction.save,
                     method: 'POST',
                     data: {
-                        userId: this.userInfo.id,
+                        userId: this.user.id,
                         amount: -this.withdrawAmount,
                         balanceAfter: updatedBalance,
                         currencyType: 0,

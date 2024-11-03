@@ -109,7 +109,7 @@ export default {
             coinDepositVisible: false,
         };
     },
-    onLoad() {
+    onShow() {
         this.reload();
     },
     methods: {

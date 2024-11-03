@@ -56,6 +56,13 @@ var $API = {
         updateLookingCoin: '/transaction/update-looking-coin',
     },
 
+    // Withdrawal request
+    withdrawalRequest: {
+        save: '/withdrawal-request/save',
+        search: '/withdrawal-request/search',
+        update: '/withdrawal-request/update',
+    },
+
     // Address
     address: {
         save: '/address/save',
@@ -65,7 +72,7 @@ var $API = {
     },
 
     // Gift
-    gift:{
+    gift: {
         search: '/gift/search',
         purchase: '/gift/purchase',
     },
@@ -78,12 +85,12 @@ var $API = {
     },
 
     // File
-    file:{
-        signature:"/file/signature"
+    file: {
+        signature: "/file/signature"
     },
 
     // Bankcard
-    bankCard:{
+    bankCard: {
         save: '/bank-card/save',
         search: '/bank-card/search',
         searchBank: '/bank-card/search-bank',

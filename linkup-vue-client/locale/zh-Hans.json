@@ -410,11 +410,13 @@
         "withdrawBtn": "确认提现",
         "placeholder": "请输入提现金额",
         "minWithdrawAmount": "最低提现金额为100元",
-        "hint": "仅可在工作日提现，且一天只能提现一次",
+        "hint": "一天仅能提现一次",
         "showToast": {
+            "minWithdrawAmount": "最低提现金额为100元",
             "weekendError": "仅可以在工作日提现",
             "oneWithdrawPerDay": "一天只能提现一次",
-            "invalidAmount": "请输入有效的提现金额"
+            "invalidAmount": "请输入有效的提现金额",
+            "insufficientBalance": "余额不足,您的余额为: "
         }
     },
     "component>balance>referralQRCode": {

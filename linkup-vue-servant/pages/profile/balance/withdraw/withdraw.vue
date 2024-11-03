@@ -8,7 +8,7 @@
         </div>
         <div v-else class="mb-1">
             <div class="center ">
-                <app-container color="#3474ff" style="color: #FFF" col="12" @click="withdrawToggle">
+                <app-container color="#3474ff" style="color: #FFF" col="12" @click="withdrawToggle(0, ailPayAccount.id)">
                     <div class="justify-SB" style="width: 60vw">
                         <img style="width: 50px; height: 50px;" :src="app.globalData.data.ossIconRequestUrl+'/page/profile/balance/withdraw/ailpay.jpg'" mode="aspectFill"/>
                         <div style="text-align: end">
@@ -38,7 +38,7 @@
         <z-swiper v-else v-model="bankcardList" :options="{slidesPerView: 'auto', centeredSlides: true, spaceBetween: 14}" style="width: 100%">
             <z-swiper-item v-for="(bankcard, index) in bankcardList" :key="index" :custom-style="{width: '500rpx'}">
                 <demo-item :item="bankcard">
-                    <app-container color="#FFF" style="color: #505050" col="12" @click="withdrawToggle">
+                    <app-container color="#FFF" style="color: #505050" col="12" @click="withdrawToggle(1, bankcard.id)">
                         <div class="justify-SB">
                             <img style="width: 50px; height: 50px;" :src="bankcard.bank.logo" mode="aspectFill"/>
                             <div style="text-align: end">
@@ -68,12 +68,40 @@
     </div>
 
     <app-container color="#f3f2f6">
-        <div class="tips">{{ $t('profile>balance>withdraw.tips') }}</div>
+        <div class="tips" style="text-align: start">{{ $t('profile>balance>withdraw.tips') }}</div>
     </app-container>
 
-    <app-title v-if="withdrawHistoryList.length>0" type="h2" bold>{{ $t('profile>balance>withdraw.withdrawHistory') }}</app-title>
+    <app-title v-if="withdrawalRequestList.length>0" type="h2" bold>{{ $t('profile>balance>withdraw.withdrawHistory') }}</app-title>
+    <scroll-view
+        :scroll-top="0"
+        scroll-y="true"
+        style="height: 20vh"
+        @scrolltolower="onReachBottom"
+    >
+        <div
+            class="app-container transaction-item"
+            v-for="withdrawalRequest in withdrawalRequestList"
+            :key="withdrawalRequest.id"
+        >
+            <div class="transaction-icon">
+                <img :src="withdrawalRequest.icon" alt="Received"/>
+            </div>
+            <div class="transaction-details">
+                <div class="transaction-title">
+                    <span>¥{{ withdrawalRequest.amount }}</span>
+                </div>
+                <div class="transaction-detail">
+                    <span>
+                        {{ $common.timeToStampRecord(withdrawalRequest.createdAt) }}
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div v-if="loading" class="loading-text">{{ $t('pub.page.loading') }}</div>
+        <div v-else-if="!hasMore" class="no-more-data-container-list">{{ $t('pub.page.noMoreData') }}</div>
+    </scroll-view>
 
-    <Withdraw v-if="withdrawVisible" :userInfo="user"></Withdraw>
+    <Withdraw v-if="withdrawVisible" :user="user" :method="method" :methodId="methodId"></Withdraw>
 </div>
 </template>
 
@@ -90,7 +118,7 @@ export default {
         },
         app() {
             return app;
-        }
+        },
     },
     components: {
         Withdraw
@@ -103,19 +131,23 @@ export default {
             bankcardList: [],
             showFullIdentifier: {},
 
-            withdrawHistoryList: [],
+            withdrawalRequestList: [],
+
+            method: null,
+            methodId: null,
 
             withdrawVisible: false,
         };
     },
-    onShow() {
-        this.user = uni.getStorageSync(getApp().globalData.data.userInfoKey);
+    async onShow() {
+        this.user = await this.$common.getUser(uni.getStorageSync(getApp().globalData.data.userInfoKey).id)
         this.reload();
     },
     methods: {
         reload() {
             this.getBankCards();
             this.getAilpayAccount();
+            this.getWithdrawalHistory()
         },
         getBankCards() {
             uni.request({
@@ -146,6 +178,21 @@ export default {
                 },
                 success: (res) => {
                     this.ailPayAccount = res.data.list[0];
+                },
+                fail: () => {
+                    uni.showToast({title: this.$t('pub.showToast.fail'), icon: 'none'});
+                }
+            });
+        },
+        getWithdrawalHistory() {
+            uni.request({
+                url: getApp().globalData.data.requestUrl + this.$API.withdrawalRequest.search,
+                method: 'POST',
+                data: {
+                    userId: this.user.id,
+                },
+                success: (res) => {
+                    this.withdrawalRequestList = res.data.list;
                 },
                 fail: () => {
                     uni.showToast({title: this.$t('pub.showToast.fail'), icon: 'none'});
@@ -188,7 +235,7 @@ export default {
                 },
             });
         },
-        deleteBankCard(id){
+        deleteBankCard(id) {
             uni.showModal({
                 title: this.$t('profile>balance>withdraw.deleteBankCardModal.title'),
                 content: this.$t('profile>balance>withdraw.deleteBankCardModal.content'),
@@ -216,11 +263,14 @@ export default {
             });
         },
 
+
         // Toggle
         cardVisibilityToggle(index) {
             this.showFullIdentifier[index] = !this.showFullIdentifier[index];
         },
-        withdrawToggle() {
+        withdrawToggle(method, methodId) {
+            this.method = method;
+            this.methodId = methodId;
             this.withdrawVisible = !this.withdrawVisible
         },
 
@@ -243,5 +293,73 @@ export default {
     position: absolute;
     top: 70px;
     left: 98%;
+}
+
+.currency-type-selection button {
+    flex: 1;
+    background-color: transparent;
+    color: white;
+    border: none;
+    border-radius: 50px;
+    margin: 0 5px;
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+.currency-type-selection button.active {
+    background-color: white;
+    color: #0f172a;
+}
+
+.currency-type-selection button:not(.active) {
+    color: white;
+}
+
+.currency-type-selection button:not(.active):hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Existing styles */
+.transaction-item {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin: 10px 0;
+    padding: 10px;
+    background-color: white;
+    border-radius: 10px;
+}
+
+.transaction-icon {
+    padding: 6px;
+    width: 40px;
+    height: 40px;
+    justify-content: center;
+    display: flex;
+    align-items: center;
+}
+
+.transaction-icon img {
+    border-radius: 5px;
+    width: 40px;
+    height: 40px;
+}
+
+.transaction-details {
+    flex-grow: 1;
+    padding-left: 20px;
+}
+
+.transaction-title {
+    font-weight: bold;
+    font-size: 16px;
+    color: #282e5c;
+}
+
+.transaction-detail {
+    font-size: 14px;
+    color: #787ea1;
 }
 </style>
