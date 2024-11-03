@@ -10,12 +10,16 @@
     <scroll-view
         v-show="isUserInfoLoaded"
         class="message-list"
-        :scroll-top="scrollTop"
+        :scroll-into-view="lastMessageId"
         scroll-y="true"
         @scrolltoupper="loadMoreMessages"
         style="height: 80vh"
     >
-        <div v-for="message in messages" :key="message.id">
+        <div
+            v-for="(message, index) in messages"
+            :key="message.id || message.tempId"
+            :id="'message-' + (message.id || message.tempId)"
+        >
             <MessageBubble
                 :senderAvatar="user.avatar"
                 :receiverAvatar="contact.avatar"
@@ -67,6 +71,7 @@ export default {
 
             scrollTop: 0,
             messages: [],
+            lastMessageId: '',
             socketOpen: false,
             socketTask: null,
         };
@@ -90,7 +95,7 @@ export default {
                     url: getApp().globalData.data.requestUrl + this.$API.user.search,
                     method: 'POST',
                     data: {
-                        id: this.userId
+                        id: this.userId,
                     },
                     success: (res) => {
                         this.user = res.data.list[0];
@@ -169,6 +174,12 @@ export default {
 
                         // Prepend the newly fetched messages and sort by createdAt
                         this.messages = fetchedMessages.concat(this.messages).sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+                        this.$nextTick(() => {
+                            if(this.messages.length > 0) {
+                                this.lastMessageId =
+                                    'message-' + this.messages[this.messages.length - 1].id;
+                            }
+                        });
 
                         this.page += 1;
                         this.isUserInfoLoaded = true;
@@ -256,7 +267,9 @@ export default {
                     createdAt: new Date().toISOString(),
                     isRead: 0,
                 });
-                this.scrollTop = 0;
+                this.$nextTick(() => {
+                    this.lastMessageId = 'message-' + tempId;
+                });
             } else {
             }
         },
@@ -370,7 +383,9 @@ export default {
                                 createdAt: messageData.createdAt,
                                 isRead: messageData.isRead,
                             });
-                            this.scrollTop = 0;
+                            this.$nextTick(() => {
+                                this.lastMessageId = 'message-' + messageData.id;
+                            });
 
                             // Send read receipt immediately
                             if(msgSenderId == this.contactId) {
@@ -418,6 +433,6 @@ export default {
     flex-grow: 1;
     overflow-y: auto;
     display: flex;
-    flex-direction: column-reverse; /* Helps keep new messages at the bottom */
+    flex-direction: column;
 }
 </style>
