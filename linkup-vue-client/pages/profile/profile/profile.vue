@@ -86,9 +86,9 @@ export default {
             selectedAgeText: ""
         };
     },
-    onLoad() {
+    async onLoad() {
         // Load user data first
-        const storedUser = uni.getStorageSync(app.globalData.data.userInfoKey);
+        const storedUser = await this.$common.getUser(uni.getStorageSync(app.globalData.data.userInfoKey).id);
         this.user = {...storedUser};
         this.originalUser = {...storedUser};
 

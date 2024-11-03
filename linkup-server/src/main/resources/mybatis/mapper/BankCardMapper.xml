@@ -50,7 +50,11 @@
     </select>
 
     <select id="searchBank" resultType="com.enchanted.entity.Bank" >
-        SELECT * FROM bank
+        SELECT *
+        FROM bank
+        <where>
+            is_deleted = 0
+        </where>
     </select>
 
 </mapper>

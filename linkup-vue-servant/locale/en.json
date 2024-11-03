@@ -331,10 +331,11 @@
         "tipsAilpay": "For your security, you need to add an account that can match your real-name verification information",
         "tipsBankCard": "For your security, pleas add a bank card that can match your real-name verification information",
         "ailpayPlaceholder": "Enter your Ailpay account",
-        "bankCardPlaceholder": "Enter your bank card",
+        "accountTypePlaceholder": "Select your card account type",
         "issuanceLocationPlaceholder": "Select issuance location",
         "issuerPlaceholder": "Enter the issuing bank branch",
-        "accountTypePlaceholder": "Select your card account type",
+        "bankCardPlaceholder": "Enter your bank card",
+        "bankNamePlaceholder": "Select the bank",
         "private": "Private",
         "company": "Business",
         "showToast": {

@@ -5,7 +5,7 @@
         v-if="mode === 'text'"
         :value="value"
         :style="{ backgroundColor: color }"
-        :class="{'input-focused': isFocused}"
+        :class="{'input-focused': isFocused, 'input-disabled': disabled}"
         @focus="isFocused = true"
         @blur="isFocused = false"
         @input="onInput"
@@ -19,7 +19,7 @@
         v-else-if="mode === 'textarea'"
         :value="value"
         :style="{ backgroundColor: color }"
-        :class="{'input-focused': isFocused}"
+        :class="{'input-focused': isFocused, 'input-disabled': disabled}"
         @focus="isFocused = true"
         @blur="isFocused = false"
         @input="onInput"
@@ -34,7 +34,7 @@
         type="number"
         :value="value"
         :style="{ backgroundColor: color }"
-        :class="{'input-focused': isFocused}"
+        :class="{'input-focused': isFocused, 'input-disabled': disabled}"
         @focus="isFocused = true"
         @blur="isFocused = false"
         @input="onNumberInput"
@@ -150,4 +150,8 @@ export default {
     cursor: not-allowed;
 }
 
+.input-disabled{
+    color: #a0a0a0 !important;;
+    cursor: not-allowed;
+}
 </style>

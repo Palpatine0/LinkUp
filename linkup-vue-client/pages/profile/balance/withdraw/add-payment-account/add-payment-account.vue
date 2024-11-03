@@ -29,14 +29,22 @@
         />
         <input
             type="text"
-            v-model="bankcardData.identifier"
-            :placeholder="$t('profile>balance>withdraw>addPaymentAccount.bankCardPlaceholder')"
-        />
-        <input
-            type="text"
             v-model="bankcardData.issuer"
             :placeholder="$t('profile>balance>withdraw>addPaymentAccount.issuerPlaceholder')"
         />
+        <input
+            type="text"
+            v-model="bankcardData.identifier"
+            :placeholder="$t('profile>balance>withdraw>addPaymentAccount.bankCardPlaceholder')"
+        />
+        <picker
+            mode="selector"
+            :range="bankNameRanges"
+            :value="bankName"
+            @change="bindBankNameChange"
+        >
+            <span>{{ bankName === '' ? $t('profile>balance>withdraw>addPaymentAccount.bankNamePlaceholder') : bankName }}</span>
+        </picker>
     </div>
 
     <div class="fix-bottom">
@@ -63,18 +71,22 @@ export default {
     data() {
         return {
             paymentMethodType: 0,
-            idCardName: '',
-            bankcardData: {
-                accountType: 0,
-                issuanceLocation: '',
-                userId: '',
-                identifier: '',
-                issuer: '',
-            },
+
             ailpayAccountData: {
                 userId: '',
                 name: ''
             },
+
+            idCardName: '',
+            bankcardData: {
+                userId: '',
+                accountType: 0,
+                issuanceLocation: '',
+                issuer: '',
+                identifier: '',
+            },
+            bankName: '',
+            bankNameRanges: [],
 
             province: "广东省",
             city: "广州市",
@@ -83,6 +95,7 @@ export default {
         }
     },
     onLoad(params) {
+        this.getBankName()
         this.paymentMethodType = params.paymentMethodType;
         this.bankcardData.userId = params.userId
         this.ailpayAccountData.userId = params.userId;
@@ -96,15 +109,34 @@ export default {
         }
     },
     methods: {
+        getBankName() {
+            uni.request({
+                url: getApp().globalData.data.requestUrl + this.$API.bankCard.searchBank,
+                method: 'POST',
+                data: {
+                    page: 1,
+                    pageSize: 20,
+                },
+                success: (res) => {
+                    if(res.data.status === 200) {
+                        this.bankNameRanges = res.data.list.map(item => item.name);
+                    }
+                },
+            });
+        },
+
         bindIssuanceLocationChange(e) {
-            let data = e; // e is the data emitted from cc-selectDity
+            let data = e;
             let address = data.province + data.city + data.area;
             this.locationSelectorVisible = false;
             this.bankcardData.issuanceLocation = address;
-            // Update the province, city, and area in the parent component's data
             this.province = data.province;
             this.city = data.city;
             this.area = data.area;
+        },
+        bindBankNameChange(e) {
+            const bankNameIdx = parseInt(e.detail.value);
+            this.bankName = this.bankNameRanges[bankNameIdx];
         },
         savePaymentMethod() {
             // Validate inputs
@@ -112,7 +144,12 @@ export default {
                 uni.showToast({title: this.$t('pub.showToast.finishForm'), icon: 'none'});
                 return;
             }
-            if(this.paymentMethodType == 1 && (!this.bankcardData.identifier || !this.bankcardData.issuer)) {
+            if(this.paymentMethodType == 1 && (
+                !this.bankcardData.issuanceLocation ||
+                !this.bankcardData.issuer ||
+                !this.bankcardData.identifier ||
+                !this.bankName
+            )) {
                 uni.showToast({title: this.$t('pub.showToast.finishForm'), icon: 'none'});
                 return;
             }

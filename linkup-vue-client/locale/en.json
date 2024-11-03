@@ -335,9 +335,10 @@
         "tipsAilpay": "For your security, you need to add an account that can match your real-name verification information",
         "tipsBankCard": "For your security, pleas add a bank card that can match your real-name verification information",
         "ailpayPlaceholder": "Enter your Ailpay account",
-        "bankCardPlaceholder": "Enter your bank card",
         "issuanceLocationPlaceholder": "Select issuance location",
         "issuerPlaceholder": "Enter the issuing bank branch",
+        "bankCardPlaceholder": "Enter your bank card",
+        "bankNamePlaceholder": "Select the bank",
         "showToast": {
             "matchFailed": "Verification failed. Please confirm if your real name, recorded ID number, and the bank card you entered match",
             "invalidCard": "Your card is invalid. Please contact us",
