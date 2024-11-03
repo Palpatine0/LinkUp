@@ -14,18 +14,23 @@
         style="height: 80vh"
     >
         <div
-            v-for="(message, index) in messages"
-            :key="message.id || message.tempId"
-            :id="'message-' + (message.id || message.tempId)"
+            v-for="(item, index) in processedMessages"
+            :key="item.type === 'message' ? (item.data.id || item.data.tempId) : 'time-' + index"
+            :id="item.type === 'message' ? 'message-' + (item.data.id || item.data.tempId) : ''"
         >
-            <MessageBubble
-                :senderAvatar="user.avatar"
-                :receiverAvatar="contact.avatar"
-                :content="message.content"
-                :msgBelongs="message.senderId === userId"
-                :isRead="message.isRead"
-                :erroring="message.erroring"
-            />
+            <div v-if="item.type === 'timeLabel'" class="time-label">
+                {{ item.time }}
+            </div>
+            <div v-else>
+                <MessageBubble
+                    :senderAvatar="user.avatar"
+                    :receiverAvatar="contact.avatar"
+                    :receiverId="contact.id"
+                    :content="item.data.content"
+                    :msgBelongs="item.data.senderId === userId"
+                    :isRead="item.data.isRead"
+                />
+            </div>
         </div>
     </scroll-view>
 
@@ -48,6 +53,51 @@ export default {
         ChatHeader,
         MessageBubble,
         MessageInput,
+    },
+    computed: {
+        processedMessages() {
+            const result = [];
+            let lastTimestamp = null;
+
+            this.messages.forEach((message) => {
+                const messageTime = new Date(message.createdAt);
+                let needTimeLabel = false;
+
+                if(!lastTimestamp) {
+                    needTimeLabel = true;
+                } else {
+                    const timeDiff = messageTime - lastTimestamp;
+
+                    if(messageTime.toDateString() !== lastTimestamp.toDateString()) {
+                        // Different day
+                        needTimeLabel = true;
+                    } else if((messageTime - lastTimestamp) >= 5 * 60 * 1000) {
+                        // Same day, more than 5 minutes apart
+                        needTimeLabel = true;
+                    }
+                }
+
+                if(needTimeLabel) {
+                    // Insert time label before this message
+                    const timeLabel = this.$common.getTimeLabel(messageTime);
+                    result.push({
+                        type: 'timeLabel',
+                        time: timeLabel,
+                        timestamp: message.createdAt,
+                    });
+                }
+
+                // Add the message
+                result.push({
+                    type: 'message',
+                    data: message,
+                });
+
+                lastTimestamp = messageTime;
+            });
+
+            return result;
+        },
     },
     data() {
         return {
@@ -155,13 +205,13 @@ export default {
                         senderId: this.userId,
                         recipientId: this.contactId,
                         page: this.page,
-                        size: this.pageSize
+                        size: 14
                     },
                     success: async(res) => {
                         const fetchedMessages = res.data.list;
 
                         // If fewer messages are returned than requested, assume no more to load
-                        if(fetchedMessages.length < this.pageSize) {
+                        if(fetchedMessages.length < 14) {
                             this.hasMore = false;
                         }
 
@@ -434,4 +484,12 @@ export default {
     display: flex;
     flex-direction: column;
 }
+
+.time-label {
+    text-align: center;
+    margin: 10px 0;
+    color: #888;
+    font-size: 12px;
+}
+
 </style>

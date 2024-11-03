@@ -91,7 +91,7 @@ export default {
             let baseData = {
                 clientId: uni.getStorageSync(getApp().globalData.data.userInfoKey).id,
                 page: this.page,
-                size: this.pageSize,
+                size: 14,
             };
             let data = {};
 
@@ -126,7 +126,7 @@ export default {
                     if(this.page === 1) {
                         this.dataList = [];
                     }
-                    if(contacts.length < this.pageSize) {
+                    if(contacts.length < 14) {
                         this.hasMore = false;
                     }
                     this.dataList = this.dataList.concat(contacts);

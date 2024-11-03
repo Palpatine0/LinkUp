@@ -13,6 +13,7 @@ var $common = {
     isUserVerified(){
         return uni.getStorageSync(app.globalData.data.userVerificationKey) == true ? true : false
     },
+
     async getUser(id) {
         const userData = () => {
             return new Promise(
@@ -249,6 +250,33 @@ var $common = {
         const secs = seconds % 60;
         return `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
     },
+
+    getTimeLabel: function(dateTime) {
+        const now = new Date();
+        const messageDate = new Date(dateTime);
+        const diffInMs = now - messageDate;
+
+        const oneDayInMs = 24 * 60 * 60 * 1000;
+        const oneWeekInMs = 7 * oneDayInMs;
+
+        if (messageDate.toDateString() === now.toDateString()) {
+            // Same day, display time every 5 minutes (handled in processing logic)
+            return this.timeToStampRecord(messageDate); // Returns formatted time like "HH:mm"
+        } else if (diffInMs < oneWeekInMs) {
+            // Older than 1 day but less than 1 week
+            const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+            const dayOfWeek = daysOfWeek[messageDate.getDay()];
+            const time = messageDate.getHours().toString().padStart(2, '0') + ':' + messageDate.getMinutes().toString().padStart(2, '0');
+            return `${dayOfWeek} ${time}`;
+        } else {
+            // Older than 1 week
+            const year = messageDate.getFullYear();
+            const month = (messageDate.getMonth() + 1).toString().padStart(2, '0');
+            const day = messageDate.getDate().toString().padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+    },
+
 
     backToLastPage() {
         uni.navigateBack()
