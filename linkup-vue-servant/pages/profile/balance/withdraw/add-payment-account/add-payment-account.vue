@@ -24,7 +24,7 @@
     <div v-else class="page-mono-form">
         <picker
             mode="selector"
-            :range="['Private', 'Company']"
+            :range="[$t('profile>balance>withdraw>addPaymentAccount.private') , $t('profile>balance>withdraw>addPaymentAccount.company') ]"
             :value="bankcardData.accountType"
             @change="onAccountTypeChange"
         >

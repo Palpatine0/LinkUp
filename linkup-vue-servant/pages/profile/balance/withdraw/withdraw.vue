@@ -53,6 +53,14 @@
                             {{ bankcard.bank.name }}
                         </app-title>
                     </app-container>
+                    <div class="center">
+                        <div style="width: 60vw;text-align: end;">
+                            <div class="flex" style="justify-content: flex-end" @click="deleteBankCard(bankcard.id)">
+                                <img class="icon" style="margin-right: 4px;" :src="app.globalData.data.ossIconRequestUrl+'/common/trash-can.svg'">
+                                <div class="tips" style="color: #808080">{{ $t('pub.button.delete') }}</div>
+                            </div>
+                        </div>
+                    </div>
                     <img v-if="index === bankcardList.length - 1" src="/static/common/create-gray.svg" class="right-icon" @click="addPaymentAccountRedirect(1)"/>
                 </demo-item>
             </z-swiper-item>
@@ -167,6 +175,33 @@ export default {
                             method: 'POST',
                             data: {
                                 id: this.ailPayAccount.id
+                            },
+                            success: (res) => {
+                                uni.showToast({title: this.$t('pub.showToast.success'), icon: 'none'});
+                                this.reload()
+                            },
+                            fail: (err) => {
+                                uni.showToast({title: this.$t('pub.showToast.fail'), icon: 'none'});
+                            }
+                        });
+                    }
+                },
+            });
+        },
+        deleteBankCard(id){
+            uni.showModal({
+                title: this.$t('profile>balance>withdraw.deleteBankCardModal.title'),
+                content: this.$t('profile>balance>withdraw.deleteBankCardModal.content'),
+                showCancel: true,
+                confirmText: this.$t('pub.modal.button.confirm'),
+                cancelText: this.$t('pub.modal.button.cancel'),
+                success: (res) => {
+                    if(res.confirm) {
+                        uni.request({
+                            url: getApp().globalData.data.requestUrl + this.$API.bankCard.delete,
+                            method: 'POST',
+                            data: {
+                                id: id
                             },
                             success: (res) => {
                                 uni.showToast({title: this.$t('pub.showToast.success'), icon: 'none'});

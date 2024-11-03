@@ -17,6 +17,7 @@
             "submit": "Submit",
             "save": "Save",
             "update": "Update",
+            "delete": "Delete",
             "getStarted": "Get Started"
         },
         "gender": {
@@ -299,6 +300,10 @@
         "unlinkAilpayModal": {
             "title": "Unlink Ailpay",
             "content": "Confirm to unlink this Ailpay account"
+        },
+        "deleteBankCardModal": {
+            "title": "Delete Bank Card",
+            "content": "Confirm to delete this bank card"
         }
     },
     "profile>balance>withdraw>addPaymentAccount": {

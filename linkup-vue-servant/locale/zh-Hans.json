@@ -17,6 +17,7 @@
             "submit": "提交",
             "save": "保存",
             "update": "更新",
+            "delete": "删除",
             "getStarted": "开始"
         },
         "gender": {
@@ -299,6 +300,10 @@
         "unlinkAilpayModal": {
             "title": "解除绑定",
             "content": "解除绑定该支付宝账号"
+        },
+        "deleteBankCardModal": {
+            "title": "删除银行卡",
+            "content": "确认删除该银行卡？"
         }
     },
     "profile>balance>withdraw>addPaymentAccount": {
@@ -311,6 +316,7 @@
         "ailpayPlaceholder": "请填写您的支付宝账号",
         "bankCardPlaceholder": "请填写您的银行卡号码",
         "issuerPlaceholder": "请填写该银行卡的开户行",
+        "accountTypePlaceholder": "请选择您的银行卡类型",
         "private": "个人账户",
         "company": "企业账户",
         "showToast": {

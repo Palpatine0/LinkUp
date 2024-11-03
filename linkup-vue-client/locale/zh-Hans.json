@@ -17,6 +17,7 @@
             "submit": "提交",
             "save": "保存",
             "update": "更新",
+            "delete": "删除",
             "getStarted": "开始"
         },
         "gender": {
@@ -56,7 +57,8 @@
                 "confirm": "确认",
                 "cancel": "取消",
                 "submit": "提交",
-                "continue": "继续"
+                "continue": "继续",
+                "delete": "删除"
             }
         }
     },
@@ -301,7 +303,11 @@
         "unlink": "解除绑定",
         "unlinkAilpayModal": {
             "title": "解除绑定",
-            "content": "解除绑定该支付宝账号"
+            "content": "解除绑定该支付宝账号？"
+        },
+        "deleteBankCardModal": {
+            "title": "删除银行卡",
+            "content": "确认删除该银行卡？"
         }
     },
     "profile>balance>withdraw>addPaymentAccount": {

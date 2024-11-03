@@ -88,6 +88,7 @@ var $API = {
         search: '/bank-card/search',
         searchBank: '/bank-card/search-bank',
         update: '/bank-card/update',
+        delete: '/bank-card/delete',
         validation: '/bank-card/validation',
     },
 
