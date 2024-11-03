@@ -294,11 +294,18 @@
         "addBankCard": "点击添加银行卡",
         "tips": "因支付宝、微信及银行等第三方平台需要收取手续费0.6%。受此影响，需按此标准收取手续费(最低5元), 敬请理解",
         "debitCard": "储蓄卡",
-        "creditCard": "信用卡"
+        "creditCard": "信用卡",
+        "unlink": "解除绑定",
+        "unlinkAilpayModal": {
+            "title": "解除绑定",
+            "content": "解除绑定该支付宝账号"
+        }
     },
     "profile>balance>withdraw>addPaymentAccount": {
-        "addAilpay": "添加您的支付宝账号",
-        "addBankCard": "添加您的银行卡",
+        "addAilpay1": "请添加'",
+        "addAilpay2": "'的支付宝账号",
+        "addBankCard1": "请添加",
+        "addBankCard2": "的银行卡",
         "tipsAilpay": "绑定您的支付宝账号以进行余额提现",
         "tipsBankCard": "绑定您的银行卡以进行余额提现",
         "ailpayPlaceholder": "请填写您的支付宝账号",

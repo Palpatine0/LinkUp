@@ -2,28 +2,38 @@
 <div class="page" style="background-color: #f3f2f6">
     <div class="mb-2">
         <!-- Alipay -->
-        <div v-if="$common.unDefined(ailPayAccount)" class="center mt-1 mb-2" @click="addPaymentAccountRedirect(0)">
-            <img style="width: 74%;height: 164px;" :src="app.globalData.data.ossImageRequestUrl+'/miscellaneous/card-slot.jpg'">
-            <app-title bold style="position: absolute;top: 124px;color: #7f7f7f">{{ $t('profile>balance>withdraw.addAilpay') }}</app-title>
+        <div v-if="$common.unDefined(ailPayAccount)" class="center mt-1 mb-2" style="flex-direction: column" @click="addPaymentAccountRedirect(0)">
+            <img style="width: 74%;height: 164px" :src="app.globalData.data.ossImageRequestUrl+'/miscellaneous/card-slot.jpg'">
+            <app-title bold style="color: #7f7f7f;position: relative;top: -60px">{{ $t('profile>balance>withdraw.addAilpay') }}</app-title>
         </div>
-        <div v-else class="center mb-1">
-            <app-container color="#3474ff" style="color: #FFF" col="12" @click="withdrawToggle">
-                <div class="justify-SB" style="width: 60vw">
-                    <img style="width: 50px; height: 50px;" :src="app.globalData.data.ossIconRequestUrl+'/page/profile/balance/withdraw/ailpay.jpg'" mode="aspectFill"/>
-                    <div style="text-align: end">
-                        <app-title bold type="h3">{{ ailPayAccount.name }}</app-title>
+        <div v-else class="mb-1">
+            <div class="center ">
+                <app-container color="#3474ff" style="color: #FFF" col="12" @click="withdrawToggle">
+                    <div class="justify-SB" style="width: 60vw">
+                        <img style="width: 50px; height: 50px;" :src="app.globalData.data.ossIconRequestUrl+'/page/profile/balance/withdraw/ailpay.jpg'" mode="aspectFill"/>
+                        <div style="text-align: end">
+                            <app-title bold type="h3">{{ ailPayAccount.name }}</app-title>
+                        </div>
+                    </div>
+                    <app-title class="mt-4" style="text-align: end;display: block;">
+                        <img style="width: 120px; height: 40px;" :src="app.globalData.data.ossIconRequestUrl+'/page/profile/balance/withdraw/ailpay-text.jpg'" mode="aspectFill"/>
+                    </app-title>
+                </app-container>
+            </div>
+            <div class="center">
+                <div style="width: 60vw;text-align: end;">
+                    <div class="flex" style="justify-content: flex-end" @click="unlinkAilpay">
+                        <img class="icon" style="margin-right: 4px;" :src="app.globalData.data.ossIconRequestUrl+'/common/link-slash.svg'">
+                        <div class="tips" style="color: #808080">{{ $t('profile>balance>withdraw.unlink') }}</div>
                     </div>
                 </div>
-                <app-title class="mt-4" style="text-align: end;display: block;">
-                    <img style="width: 120px; height: 40px;" :src="app.globalData.data.ossIconRequestUrl+'/page/profile/balance/withdraw/ailpay-text.jpg'" mode="aspectFill"/>
-                </app-title>
-            </app-container>
+            </div>
         </div>
 
         <!-- Bank Card -->
-        <div v-if="!bankcardList.length>0" class="center mb-2" @click="addPaymentAccountRedirect(1)">
+        <div v-if="!bankcardList.length>0" class="center mb-2" style="flex-direction: column" @click="addPaymentAccountRedirect(1)">
             <img style="width: 74%;height: 164px;" :src="app.globalData.data.ossImageRequestUrl+'/miscellaneous/card-slot.jpg'">
-            <app-title bold style="position: absolute;top: 310px;color: #7f7f7f">{{ $t('profile>balance>withdraw.addBankCard') }}</app-title>
+            <app-title bold style="color: #7f7f7f;position: relative;top: -60px">{{ $t('profile>balance>withdraw.addBankCard') }}</app-title>
         </div>
         <z-swiper v-else v-model="bankcardList" :options="{slidesPerView: 'auto', centeredSlides: true, spaceBetween: 14}" style="width: 100%">
             <z-swiper-item v-for="(bankcard, index) in bankcardList" :key="index" :custom-style="{width: '500rpx'}">
@@ -143,6 +153,34 @@ export default {
             }
         },
 
+        unlinkAilpay() {
+            uni.showModal({
+                title: this.$t('profile>balance>withdraw.unlinkAilpayModal.title'),
+                content: this.$t('profile>balance>withdraw.unlinkAilpayModal.content'),
+                showCancel: true,
+                confirmText: this.$t('pub.modal.button.confirm'),
+                cancelText: this.$t('pub.modal.button.cancel'),
+                success: (res) => {
+                    if(res.confirm) {
+                        uni.request({
+                            url: getApp().globalData.data.requestUrl + this.$API.ailpayAccount.delete,
+                            method: 'POST',
+                            data: {
+                                id: this.ailPayAccount.id
+                            },
+                            success: (res) => {
+                                uni.showToast({title: this.$t('pub.showToast.success'), icon: 'none'});
+                                this.reload()
+                            },
+                            fail: (err) => {
+                                uni.showToast({title: this.$t('pub.showToast.fail'), icon: 'none'});
+                            }
+                        });
+                    }
+                },
+            });
+        },
+
         // Toggle
         cardVisibilityToggle(index) {
             this.showFullIdentifier[index] = !this.showFullIdentifier[index];
@@ -154,7 +192,7 @@ export default {
         // Redirect
         addPaymentAccountRedirect(type) {
             uni.navigateTo({
-                url: `/pages/profile/balance/withdraw/add-payment-account/add-payment-account?paymentMethodType=${type}&userId=${this.user.id}`
+                url: `/pages/profile/balance/withdraw/add-payment-account/add-payment-account?paymentMethodType=${type}&userId=${this.user.id}&idCardName=${this.user.idCardName}`
             });
         },
     }

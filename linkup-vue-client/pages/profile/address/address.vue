@@ -34,7 +34,7 @@
                         </div>
                         <div class="justify-SB">
                             <span style="font-size: 14px; color: gray;">{{ address.detail }}</span>
-                            <img class="icon" src="/static/common/trash-can-solid.svg" @click.stop="deleteAddress(address.id)">
+                            <img class="icon" :src="app.globalData.data.ossIconRequestUrl+'/common/trash-can.svg'" @click.stop="deleteAddress(address.id)">
                         </div>
                     </div>
                 </div>
@@ -49,7 +49,14 @@
 
 <script>
 
+import app from "../../../App.vue";
+
 export default {
+    computed: {
+        app() {
+            return app
+        }
+    },
     data() {
         return {
             addressList: [],

@@ -50,12 +50,6 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     private UserServantMapper userServantMapper;
 
     @Autowired
-    private BankMapper bankMapper;
-
-    @Autowired
-    private BankCardMapper bankCardMapper;
-
-    @Autowired
     private HttpClientUtil httpClientUtil;
 
 
@@ -239,7 +233,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
             throw new IllegalArgumentException("Invalid date format for resultBirthday: " + resultBirthday, e);
         }
         user.setIdCardAddress(resultAddress);
-        user.setIsIdentifyCertified(1);
+        user.setIsIdentityVerified(1);
         userMapper.updateById(user);
 
         return resultMap;

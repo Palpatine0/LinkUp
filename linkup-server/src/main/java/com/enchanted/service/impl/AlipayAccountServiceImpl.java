@@ -26,6 +26,7 @@ public class AlipayAccountServiceImpl extends ServiceImpl<AlipayAccountMapper, A
     public boolean save(AlipayAccount alipayAccount) {
         QueryWrapper<AlipayAccount> wrapper = new QueryWrapper<>();
         wrapper.eq("user_id", alipayAccount.getUserId());
+        wrapper.eq("is_deleted", 0);
         AlipayAccount existedAlipayAccount = alipayAccountMapper.selectOne(wrapper);
         if (existedAlipayAccount != null) {
             throw new IllegalArgumentException("Data Existed");

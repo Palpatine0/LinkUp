@@ -1,7 +1,16 @@
 <template>
 <div class="page-mono center" style="background-color: #f5f7fb">
     <div class="page-mono-header">
-        <app-title type="h1" bold>{{ paymentMethodType == 0 ? $t('profile>balance>withdraw>addPaymentAccount.addAilpay') : $t('profile>balance>withdraw>addPaymentAccount.addBankCard') }}</app-title>
+        <div v-if="paymentMethodType == 0" style="font-size: 2em">
+            <span>{{ $t('profile>balance>withdraw>addPaymentAccount.addAilpay1') }}</span>
+            <span style="font-weight: bold">{{ '"' + idCardName + '"' }}</span>
+            <span>{{ $t('profile>balance>withdraw>addPaymentAccount.addAilpay2') }}</span>
+        </div>
+        <div v-else style="font-size: 2em">
+            <span>{{ $t('profile>balance>withdraw>addPaymentAccount.addBankCard1') }}</span>
+            <span style="font-weight: bold">{{ '"' + idCardName + '"' }}</span>
+            <span>{{ $t('profile>balance>withdraw>addPaymentAccount.addBankCard2') }}</span>
+        </div>
         <p class="center-h">{{ paymentMethodType == 0 ? $t('profile>balance>withdraw>addPaymentAccount.tipsAilpay') : $t('profile>balance>withdraw>addPaymentAccount.tipsBankCard') }}</p>
     </div>
 
@@ -47,6 +56,7 @@ export default {
     data() {
         return {
             paymentMethodType: 0,
+            idCardName: '',
             bankcardData: {
                 userId: '',
                 identifier: '',
@@ -55,14 +65,15 @@ export default {
             },
             ailpayAccountData: {
                 userId: '',
-                name:''
+                name: ''
             }
         }
     },
     onLoad(params) {
         this.paymentMethodType = params.paymentMethodType;
-        this.bankcardData.userId = params.userId;
+        this.bankcardData.userId = params.userId
         this.ailpayAccountData.userId = params.userId;
+        this.idCardName = params.idCardName;
     },
     methods: {
         onAccountTypeChange(event) {
@@ -89,8 +100,8 @@ export default {
                     success: async(res) => {
                         uni.hideLoading();
                         if(res.data.status === 200) {
-                            uni.showToast({title: this.$t('pub.showToast.success'), icon: 'none'});
                             uni.navigateBack()
+                            uni.showToast({title: this.$t('pub.showToast.success'), icon: 'none'});
                         } else {
                             uni.showToast({title: this.$t('pub.showToast.fail'), icon: 'none'});
                         }
@@ -101,6 +112,7 @@ export default {
                     }
                 });
             } else if(this.paymentMethodType == 1) {
+                this.$common.removeSpace(this.bankcardData.identifier);
                 uni.request({
                     url: getApp().globalData.data.requestUrl + this.$API.bankCard.save,
                     method: 'POST',
@@ -136,8 +148,8 @@ export default {
                     }
                 });
             }
-        }
-    }
+        },
+    },
 };
 </script>
 

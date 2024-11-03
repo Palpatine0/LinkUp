@@ -99,6 +99,7 @@ var $API = {
         save: '/alipay-account/save',
         search: '/alipay-account/search',
         update: '/alipay-account/update',
+        delete: '/alipay-account/delete',
     }
 }
 export default $API;

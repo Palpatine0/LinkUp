@@ -81,8 +81,8 @@ public class User {
     @TableField("last_withdrawal_date")
     private Date lastWithdrawalDate;
 
-    @TableField("is_identify_certified")
-    private Integer isIdentifyCertified;
+    @TableField("is_identity_verified")
+    private Integer isIdentityVerified;
 
     @TableField("id_card_number")
     private String idCardNumber;
