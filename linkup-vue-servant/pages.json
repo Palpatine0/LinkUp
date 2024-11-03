@@ -100,6 +100,20 @@
             ]
         },
 
+        // profile > real-name-verification
+        {
+            "root": "pages/profile/real-name-verification",
+            "pages": [
+                {
+                    "path": "real-name-verification",
+                    "style": {
+                        "navigationBarTitleText": "",
+                        "navigationBarBackgroundColor": "#f5f7fb"
+                    }
+                }
+            ]
+        },
+        
         // profile > balance
         {
             "root": "pages/profile/balance",
@@ -181,19 +195,6 @@
             ]
         },
 
-        // profile > real-name-authentication
-        {
-            "root": "pages/profile/real-name-authentication",
-            "pages": [
-                {
-                    "path": "real-name-authentication",
-                    "style": {
-                        "navigationBarTitleText": "",
-                        "navigationBarBackgroundColor": "#f5f7fb"
-                    }
-                }
-            ]
-        },
 
         // ** components ** //
         {

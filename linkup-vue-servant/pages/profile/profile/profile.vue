@@ -89,7 +89,7 @@ export default {
     },
     onLoad() {
         // Load user data first
-        const storedUser = uni.getStorageSync(app.globalData.data.userInfoKey);
+        const storedUser = this.$common.getUser(uni.getStorageSync(app.globalData.data.userInfoKey).id);
         this.user = {...storedUser};
         this.originalUser = {...storedUser};
 

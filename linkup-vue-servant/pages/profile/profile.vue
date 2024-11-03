@@ -22,38 +22,35 @@
         </div>
     </div>
 
-    <app-container class="justify-SB" v-if="isUserLoggedIn&&!isUserVerified" color="#2676f7" col="12" style="margin-top: -20px" @click="realNameAuthenticationRedirect">
+    <app-container class="justify-SB" v-if="isUserLoggedIn&&!isUserVerified" color="#2676f7" col="12" style="margin-top: -20px" @click="realNameVerificationRedirect">
         <app-title bold style="color: #FFF">{{ $t('profile.authRequest') }}</app-title>
         <app-button size="small" color="#FFF" font-color="#2676f7" shaped bold>{{ $t('pub.button.getStarted') }}</app-button>
     </app-container>
 
-    <app-container v-if="isUserLoggedIn" color="#fff" col="12" @click="profileRedirect">
-        <img :src="app.globalData.data.ossIconRequestUrl+'/page/profile/profile.png'" alt="" class="link-icon">
-        <span class="link-text">{{ $t('profile.profile') }}</span>
+    <app-container v-if="isUserLoggedIn" color="#fff" col="12" type="list">
+        <div v-for="(item, index) in linkItemsA" :key="index">
+            <div class="link-item" @click="handleLinkClick(item.click)">
+                <img :src="item.icon" alt="" class="link-icon">
+                <span class="link-text">{{ $t(item.label) }}</span>
+            </div>
+            <div v-if="index !== linkItemsA.length - 1" class="separator"></div>
+        </div>
     </app-container>
-
-
-    <!-- Other Options with Icons -->
     <app-container v-if="isUserLoggedIn" color="#fff" col="12" type="list">
         <div v-for="(item, index) in linkItemsB" :key="index">
             <div class="link-item" @click="handleLinkClick(item.click)">
                 <img :src="item.icon" alt="" class="link-icon">
                 <span class="link-text">{{ $t(item.label) }}</span>
             </div>
-            <!-- Separator div instead of border-bottom -->
             <div v-if="index !== linkItemsB.length - 1" class="separator"></div>
         </div>
     </app-container>
     <app-container color="#fff" col="12" type="list">
-        <div
-            v-for="(item, index) in linkItemsC"
-            :key="index"
-        >
+        <div v-for="(item, index) in linkItemsC" :key="index">
             <div class="link-item" @click="handleLinkClick(item.click)">
                 <img :src="item.icon" alt="" class="link-icon">
                 <span class="link-text">{{ $t(item.label) }}</span>
             </div>
-            <!-- Separator div instead of border-bottom -->
             <div v-if="index !== linkItemsC.length - 1" class="separator"></div>
         </div>
     </app-container>
@@ -83,7 +80,10 @@ export default {
             isUserVerified: false,
             user: {},
 
-
+            linkItemsA: [
+                {label: "profile.profile", icon: app.globalData.data.ossIconRequestUrl + "/page/profile/profile.png", click: "profileRedirect"},
+                {label: "profile.realNameVerification", icon: app.globalData.data.ossIconRequestUrl + "/page/profile/id-card.jpg", click: "realNameVerificationRedirect"},
+            ],
             linkItemsB: [
                 {label: "profile.balance", icon: app.globalData.data.ossIconRequestUrl + "/page/profile/card.png", click: "balanceRedirect"},
                 // {label: "profile.security", icon: app.globalData.data.ossIconRequestUrl + "/page/profile/lock-keyhole.jpg", click: "securityRedirect"},
@@ -186,9 +186,9 @@ export default {
                 url: './security/security',
             });
         },
-        realNameAuthenticationRedirect() {
+        realNameVerificationRedirect() {
             uni.navigateTo({
-                url: './real-name-authentication/real-name-authentication',
+                url: './real-name-verification/real-name-verification',
             });
         }
     }

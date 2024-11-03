@@ -233,8 +233,8 @@
 
     "//////": "profile",
     "profile": {
-        "order": "Order",
         "profile": "Profile",
+        "realNameVerification": "Real-name Verification",
         "balance": "Balance",
         "address": "Address",
         "myFavorite": "My Favorite",
@@ -257,6 +257,23 @@
         "nicknamePlaceholder": "Enter your user name",
         "gender": "Gender",
         "age": "Age"
+    },
+
+    "//////": "profile > real-name verification",
+    "profile>realNameVerification": {
+        "verifyIdentity": "Verify your identity",
+        "tips": "You account profile (i.e: your gender, age etc) will be updated based on the info provides by your ID card information",
+        "realName": "Enter your real name",
+        "idCard": "Enter your ID card number",
+        "verified": "Your identity is verified",
+        "idCardName": "Id Card Name",
+        "idCardNumber": "Id Card Number",
+        "showToast": {
+            "authSuccess": "Identity verified",
+            "matchFailed": "Provided name and ID number doesn't matched",
+            "noRecord": "We couldn't find your personal info, please contact us.",
+            "inputError": "Input error, please double check your name and ID card number"
+        }
     },
 
     "//////": "profile > balance",
@@ -349,20 +366,6 @@
     "//////": "profile > data",
     "profile>data": {
         "ds": "Data and Storage"
-    },
-
-    "//////": "profile > real-name auth",
-    "profile>realNameAuthentication": {
-        "verifyIdentity": "Verify your identity",
-        "tips": "You account profile (i.e: your gender, age etc) will be updated based on the info provides by your ID card information",
-        "realName": "Enter your real name",
-        "idCard": "Enter your ID card number",
-        "showToast": {
-            "authSuccess": "Identity verified",
-            "matchFailed": "Provided name and ID number doesn't matched",
-            "noRecord": "We couldn't find your personal info, please contact us.",
-            "inputError": "Input error, please double check your name and ID card number"
-        }
     },
 
 

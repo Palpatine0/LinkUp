@@ -2,19 +2,19 @@
 <div class="payment-container">
     <div class="mask" @click="close()"></div>
     <div class="widget-center coup-anim">
-        <div class="title">{{ $t('component>profile>realNameAuthentication.realNameAuthentication') }}</div>
+        <div class="title">{{ $t('component>profile>realNameVerification.realNameAuthentication') }}</div>
         <app-input
             mode="text"
             col="12"
             class="mb-2"
-            :placeholder="$t('component>profile>realNameAuthentication.realName')"
+            :placeholder="$t('component>profile>realNameVerification.realName')"
             v-model="realName"
         />
         <app-input
             mode="text"
             col="12"
             class="mb-2"
-            :placeholder="$t('component>profile>realNameAuthentication.idCard')"
+            :placeholder="$t('component>profile>realNameVerification.idCard')"
             v-model="idCardNumber"
         />
         <app-button>{{ $t('pub.button.confirm') }}</app-button>
@@ -25,7 +25,7 @@
 
 <script>
 export default {
-    name: "real-name-authentication",
+    name: "real-name-verification",
     props: {
         user: Object,
         realName: '',

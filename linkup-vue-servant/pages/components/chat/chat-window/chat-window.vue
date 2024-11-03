@@ -79,7 +79,7 @@ export default {
 
                 if(needTimeLabel) {
                     // Insert time label before this message
-                    const timeLabel = this.$common.getTimeLabel(messageTime);
+                    const timeLabel = this.$common.timeToStampRecord(messageTime);
                     result.push({
                         type: 'timeLabel',
                         time: timeLabel,
