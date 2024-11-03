@@ -56,10 +56,8 @@ public class BankCardServiceImpl extends ServiceImpl<BankCardMapper, BankCard> i
         String name = resultObject.getString("cardName");
         String bankName = resultObject.getString("bankName");
         String type = resultObject.getString("cardType");
-        String issuanceLocation = resultObject.getString("area");
 
         bankCard.setName(name);
-        bankCard.setIssuanceLocation(issuanceLocation);
         if (type.equals("借记卡")) {
             bankCard.setType(0);
         } else if (type.equals("贷记卡")) {

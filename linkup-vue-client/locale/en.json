@@ -315,10 +315,11 @@
         "addAilpay2": "",
         "addBankCard1": "Add a Bank Card belongs to ",
         "addBankCard2": "",
-        "tipsAilpay": "Connect Alipay to start withdrawing your balance instantly",
-        "tipsBankCard": "Link a bank card to enable quick and easy withdrawals",
+        "tipsAilpay": "For your security, you need to add an account that can match your real-name verification information",
+        "tipsBankCard": "For your security, pleas add a bank card that can match your real-name verification information",
         "ailpayPlaceholder": "Enter your Ailpay account",
         "bankCardPlaceholder": "Enter your bank card",
+        "issuanceLocationPlaceholder": "Select issuance location",
         "issuerPlaceholder": "Enter the issuing bank branch",
         "showToast": {
             "matchFailed": "Verification failed. Please confirm if your real name, recorded ID number, and the bank card you entered match",

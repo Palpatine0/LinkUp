@@ -315,10 +315,11 @@
         "addAilpay2": "'的支付宝账号",
         "addBankCard1": "请添加",
         "addBankCard2": "的银行卡",
-        "tipsAilpay": "绑定您的支付宝账号以进行余额提现",
-        "tipsBankCard": "绑定您的银行卡以进行余额提现",
+        "tipsAilpay": "为保障您的资金安全, 需要添加与实名认证相对应的支付宝账号才能完成提现",
+        "tipsBankCard": "为保障您的资金安全, 请使用实名认证本人的银行卡",
         "ailpayPlaceholder": "请填写您的支付宝账号",
         "bankCardPlaceholder": "请填写您的银行卡号码",
+        "issuanceLocationPlaceholder": "请选择银行开户地区",
         "issuerPlaceholder": "请填写该银行卡的开户行",
         "showToast": {
             "authSuccess": "银行卡添加成功",

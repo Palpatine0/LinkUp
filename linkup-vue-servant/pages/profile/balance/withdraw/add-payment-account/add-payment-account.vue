@@ -22,11 +22,16 @@
         />
     </div>
     <div v-else class="page-mono-form">
+        <input
+            type="text"
+            v-model="issuanceLocationPlaceholder"
+            @click="issuanceLocationToggle"
+        />
         <picker
             mode="selector"
             :range="[$t('profile>balance>withdraw>addPaymentAccount.private') , $t('profile>balance>withdraw>addPaymentAccount.company') ]"
             :value="bankcardData.accountType"
-            @change="onAccountTypeChange"
+            @change="bindAccountTypeChange"
         >
             <span>{{ bankcardData.accountType === -1 ? $t('profile>balance>withdraw>addPaymentAccount.accountTypePlaceholder') : (bankcardData.accountType === 0 ? $t('profile>balance>withdraw>addPaymentAccount.private') : $t('profile>balance>withdraw>addPaymentAccount.company')) }}</span>
         </picker>
@@ -47,6 +52,16 @@
             {{ $t('pub.button.confirm') }}
         </app-button>
     </div>
+
+    <cc-selectDity
+        :province="province"
+        :city="city"
+        :area="area"
+        :show="locationSelectorVisible"
+        @sureSelectArea="bindIssuanceLocationChange"
+    >
+    </cc-selectDity>
+
 </div>
 </template>
 
@@ -58,15 +73,21 @@ export default {
             paymentMethodType: 0,
             idCardName: '',
             bankcardData: {
+                accountType: -1,
+                issuanceLocation: '',
                 userId: '',
                 identifier: '',
                 issuer: '',
-                accountType: -1
             },
             ailpayAccountData: {
                 userId: '',
                 name: ''
-            }
+            },
+
+            province: "广东省",
+            city: "广州市",
+            area: "天河区",
+            locationSelectorVisible: false,
         }
     },
     onLoad(params) {
@@ -75,8 +96,25 @@ export default {
         this.ailpayAccountData.userId = params.userId;
         this.idCardName = params.idCardName;
     },
+    computed: {
+        issuanceLocationPlaceholder() {
+            return this.bankcardData.issuanceLocation
+                ? this.bankcardData.issuanceLocation
+                : this.$t('profile>balance>withdraw>addPaymentAccount.issuanceLocationPlaceholder');
+        }
+    },
     methods: {
-        onAccountTypeChange(event) {
+        bindIssuanceLocationChange(e) {
+            let data = e; // e is the data emitted from cc-selectDity
+            let address = data.province + data.city + data.area;
+            this.locationSelectorVisible = false;
+            this.bankcardData.issuanceLocation = address;
+            // Update the province, city, and area in the parent component's data
+            this.province = data.province;
+            this.city = data.city;
+            this.area = data.area;
+        },
+        bindAccountTypeChange(event) {
             this.bankcardData.accountType = parseInt(event.detail.value);
         },
         savePaymentMethod() {
@@ -149,6 +187,11 @@ export default {
                 });
             }
         },
+
+        // toggle
+        issuanceLocationToggle() {
+            this.locationSelectorVisible = true
+        }
     },
 };
 </script>
