@@ -1,16 +1,18 @@
 import $API from "../api/api";
 import app from "../App.vue";
+import globalMixin from "./globalMixin";
 
 if(!String.prototype.replaceAll) {
     String.prototype.replaceAll = function(s1, s2) {
         return this.replace(new RegExp(s1, "gm"), s2);
     }
 }
+var language = globalMixin.data().language
 var $common = {
-    isUserLoggedIn(){
+    isUserLoggedIn() {
         return uni.getStorageSync(app.globalData.data.userLoginKey) == true ? true : false
     },
-    isUserVerified(){
+    isUserVerified() {
         return uni.getStorageSync(app.globalData.data.userVerificationKey) == true ? true : false
     },
 
@@ -186,23 +188,26 @@ var $common = {
         // Get current date and time
         var now = new Date();
 
+        // Format the time part as hh:mm
+        var timePart = date.getHours().toString().padStart(2, '0') + ':' + date.getMinutes().toString().padStart(2, '0');
+
         // Check if the given date is today
-        if(date.toDateString() === now.toDateString()) {
-            return date.getHours().toString().padStart(2, '0') + ':' + date.getMinutes().toString().padStart(2, '0');
+        if (date.toDateString() === now.toDateString()) {
+            return timePart;
         }
 
         // Check if the given date is yesterday
         var yesterday = new Date(now);
         yesterday.setDate(now.getDate() - 1);
-        if(date.toDateString() === yesterday.toDateString()) {
-            return 'Yesterday';
+        if (date.toDateString() === yesterday.toDateString()) {
+            return (language != "zh-Hans" ? 'Yesterday' : '昨天') + ', ' + timePart;
         }
 
-        // For all other dates, return only the month and day without time
+        // For all other dates, return MM-dd hh:mm
         var month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-indexed
         var day = date.getDate().toString().padStart(2, '0');
 
-        return `${month}-${day}`;
+        return `${month}-${day} ${timePart}`;
     },
 
     calculateCountdown: function(startTime, endTime, callback) {
@@ -259,10 +264,10 @@ var $common = {
         const oneDayInMs = 24 * 60 * 60 * 1000;
         const oneWeekInMs = 7 * oneDayInMs;
 
-        if (messageDate.toDateString() === now.toDateString()) {
+        if(messageDate.toDateString() === now.toDateString()) {
             // Same day, display time every 5 minutes (handled in processing logic)
             return this.timeToStampRecord(messageDate); // Returns formatted time like "HH:mm"
-        } else if (diffInMs < oneWeekInMs) {
+        } else if(diffInMs < oneWeekInMs) {
             // Older than 1 day but less than 1 week
             const daysOfWeek = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
             const dayOfWeek = daysOfWeek[messageDate.getDay()];
@@ -296,7 +301,7 @@ var $common = {
         return false;
     },
     removeSpace: function(v, filterKeyArr) {
-        if (this.isString(v)) {
+        if(this.isString(v)) {
             return v.replace(/\s+/g, '')
         } else if(this.isObject(v)) {
             let obj = this.copy(v);

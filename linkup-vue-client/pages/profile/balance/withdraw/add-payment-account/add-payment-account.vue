@@ -26,6 +26,7 @@
             type="text"
             v-model="issuanceLocationPlaceholder"
             @click="issuanceLocationToggle"
+            disabled
         />
         <input
             type="text"

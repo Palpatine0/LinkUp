@@ -29,7 +29,6 @@
 export default {
     name: "home",
     data() {
-        9
         return {
             userList: [],
             serviceTypeList: [],

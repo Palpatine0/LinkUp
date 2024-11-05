@@ -26,6 +26,7 @@
             type="text"
             v-model="issuanceLocationPlaceholder"
             @click="issuanceLocationToggle"
+            disabled
         />
         <picker
             mode="selector"
@@ -93,7 +94,7 @@ export default {
                 issuer: '',
                 identifier: '',
             },
-            bankName:'',
+            bankName: '',
             bankNameRanges: [],
 
             province: "广东省",
@@ -158,7 +159,7 @@ export default {
                 return;
             }
             if(this.paymentMethodType == 1 && (
-                this.bankcardData.accountType === -1||
+                this.bankcardData.accountType === -1 ||
                 !this.bankcardData.issuanceLocation ||
                 !this.bankcardData.issuer ||
                 !this.bankcardData.identifier ||

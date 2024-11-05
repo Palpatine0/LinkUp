@@ -13,6 +13,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Field;
+import java.util.Date;
 import java.util.Map;
 
 @Service
@@ -24,6 +25,7 @@ public class WithdrawalRequestServiceImpl extends ServiceImpl<WithdrawalRequestM
     /* C */
     @Override
     public boolean save(WithdrawalRequest withdrawalRequest) {
+        withdrawalRequest.setCreatedAt(new Date());
         return withdrawalRequestMapper.insert(withdrawalRequest) > 0;
     }
 

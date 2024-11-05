@@ -92,6 +92,8 @@ export default {
                   const userData = res.data.list[0]
                   uni.setStorageSync(app.globalData.data.userInfoKey, userData);
                   uni.setStorageSync(app.globalData.data.userLoginKey, true);
+                  console.log("userData.isIdentityVerified")
+                  console.log(userData.isIdentityVerified)
                   userData.isIdentityVerified == 1 ? uni.setStorageSync(app.globalData.data.userVerificationKey, true) : uni.setStorageSync(app.globalData.data.userVerificationKey, false);
                   $webSocket.connectWebSocket(res.data.list[0].id);
                   resolve(res)

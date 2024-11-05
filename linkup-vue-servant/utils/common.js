@@ -1,11 +1,13 @@
 import $API from "../api/api";
 import app from "../App.vue";
+import globalMixin from "./globalMixin";
 
 if(!String.prototype.replaceAll) {
     String.prototype.replaceAll = function(s1, s2) {
         return this.replace(new RegExp(s1, "gm"), s2);
     }
 }
+var language = globalMixin.data().language
 var $common = {
     isUserLoggedIn(){
         return uni.getStorageSync(app.globalData.data.userLoginKey) == true ? true : false
@@ -186,23 +188,26 @@ var $common = {
         // Get current date and time
         var now = new Date();
 
+        // Format the time part as hh:mm
+        var timePart = date.getHours().toString().padStart(2, '0') + ':' + date.getMinutes().toString().padStart(2, '0');
+
         // Check if the given date is today
-        if(date.toDateString() === now.toDateString()) {
-            return date.getHours().toString().padStart(2, '0') + ':' + date.getMinutes().toString().padStart(2, '0');
+        if (date.toDateString() === now.toDateString()) {
+            return timePart;
         }
 
         // Check if the given date is yesterday
         var yesterday = new Date(now);
         yesterday.setDate(now.getDate() - 1);
-        if(date.toDateString() === yesterday.toDateString()) {
-            return 'Yesterday';
+        if (date.toDateString() === yesterday.toDateString()) {
+            return (language != "zh-Hans" ? 'Yesterday' : '昨天') + ', ' + timePart;
         }
 
-        // For all other dates, return only the month and day without time
+        // For all other dates, return MM-dd hh:mm
         var month = (date.getMonth() + 1).toString().padStart(2, '0'); // Months are zero-indexed
         var day = date.getDate().toString().padStart(2, '0');
 
-        return `${month}-${day}`;
+        return `${month}-${day} ${timePart}`;
     },
 
     calculateCountdown: function(startTime, endTime, callback) {
