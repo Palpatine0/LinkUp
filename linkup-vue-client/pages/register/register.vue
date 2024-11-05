@@ -147,15 +147,29 @@
         </app-button>
     </div>
 
+    <avatarCropper
+        v-if="avatarCropperVisible"
+        ref="avatarCropper"
+        selWidth="200px"
+        selHeight="200px"
+        expWidth="200px"
+        expHeight="200px"
+        inner="true"
+        fileType="png"
+        :imgPath="avatarCropperFilePath"
+        @upload="handleCroppedImage"
+    ></avatarCropper>
 </div>
 </template>
 
 <script>
 import common from "../../utils/common";
 import $API from "../../api/api";
+import AvatarCropper from "../../components/common/avatar-cropper/avatar-cropper.vue";
 
 export default {
     name: "auth",
+    components: {AvatarCropper},
     computed: {
         common() {
             return common
@@ -201,7 +215,11 @@ export default {
                 "https://project-looking.oss-cn-beijing.aliyuncs.com/public/image/default-avatar/the-latest-milestone-in-openai-s-effort-in-scalling-up-deep-learning.webp",
                 "https://project-looking.oss-cn-beijing.aliyuncs.com/public/image/default-avatar/weak-to-strong-generalization.avif",
             ],
+
             avatar: "",
+            cropperImageSrc: '',
+            avatarCropperFilePath:'',
+            avatarCropperVisible: false,
         }
     },
     onLoad(param) {
@@ -411,75 +429,93 @@ export default {
                         success: (chooseResult) => {
                             const filePath = chooseResult.tempFilePaths[0];
                             if(!this.$common.validateFileType(filePath, "img")) {
-                                uni.hideLoading();
                                 uni.showToast({
                                     title: this.$t('pub.showToast.imgInvalidFileType'), // Image-specific message
                                     icon: 'none'
                                 });
                                 return;
                             }
-
-                            uni.showLoading({title: this.$t('pub.showLoading.loading')});
-                            uni.request({
-                                url: getApp().globalData.data.requestUrl + $API.file.signature,
-                                method: 'GET',
-                                data: {
-                                    dir: 'public/user/' + this.userData.identifier + '/avatar/'
-                                },
-                                success: (policyRes) => {
-                                    if(policyRes.statusCode === 200 && policyRes.data.status === 200) {
-                                        const policyData = policyRes.data.data;
-                                        const host = policyData.host;
-                                        const dir = policyData.dir;
-
-                                        // Generate a unique filename
-                                        const filename = dir + Date.now() + '_' + Math.floor(Math.random() * 10000);
-
-                                        // Prepare formData
-                                        let formData = {
-                                            'key': filename,
-                                            'policy': policyData.policy,
-                                            'OSSAccessKeyId': policyData.accessid,
-                                            'signature': policyData.signature,
-                                            'success_action_status': '200',
-                                        };
-
-                                        // Upload file directly to OSS
-                                        uni.uploadFile({
-                                            url: host,
-                                            filePath: filePath,
-                                            name: 'file',
-                                            formData: formData,
-                                            success: (uploadFileRes) => {
-                                                uni.hideLoading();
-                                                if(uploadFileRes.statusCode === 200) {
-                                                    const imageUrl = host + '/' + filename;
-                                                    this.userData.avatar = imageUrl;
-                                                    this.avatar = imageUrl;
-                                                    this.$set(this.userData, 'avatar', imageUrl);
-                                                } else {
-                                                    uni.showToast({title: 'Upload failed', icon: 'none'});
-                                                }
-                                            },
-                                            fail: () => {
-                                                uni.hideLoading();
-                                                uni.showToast({title: 'Upload failed', icon: 'none'});
-                                            }
-                                        });
-                                    } else {
-                                        uni.hideLoading();
-                                        uni.showToast({title: 'Failed to get policy', icon: 'none'});
-                                    }
-                                },
-                                fail: () => {
-                                    uni.hideLoading();
-                                    uni.showToast({title: 'Failed to get policy', icon: 'none'});
-                                }
+                            this.avatarCropperFilePath = filePath;
+                            this.avatarCropperVisible = true;
+                            this.$nextTick(() => {
+                                let avatar = this.$refs.avatarCropper;
+                                avatar.fSelect();
                             });
                         }
                     });
                 }
             });
+        },
+        handleCroppedImage(rsp) {
+            uni.showLoading({ title: this.$t('pub.showLoading.loading') });
+            const filePath = rsp.path; // Use the cropped image path
+            if (!this.$common.validateFileType(filePath, "img")) {
+                uni.showToast({
+                    title: this.$t('pub.showToast.imgInvalidFileType'),
+                    icon: 'none'
+                });
+                return;
+            }
+            // Existing upload logic moved here
+            uni.request({
+                url: getApp().globalData.data.requestUrl + $API.file.signature,
+                method: 'GET',
+                data: {
+                    dir: 'public/user/' + this.userData.identifier + '/avatar/'
+                },
+                success: (policyRes) => {
+                    if(policyRes.statusCode === 200 && policyRes.data.status === 200) {
+                        const policyData = policyRes.data.data;
+                        const host = policyData.host;
+                        const dir = policyData.dir;
+
+                        // Generate a unique filename
+                        const filename = dir + Date.now() + '_' + Math.floor(Math.random() * 10000);
+
+                        // Prepare formData
+                        let formData = {
+                            'key': filename,
+                            'policy': policyData.policy,
+                            'OSSAccessKeyId': policyData.accessid,
+                            'signature': policyData.signature,
+                            'success_action_status': '200',
+                        };
+
+                        // Upload file directly to OSS
+                        uni.uploadFile({
+                            url: host,
+                            filePath: filePath,
+                            name: 'file',
+                            formData: formData,
+                            success: (uploadFileRes) => {
+                                uni.hideLoading();
+                                if(uploadFileRes.statusCode === 200) {
+                                    const imageUrl = host + '/' + filename;
+                                    this.userData.avatar = imageUrl;
+                                    this.avatar = imageUrl;
+                                    this.$set(this.userData, 'avatar', imageUrl);
+                                } else {
+                                    uni.showToast({title: 'Upload failed', icon: 'none'});
+                                }
+                            },
+                            fail: () => {
+                                uni.hideLoading();
+                                uni.showToast({title: 'Upload failed', icon: 'none'});
+                            }
+                        });
+                    } else {
+                        uni.hideLoading();
+                        uni.showToast({title: 'Failed to get policy', icon: 'none'});
+                    }
+                },
+                fail: () => {
+                    uni.hideLoading();
+                    uni.showToast({title: 'Failed to get policy', icon: 'none'});
+                }
+            });
+
+            // Hide the cropper after upload
+            this.avatarCropperVisible = false;
         },
 
         // done

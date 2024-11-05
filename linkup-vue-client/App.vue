@@ -9,11 +9,11 @@ export default {
     data: {
       // ** URL ** //
       // Dev
-      requestUrl: "https://localhost:8090",
-      socketUrl: "wss://localhost:8090",
+      // requestUrl: "https://localhost:8090",
+      // socketUrl: "wss://localhost:8090",
       // QA
-      // requestUrl: "https://looking.cool:8090",
-      // socketUrl: "wss://looking.cool:8090",
+      requestUrl: "https://looking.cool:8090",
+      socketUrl: "wss://looking.cool:8090",
 
       ossIconRequestUrl: "https://project-looking.oss-cn-beijing.aliyuncs.com/public/icon",
       ossImageRequestUrl: "https://project-looking.oss-cn-beijing.aliyuncs.com/public/image",

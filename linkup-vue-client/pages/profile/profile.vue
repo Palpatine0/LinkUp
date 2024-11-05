@@ -124,6 +124,7 @@ export default {
             await getApp().globalData.signIn()
             this.user = uni.getStorageSync(getApp().globalData.data.userInfoKey)
             this.isUserLoggedIn = this.$common.isUserLoggedIn()
+            this.isUserVerified = this.$common.isUserVerified()
             uni.hideLoading();
         },
         async signOut() {
