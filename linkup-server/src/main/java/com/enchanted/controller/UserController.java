@@ -76,12 +76,18 @@ public class UserController {
         return R.ok().put("data", userService.identityValidation(id, role, name, idCardNumber));
     }
 
+    @PostMapping("/sms-validation")
+    public R smsValidation(@RequestBody Map<String, String> dto) {
+        String mobile = dto.get("mobile");
+        String code = dto.get("code");
+        return R.ok().put("data", userService.smsValidation(mobile,code));
+    }
+
     /*U*/
     @PostMapping("/update")
     public R update(@RequestBody Map<String, Object> requestData) {
         Long id = Long.parseLong(requestData.get("id").toString());
         requestData.remove("id");
-
         boolean isUpdated = userService.update(id, requestData);
         if (isUpdated) {
             return R.ok("更新成功");

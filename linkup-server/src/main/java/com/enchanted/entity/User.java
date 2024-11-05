@@ -38,8 +38,7 @@ public class User {
     @TableField("referral_code")
     private String referralCode;
 
-    @TableField("phone_number")
-    private String phoneNumber;
+    private String mobile;
 
     private String nickname;
 

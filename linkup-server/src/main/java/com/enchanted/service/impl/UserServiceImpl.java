@@ -33,6 +33,8 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.time.temporal.ChronoUnit;
 import java.util.*;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.TimeUnit;
 
 @Service
 public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IUserService {
@@ -52,6 +54,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     @Autowired
     private HttpClientUtil httpClientUtil;
 
+    private ConcurrentHashMap<String, Long> lastSmsRequestTime = new ConcurrentHashMap<>();
 
     /*C*/
     public Map<String, String> saveInfo(User user) {
@@ -236,6 +239,44 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         user.setIsIdentityVerified(1);
         userMapper.updateById(user);
 
+        return resultMap;
+    }
+
+    @Override
+    public Map<String, Object> smsValidation(String mobile, String code) {
+        Map<String, Object> resultMap = new HashMap<>();
+
+        // TODO: upgrade "lastSmsRequestTime" to Redis approach
+        Long currentTime = System.currentTimeMillis();
+        Long lastRequestTime = lastSmsRequestTime.get(mobile);
+
+        // Check if the request is made within 1 minute (60,000 milliseconds)
+        if (lastRequestTime != null && (currentTime - lastRequestTime < TimeUnit.MINUTES.toMillis(1))) {
+            resultMap.put("data", "Please wait for 1 min before requesting another SMS code");
+            return resultMap;
+        }
+
+        String url = ThirdPartyConstant.SMS_CARD_AUTH_URL;
+        String appCode = ThirdPartyConstant.SMS_AUTH_CODE;
+        String templateId = ThirdPartyConstant.SMS_AUTH_TEMPLATE_ID;
+        String smsSignId = ThirdPartyConstant.SMS_AUTH_SMS_SIGN_ID;
+        String smsContent = "**code**:" + code + ",**minute**:5";
+
+        Map<String, String> params = new HashMap<>();
+        params.put("mobile", mobile);
+        params.put("templateId", templateId);
+        params.put("smsSignId", smsSignId);
+        params.put("param", smsContent);
+
+        Map<String, String> headers = new HashMap<>();
+        headers.put("Authorization", "APPCODE " + appCode);
+
+        httpClientUtil.sendHttpPost(url, params, headers);
+
+        // Update the last request time
+        lastSmsRequestTime.put(mobile, currentTime);
+
+        resultMap.put("data", "Success");
         return resultMap;
     }
 
