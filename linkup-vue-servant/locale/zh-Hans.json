@@ -18,7 +18,8 @@
             "save": "保存",
             "update": "更新",
             "delete": "删除",
-            "getStarted": "开始"
+            "getStarted": "开始",
+            "send": "发送"
         },
         "gender": {
             "m": "男",
@@ -324,8 +325,8 @@
         }
     },
     "profile>balance>withdraw>addPaymentAccount": {
-        "addAilpay1": "请添加'",
-        "addAilpay2": "'的支付宝账号",
+        "addAilpay1": "请添加",
+        "addAilpay2": "的支付宝账号",
         "addBankCard1": "请添加",
         "addBankCard2": "的银行卡",
         "tipsAilpay": "为保障您的资金安全, 需要添加与实名认证相对应的支付宝账号才能完成提现",
@@ -336,6 +337,8 @@
         "issuerPlaceholder": "请填写该银行卡的开户行",
         "bankCardPlaceholder": "请填写您的银行卡号码",
         "bankNamePlaceholder": "请选择银行",
+        "smsVerificationCodePlaceholder": "请输入验证码",
+        "verificationCodeTo": "短信验证码将发送至 ",
         "private": "个人账户",
         "company": "企业账户",
         "showToast": {

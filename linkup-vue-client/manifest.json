@@ -1,4 +1,4 @@
-{
+	{
     "name" : "linkup-vue-client",
     "appid" : "__UNI__6FC84D5",
     "description" : "",
@@ -34,10 +34,26 @@
                     "<uses-permission android:name=\"android.permission.FLASHLIGHT\"/>",
                     "<uses-feature android:name=\"android.hardware.camera\"/>",
                     "<uses-permission android:name=\"android.permission.WRITE_SETTINGS\"/>"
-                ]
+                ],
+                "abiFilters" : [ "arm64-v8a", "x86" ]
             },
-            "ios" : {},
-            "sdkConfigs" : {}
+            "ios" : {
+                "dSYMs" : false
+            },
+            "sdkConfigs" : {
+                "ad" : {}
+            },
+            "icons" : {
+                "android" : {
+                    "hdpi" : "/Users/sheevpalpatine/Downloads/LK-C.png",
+                    "xhdpi" : "/Users/sheevpalpatine/Downloads/LK-C.png",
+                    "xxhdpi" : "/Users/sheevpalpatine/Downloads/LK-C.png",
+                    "xxxhdpi" : "/Users/sheevpalpatine/Downloads/LK-C.png"
+                }
+            },
+            "splashscreen" : {
+                "iosStyle" : "common"
+            }
         }
     },
     "quickapp" : {},

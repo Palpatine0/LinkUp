@@ -277,7 +277,7 @@ export default {
         // Redirect
         addPaymentAccountRedirect(type) {
             uni.navigateTo({
-                url: `/pages/profile/balance/withdraw/add-payment-account/add-payment-account?paymentMethodType=${type}&userId=${this.user.id}&idCardName=${this.user.idCardName}`
+                url: `/pages/profile/balance/withdraw/add-payment-account/add-payment-account?paymentMethodType=${type}&userId=${this.user.id}&idCardName=${this.user.idCardName}&mobile=${this.user.mobile}`
             });
         },
     }

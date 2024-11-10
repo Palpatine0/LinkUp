@@ -18,7 +18,8 @@
             "save": "Save",
             "update": "Update",
             "delete": "Delete",
-            "getStarted": "Get Started"
+            "getStarted": "Get Started",
+            "send": "Send"
         },
         "gender": {
             "m": "Male",
@@ -336,6 +337,8 @@
         "issuerPlaceholder": "Enter the issuing bank branch",
         "bankCardPlaceholder": "Enter your bank card",
         "bankNamePlaceholder": "Select the bank",
+        "smsVerificationCodePlaceholder": "Enter verification code",
+        "verificationCodeTo": "Verification code will be send to ",
         "private": "Private",
         "company": "Business",
         "showToast": {

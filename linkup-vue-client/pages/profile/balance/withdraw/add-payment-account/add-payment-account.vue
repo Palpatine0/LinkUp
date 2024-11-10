@@ -46,6 +46,19 @@
         >
             <span>{{ bankName === '' ? $t('profile>balance>withdraw>addPaymentAccount.bankNamePlaceholder') : bankName }}</span>
         </picker>
+        <input
+            type="text"
+            v-model="mobileValidationCodeMatcher"
+            :placeholder="$t('profile>balance>withdraw>addPaymentAccount.bankCardPlaceholder')"
+        />
+        <div class="input-with-button">
+            <input
+                type="text"
+                :placeholder="$t('profile>balance>withdraw>addPaymentAccount.smsVerificationCodePlaceholder')"
+            />
+            <div class="button">{{ $t('pub.button.send') }}</div>
+        </div>
+        <app-title bold>{{ $t('profile>balance>withdraw>addPaymentAccount.verificationCodeTo') + $common.maskedMobile(mobile) }}</app-title>
     </div>
 
     <div class="fix-bottom">
@@ -67,17 +80,22 @@
 </template>
 
 <script>
+import $common from "../../../../../utils/common";
+
 export default {
     name: "add-payment-account",
     data() {
         return {
             paymentMethodType: 0,
+            mobile: '',
 
+            // ailpayAccount
             ailpayAccountData: {
                 userId: '',
                 name: ''
             },
 
+            // bankcard
             idCardName: '',
             bankcardData: {
                 userId: '',
@@ -88,10 +106,12 @@ export default {
             },
             bankName: '',
             bankNameRanges: [],
-
             province: "广东省",
             city: "广州市",
             area: "天河区",
+            mobileValidationCode: '',
+            mobileValidationCodeMatcher: '',
+
             locationSelectorVisible: false,
         }
     },
@@ -101,8 +121,12 @@ export default {
         this.bankcardData.userId = params.userId
         this.ailpayAccountData.userId = params.userId;
         this.idCardName = params.idCardName;
+        this.mobile = params.mobile;
     },
     computed: {
+        $common() {
+            return $common
+        },
         issuanceLocationPlaceholder() {
             return this.bankcardData.issuanceLocation
                 ? this.bankcardData.issuanceLocation
@@ -139,6 +163,7 @@ export default {
             const bankNameIdx = parseInt(e.detail.value);
             this.bankName = this.bankNameRanges[bankNameIdx];
         },
+
         savePaymentMethod() {
             // Validate inputs
             if(this.paymentMethodType == 0 && !this.ailpayAccountData.name) {
@@ -215,7 +240,7 @@ export default {
             }
         },
 
-        // toggle
+        // Toggle
         issuanceLocationToggle() {
             this.locationSelectorVisible = true
         }

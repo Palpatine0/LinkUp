@@ -7,7 +7,8 @@ var $API = {
         userConfig: '/user/user-config',
         searchServant: '/user/search-servant',
         referralCodeValidation: '/user/referral-code-validation',
-        identityValidation: '/user/identity-validation'
+        identityValidation: '/user/identity-validation',
+        smsValidation: '/user/sms-validation'
     },
 
     // User Servant

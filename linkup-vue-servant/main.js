@@ -10,9 +10,6 @@ import API from "./api/api";
 import * as webSocket from './websocket/websocket';
 import bus from "./bus/bus";
 
-import './style/common.css';
-import './style/animat.css'
-
 import AppTitle from './components/common/base/app-title.vue';
 import AppInput from './components/common/base/app-input.vue';
 import AppContainer from './components/common/base/app-container.vue';

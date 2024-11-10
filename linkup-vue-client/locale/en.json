@@ -18,7 +18,8 @@
             "save": "Save",
             "update": "Update",
             "delete": "Delete",
-            "getStarted": "Get Started"
+            "getStarted": "Get Started",
+            "send": "Send"
         },
         "gender": {
             "m": "Male",
@@ -339,6 +340,8 @@
         "issuerPlaceholder": "Enter the issuing bank branch",
         "bankCardPlaceholder": "Enter your bank card",
         "bankNamePlaceholder": "Select the bank",
+        "smsVerificationCodePlaceholder": "Enter verification code",
+        "verificationCodeTo": "Verification code will be send to ",
         "showToast": {
             "matchFailed": "Verification failed. Please confirm if your real name, recorded ID number, and the bank card you entered match",
             "invalidCard": "Your card is invalid. Please contact us",

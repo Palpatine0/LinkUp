@@ -136,6 +136,13 @@ var $common = {
         }
     },
 
+    maskedMobile: function(mobile) {
+        if (mobile.length === 11) {
+            return `${mobile.slice(0, 3)}****${mobile.slice(7)}`;
+        }
+        return mobile;
+    },
+
     /**
      * Converts a timestamp to a formatted time string.
      * @param {number} stamp - The timestamp to be converted.
