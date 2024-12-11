@@ -50,9 +50,6 @@
                     "xxhdpi" : "/Users/sheevpalpatine/Downloads/LK-C.png",
                     "xxxhdpi" : "/Users/sheevpalpatine/Downloads/LK-C.png"
                 }
-            },
-            "splashscreen" : {
-                "iosStyle" : "common"
             }
         }
     },

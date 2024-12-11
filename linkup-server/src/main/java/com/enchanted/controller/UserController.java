@@ -76,6 +76,12 @@ public class UserController {
         return R.ok().put("data", userService.identityValidation(id, role, name, idCardNumber));
     }
 
+    @PostMapping("/sms")
+    public R sms(@RequestBody Map<String, String> dto) {
+        String mobile = dto.get("mobile");
+        return R.ok().put("data", userService.sms(mobile));
+    }
+
     @PostMapping("/sms-validation")
     public R smsValidation(@RequestBody Map<String, String> dto) {
         String mobile = dto.get("mobile");

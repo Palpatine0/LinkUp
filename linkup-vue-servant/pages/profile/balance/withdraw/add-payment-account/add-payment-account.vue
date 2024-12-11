@@ -54,11 +54,6 @@
         >
             <span>{{ bankName === '' ? $t('profile>balance>withdraw>addPaymentAccount.bankNamePlaceholder') : bankName }}</span>
         </picker>
-        <input
-            type="text"
-            v-model="mobileValidationCodeMatcher"
-            :placeholder="$t('profile>balance>withdraw>addPaymentAccount.bankCardPlaceholder')"
-        />
         <div class="input-with-button">
             <input
                 type="text"

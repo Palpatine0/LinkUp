@@ -8,6 +8,7 @@ var $API = {
         searchServant: '/user/search-servant',
         referralCodeValidation: '/user/referral-code-validation',
         identityValidation: '/user/identity-validation',
+        sms: '/user/sms',
         smsValidation: '/user/sms-validation'
     },
 

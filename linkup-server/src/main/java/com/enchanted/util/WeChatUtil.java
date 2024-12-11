@@ -18,6 +18,7 @@ public class WeChatUtil {
         String url = "";
         if (role == UserConstant.CLIENT) {
             url = WeChatConstant.USER_INFO_URL + WeChatConstant.APP_ID_CLIENT + "&secret=" + WeChatConstant.SECRET_CLIENT + "&js_code=" + code + "&grant_type=authorization_code";
+
         } else if (role == UserConstant.SERVANT) {
             url = WeChatConstant.USER_INFO_URL + WeChatConstant.APP_ID_SERVANT + "&secret=" + WeChatConstant.SECRET_SERVANT + "&js_code=" + code + "&grant_type=authorization_code";
         }

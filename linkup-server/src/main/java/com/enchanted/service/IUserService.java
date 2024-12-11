@@ -21,6 +21,8 @@ public interface IUserService extends IService<User> {
 
     Map identityValidation(Long id, int role, String name, String idCardNumber);
 
+    Map sms(String mobile);
+
     Map smsValidation(String mobile, String code);
 
     /*U*/

@@ -46,23 +46,19 @@
         >
             <span>{{ bankName === '' ? $t('profile>balance>withdraw>addPaymentAccount.bankNamePlaceholder') : bankName }}</span>
         </picker>
-        <input
-            type="text"
-            v-model="mobileValidationCodeMatcher"
-            :placeholder="$t('profile>balance>withdraw>addPaymentAccount.bankCardPlaceholder')"
-        />
         <div class="input-with-button">
             <input
                 type="text"
+                v-model="mobileValidationCodeMatcher"
                 :placeholder="$t('profile>balance>withdraw>addPaymentAccount.smsVerificationCodePlaceholder')"
             />
-            <div class="button">{{ $t('pub.button.send') }}</div>
+            <div class="button" @click="sendSMSCode">{{ sendButtonText }}</div>
         </div>
         <app-title bold>{{ $t('profile>balance>withdraw>addPaymentAccount.verificationCodeTo') + $common.maskedMobile(mobile) }}</app-title>
     </div>
 
     <div class="fix-bottom">
-        <app-button shaped size="very-large" @click="savePaymentMethod" width="85vw">
+        <app-button shaped size="very-large" @click="validation" width="85vw">
             {{ $t('pub.button.confirm') }}
         </app-button>
     </div>
@@ -111,6 +107,7 @@ export default {
             area: "天河区",
             mobileValidationCode: '',
             mobileValidationCodeMatcher: '',
+            smsCountdown: 0,
 
             locationSelectorVisible: false,
         }
@@ -131,6 +128,13 @@ export default {
             return this.bankcardData.issuanceLocation
                 ? this.bankcardData.issuanceLocation
                 : this.$t('profile>balance>withdraw>addPaymentAccount.issuanceLocationPlaceholder');
+        },
+        sendButtonText() {
+            if (this.smsCountdown > 0) {
+                return `${this.smsCountdown}s`;
+            } else {
+                return this.$t('pub.button.send');
+            }
         }
     },
     methods: {
@@ -164,7 +168,41 @@ export default {
             this.bankName = this.bankNameRanges[bankNameIdx];
         },
 
-        savePaymentMethod() {
+        sendSMSCode() {
+            if (this.smsCountdown > 0) {
+                return;
+            }
+            uni.request({
+                url: getApp().globalData.data.requestUrl + this.$API.user.sms,
+                method: 'POST',
+                data: {
+                    mobile: this.mobile
+                },
+                success: (res) => {
+                    if (res.data.status === 200) {
+                        this.smsCountdown = 60;
+                        this.startSMSCountdown();
+                        uni.showToast({ title: res.data.message, icon: 'none' });
+                    } else {
+                        uni.showToast({ title: res.data.message || this.$t('pub.showToast.fail'), icon: 'none' });
+                    }
+                },
+                fail: () => {
+                    uni.showToast({ title: this.$t('pub.showToast.fail'), icon: 'none' });
+                }
+            });
+        },
+
+        startSMSCountdown() {
+            if (this.smsCountdown > 0) {
+                setTimeout(() => {
+                    this.smsCountdown--;
+                    this.startSMSCountdown();
+                }, 1000);
+            }
+        },
+
+        validation() {
             // Validate inputs
             if(this.paymentMethodType == 0 && !this.ailpayAccountData.name) {
                 uni.showToast({title: this.$t('pub.showToast.finishForm'), icon: 'none'});
@@ -180,6 +218,32 @@ export default {
                 return;
             }
             uni.showLoading({title: this.$t('pub.showLoading.loading')});
+            uni.request({
+                url: getApp().globalData.data.requestUrl + this.$API.user.smsValidation,
+                method: 'POST',
+                data: {
+                    mobile: this.mobile,
+                    code: this.mobileValidationCodeMatcher
+                },
+                success: (res) => {
+                    if (res.data.status === 200) {
+                        // Proceed to save the payment method
+                        this.savePaymentMethod();
+                    } else {
+                        uni.hideLoading();
+                        uni.showToast({title: res.data.message || this.$t('pub.showToast.fail'), icon: 'none'});
+                    }
+                },
+                fail: () => {
+                    uni.hideLoading();
+                    uni.showToast({title: this.$t('pub.showToast.fail'), icon: 'none'});
+                }
+            });
+
+
+        },
+
+        savePaymentMethod() {
             if(this.paymentMethodType == 0) {
                 uni.request({
                     url: getApp().globalData.data.requestUrl + this.$API.ailpayAccount.save,

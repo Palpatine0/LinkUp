@@ -54,7 +54,9 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     @Autowired
     private HttpClientUtil httpClientUtil;
 
+    // TODO: update to Redis approach
     private ConcurrentHashMap<String, Long> lastSmsRequestTime = new ConcurrentHashMap<>();
+    private ConcurrentHashMap<String, Map<String, Object>> verificationCodes = new ConcurrentHashMap<>();
 
     /*C*/
     public Map<String, String> saveInfo(User user) {
@@ -102,7 +104,7 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     private void genQrCodeImage(String accessToken, String referrerId, String identifier) {
         Map<String, Object> body = new HashMap<>();
         body.put("path", "pages/home/home?referrerId=" + referrerId);
-        String url = WeChatConstant.QR_CODE_Url + "?access_token=" + accessToken;
+        String url = WeChatConstant.QR_CODE_URL + "?access_token=" + accessToken;
         byte[] qrCodeBytes = getWechatQrcodeByHttpClient(url, body);
         String filePath = "public/user/" + identifier + "/referral-qr-code/";
         String fileName = "referral-qr-code.png";
@@ -243,19 +245,29 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
     }
 
     @Override
-    public Map<String, Object> smsValidation(String mobile, String code) {
+    public Map sms(String mobile) {
         Map<String, Object> resultMap = new HashMap<>();
 
-        // TODO: upgrade "lastSmsRequestTime" to Redis approach
+        // Rate limiting: prevent multiple requests within 1 minute
         Long currentTime = System.currentTimeMillis();
         Long lastRequestTime = lastSmsRequestTime.get(mobile);
 
-        // Check if the request is made within 1 minute (60,000 milliseconds)
         if (lastRequestTime != null && (currentTime - lastRequestTime < TimeUnit.MINUTES.toMillis(1))) {
-            resultMap.put("data", "Please wait for 1 min before requesting another SMS code");
+            resultMap.put("status", 400);
+            resultMap.put("message", "Please wait for 1 minute before requesting another SMS code");
             return resultMap;
         }
 
+        // Generate 4-digit code
+        String code = String.format("%04d", new Random().nextInt(10000));
+
+        // Store the code with timestamp
+        Map<String, Object> codeData = new HashMap<>();
+        codeData.put("code", code);
+        codeData.put("timestamp", currentTime);
+        verificationCodes.put(mobile, codeData);
+
+        // Send SMS via third-party API
         String url = ThirdPartyConstant.SMS_CARD_AUTH_URL;
         String appCode = ThirdPartyConstant.SMS_AUTH_CODE;
         String templateId = ThirdPartyConstant.SMS_AUTH_TEMPLATE_ID;
@@ -271,12 +283,50 @@ public class UserServiceImpl extends ServiceImpl<UserMapper, User> implements IU
         Map<String, String> headers = new HashMap<>();
         headers.put("Authorization", "APPCODE " + appCode);
 
-        httpClientUtil.sendHttpPost(url, params, headers);
+        // Send the SMS
+        String response = httpClientUtil.sendHttpPost(url, params, headers);
+
+        // Handle response and errors as needed
 
         // Update the last request time
         lastSmsRequestTime.put(mobile, currentTime);
 
-        resultMap.put("data", "Success");
+        resultMap.put("status", 200);
+        resultMap.put("message", "SMS sent successfully");
+        return resultMap;
+    }
+
+    @Override
+    public Map<String, Object> smsValidation(String mobile, String code) {
+        Map<String, Object> resultMap = new HashMap<>();
+
+        Map<String, Object> codeData = verificationCodes.get(mobile);
+        if (codeData == null) {
+            resultMap.put("status", 400);
+            resultMap.put("message", "No code sent to this mobile");
+            return resultMap;
+        }
+
+        String storedCode = (String) codeData.get("code");
+        Long timestamp = (Long) codeData.get("timestamp");
+        Long currentTime = System.currentTimeMillis();
+
+        if (currentTime - timestamp > TimeUnit.MINUTES.toMillis(5)) {
+            verificationCodes.remove(mobile);
+            resultMap.put("status", 400);
+            resultMap.put("message", "Verification code expired");
+            return resultMap;
+        }
+
+        if (storedCode.equals(code)) {
+            verificationCodes.remove(mobile);
+            resultMap.put("status", 200);
+            resultMap.put("message", "Verification successful");
+        } else {
+            resultMap.put("status", 400);
+            resultMap.put("message", "Verification code does not match");
+        }
+
         return resultMap;
     }
 
