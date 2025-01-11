@@ -14,9 +14,9 @@ spring:
     type: com.alibaba.druid.pool.DruidDataSource
     driver-class-name: com.mysql.cj.jdbc.Driver
     # >dev
-    url: jdbc:mysql://localhost:3310/linkup?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8
+    # url: jdbc:mysql://localhost:3310/linkup?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8
     # >qa
-    # url: jdbc:mysql://looking.cool:3310/linkup?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8
+    url: jdbc:mysql://3.82.238.126:3310/linkup?serverTimezone=Asia/Shanghai&useUnicode=true&characterEncoding=utf-8
     username: root
     password: root
 
